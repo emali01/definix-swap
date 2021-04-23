@@ -43,7 +43,7 @@ const Swap = () => {
   // token warning stuff
   const [loadedInputCurrency, loadedOutputCurrency] = [
     useCurrency(loadedUrlParams?.inputCurrencyId),
-    useCurrency(loadedUrlParams?.outputCurrencyId)
+    useCurrency(loadedUrlParams?.outputCurrencyId),
   ]
   const [dismissTokenWarning, setDismissTokenWarning] = useState<boolean>(false)
   const [isSyrup, setIsSyrup] = useState<boolean>(false)
@@ -99,11 +99,11 @@ const Swap = () => {
   const parsedAmounts = showWrap
     ? {
         [Field.INPUT]: parsedAmount,
-        [Field.OUTPUT]: parsedAmount
+        [Field.OUTPUT]: parsedAmount,
       }
     : {
         [Field.INPUT]: independentField === Field.INPUT ? parsedAmount : trade?.inputAmount,
-        [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : trade?.outputAmount
+        [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : trade?.outputAmount,
       }
 
   const { onSwitchTokens, onCurrencySelection, onUserInput, onChangeRecipient } = useSwapActionHandlers()
@@ -135,14 +135,14 @@ const Swap = () => {
     tradeToConfirm: undefined,
     attemptingTxn: false,
     swapErrorMessage: undefined,
-    txHash: undefined
+    txHash: undefined,
   })
 
   const formattedAmounts = {
     [independentField]: typedValue,
     [dependentField]: showWrap
       ? parsedAmounts[independentField]?.toExact() ?? ''
-      : parsedAmounts[dependentField]?.toSignificant(6) ?? ''
+      : parsedAmounts[dependentField]?.toSignificant(6) ?? '',
   }
 
   const route = trade?.route
@@ -184,22 +184,22 @@ const Swap = () => {
     if (!swapCallback) {
       return
     }
-    setSwapState(prevState => ({ ...prevState, attemptingTxn: true, swapErrorMessage: undefined, txHash: undefined }))
+    setSwapState((prevState) => ({ ...prevState, attemptingTxn: true, swapErrorMessage: undefined, txHash: undefined }))
     swapCallback()
-      .then(hash => {
-        setSwapState(prevState => ({
+      .then((hash) => {
+        setSwapState((prevState) => ({
           ...prevState,
           attemptingTxn: false,
           swapErrorMessage: undefined,
-          txHash: hash
+          txHash: hash,
         }))
       })
-      .catch(error => {
-        setSwapState(prevState => ({
+      .catch((error) => {
+        setSwapState((prevState) => ({
           ...prevState,
           attemptingTxn: false,
           swapErrorMessage: error.message,
-          txHash: undefined
+          txHash: undefined,
         }))
       })
   }, [priceImpactWithoutFee, swapCallback, setSwapState])
@@ -220,7 +220,7 @@ const Swap = () => {
     !(priceImpactSeverity > 3 && !isExpertMode)
 
   const handleConfirmDismiss = useCallback(() => {
-    setSwapState(prevState => ({ ...prevState, showConfirm: false }))
+    setSwapState((prevState) => ({ ...prevState, showConfirm: false }))
 
     // if there was a tx hash, we want to clear the input
     if (txHash) {
@@ -229,7 +229,7 @@ const Swap = () => {
   }, [onUserInput, txHash, setSwapState])
 
   const handleAcceptChanges = useCallback(() => {
-    setSwapState(prevState => ({ ...prevState, tradeToConfirm: trade }))
+    setSwapState((prevState) => ({ ...prevState, tradeToConfirm: trade }))
   }, [trade])
 
   // This will check to see if the user has selected Syrup to either buy or sell.
@@ -245,7 +245,7 @@ const Swap = () => {
   )
 
   const handleInputSelect = useCallback(
-    inputCurrency => {
+    (inputCurrency) => {
       setApprovalSubmitted(false) // reset 2 step UI for approvals
       onCurrencySelection(Field.INPUT, inputCurrency)
       if (inputCurrency.symbol.toLowerCase() === 'syrup') {
@@ -262,7 +262,7 @@ const Swap = () => {
   }, [maxAmountInput, onUserInput])
 
   const handleOutputSelect = useCallback(
-    outputCurrency => {
+    (outputCurrency) => {
       onCurrencySelection(Field.OUTPUT, outputCurrency)
       if (outputCurrency.symbol.toLowerCase() === 'syrup') {
         checkForSyrup(outputCurrency.symbol.toLowerCase(), 'Buying')
@@ -274,7 +274,10 @@ const Swap = () => {
   return (
     <>
       <TokenWarningModal
-        isOpen={urlLoadedTokens.filter(x => x.address.toLowerCase() !== SIX_ADDRESS[chainId].toLowerCase()).length > 0 && !dismissTokenWarning}
+        isOpen={
+          urlLoadedTokens.filter((x) => x.address.toLowerCase() !== SIX_ADDRESS[chainId].toLowerCase()).length > 0 &&
+          !dismissTokenWarning
+        }
         tokens={urlLoadedTokens}
         onConfirm={handleConfirmTokenWarning}
       />
@@ -376,7 +379,7 @@ const Swap = () => {
                 ) : null}
 
                 {showWrap ? null : (
-                  <Card padding=".25rem .75rem 0 .75rem" borderRadius="20px">
+                  <Card padding=".25rem 0 0 0" borderRadius="20px">
                     <AutoColumn gap="4px">
                       {Boolean(trade) && (
                         <RowBetween align="center">
@@ -438,7 +441,7 @@ const Swap = () => {
                             attemptingTxn: false,
                             swapErrorMessage: undefined,
                             showConfirm: true,
-                            txHash: undefined
+                            txHash: undefined,
                           })
                         }
                       }}
@@ -465,7 +468,7 @@ const Swap = () => {
                           attemptingTxn: false,
                           swapErrorMessage: undefined,
                           showConfirm: true,
-                          txHash: undefined
+                          txHash: undefined,
                         })
                       }
                     }}
@@ -483,10 +486,10 @@ const Swap = () => {
                 {showApproveFlow && <ProgressSteps steps={[approval === ApprovalState.APPROVED]} />}
                 {isExpertMode && swapErrorMessage ? <SwapCallbackError error={swapErrorMessage} /> : null}
               </BottomGrouping>
+              <AdvancedSwapDetailsDropdown trade={trade} />
             </CardBody>
           </Wrapper>
         </AppBody>
-        <AdvancedSwapDetailsDropdown trade={trade} />
       </TimerWrapper>
     </>
   )
@@ -508,10 +511,10 @@ const TimerWrapper = ({ isPhrase2, date, children }) => {
         tabIndex={0}
         role="button"
         style={{ opacity: 0.4, pointerEvents: 'none' }}
-        onClick={e => {
+        onClick={(e) => {
           e.preventDefault()
         }}
-        onKeyDown={e => {
+        onKeyDown={(e) => {
           e.preventDefault()
         }}
       >

@@ -445,7 +445,7 @@ export default function RemoveLiquidity({
     <>
       <AppBody>
         <AddRemoveTabs adding={false} />
-        <Wrapper>
+        <Wrapper className="mt-4">
           <TransactionConfirmationModal
             isOpen={showConfirm}
             onDismiss={handleDismissConfirmation}

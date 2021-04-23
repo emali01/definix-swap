@@ -18,7 +18,7 @@ const Option = styled.div`
 `
 
 const Options = styled.div`
-  align-items: center;
+  align-items: strech;
   display: flex;
   flex-direction: column;
 
@@ -30,8 +30,16 @@ const Options = styled.div`
     padding-right: 0;
   }
 
+  > :last-child {
+    padding-top: 1rem;
+  }
+
   ${({ theme }) => theme.mediaQueries.sm} {
     flex-direction: row;
+
+    > :last-child {
+      padding-top: 0;
+    }
   }
 `
 

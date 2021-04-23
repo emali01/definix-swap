@@ -23,9 +23,10 @@ export const FixedHeightRow = styled(RowBetween)`
 `
 
 export const HoverCard = styled(Card)`
-  border: 1px solid ${({ theme }) => theme.colors.invertedContrast};
-  :hover {
-    border: 1px solid ${({ theme }) => darken(0.06, theme.colors.invertedContrast)};
+  border: 1px solid ${({ theme }) => theme.colors.border};
+
+  &:hover {
+    border-color: ${({ theme }) => darken(0.06, theme.colors.primary)};
   }
 `
 
@@ -72,13 +73,13 @@ export function MinimalPositionCard({ pair, showUnwrapped = false }: PositionCar
                 </RowFixed>
               </FixedHeightRow>
               <FixedHeightRow onClick={() => setShowMore(!showMore)}>
-                <RowFixed>
+                <RowFixed margin="0 !important">
                   <DoubleCurrencyLogo currency0={currency0} currency1={currency1} margin size={20} />
                   <Text fontSize="14px">
                     {currency0.symbol}/{currency1.symbol}
                   </Text>
                 </RowFixed>
-                <RowFixed>
+                <RowFixed margin="0 !important">
                   <Text fontSize="14px">{userPoolBalance ? userPoolBalance.toSignificant(4) : '-'}</Text>
                 </RowFixed>
               </FixedHeightRow>
@@ -86,7 +87,7 @@ export function MinimalPositionCard({ pair, showUnwrapped = false }: PositionCar
                 <FixedHeightRow>
                   <Text fontSize="14px">{currency0.symbol}:</Text>
                   {token0Deposited ? (
-                    <RowFixed>
+                    <RowFixed margin="0 !important">
                       <Text ml="6px" fontSize="14px">
                         {token0Deposited?.toSignificant(6)}
                       </Text>
@@ -98,7 +99,7 @@ export function MinimalPositionCard({ pair, showUnwrapped = false }: PositionCar
                 <FixedHeightRow>
                   <Text fontSize="14px">{currency1.symbol}:</Text>
                   {token1Deposited ? (
-                    <RowFixed>
+                    <RowFixed margin="0 !important">
                       <Text ml="6px" fontSize="14px">
                         {token1Deposited?.toSignificant(6)}
                       </Text>
