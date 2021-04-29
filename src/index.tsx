@@ -1,5 +1,7 @@
 import React, { StrictMode } from 'react'
 import ReactDOM from 'react-dom'
+import ReactGA from 'react-ga';
+import TagManager from 'react-gtm-module';
 import { ResetCSS } from 'uikit-dev'
 import GlobalStyle from './style/Global'
 import App from './pages/App'
@@ -10,6 +12,13 @@ import TransactionUpdater from './state/transactions/updater'
 import Providers from './Providers'
 import 'inter-ui'
 import './i18n'
+
+ReactGA.initialize(process.env.REACT_APP_GANALYTIC || "");
+
+const tagManagerArgs = {
+  gtmId: process.env.REACT_APP_GTAG || "",
+};
+TagManager.initialize(tagManagerArgs);
 
 if ('ethereum' in window) {
   (window.ethereum as any).autoRefreshOnNetworkChange = false
