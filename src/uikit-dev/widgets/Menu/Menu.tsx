@@ -1,4 +1,5 @@
 import throttle from 'lodash/throttle'
+import { useSmartChain } from 'state/smartchain/hooks'
 import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import Button from '../../components/Button/Button'
@@ -12,7 +13,7 @@ import ChevronDownIcon from '../../components/Svg/Icons/ChevronDown'
 import { useMatchBreakpoints } from '../../hooks'
 import en from '../../images/en.png'
 import bsc from '../../images/Logo-BinanceSmartChain.png'
-import klaytn from '../../images/Logo-Klaytn.png'
+import klay from '../../images/Logo-Klaytn.png'
 import th from '../../images/th.png'
 import { MENU_HEIGHT, SIDEBAR_WIDTH_FULL, SIDEBAR_WIDTH_REDUCED } from './config'
 import * as IconModule from './icons'
@@ -138,10 +139,16 @@ const Menu: React.FC<NavProps> = ({
   price,
   // profile,
 }) => {
+  const choiceChian = [
+    { icon: bsc, name: 'Binance Smart Chain', value: 'bsc' },
+    { icon: klay, name: 'Klaytn', value: 'klaytn' },
+  ]
   const { isXl } = useMatchBreakpoints()
   const isMobile = isXl === false
   const [isPushed, setIsPushed] = useState(!isMobile)
   const [showMenu, setShowMenu] = useState(true)
+  const [SmartChainName, setSmartChian] = useSmartChain()
+  const [selectChain, setSelectChain] = useState(choiceChian[0])
   const refPrevOffset = useRef(window.pageYOffset)
   const Icons = (IconModule as unknown) as { [key: string]: React.FC<SvgProps> }
   const { LanguageIcon } = Icons
@@ -205,42 +212,39 @@ const Menu: React.FC<NavProps> = ({
             isDark={isDark}
             href={homeLink?.href ?? '/'}
           />
-          {!isMobile && (
-            <Dropdown
-              position="bottom"
-              target={
-                <Button
+          <Dropdown
+            position="bottom"
+            target={
+              <Button
+                variant="text"
+                size="sm"
+                startIcon={<img src={selectChain.icon} alt="" width="24" className="mr-2" />}
+                endIcon={<ChevronDownIcon className="ml-1" />}
+                className="ml-4 color-text"
+                style={{ marginTop: '4px' }}
+              >
+                <Text fontSize="12px" fontWeight="500">
+                  {selectChain.name}
+                </Text>
+              </Button>
+            }
+          >
+            {choiceChian.map((choice, index) => {
+              return (
+                <MenuButton
                   variant="text"
-                  size="sm"
-                  startIcon={<img src={bsc} alt="" width="24" className="mr-2" />}
-                  endIcon={<ChevronDownIcon className="ml-1" />}
-                  className="ml-4 color-text"
-                  style={{ marginTop: '4px' }}
+                  startIcon={<img src={choice.icon} alt="" width="24" className="mr-2" />}
+                  className="color-primary mb-2"
+                  onClick={() => {
+                    setSmartChian(choiceChian[index].value)
+                    setSelectChain(choiceChian[index])
+                  }}
                 >
-                  <Text fontSize="12px" fontWeight="500">
-                    Binance Smart Chain
-                  </Text>
-                </Button>
-              }
-            >
-              <MenuButton
-                variant="text"
-                startIcon={<img src={bsc} alt="" width="24" className="mr-2" />}
-                className="color-primary mb-2"
-              >
-                Binance Smart Chain
-              </MenuButton>
-              <MenuButton
-                variant="text"
-                startIcon={<img src={klaytn} alt="" width="24" className="mr-2" />}
-                disabled
-                className="color-disable"
-                style={{ background: 'transparent' }}
-              >
-                Klaytn
-              </MenuButton>
-            </Dropdown>
-          )}
+                  {choice.name}
+                </MenuButton>
+              )
+            })}
+          </Dropdown>
         </Flex>
         <Flex alignItems="center">
           <Price>
