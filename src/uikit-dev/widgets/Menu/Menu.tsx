@@ -2,15 +2,16 @@ import throttle from 'lodash/throttle'
 import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import Button from '../../components/Button/Button'
-import Text from '../../components/Text/Text'
 import Dropdown from '../../components/Dropdown/Dropdown'
 import { Flex } from '../../components/Flex'
 import Footer from '../../components/Footer'
 import Overlay from '../../components/Overlay/Overlay'
 import { SvgProps } from '../../components/Svg'
 import ChevronDownIcon from '../../components/Svg/Icons/ChevronDown'
+import Text from '../../components/Text/Text'
 import { useMatchBreakpoints } from '../../hooks'
 import en from '../../images/en.png'
+import FinixCoin from '../../images/finix-coin.png'
 import bsc from '../../images/Logo-BinanceSmartChain.png'
 import klaytn from '../../images/Logo-Klaytn.png'
 import th from '../../images/th.png'
@@ -20,7 +21,6 @@ import Logo from './Logo'
 import MenuButton from './MenuButton'
 import Panel from './Panel'
 import { NavProps } from './types'
-import FinixCoin from '../../images/finix-coin.png'
 
 const Wrapper = styled.div`
   position: relative;
@@ -260,7 +260,6 @@ const Menu: React.FC<NavProps> = ({
                 endIcon={<ChevronDownIcon className="ml-1" />}
                 style={{ borderRadius: '6px', padding: '0 8px 0 12px', boxShadow: '0 1px 2px rgba(0,0,0,0.16)' }}
               >
-              <Text color="textSubtle">{getLanguageName(currentLang)}</Text>
               </Button>
             }
           >
@@ -269,7 +268,6 @@ const Menu: React.FC<NavProps> = ({
                 key={lang.code}
                 fullWidth
                 onClick={() => setLang(lang)}
-                // Safari fix
                 style={{ minHeight: '32px', height: 'auto' }}
               >
                 {lang.language}
