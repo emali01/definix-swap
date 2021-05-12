@@ -5,7 +5,8 @@ import { useAllTokens } from '../../hooks/Tokens'
 import { useActiveWeb3React } from '../../hooks'
 import { useMulticallContract } from '../../hooks/useContract'
 import { isAddress } from '../../utils'
-import { useSingleContractMultipleData, useMultipleContractSingleData } from '../multicall/hooks'
+import { useKlaytnBalance, useSingleContractMultipleData, useMultipleContractSingleData } from '../multicall/hooks'
+import { getCaver } from '../../utils/caver'
 
 /**
  * Returns a map of the given addresses to their eventually consistent ETH balances.
@@ -13,6 +14,13 @@ import { useSingleContractMultipleData, useMultipleContractSingleData } from '..
 export function useETHBalances(
   uncheckedAddresses?: (string | undefined)[]
 ): { [address: string]: CurrencyAmount | undefined } {
+  console.log('show me')
+  console.log('show me')
+  console.log('show me')
+  console.log('show me')
+  console.log('show me')
+  console.log('show me')
+  console.log('show me')
   const multicallContract = useMulticallContract()
 
   const addresses: string[] = useMemo(
@@ -25,7 +33,13 @@ export function useETHBalances(
         : [],
     [uncheckedAddresses]
   )
+  console.log('show me222')
 
+  // const balance = useKlaytnBalance(['0xD48019251a3A60Fb036adBd99D8Cd97d37621dFC'])
+  const balance = useKlaytnBalance(['0xD48019251a3A60Fb036adBd99D8Cd97d37621dFC'])
+  console.log('balance', balance)
+
+  console.log('show me3333333')
   const results = useSingleContractMultipleData(
     multicallContract,
     'getEthBalance',

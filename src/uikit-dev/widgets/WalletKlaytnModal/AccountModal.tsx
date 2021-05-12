@@ -6,14 +6,16 @@ import Flex from '../../components/Box/Flex'
 import { Modal } from '../Modal'
 import CopyToClipboard from './CopyToClipboard'
 import { localStorageKey } from './config'
+import { Login } from '../WalletModal/types'
 
 interface Props {
   account: string
   logout: () => void
   onDismiss?: () => void
+  login: Login
 }
 
-const AccountModal: React.FC<Props> = ({ account, logout, onDismiss = () => null }) => (
+const AccountModal: React.FC<Props> = ({ account, login, logout, onDismiss = () => null }) => (
   <Modal title="Your wallet" onDismiss={onDismiss} isRainbow>
     <Text
       fontSize="20px"

@@ -148,7 +148,10 @@ const Menu: React.FC<NavProps> = ({
   const [isPushed, setIsPushed] = useState(!isMobile)
   const [showMenu, setShowMenu] = useState(true)
   const [SmartChainName, setSmartChian] = useSmartChain()
-  const [selectChain, setSelectChain] = useState(choiceChian[0])
+  const [selectChain, setSelectChain] = useState(choiceChian[1])
+  useEffect(() => {
+    setSmartChian(selectChain.value)
+  }, [selectChain, setSmartChian])
   const refPrevOffset = useRef(window.pageYOffset)
   const Icons = (IconModule as unknown) as { [key: string]: React.FC<SvgProps> }
   const { LanguageIcon } = Icons
@@ -236,7 +239,6 @@ const Menu: React.FC<NavProps> = ({
                   startIcon={<img src={choice.icon} alt="" width="24" className="mr-2" />}
                   className="color-primary mb-2"
                   onClick={() => {
-                    setSmartChian(choiceChian[index].value)
                     setSelectChain(choiceChian[index])
                   }}
                 >

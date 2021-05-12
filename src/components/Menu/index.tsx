@@ -10,9 +10,11 @@ import { ConnectorId, Menu as UikitMenu } from 'uikit-dev'
 import numeral from 'numeral'
 import links from './config'
 import useFinixPrice from '../../hooks/useFinixPrice'
+import useAccount from '../../state/account/hooks'
 
 const Menu: React.FC = (props) => {
-  const { account, activate, deactivate } = useWeb3React()
+  // const { account, activate, deactivate } = useWeb3React()
+  const [account, setAccount] = useAccount()
   const { selectedLanguage, setSelectedLanguage } = useContext(LanguageContext)
   const { isDark, toggleTheme } = useTheme()
   const priceData = useGetPriceData()
@@ -24,18 +26,12 @@ const Menu: React.FC = (props) => {
     <UikitMenu
       links={links}
       account={account as string}
-      login={(connectorId: ConnectorId) => {
-        if (connectorId === 'walletconnect') {
-          return activate(walletconnect)
-        }
-
-        if (connectorId === 'bsc') {
-          return activate(bsc)
-        }
-
-        return activate(injected)
+      login={(address) => {
+        setAccount(address)
       }}
-      logout={deactivate}
+      logout={() => {
+        console.log('hello')
+      }}
       isDark={isDark}
       toggleTheme={toggleTheme}
       currentLang={selectedLanguage?.code || 'en'}

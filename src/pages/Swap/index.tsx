@@ -35,6 +35,7 @@ import { TranslateString } from 'utils/translateTextHelpers'
 import AppBody from '../AppBody'
 import { SIX_ADDRESS } from '../../constants'
 import Flip from '../../uikit-dev/components/Flip'
+import useAccount from '../../state/account/hooks'
 // import CardNav from 'components/CardNav'
 
 const Swap = () => {
@@ -76,7 +77,8 @@ const Swap = () => {
     }
   }, [currentTime, phrase2TimeStamp])
 
-  const { account, chainId = '' } = useActiveWeb3React()
+  const [account] = useAccount()
+  const chainId = 56
   const theme = useContext(ThemeContext)
 
   const [isExpertMode] = useExpertModeManager()

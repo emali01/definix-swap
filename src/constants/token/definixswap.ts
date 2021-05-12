@@ -11,68 +11,12 @@ export default {
   keywords: ['definix', 'default'],
   tokens: [
     {
-      name: 'FINIX Token',
-      symbol: 'FINIX',
-      address: process.env.REACT_APP_FINIX_ADDRESS_TESTNET,
-      chainId: 97,
-      decimals: 18,
-      logoURI: '/images/coins/FINIX.png'
-    },
-    {
-      name: 'SIX Token',
-      symbol: 'SIX',
-      address: process.env.REACT_APP_SIX_ADDRESS_TESTNET,
-      chainId: 97,
-      decimals: 18,
-      logoURI: '/images/coins/SIX.png'
-    },
-    {
-      name: 'BUSD Token',
-      symbol: 'BUSD',
-      address: process.env.REACT_APP_BUSD_ADDRESS_TESTNET,
-      chainId: 97,
-      decimals: 18,
-      logoURI: '/images/coins/BTC.png'
-    },
-    {
-      name: 'USDT Token',
-      symbol: 'USDT',
-      address: process.env.REACT_APP_USDT_ADDRESS_TESTNET,
-      chainId: 97,
-      decimals: 18,
-      logoURI: '/images/coins/USDT.png'
-    },
-    {
-      name: 'FINIX Token',
-      symbol: 'FINIX',
-      address: process.env.REACT_APP_FINIX_ADDRESS_MAINNET,
+      name: 'GAS Token',
+      symbol: 'GAS',
+      address: '0x4f9a66D44bdEebf25109257985fFBaDacc5a7317',
       chainId: 56,
       decimals: 18,
-      logoURI: '/images/coins/FINIX.png'
-    },
-    {
-      name: 'SIX Token',
-      symbol: 'SIX',
-      address: process.env.REACT_APP_SIX_ADDRESS_MAINNET,
-      chainId: 56,
-      decimals: 18,
-      logoURI: '/images/coins/SIX.png'
-    },
-    {
-      name: 'BUSD Token',
-      symbol: 'BUSD',
-      address: process.env.REACT_APP_BUSD_ADDRESS_MAINNET,
-      chainId: 56,
-      decimals: 18,
-      logoURI: '/images/coins/BTC.png'
-    },
-    {
-      name: 'USDT Token',
-      symbol: 'USDT',
-      address: process.env.REACT_APP_USDT_ADDRESS_MAINNET,
-      chainId: 56,
-      decimals: 18,
-      logoURI: '/images/coins/USDT.png'
+      logoURI: '/images/coins/GAS.png'
     },
   ]
 }

@@ -6,9 +6,11 @@ import { Modal } from '../Modal'
 import WalletKaikasCard from './WalletKaikasCard'
 import config from './config'
 import caver from '../../../klaytn/caver'
+import { Login } from '../WalletModal/types'
 
 interface Props {
   onDismiss?: () => void
+  login: Login
 }
 
 const HelpLink = styled(Link)`
@@ -18,15 +20,15 @@ const HelpLink = styled(Link)`
   margin-top: 24px;
 `
 
-const loadAccountInfo = async () => {
+const loadAccountInfo = (login) => async () => {
   // @ts-ignore
   const { klaytn } = window
 
   if (klaytn) {
     try {
       await klaytn.enable()
-      setAccountInfo()
-      klaytn.on('accountsChanged', () => setAccountInfo())
+      setAccountInfo(login)()
+      klaytn.on('accountsChanged', () => setAccountInfo(login)())
     } catch (error) {
       console.log('User denied account access')
     }
@@ -35,13 +37,14 @@ const loadAccountInfo = async () => {
   }
 }
 
-const setAccountInfo = async () => {
+const setAccountInfo = login => async () => {
   // @ts-ignore
   const { klaytn } = window
   if (klaytn === undefined) return
 
   const account = klaytn.selectedAddress
   const balance = await caver.klay.getBalance(account)
+  login(account)
   // this.setState({
   //   account,
   //   balance: caver.utils.fromPeb(balance, 'KLAY'),
@@ -57,12 +60,12 @@ const setNetworkInfo = () => {
   klaytn.on('networkChanged', () => setNetworkInfo())
 }
 
-const ConnectModal: React.FC<Props> = ({ onDismiss = () => null }) => (
+const ConnectModal: React.FC<Props> = ({ onDismiss = () => null, login = () => null }) => (
   <Modal title="Connect to a wallet" onDismiss={onDismiss} isRainbow>
     {config.map((entry, index) => (
       <WalletKaikasCard
         key={entry.title}
-        login={loadAccountInfo}
+        login={loadAccountInfo(login)}
         walletConfig={entry}
         onDismiss={onDismiss}
         mb={index < config.length - 1 ? '8px' : '0'}

@@ -31,6 +31,7 @@ import AppBody from '../AppBody'
 import { Dots, Wrapper } from '../Pool/styleds'
 import { ConfirmAddModalBottom } from './ConfirmAddModalBottom'
 import { PoolPriceBar } from './PoolPriceBar'
+import useAccount from '../../state/account/hooks'
 
 export default function AddLiquidity({
   match: {
@@ -38,7 +39,8 @@ export default function AddLiquidity({
   },
   history,
 }: RouteComponentProps<{ currencyIdA?: string; currencyIdB?: string }>) {
-  const { account, chainId, library } = useActiveWeb3React()
+  const { chainId, library } = useActiveWeb3React()
+  const [account] = useAccount()
   const currencyA = useCurrency(currencyIdA)
   const currencyB = useCurrency(currencyIdB)
 

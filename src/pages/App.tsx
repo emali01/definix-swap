@@ -109,13 +109,13 @@ export default function App() {
       })
   }
 
-  const { account, activate } = useWeb3React()
+  // const { account, activate } = useWeb3React()
 
-  useEffect(() => {
-    if (!account && window.localStorage.getItem('accountStatus')) {
-      activate(injected)
-    }
-  }, [account, activate])
+  // useEffect(() => {
+  //   if (!account && window.localStorage.getItem('accountStatus')) {
+  //     activate(injected)
+  //   }
+  // }, [account, activate])
 
   useEffect(() => {
     if (selectedLanguage) {

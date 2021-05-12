@@ -3,7 +3,7 @@ import { Config } from './types'
 const connectors: Config[] = [
   {
     title: 'Kaikas',
-    connectorId: 'injected',
+//    connectorId: 'injected',
   },
 ]
 

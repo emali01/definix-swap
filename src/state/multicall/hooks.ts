@@ -1,7 +1,7 @@
 import { Interface, FunctionFragment } from '@ethersproject/abi'
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
-import { useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useActiveWeb3React } from '../../hooks'
 import { useBlockNumber } from '../application/hooks'
@@ -12,8 +12,9 @@ import {
   removeMulticallListeners,
   parseCallKey,
   toCallKey,
-  ListenerOptions,
+  ListenerOptions
 } from './actions'
+import { getCaver } from '../../utils/caver'
 
 export interface Result extends ReadonlyArray<any> {
   readonly [key: string]: any
@@ -31,7 +32,7 @@ function isMethodArg(x: unknown): x is MethodArg {
 function isValidMethodArgs(x: unknown): x is MethodArgs | undefined {
   return (
     x === undefined ||
-    (Array.isArray(x) && x.every((xi) => isMethodArg(xi) || (Array.isArray(xi) && xi.every(isMethodArg))))
+    (Array.isArray(x) && x.every(xi => isMethodArg(xi) || (Array.isArray(xi) && xi.every(isMethodArg))))
   )
 }
 
@@ -45,15 +46,13 @@ const INVALID_RESULT: CallResult = { valid: false, blockNumber: undefined, data:
 
 // use this options object
 export const NEVER_RELOAD: ListenerOptions = {
-  blocksPerFetch: Infinity,
+  blocksPerFetch: Infinity
 }
 
 // the lowest level call for subscribing to contract data
 function useCallsData(calls: (Call | undefined)[], options?: ListenerOptions): CallResult[] {
   const { chainId } = useActiveWeb3React()
-  const callResults = useSelector<AppState, AppState['multicall']['callResults']>(
-    (state) => state.multicall.callResults
-  )
+  const callResults = useSelector<AppState, AppState['multicall']['callResults']>(state => state.multicall.callResults)
   const dispatch = useDispatch<AppDispatch>()
 
   const serializedCallKeys: string = useMemo(
@@ -72,12 +71,12 @@ function useCallsData(calls: (Call | undefined)[], options?: ListenerOptions): C
     const callKeys: string[] = JSON.parse(serializedCallKeys)
     if (!chainId || callKeys.length === 0) return undefined
     // eslint-disable-next-line @typescript-eslint/no-shadow
-    const calls = callKeys.map((key) => parseCallKey(key))
+    const calls = callKeys.map(key => parseCallKey(key))
     dispatch(
       addMulticallListeners({
         chainId,
         calls,
-        options,
+        options
       })
     )
 
@@ -86,7 +85,7 @@ function useCallsData(calls: (Call | undefined)[], options?: ListenerOptions): C
         removeMulticallListeners({
           chainId,
           calls,
-          options,
+          options
         })
       )
     }
@@ -95,7 +94,7 @@ function useCallsData(calls: (Call | undefined)[], options?: ListenerOptions): C
   return useMemo(
     () =>
       // @ts-ignore
-      calls.map<CallResult>((call) => {
+      calls.map<CallResult>(call => {
         if (!chainId || !call) return INVALID_RESULT
 
         const result = callResults[chainId]?.[toCallKey(call)]
@@ -146,7 +145,7 @@ function toCallState(
         loading: false,
         error: true,
         syncing,
-        result,
+        result
       }
     }
   }
@@ -155,8 +154,28 @@ function toCallState(
     loading: false,
     syncing,
     result,
-    error: !success,
+    error: !success
   }
+}
+
+export function useKlaytnBalance(addresses: string[]): number[] {
+  const [balances, setBalances] = useState<number[]>([])
+  const caver = getCaver()
+  Promise.all(
+    addresses.map(address => {
+      return caver.rpc.klay
+        .getBalance(address)
+        .then(a => {
+          return a / 10 ** 18
+        })
+        .catch(e => {
+          return 0
+        })
+    })
+  ).then(result => {
+    setBalances(result)
+  })
+  return balances
 }
 
 export function useSingleContractMultipleData(
@@ -170,10 +189,10 @@ export function useSingleContractMultipleData(
   const calls = useMemo(
     () =>
       contract && fragment && callInputs && callInputs.length > 0
-        ? callInputs.map<Call>((inputs) => {
+        ? callInputs.map<Call>(inputs => {
             return {
               address: contract.address,
-              callData: contract.interface.encodeFunctionData(fragment, inputs),
+              callData: contract.interface.encodeFunctionData(fragment, inputs)
             }
           })
         : [],
@@ -185,7 +204,7 @@ export function useSingleContractMultipleData(
   const latestBlockNumber = useBlockNumber()
 
   return useMemo(() => {
-    return results.map((result) => toCallState(result, contract?.interface, fragment, latestBlockNumber))
+    return results.map(result => toCallState(result, contract?.interface, fragment, latestBlockNumber))
   }, [fragment, contract, results, latestBlockNumber])
 }
 
@@ -208,11 +227,11 @@ export function useMultipleContractSingleData(
   const calls = useMemo(
     () =>
       fragment && addresses && addresses.length > 0 && callData
-        ? addresses.map<Call | undefined>((address) => {
+        ? addresses.map<Call | undefined>(address => {
             return address && callData
               ? {
                   address,
-                  callData,
+                  callData
                 }
               : undefined
           })
@@ -225,7 +244,7 @@ export function useMultipleContractSingleData(
   const latestBlockNumber = useBlockNumber()
 
   return useMemo(() => {
-    return results.map((result) => toCallState(result, contractInterface, fragment, latestBlockNumber))
+    return results.map(result => toCallState(result, contractInterface, fragment, latestBlockNumber))
   }, [fragment, results, contractInterface, latestBlockNumber])
 }
 
@@ -242,8 +261,8 @@ export function useSingleCallResult(
       ? [
           {
             address: contract.address,
-            callData: contract.interface.encodeFunctionData(fragment, inputs),
-          },
+            callData: contract.interface.encodeFunctionData(fragment, inputs)
+          }
         ]
       : []
   }, [contract, fragment, inputs])

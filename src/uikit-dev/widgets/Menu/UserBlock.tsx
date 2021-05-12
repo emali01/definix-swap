@@ -18,7 +18,7 @@ interface Props {
 
 const UserBlock: React.FC<Props> = ({ account, login, logout }) => {
   const [SmartChainName, setSmartChian] = useSmartChain()
-  const { onPresentConnectKlaytnModal } = useWalletKlaytnModal(logout, account)
+  const { onPresentConnectKlaytnModal } = useWalletKlaytnModal(login, logout, account)
   const { onPresentConnectModal } = useWalletModal(login, logout, account)
   const accountEllipsis = account ? `${account.substring(0, 8)}...${account.substring(account.length - 8)}` : null
   // const accountEllipsisLong = account ? `${account.substring(0, 12)}...${account.substring(account.length - 12)}` : null

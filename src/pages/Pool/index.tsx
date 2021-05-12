@@ -19,10 +19,11 @@ import { Button, CardBody, Heading, Text } from 'uikit-dev'
 import { TranslateString } from 'utils/translateTextHelpers'
 import AppBody from '../AppBody'
 import Flip from '../../uikit-dev/components/Flip'
+import useAccount from '../../state/account/hooks'
 
 export default function Pool() {
   const theme = useContext(ThemeContext)
-  const { account } = useActiveWeb3React()
+  const [account] = useAccount()
 
   // fetch the user's balances of all tracked V2 LP tokens
   const trackedTokenPairs = useTrackedTokenPairs()

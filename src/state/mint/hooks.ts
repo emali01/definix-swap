@@ -11,6 +11,7 @@ import { AppDispatch, AppState } from '../index'
 import { tryParseAmount } from '../swap/hooks'
 import { useCurrencyBalances } from '../wallet/hooks'
 import { Field, typeInput } from './actions'
+import useAccount from '../account/hooks'
 
 const ZERO = JSBI.BigInt(0)
 
@@ -34,7 +35,8 @@ export function useDerivedMintInfo(
   poolTokenPercentage?: Percent
   error?: string
 } {
-  const { account, chainId } = useActiveWeb3React()
+  const [account] = useAccount()
+  const { chainId } = useActiveWeb3React()
 
   const { independentField, typedValue, otherTypedValue } = useMintState()
 
