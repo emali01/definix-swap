@@ -1,6 +1,8 @@
 import throttle from 'lodash/throttle'
 import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
+import CountDownBanner from 'uikit-dev/components/CountDownBanner'
+import logoTrade from 'uikit-dev/images/for-trading-challenge/Definix-Trading-Challenge-29.png'
 import Button from '../../components/Button/Button'
 import Dropdown from '../../components/Dropdown/Dropdown'
 import { Flex } from '../../components/Flex'
@@ -156,6 +158,9 @@ const Menu: React.FC<NavProps> = ({
 
     return <LanguageIcon color="textSubtle" width="24px" />
   }
+  const endRegisterTimestamp = process.env.REACT_APP_TRADE_COMPETITION_TIMESTAMP
+    ? parseInt(process.env.REACT_APP_TRADE_COMPETITION_TIMESTAMP || '', 10) || new Date().getTime()
+    : new Date().getTime()
 
   // const getLanguageName = (lang) => {
   //   return langs.find((l) => {
@@ -295,6 +300,18 @@ const Menu: React.FC<NavProps> = ({
           logout={logout}
         />
         <Inner isPushed={isPushed} showMenu={showMenu}>
+          <CountDownBanner
+            logo={logoTrade}
+            title="Definix Trading Tournament"
+            detail="Registration Period end in"
+            endTime={endRegisterTimestamp}
+            button={
+              <Button as="a" href="https://bsc.definix.com/trading-challenge" size="sm">
+                Register now
+              </Button>
+            }
+          />
+
           {children}
         </Inner>
         <MobileOnlyOverlay show={isPushed} onClick={() => setIsPushed(false)} role="presentation" />
