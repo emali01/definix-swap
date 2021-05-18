@@ -1708,6 +1708,13 @@
   dependencies:
     "@ethersproject/logger" "^5.0.8"
 
+"@ethersproject/bytes@^5.1.0":
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/@ethersproject/bytes/-/bytes-5.1.0.tgz#55dfa9c4c21df1b1b538be3accb50fb76d5facfd"
+  integrity sha512-sGTxb+LVjFxJcJeUswAIK6ncgOrh3D8c192iEJd7mLr95V6du119rRfYT/b87WPkZ5I3gRBUYIYXtdgCWACe8g==
+  dependencies:
+    "@ethersproject/logger" "^5.1.0"
+
 "@ethersproject/constants@5.0.10", "@ethersproject/constants@>=5.0.0-beta.128", "@ethersproject/constants@^5.0.4", "@ethersproject/constants@^5.0.8":
   version "5.0.10"
   resolved "https://registry.npmjs.org/@ethersproject/constants/-/constants-5.0.10.tgz"
@@ -1798,10 +1805,23 @@
     "@ethersproject/bytes" "^5.0.9"
     js-sha3 "0.5.7"
 
+"@ethersproject/keccak256@^5.1.0":
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/@ethersproject/keccak256/-/keccak256-5.1.0.tgz#fdcd88fb13bfef4271b225cdd8dec4d315c8e60e"
+  integrity sha512-vrTB1W6AEYoadww5c9UyVJ2YcSiyIUTNDRccZIgwTmFFoSHwBtcvG1hqy9RzJ1T0bMdATbM9Hfx2mJ6H0i7Hig==
+  dependencies:
+    "@ethersproject/bytes" "^5.1.0"
+    js-sha3 "0.5.7"
+
 "@ethersproject/logger@5.0.10", "@ethersproject/logger@>=5.0.0-beta.129", "@ethersproject/logger@^5.0.5", "@ethersproject/logger@^5.0.8":
   version "5.0.10"
   resolved "https://registry.npmjs.org/@ethersproject/logger/-/logger-5.0.10.tgz"
   integrity sha512-0y2T2NqykDrbPM3Zw9RSbPkDOxwChAL8detXaom76CfYoGxsOnRP/zTX8OUAV+x9LdwzgbWvWmeXrc0M7SuDZw==
+
+"@ethersproject/logger@^5.1.0":
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/@ethersproject/logger/-/logger-5.1.0.tgz#4cdeeefac029373349d5818f39c31b82cc6d9bbf"
+  integrity sha512-wtUaD1lBX10HBXjjKV9VHCBnTdUaKQnQ2XSET1ezglqLdPdllNOIlLfhyCRqXm5xwcjExVI5ETokOYfjPtaAlw==
 
 "@ethersproject/networks@5.0.9", "@ethersproject/networks@^5.0.7":
   version "5.0.9"
@@ -6780,6 +6800,47 @@ caver-js@^1.6.1:
     webpack-cli "3.3.12"
     websocket "1.0.31"
     xhr2-cookies "1.1.0"
+
+caverjs-react-abstract-connector@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/caverjs-react-abstract-connector/-/caverjs-react-abstract-connector-1.0.0.tgz#0fcda320186ecd9457d787a96f3ed16b5c3ce34f"
+  integrity sha512-Eq6Lh7rFiXWWuG07KbBRYH++yhaO0RHwm4LGWVZV3qBHbLURm1ZWDrz/cGft6xFAF+blkPIR5VGM9Yy3ndnqlg==
+  dependencies:
+    caverjs-react-types "^1.0.0"
+
+caverjs-react-core@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/caverjs-react-core/-/caverjs-react-core-1.0.0.tgz#56ea610d6da45c142e24aaf3d6d1b5f94ec5e545"
+  integrity sha512-HkblYJ/jmjNfUsmzbrZyPIQ8w4/WcUvNLo1wkPEqx29oKwfYTNXmbsqFcGUcBnAOd5dXzRBMZzzopFBxnHU/rg==
+  dependencies:
+    "@ethersproject/keccak256" "^5.1.0"
+    caverjs-react-abstract-connector "^1.0.0"
+    caverjs-react-types "^1.0.0"
+    tiny-invariant "^1.0.6"
+    tiny-warning "^1.0.3"
+
+caverjs-react-injected-connector@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/caverjs-react-injected-connector/-/caverjs-react-injected-connector-1.0.0.tgz#a571eb9a731ae94c52d64cdcce7a2abd641a9e95"
+  integrity sha512-9JWpx0ksdwAW7nvdX66uaEh0kKcf6xipFXFImKhZ9MIc6AyqgL26HaoCoFB9oy/hpZJnLy7zGSzcMdGhv5D+fQ==
+  dependencies:
+    caverjs-react-abstract-connector "^1.0.0"
+    caverjs-react-types "^1.0.0"
+    tiny-warning "^1.0.3"
+
+caverjs-react-network-connector@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/caverjs-react-network-connector/-/caverjs-react-network-connector-1.0.0.tgz#388b7b92c1b5622f16b2e6513d6e65a49f2dbe0f"
+  integrity sha512-zBzHeaWjVY+5ku2H6j6CpAN3en0CQou4HEtwVGONaZzJi70/WNn1JCK06VfnYzRc+0h2LAI5vA5dAJZTygovZA==
+  dependencies:
+    caverjs-react-abstract-connector "^1.0.0"
+    caverjs-react-types "^1.0.0"
+    tiny-invariant "^1.0.6"
+
+caverjs-react-types@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/caverjs-react-types/-/caverjs-react-types-1.0.0.tgz#dac33e658d3f1fe09aea0413d8705acfe6b7e17c"
+  integrity sha512-6K3KU5xeubLjS9XnexAmSSDe7b2wlgTBJexQ2HRFcatcEzlet6u0kmGaV56uQTe8GC6olB95kM79JsMwSahQIw==
 
 cbor@^5.1.0:
   version "5.2.0"

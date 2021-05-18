@@ -1,21 +1,21 @@
 import { Web3Provider } from '@ethersproject/providers'
 import { ChainId } from 'definixswap-sdk'
-import { useWeb3React as useWeb3ReactCore } from '@web3-react/core'
+import { useCaverJsReact as useCaverJsReactCore } from 'caverjs-react-core'
 // eslint-disable-next-line import/no-unresolved
-import { Web3ReactContextInterface } from '@web3-react/core/dist/types'
+import { CaverJsReactContextInterface } from 'caverjs-react-core/dist/types'
 import { useEffect, useState } from 'react'
 import { isMobile } from 'react-device-detect'
 import { injected } from '../connectors'
 import { NetworkContextName } from '../constants'
 
-export function useActiveWeb3React(): Web3ReactContextInterface<Web3Provider> & { chainId?: ChainId } {
-  const context = useWeb3ReactCore<Web3Provider>()
-  const contextNetwork = useWeb3ReactCore<Web3Provider>(NetworkContextName)
+export function useActiveWeb3React(): CaverJsReactContextInterface<Web3Provider> & { chainId?: ChainId } {
+  const context = useCaverJsReactCore<Web3Provider>()
+  const contextNetwork = useCaverJsReactCore<Web3Provider>(NetworkContextName)
   return context.active ? context : contextNetwork
 }
 
 export function useEagerConnect() {
-  const { activate, active } = useWeb3ReactCore() // specifically using useWeb3ReactCore because of what this hook does
+  const { activate, active } = useCaverJsReactCore() // specifically using useCaverJsReactCore because of what this hook does
   const [tried, setTried] = useState(false)
 
   useEffect(() => {
@@ -50,7 +50,7 @@ export function useEagerConnect() {
  * and out after checking what network theyre on
  */
 export function useInactiveListener(suppress = false) {
-  const { active, error, activate } = useWeb3ReactCore() // specifically using useWeb3React because of what this hook does
+  const { active, error, activate } = useCaverJsReactCore() // specifically using useCaverJsReact because of what this hook does
 
   useEffect(() => {
     const { ethereum } = window

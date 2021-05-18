@@ -1,5 +1,5 @@
 import React from 'react'
-import { useWeb3React } from '@web3-react/core'
+import { useCaverJsReact } from 'caverjs-react-core'
 import { Button, ButtonProps, ConnectorId } from 'uikit-dev'
 import { useWalletKlaytnModal } from 'uikit-dev/widgets/WalletKlaytnModal'
 import { injected, walletconnect } from 'connectors'

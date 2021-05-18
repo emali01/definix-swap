@@ -1,4 +1,4 @@
-import { useWeb3React } from '@web3-react/core'
+import { useCaverJsReact } from 'caverjs-react-core'
 import { bsc, injected, walletconnect } from 'connectors'
 import { allLanguages } from 'constants/localisation/languageCodes'
 import { LanguageContext } from 'hooks/LanguageContext'
@@ -13,7 +13,7 @@ import useFinixPrice from '../../hooks/useFinixPrice'
 import useAccount from '../../state/account/hooks'
 
 const Menu: React.FC = (props) => {
-  // const { account, activate, deactivate } = useWeb3React()
+  // const { account, activate, deactivate } = useCaverJsReact()
   const [account, setAccount] = useAccount()
   const { selectedLanguage, setSelectedLanguage } = useContext(LanguageContext)
   const { isDark, toggleTheme } = useTheme()
