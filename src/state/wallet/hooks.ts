@@ -36,8 +36,8 @@ export function useETHBalances(
   console.log('show me222')
 
   // const balance = useKlaytnBalance(['0xD48019251a3A60Fb036adBd99D8Cd97d37621dFC'])
-  const balance = useKlaytnBalance(['0xD48019251a3A60Fb036adBd99D8Cd97d37621dFC'])
-  console.log('balance', balance)
+  // const balance = useKlaytnBalance(['0xD48019251a3A60Fb036adBd99D8Cd97d37621dFC'])
+  // console.log('balance', balance)
 
   console.log('show me3333333')
   const results = useSingleContractMultipleData(
