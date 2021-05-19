@@ -1,5 +1,5 @@
-import { useWeb3React } from '@web3-react/core'
-import { bsc, injected, walletconnect } from 'connectors'
+import { useCaverJsReact } from 'caverjs-react-core'
+import { injected } from 'connectors'
 import { allLanguages } from 'constants/localisation/languageCodes'
 import { LanguageContext } from 'hooks/LanguageContext'
 import useGetLocalProfile from 'hooks/useGetLocalProfile'
@@ -12,7 +12,7 @@ import links from './config'
 import useFinixPrice from '../../hooks/useFinixPrice'
 
 const Menu: React.FC = (props) => {
-  const { account, activate, deactivate } = useWeb3React()
+  const { account, activate, deactivate } = useCaverJsReact()
   const { selectedLanguage, setSelectedLanguage } = useContext(LanguageContext)
   const { isDark, toggleTheme } = useTheme()
   const priceData = useGetPriceData()
@@ -25,14 +25,6 @@ const Menu: React.FC = (props) => {
       links={links}
       account={account as string}
       login={(connectorId: ConnectorId) => {
-        if (connectorId === 'walletconnect') {
-          return activate(walletconnect)
-        }
-
-        if (connectorId === 'bsc') {
-          return activate(bsc)
-        }
-
         return activate(injected)
       }}
       logout={deactivate}

@@ -4,38 +4,14 @@ import TokenPocket from './icons/TokenPocket'
 import TrustWallet from './icons/TrustWallet'
 import WalletConnect from './icons/WalletConnect'
 import BinanceChain from './icons/BinanceChain'
+import Kaikas from './icons/Kaikas'
 import { Config } from './types'
 
 const connectors: Config[] = [
   {
-    title: 'Metamask',
-    icon: Metamask,
+    title: 'Kaikas',
+    icon: Kaikas,
     connectorId: 'injected',
-  },
-  {
-    title: 'TrustWallet',
-    icon: TrustWallet,
-    connectorId: 'injected',
-  },
-  {
-    title: 'MathWallet',
-    icon: MathWallet,
-    connectorId: 'injected',
-  },
-  {
-    title: 'TokenPocket',
-    icon: TokenPocket,
-    connectorId: 'injected',
-  },
-  {
-    title: 'WalletConnect',
-    icon: WalletConnect,
-    connectorId: 'walletconnect',
-  },
-  {
-    title: 'Binance Chain Wallet',
-    icon: BinanceChain,
-    connectorId: 'bsc',
   },
 ]
 
