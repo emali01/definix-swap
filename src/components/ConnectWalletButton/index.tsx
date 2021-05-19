@@ -2,7 +2,7 @@ import React from 'react'
 import { useCaverJsReact } from 'caverjs-react-core'
 import { Button, ButtonProps, ConnectorId } from 'uikit-dev'
 import { useWalletKlaytnModal } from 'uikit-dev/widgets/WalletKlaytnModal'
-import { injected, walletconnect } from 'connectors'
+import { injected } from 'connectors'
 import useI18n from 'hooks/useI18n'
 import useAccount from 'state/account/hooks'
 

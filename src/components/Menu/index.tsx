@@ -1,5 +1,5 @@
 import { useCaverJsReact } from 'caverjs-react-core'
-import { bsc, injected, walletconnect } from 'connectors'
+import { injected } from 'connectors'
 import { allLanguages } from 'constants/localisation/languageCodes'
 import { LanguageContext } from 'hooks/LanguageContext'
 import useGetLocalProfile from 'hooks/useGetLocalProfile'
