@@ -58,10 +58,6 @@ const BodyWrapper = styled.div`
   // }
 `
 
-const Marginer = styled.div`
-  margin-top: 5rem;
-`
-
 export default function App() {
   const [selectedLanguage, setSelectedLanguage] = useState<any>(undefined)
   const [translatedLanguage, setTranslatedLanguage] = useState<any>(undefined)
@@ -155,7 +151,6 @@ export default function App() {
                       <Route component={RedirectPathToSwapOnly} />
                     </Switch>
                   </Web3ReactManager>
-                  <Marginer />
                 </BodyWrapper>
               </Menu>
             </TranslationsContext.Provider>
