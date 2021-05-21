@@ -41,7 +41,7 @@ import { Field } from '../../state/burn/actions'
 import { useUserDeadline, useUserSlippageTolerance } from '../../state/user/hooks'
 
 const OutlineCard = styled.div`
-  border: 1px solid ${({ theme }) => theme.colors.borderColor};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: ${({ theme }) => theme.radii.default};
   padding: 24px;
 `
