@@ -32,30 +32,12 @@ const BodyWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  padding: 24px;
+  padding: 48px 24px;
   align-items: center;
   justify-content: center;
   flex: 1;
   z-index: 1;
   justify-content: center;
-
-  // background-image: url('/images/group-definix.svg');
-  // background-repeat: no-repeat;
-  // background-position: bottom 24px center;
-  // background-size: 90%;
-
-  // ${({ theme }) => theme.mediaQueries.xs} {
-  //   background-size: auto;
-  // }
-
-  // ${({ theme }) => theme.mediaQueries.lg} {
-  //   background-image: url('/images/arch-${({ theme }) => (theme.isDark ? 'dark' : 'light')}.svg'),
-  //     url('/images/left-definix.svg'), url('/images/right-definix.svg');
-  //   background-repeat: no-repeat;
-  //   background-position: center 420px, 10% 230px, 90% 230px;
-  //   background-size: contain, 266px, 266px;
-  //   min-height: 90vh;
-  // }
 `
 
 export default function App() {

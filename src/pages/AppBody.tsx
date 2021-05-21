@@ -2,16 +2,24 @@ import React from 'react'
 import styled from 'styled-components'
 import { Card } from 'uikit-dev'
 
-export const BodyWrapper = styled(Card)`
+const BodyWrapper = styled(Card)`
   position: relative;
-  max-width: 436px;
-  width: 100%;
   z-index: 5;
+`
+
+const Maxwidth = styled.div`
+  width: 100%;
+  max-width: 560px;
 `
 
 /**
  * The styled container element that wraps the content of most pages and the tabs.
  */
-export default function AppBody({ children }: { children: React.ReactNode }) {
-  return <BodyWrapper isRainbow>{children}</BodyWrapper>
+export default function AppBody({ children, title }: { children: React.ReactNode; title?: React.ReactNode }) {
+  return (
+    <Maxwidth>
+      {title && title}
+      <BodyWrapper>{children}</BodyWrapper>
+    </Maxwidth>
+  )
 }
