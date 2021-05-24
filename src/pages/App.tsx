@@ -1,21 +1,22 @@
 import { Credentials, StringTranslations } from '@crowdin/crowdin-api-client'
+import { useWeb3React } from '@web3-react/core'
+import { injected } from 'connectors'
 import React, { Suspense, useEffect, useState } from 'react'
 import { HashRouter, Route, Switch } from 'react-router-dom'
 import styled from 'styled-components'
-import { useWeb3React } from '@web3-react/core'
-import { injected } from 'connectors'
+import { TwoLayoutLayout } from 'uikit-dev/components/TwoPanelLayout'
 import Menu from '../components/Menu'
 import Popups from '../components/Popups'
 import Web3ReactManager from '../components/Web3ReactManager'
 import { allLanguages, EN } from '../constants/localisation/languageCodes'
 import { LanguageContext } from '../hooks/LanguageContext'
 import { TranslationsContext } from '../hooks/TranslationsContext'
-import { RedirectDuplicateTokenIds, RedirectOldAddLiquidityPathStructure } from './AddLiquidity/redirects'
-import { RedirectOldRemoveLiquidityPathStructure } from './RemoveLiquidity/redirects'
 import AddLiquidity from './AddLiquidity'
+import { RedirectDuplicateTokenIds, RedirectOldAddLiquidityPathStructure } from './AddLiquidity/redirects'
 import Pool from './Pool'
 import PoolFinder from './PoolFinder'
 import RemoveLiquidity from './RemoveLiquidity'
+import { RedirectOldRemoveLiquidityPathStructure } from './RemoveLiquidity/redirects'
 import Swap from './Swap'
 import { RedirectPathToSwapOnly } from './Swap/redirects'
 // import WaitingPage from 'uikit-dev/components/WaitingPage'
@@ -26,18 +27,6 @@ const AppWrapper = styled.div`
   align-items: flex-start;
   // overflow-x: hidden;
   height: 100%;
-`
-
-const BodyWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  padding: 48px 24px;
-  align-items: center;
-  justify-content: center;
-  flex: 1;
-  z-index: 1;
-  justify-content: center;
 `
 
 export default function App() {
@@ -111,7 +100,7 @@ export default function App() {
           >
             <TranslationsContext.Provider value={{ translations, setTranslations }}>
               <Menu>
-                <BodyWrapper>
+                <TwoLayoutLayout>
                   <Popups />
                   <Web3ReactManager>
                     <Switch>
@@ -133,7 +122,7 @@ export default function App() {
                       <Route component={RedirectPathToSwapOnly} />
                     </Switch>
                   </Web3ReactManager>
-                </BodyWrapper>
+                </TwoLayoutLayout>
               </Menu>
             </TranslationsContext.Provider>
           </LanguageContext.Provider>

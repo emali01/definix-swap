@@ -10,6 +10,8 @@ const BodyWrapper = styled(Card)`
 const Maxwidth = styled.div`
   width: 100%;
   max-width: 560px;
+  margin: 0 auto;
+  padding: 24px 0;
 `
 
 /**
