@@ -5,7 +5,6 @@ import ConnectWalletButton from 'components/ConnectWalletButton'
 import CurrencyInputPanel from 'components/CurrencyInputPanel'
 import ExchangeTab from 'components/ExchangeTab'
 import Loader from 'components/Loader'
-import PageHeader from 'components/PageHeader'
 import ProgressSteps from 'components/ProgressSteps'
 import { AutoRow, RowBetween } from 'components/Row'
 import { LinkStyledButton } from 'components/Shared'
@@ -335,8 +334,11 @@ const Swap = () => {
                 swapErrorMessage={swapErrorMessage}
                 onDismiss={handleConfirmDismiss}
               />
-              <PageHeader title="Trade tokens in an instant" />
-              <CardBody>
+
+              <CardBody p="32px !important">
+                <Heading textAlign="center" className="mb-6">
+                  Trade tokens in an instant
+                </Heading>
                 <AutoColumn gap="md">
                   <CurrencyInputPanel
                     label={
