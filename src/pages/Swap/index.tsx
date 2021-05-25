@@ -551,9 +551,30 @@ const Swap = () => {
               SWAP HISTORY
             </Heading>
             <Card>
-              <TransactionHistoryBox date="17 Apr 2021, 15:32" />
-              <TransactionHistoryBox isFailed date="17 Apr 2021, 15:32" />
-              <TransactionHistoryBox date="17 Apr 2021, 15:32" />
+              {/* Mockup */}
+              <TransactionHistoryBox
+                firstCoin={undefined}
+                secondCoin={undefined}
+                title="Swap"
+                withText="for"
+                date="17 Apr 2021, 15:32"
+              />
+              <TransactionHistoryBox
+                firstCoin={undefined}
+                secondCoin={undefined}
+                title="Swap"
+                withText="for"
+                isFailed
+                date="17 Apr 2021, 15:32"
+              />
+              <TransactionHistoryBox
+                firstCoin={undefined}
+                secondCoin={undefined}
+                title="Swap"
+                withText="for"
+                date="17 Apr 2021, 15:32"
+              />
+              {/* End Mockup */}
             </Card>
           </MaxWidthRight>
         )}

@@ -63,7 +63,7 @@ const TransactionDeadlineSetting = () => {
         <QuestionHelper text="Your transaction will revert if it is pending for more than this long." />
       </Label>
       <Field>
-        <Input type="number" step="1" min="1" value={value} onChange={handleChange} />
+        <Input type="number" scale="lg" step="1" min="1" value={value} onChange={handleChange} />
         <Text>Minutes</Text>
       </Field>
       {error && (

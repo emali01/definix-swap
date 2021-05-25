@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { CheckmarkCircleIcon, ChevronRightIcon, Link, Text } from 'uikit-dev'
+import { CheckmarkCircleIcon, ChevronRightIcon, ErrorIcon, Link, Text } from 'uikit-dev'
 import CurrencyLogo from './CurrencyLogo'
 
 const Currency = styled.div`
@@ -18,7 +18,7 @@ const Box = styled.div`
   }
 `
 
-const TransactionHistoryBox = ({ date, isFailed = false }) => {
+const TransactionHistoryBox = ({ title, firstCoin, secondCoin, withText, date, isFailed = false }) => {
   return (
     <Box>
       <div className="flex justify-space-between">
@@ -26,19 +26,27 @@ const TransactionHistoryBox = ({ date, isFailed = false }) => {
           {date}
         </Text>
         <Text fontSize="12px" color={isFailed ? 'failure' : 'success'} className="flex align-center" bold>
-          <CheckmarkCircleIcon className="mr-2" /> {isFailed ? 'Failed' : 'Complete'}
+          {isFailed ? (
+            <>
+              <ErrorIcon className="mr-2" /> Failed
+            </>
+          ) : (
+            <>
+              <CheckmarkCircleIcon className="mr-2" /> Complete
+            </>
+          )}
         </Text>
       </div>
 
       <div className="flex align-center flex-wrap my-2">
-        <Text bold>Swap</Text>
+        <Text>{title}</Text>
         <Currency>
-          <CurrencyLogo currency={undefined} size="24px" style={{ marginRight: '8px' }} />
+          <CurrencyLogo currency={firstCoin} size="24px" style={{ marginRight: '8px' }} />
           <Text bold>0.219 FINIX</Text>
         </Currency>
-        <Text color="textSubtle">for</Text>
+        <Text color="textSubtle">{withText}</Text>
         <Currency>
-          <CurrencyLogo currency={undefined} size="24px" style={{ marginRight: '8px' }} />
+          <CurrencyLogo currency={secondCoin} size="24px" style={{ marginRight: '8px' }} />
           <Text bold>0.00985 BNB</Text>
         </Currency>
       </div>

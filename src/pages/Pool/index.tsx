@@ -7,6 +7,7 @@ import Question from 'components/QuestionHelper'
 import { RowBetween } from 'components/Row'
 import { StyledInternalLink } from 'components/Shared'
 import { Dots } from 'components/swap/styleds'
+import TransactionHistoryBox from 'components/TransactionHistoryBox'
 import TranslatedText from 'components/TranslatedText'
 import { usePairs } from 'data/Reserves'
 import { Pair } from 'definixswap-sdk'
@@ -16,7 +17,7 @@ import { Link } from 'react-router-dom'
 import { toV2LiquidityToken, useTrackedTokenPairs } from 'state/user/hooks'
 import { useTokenBalancesWithLoadingIndicator } from 'state/wallet/hooks'
 import { ThemeContext } from 'styled-components'
-import { Button, CardBody, Heading, Text } from 'uikit-dev'
+import { Button, Card, CardBody, Heading, Text } from 'uikit-dev'
 import { LeftPanel, MaxWidthLeft, MaxWidthRight, RightPanel, ShowHideButton } from 'uikit-dev/components/TwoPanelLayout'
 import { TranslateString } from 'utils/translateTextHelpers'
 import Flip from '../../uikit-dev/components/Flip'
@@ -159,7 +160,39 @@ export default function Pool() {
           }}
         />
 
-        {isShowRightPanel && <MaxWidthRight>wd</MaxWidthRight>}
+        {isShowRightPanel && (
+          <MaxWidthRight>
+            <Heading fontSize="18px !important" className="mb-3">
+              LIQUIDITY HISTORY
+            </Heading>
+            <Card>
+              {/* Mockup */}
+              <TransactionHistoryBox
+                firstCoin={undefined}
+                secondCoin={undefined}
+                title="Add Liquidity"
+                withText="and"
+                date="17 Apr 2021, 15:32"
+              />
+              <TransactionHistoryBox
+                firstCoin={undefined}
+                secondCoin={undefined}
+                title="Remove Liquidity"
+                withText="and"
+                isFailed
+                date="17 Apr 2021, 15:32"
+              />
+              <TransactionHistoryBox
+                firstCoin={undefined}
+                secondCoin={undefined}
+                title="Remove Liquidity"
+                withText="and"
+                date="17 Apr 2021, 15:32"
+              />
+              {/* End Mockup */}
+            </Card>
+          </MaxWidthRight>
+        )}
       </RightPanel>
     </TimerWrapper>
   )
