@@ -15,6 +15,7 @@ import { ArrowWrapper, BottomGrouping, SwapCallbackError, Wrapper } from 'compon
 import TradePrice from 'components/swap/TradePrice'
 import SyrupWarningModal from 'components/SyrupWarningModal'
 import TokenWarningModal from 'components/TokenWarningModal'
+import TransactionHistoryBox from 'components/TransactionHistoryBox'
 import { INITIAL_ALLOWED_SLIPPAGE } from 'constants/index'
 import { CurrencyAmount, JSBI, Token, Trade } from 'definixswap-sdk'
 import { useActiveWeb3React } from 'hooks'
@@ -28,7 +29,7 @@ import { Field } from 'state/swap/actions'
 import { useDefaultsFromURLSearch, useDerivedSwapInfo, useSwapActionHandlers, useSwapState } from 'state/swap/hooks'
 import { useExpertModeManager, useUserDeadline, useUserSlippageTolerance } from 'state/user/hooks'
 import { ThemeContext } from 'styled-components'
-import { ArrowDownIcon, Button, CardBody, Heading, IconButton, Text } from 'uikit-dev'
+import { ArrowDownIcon, Button, Card, CardBody, Heading, IconButton, Text } from 'uikit-dev'
 import { LeftPanel, MaxWidthLeft, MaxWidthRight, RightPanel, ShowHideButton } from 'uikit-dev/components/TwoPanelLayout'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { computeTradePriceBreakdown, warningSeverity } from 'utils/prices'
@@ -544,7 +545,18 @@ const Swap = () => {
           }}
         />
 
-        {isShowRightPanel && <MaxWidthRight>wd</MaxWidthRight>}
+        {isShowRightPanel && (
+          <MaxWidthRight>
+            <Heading fontSize="18px !important" className="mb-3">
+              SWAP HISTORY
+            </Heading>
+            <Card>
+              <TransactionHistoryBox date="17 Apr 2021, 15:32" />
+              <TransactionHistoryBox isFailed date="17 Apr 2021, 15:32" />
+              <TransactionHistoryBox date="17 Apr 2021, 15:32" />
+            </Card>
+          </MaxWidthRight>
+        )}
       </RightPanel>
 
       <TokenWarningModal
