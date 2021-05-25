@@ -1,5 +1,5 @@
 import AddressInputPanel from 'components/AddressInputPanel'
-import Card, { GreyCard } from 'components/Card'
+import { GreyCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import ConnectWalletButton from 'components/ConnectWalletButton'
 import CurrencyInputPanel from 'components/CurrencyInputPanel'
@@ -336,11 +336,13 @@ const Swap = () => {
               />
 
               <CardBody p="32px !important">
-                <Heading textAlign="center" className="mb-6">
+                <Heading textAlign="center" className="mb-4">
                   Trade tokens in an instant
                 </Heading>
-                <AutoColumn gap="md">
+
+                <div>
                   <CurrencyInputPanel
+                    className="mb-4"
                     label={
                       independentField === Field.OUTPUT && !showWrap && trade
                         ? 'From (estimated)'
@@ -407,29 +409,40 @@ const Swap = () => {
                     </>
                   ) : null}
 
-                  {showWrap ? null : (
-                    <Card padding=".25rem 0 0 0" borderRadius="20px">
-                      <AutoColumn gap="4px">
-                        {Boolean(trade) && (
-                          <RowBetween align="center">
-                            <Text fontSize="14px">Price</Text>
-                            <TradePrice
-                              price={trade?.executionPrice}
-                              showInverted={showInverted}
-                              setShowInverted={setShowInverted}
-                            />
-                          </RowBetween>
-                        )}
-                        {allowedSlippage !== INITIAL_ALLOWED_SLIPPAGE && (
-                          <RowBetween align="center">
-                            <Text fontSize="14px">Slippage Tolerance</Text>
-                            <Text fontSize="14px">{allowedSlippage / 100}%</Text>
-                          </RowBetween>
-                        )}
-                      </AutoColumn>
-                    </Card>
-                  )}
-                </AutoColumn>
+                  {showWrap
+                    ? null
+                    : (Boolean(trade) || allowedSlippage !== INITIAL_ALLOWED_SLIPPAGE) && (
+                        <div className="flex mt-5">
+                          {Boolean(trade) && (
+                            <div className="flex flex-wrap align-baseline justify-space-between col-6">
+                              <Text fontSize="14px" color="textSubtle">
+                                Price Rate
+                              </Text>
+                              <TradePrice
+                                price={trade?.executionPrice}
+                                showInverted={showInverted}
+                                setShowInverted={setShowInverted}
+                              />
+                            </div>
+                          )}
+                          {allowedSlippage !== INITIAL_ALLOWED_SLIPPAGE && (
+                            <div className="flex flex-wrap align-baseline justify-space-between col-6 pl-6">
+                              <Text fontSize="14px" color="textSubtle">
+                                Slippage Tolerance
+                              </Text>
+                              <Text fontSize="14px" textAlign="right" bold>
+                                {allowedSlippage / 100}%
+                              </Text>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                </div>
+              </CardBody>
+
+              <div className="pa-6 bd-t">
+                <AdvancedSwapDetailsDropdown trade={trade} />
+
                 <BottomGrouping>
                   {!account ? (
                     <ConnectWalletButton fullWidth />
@@ -474,6 +487,7 @@ const Swap = () => {
                             })
                           }
                         }}
+                        radii="card"
                         style={{ width: '48%' }}
                         id="swap-button"
                         disabled={
@@ -502,6 +516,7 @@ const Swap = () => {
                         }
                       }}
                       id="swap-button"
+                      radii="card"
                       disabled={!isValid || (priceImpactSeverity > 3 && !isExpertMode) || !!swapCallbackError}
                       variant={isValid && priceImpactSeverity > 2 && !swapCallbackError ? 'danger' : 'primary'}
                       fullWidth
@@ -515,8 +530,7 @@ const Swap = () => {
                   {showApproveFlow && <ProgressSteps steps={[approval === ApprovalState.APPROVED]} />}
                   {isExpertMode && swapErrorMessage ? <SwapCallbackError error={swapErrorMessage} /> : null}
                 </BottomGrouping>
-                <AdvancedSwapDetailsDropdown trade={trade} />
-              </CardBody>
+              </div>
             </Wrapper>
           </AppBody>
         </MaxWidthLeft>

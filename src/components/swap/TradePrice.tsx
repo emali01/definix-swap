@@ -1,7 +1,6 @@
-import React from 'react'
 import { Price } from 'definixswap-sdk'
-import { SyncAltIcon, Text } from 'uikit-dev'
-import { StyledBalanceMaxMini } from './styleds'
+import React from 'react'
+import { IconButton, SyncAltIcon, Text } from 'uikit-dev'
 
 interface TradePriceProps {
   price?: Price
@@ -13,22 +12,47 @@ export default function TradePrice({ price, showInverted, setShowInverted }: Tra
   const formattedPrice = showInverted ? price?.toSignificant(6) : price?.invert()?.toSignificant(6)
 
   const show = Boolean(price?.baseCurrency && price?.quoteCurrency)
-  const label = showInverted
-    ? `${price?.quoteCurrency?.symbol} per ${price?.baseCurrency?.symbol}`
-    : `${price?.baseCurrency?.symbol} per ${price?.quoteCurrency?.symbol}`
+  const label = showInverted ? (
+    <>
+      <Text fontSize="14px" bold>
+        {price?.quoteCurrency?.symbol}
+      </Text>
+      <Text fontSize="14px" color="textSubtle" className="mx-1">
+        per
+      </Text>
+      <Text fontSize="14px" bold>
+        {price?.baseCurrency?.symbol}
+      </Text>
+    </>
+  ) : (
+    <>
+      <Text fontSize="14px" bold>
+        {price?.baseCurrency?.symbol}
+      </Text>
+      <Text fontSize="14px" color="textSubtle" className="mx-1">
+        per
+      </Text>
+      <Text fontSize="14px" bold>
+        {price?.quoteCurrency?.symbol}
+      </Text>
+    </>
+  )
 
   return (
-    <Text fontSize="14px" fontWeight="600" style={{ justifyContent: 'center', alignItems: 'center', display: 'flex' }}>
+    <div className="flex align-center justify-end flex-wrap">
       {show ? (
         <>
-          {formattedPrice ?? '-'} {label}
-          <StyledBalanceMaxMini onClick={() => setShowInverted(!showInverted)}>
-            <SyncAltIcon width="20px" color="primary" />
-          </StyledBalanceMaxMini>
+          <Text fontSize="14px" className="mr-1" bold>
+            {formattedPrice ?? '-'}
+          </Text>
+          {label}
+          <IconButton size="xs" onClick={() => setShowInverted(!showInverted)} variant="tertiary" className="ml-2">
+            <SyncAltIcon width="14px" color="primary" />
+          </IconButton>
         </>
       ) : (
         '-'
       )}
-    </Text>
+    </div>
   )
 }

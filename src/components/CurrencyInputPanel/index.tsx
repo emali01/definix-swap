@@ -59,6 +59,7 @@ interface CurrencyInputPanelProps {
   otherCurrency?: Currency | null
   id: string
   showCommonBases?: boolean
+  className?: string
   onMax?: () => void
   onUserInput: (value: string) => void
   onCurrencySelect?: (currency: Currency) => void
@@ -76,6 +77,7 @@ export default function CurrencyInputPanel({
   otherCurrency,
   id,
   showCommonBases,
+  className,
   onMax,
   onUserInput,
   onCurrencySelect,
@@ -90,7 +92,7 @@ export default function CurrencyInputPanel({
 
   return (
     <>
-      <Container id={id} hideInput={hideInput}>
+      <Container id={id} hideInput={hideInput} className={className}>
         {!hideInput && (
           <div className="flex justify-space-between mb-1">
             <Text fontSize="14px" color="textSubtle">
@@ -98,8 +100,9 @@ export default function CurrencyInputPanel({
             </Text>
             {account && (
               <Text fontSize="14px" color="textSubtle">
+                Balance:{' '}
                 {!hideBalance && !!currency && selectedCurrencyBalance
-                  ? `Balance: ${selectedCurrencyBalance?.toSignificant(6)}`
+                  ? selectedCurrencyBalance?.toSignificant(6)
                   : ' -'}
               </Text>
             )}
