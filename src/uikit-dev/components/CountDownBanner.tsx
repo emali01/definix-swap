@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react'
+/* eslint-disable react/require-default-props */
+
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Text } from './Text'
 
@@ -27,25 +29,38 @@ const MaxWidth = styled.div`
   margin-right: auto;
 `
 
+interface CountDownBannerProps {
+  logo?: any
+  title?: string
+  detail?: string
+  highlight?: string
+  topTitle?: string
+  topValue?: string
+  endTime?: any
+  button?: any
+  disableCountdown?: boolean
+}
+
 const CountDownBanner = ({
-  logo = '',
-  title = '',
-  detail = '',
-  topTitle = '',
-  topValue = '',
+  logo,
+  title,
+  detail,
+  highlight,
+  topTitle,
+  topValue,
   endTime,
-  button = {},
-}) => {
-  // const CountDownBanner = ({ logo = undefined, title = '', detail = '', endTime, button = undefined }) => {
+  button,
+  disableCountdown = false
+}: CountDownBannerProps) => {
   const currentTime = new Date().getTime()
   const [timer, setTime] = useState({
     days: 0,
     hours: 0,
     min: 0,
-    sec: 0,
+    sec: 0
   })
 
-  const calculateCountdown = (endDate) => {
+  const calculateCountdown = endDate => {
     let diff = (new Date(endDate).getTime() - new Date().getTime()) / 1000
 
     // clear countdown when date is reached
@@ -57,7 +72,7 @@ const CountDownBanner = ({
       hours: 0,
       min: 0,
       sec: 0,
-      millisec: 0,
+      millisec: 0
     }
 
     // calculate time difference between now and expected date
@@ -85,7 +100,7 @@ const CountDownBanner = ({
     return timeLeft
   }
 
-  const addLeadingZeros = (value) => {
+  const addLeadingZeros = value => {
     let val = String(value)
     while (val.length < 2) {
       val = `0${val}`
@@ -106,14 +121,15 @@ const CountDownBanner = ({
     return () => clearInterval(interval)
   }, [endTime])
 
-  return currentTime < endTime ? (
+  return currentTime < endTime || disableCountdown ? (
     <Banner>
       <MaxWidth className="flex align-center justify-center flex-wrap">
         {logo && <img src={logo} alt="" />}
 
         <Text color="white" className="mr-2" textAlign="center">
           {title && <strong className="mr-1">{title}</strong>}
-          {detail}
+          {detail && <span className="m-1">{detail}</span>}
+          {highlight && <strong style={{ color: '#ffd157' }}>{highlight}</strong>}
         </Text>
 
         {endTime && (
@@ -123,15 +139,20 @@ const CountDownBanner = ({
             )}:${addLeadingZeros(timer.sec)}`}
           </Text>
         )}
-        <>
-          <Text color="white" textAlign="center">
-            <strong className="mr-1">{topTitle}</strong>
+
+        {topTitle && (
+          <Text color="white" textAlign="center" bold>
+            {topTitle}
           </Text>
-          <Text bold color="#ffd157" fontSize="24px" className="mr-2">
+        )}
+
+        {topValue && (
+          <Text color="#ffd157" textAlign="center" bold fontSize="24px" className="mr-2">
             {topValue}
           </Text>
-          {button}
-        </>
+        )}
+
+        {button}
       </MaxWidth>
     </Banner>
   ) : (

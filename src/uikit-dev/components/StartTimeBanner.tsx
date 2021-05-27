@@ -1,3 +1,5 @@
+/* eslint-disable react/require-default-props */
+
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { Text } from './Text'
@@ -27,21 +29,23 @@ const MaxWidth = styled.div`
   margin-right: auto;
 `
 
-const StartTimeBanner = ({
-  logo = '',
-  title = '',
-  detail = '',
-  topTitle = '',
-  topValue = '',
-  endTime,
-  button = {},
-}) => {
+interface StartTimeBannerProps {
+  logo?: any
+  title?: string
+  detail?: string
+  topTitle?: string
+  topValue?: string
+  endTime?: any
+  button?: any
+}
+
+const StartTimeBanner = ({ logo, title, detail, topTitle, topValue, endTime, button }: StartTimeBannerProps) => {
   const currentTime = new Date().getTime()
   const [timer, setTime] = useState({
     days: 0,
     hours: 0,
     min: 0,
-    sec: 0,
+    sec: 0
   })
 
   const calculateCountdown = () => {
@@ -62,7 +66,7 @@ const StartTimeBanner = ({
       hours: 0,
       min: 0,
       sec: 0,
-      millisec: 0,
+      millisec: 0
     }
 
     timeLeft.days = Math.floor(diff / 86400)
@@ -76,7 +80,7 @@ const StartTimeBanner = ({
     return timeLeft
   }
 
-  const addLeadingZeros = (value) => {
+  const addLeadingZeros = value => {
     let val = String(value)
     while (val.length < 2) {
       val = `0${val}`
