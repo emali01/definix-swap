@@ -8,6 +8,8 @@ import exploreClick from 'uikit-dev/images/Menu-Icon/explore-click.png'
 import explore from 'uikit-dev/images/Menu-Icon/explore.png'
 import farmClick from 'uikit-dev/images/Menu-Icon/farm-click.png'
 import farm from 'uikit-dev/images/Menu-Icon/farm.png'
+import gitbookClick from 'uikit-dev/images/Menu-Icon/Gitbook-click.png'
+import gitbook from 'uikit-dev/images/Menu-Icon/Gitbook.png'
 import liquidityClick from 'uikit-dev/images/Menu-Icon/liquidity-click.png'
 import liquidity from 'uikit-dev/images/Menu-Icon/liquidity.png'
 import myFundClick from 'uikit-dev/images/Menu-Icon/my-funds-click.png'
@@ -122,6 +124,15 @@ const config: MenuEntry[] = [
     group: 'tool',
     notHighlight: true,
     newTab: false,
+  },
+  {
+    label: 'Gitbook',
+    icon: gitbookClick,
+    iconActive: gitbook,
+    href: 'https://app.gitbook.com/@sixnetwork/s/definix/',
+    group: 'info',
+    notHighlight: true,
+    newTab: true,
   },
   {
     label: 'Partnership',
