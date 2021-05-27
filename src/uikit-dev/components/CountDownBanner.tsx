@@ -1,3 +1,5 @@
+/* eslint-disable react/require-default-props */
+
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Text } from './Text'
@@ -133,7 +135,7 @@ const CountDownBanner = ({
         {endTime && (
           <Text bold color="#ffd157" fontSize="24px" className="mr-2" textAlign="center">
             {`${addLeadingZeros(timer.days)}:${addLeadingZeros(timer.hours)}:${addLeadingZeros(
-              timer.min
+              timer.min,
             )}:${addLeadingZeros(timer.sec)}`}
           </Text>
         )}

@@ -1,3 +1,5 @@
+/* eslint-disable react/require-default-props */
+
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { Text } from './Text'
@@ -111,7 +113,7 @@ const StartTimeBanner = ({ logo, title, detail, topTitle, topValue, endTime, but
         {endTime && (
           <Text bold color="#ffd157" fontSize="24px" textAlign="center">
             {`${addLeadingZeros(timer.days)}:${addLeadingZeros(timer.hours)}:${addLeadingZeros(
-              timer.min
+              timer.min,
             )}:${addLeadingZeros(timer.sec)}`}
           </Text>
         )}
