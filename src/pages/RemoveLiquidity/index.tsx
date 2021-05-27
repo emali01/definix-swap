@@ -1,55 +1,42 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react'
-import styled, { ThemeContext } from 'styled-components'
+import { BigNumber } from '@ethersproject/bignumber'
 import { splitSignature } from '@ethersproject/bytes'
 import { Contract } from '@ethersproject/contracts'
 import { TransactionResponse } from '@ethersproject/providers'
+import { BorderCard } from 'components/Card'
+import ConnectWalletButton from 'components/ConnectWalletButton'
 import { Currency, currencyEquals, ETHER, Percent, WETH } from 'definixswap-sdk'
-import { Button, Flex, Text } from 'uikit-dev'
+import React, { useCallback, useContext, useMemo, useState } from 'react'
 import { ArrowDown, Plus } from 'react-feather'
 import { RouteComponentProps } from 'react-router'
-
-import { BigNumber } from '@ethersproject/bignumber'
-import ConnectWalletButton from 'components/ConnectWalletButton'
+import { ThemeContext } from 'styled-components'
+import { Button, CardBody, Flex, Text } from 'uikit-dev'
+import { LeftPanel, MaxWidthLeft } from 'uikit-dev/components/TwoPanelLayout'
 import { AutoColumn, ColumnCenter } from '../../components/Column'
-import TransactionConfirmationModal, { ConfirmationModalContent } from '../../components/TransactionConfirmationModal'
 import CurrencyInputPanel from '../../components/CurrencyInputPanel'
+import CurrencyLogo from '../../components/CurrencyLogo'
 import DoubleCurrencyLogo from '../../components/DoubleLogo'
 import { AddRemoveTabs } from '../../components/NavigationTabs'
 import { MinimalPositionCard } from '../../components/PositionCard'
 import { RowBetween, RowFixed } from '../../components/Row'
-
+import { StyledInternalLink } from '../../components/Shared'
 import Slider from '../../components/Slider'
-import CurrencyLogo from '../../components/CurrencyLogo'
+import { Dots } from '../../components/swap/styleds'
+import TransactionConfirmationModal, { ConfirmationModalContent } from '../../components/TransactionConfirmationModal'
 import { ROUTER_ADDRESS } from '../../constants'
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrency } from '../../hooks/Tokens'
+import { ApprovalState, useApproveCallback } from '../../hooks/useApproveCallback'
 import { usePairContract } from '../../hooks/useContract'
-
+import { Field } from '../../state/burn/actions'
+import { useBurnActionHandlers, useBurnState, useDerivedBurnInfo } from '../../state/burn/hooks'
 import { useTransactionAdder } from '../../state/transactions/hooks'
-import { StyledInternalLink } from '../../components/Shared'
+import { useUserDeadline, useUserSlippageTolerance } from '../../state/user/hooks'
 import { calculateGasMargin, calculateSlippageAmount, getRouterContract } from '../../utils'
 import { currencyId } from '../../utils/currencyId'
 import useDebouncedChangeHandler from '../../utils/useDebouncedChangeHandler'
 import { wrappedCurrency } from '../../utils/wrappedCurrency'
 import AppBody from '../AppBody'
 import { ClickableText, Wrapper } from '../Pool/styleds'
-import { useApproveCallback, ApprovalState } from '../../hooks/useApproveCallback'
-import { Dots } from '../../components/swap/styleds'
-import { useBurnActionHandlers, useDerivedBurnInfo, useBurnState } from '../../state/burn/hooks'
-
-import { Field } from '../../state/burn/actions'
-import { useUserDeadline, useUserSlippageTolerance } from '../../state/user/hooks'
-
-const OutlineCard = styled.div`
-  border: 1px solid ${({ theme }) => theme.colors.borderColor};
-  border-radius: ${({ theme }) => theme.radii.default};
-  padding: 24px;
-`
-
-const Body = styled.div`
-  padding-left: 24px;
-  padding-right: 24px;
-`
 
 export default function RemoveLiquidity({
   history,
@@ -442,28 +429,29 @@ export default function RemoveLiquidity({
   )
 
   return (
-    <>
-      <AppBody>
-        <AddRemoveTabs adding={false} />
-        <Wrapper className="mt-4">
-          <TransactionConfirmationModal
-            isOpen={showConfirm}
-            onDismiss={handleDismissConfirmation}
-            attemptingTxn={attemptingTxn}
-            hash={txHash || ''}
-            content={() => (
-              <ConfirmationModalContent
-                title="You will receive"
-                onDismiss={handleDismissConfirmation}
-                topContent={modalHeader}
-                bottomContent={modalBottom}
-              />
-            )}
-            pendingText={pendingText}
-          />
-          <AutoColumn gap="md">
-            <Body>
-              <OutlineCard>
+    <LeftPanel isShowRightPanel={false}>
+      <MaxWidthLeft>
+        <AppBody>
+          <AddRemoveTabs adding={false} />
+
+          <Wrapper>
+            <TransactionConfirmationModal
+              isOpen={showConfirm}
+              onDismiss={handleDismissConfirmation}
+              attemptingTxn={attemptingTxn}
+              hash={txHash || ''}
+              content={() => (
+                <ConfirmationModalContent
+                  title="You will receive"
+                  onDismiss={handleDismissConfirmation}
+                  topContent={modalHeader}
+                  bottomContent={modalBottom}
+                />
+              )}
+              pendingText={pendingText}
+            />
+            <CardBody p="32px !important">
+              <BorderCard className="mb-4">
                 <AutoColumn>
                   <RowBetween>
                     <Text>Amount</Text>
@@ -504,15 +492,15 @@ export default function RemoveLiquidity({
                     </>
                   )}
                 </AutoColumn>
-              </OutlineCard>
-            </Body>
-            {!showDetailed && (
-              <>
-                <ColumnCenter>
-                  <ArrowDown size="16" color={theme.colors.textSubtle} />
-                </ColumnCenter>
-                <Body>
-                  <OutlineCard>
+              </BorderCard>
+
+              {!showDetailed && (
+                <>
+                  <ColumnCenter className="mb-4">
+                    <ArrowDown size="16" color={theme.colors.textSubtle} />
+                  </ColumnCenter>
+
+                  <BorderCard>
                     <AutoColumn gap="10px">
                       <RowBetween>
                         <Text fontSize="24px">{formattedAmounts[Field.CURRENCY_A] || '-'}</Text>
@@ -554,11 +542,10 @@ export default function RemoveLiquidity({
                         </RowBetween>
                       ) : null}
                     </AutoColumn>
-                  </OutlineCard>
-                </Body>
-              </>
-            )}
-            <Body style={{ paddingBottom: '24px' }}>
+                  </BorderCard>
+                </>
+              )}
+
               {showDetailed && (
                 <>
                   <CurrencyInputPanel
@@ -572,10 +559,13 @@ export default function RemoveLiquidity({
                     currency={pair?.liquidityToken}
                     pair={pair}
                     id="liquidity-amount"
+                    className="mb-4"
                   />
-                  <ColumnCenter>
+
+                  <ColumnCenter className="mb-4">
                     <ArrowDown size="16" color={theme.colors.textSubtle} />
                   </ColumnCenter>
+
                   <CurrencyInputPanel
                     hideBalance
                     value={formattedAmounts[Field.CURRENCY_A]}
@@ -586,10 +576,13 @@ export default function RemoveLiquidity({
                     label="Output"
                     onCurrencySelect={handleSelectCurrencyA}
                     id="remove-liquidity-tokena"
+                    className="mb-4"
                   />
-                  <ColumnCenter>
+
+                  <ColumnCenter className="mb-4">
                     <Plus size="16" color={theme.colors.textSubtle} />
                   </ColumnCenter>
+
                   <CurrencyInputPanel
                     hideBalance
                     value={formattedAmounts[Field.CURRENCY_B]}
@@ -603,8 +596,9 @@ export default function RemoveLiquidity({
                   />
                 </>
               )}
+
               {pair && (
-                <div style={{ padding: '24px' }}>
+                <div className="mt-4">
                   <Flex justifyContent="space-between" mb="8px">
                     Price:
                     <div>
@@ -619,51 +613,52 @@ export default function RemoveLiquidity({
                   </Flex>
                 </div>
               )}
-              <div style={{ position: 'relative' }}>
-                {!account ? (
-                  <ConnectWalletButton fullWidth />
-                ) : (
-                  <RowBetween>
-                    <Button
-                      onClick={onAttemptToApprove}
-                      variant={approval === ApprovalState.APPROVED || signatureData !== null ? 'success' : 'primary'}
-                      disabled={approval !== ApprovalState.NOT_APPROVED || signatureData !== null}
-                      mr="8px"
-                    >
-                      {approval === ApprovalState.PENDING ? (
-                        <Dots>Approving</Dots>
-                      ) : approval === ApprovalState.APPROVED || signatureData !== null ? (
-                        'Approved'
-                      ) : (
-                        'Approve'
-                      )}
-                    </Button>
-                    <Button
-                      onClick={() => {
-                        setShowConfirm(true)
-                      }}
-                      disabled={!isValid || (signatureData === null && approval !== ApprovalState.APPROVED)}
-                      variant={
-                        !isValid && !!parsedAmounts[Field.CURRENCY_A] && !!parsedAmounts[Field.CURRENCY_B]
-                          ? 'danger'
-                          : 'primary'
-                      }
-                    >
-                      {error || 'Remove'}
-                    </Button>
-                  </RowBetween>
-                )}
-              </div>
-            </Body>
-          </AutoColumn>
-        </Wrapper>
-      </AppBody>
+            </CardBody>
 
-      {pair ? (
-        <AutoColumn style={{ minWidth: '20rem', marginTop: '1rem' }}>
-          <MinimalPositionCard showUnwrapped={oneCurrencyIsWETH} pair={pair} />
-        </AutoColumn>
-      ) : null}
-    </>
+            <div className="pa-6 bd-t">
+              {!account ? (
+                <ConnectWalletButton fullWidth />
+              ) : (
+                <RowBetween>
+                  <Button
+                    onClick={onAttemptToApprove}
+                    variant={approval === ApprovalState.APPROVED || signatureData !== null ? 'success' : 'primary'}
+                    disabled={approval !== ApprovalState.NOT_APPROVED || signatureData !== null}
+                    mr="8px"
+                  >
+                    {approval === ApprovalState.PENDING ? (
+                      <Dots>Approving</Dots>
+                    ) : approval === ApprovalState.APPROVED || signatureData !== null ? (
+                      'Approved'
+                    ) : (
+                      'Approve'
+                    )}
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      setShowConfirm(true)
+                    }}
+                    disabled={!isValid || (signatureData === null && approval !== ApprovalState.APPROVED)}
+                    variant={
+                      !isValid && !!parsedAmounts[Field.CURRENCY_A] && !!parsedAmounts[Field.CURRENCY_B]
+                        ? 'danger'
+                        : 'primary'
+                    }
+                  >
+                    {error || 'Remove'}
+                  </Button>
+                </RowBetween>
+              )}
+            </div>
+          </Wrapper>
+
+          {pair ? (
+            <div className="pa-6 bd-t">
+              <MinimalPositionCard showUnwrapped={oneCurrencyIsWETH} pair={pair} />
+            </div>
+          ) : null}
+        </AppBody>
+      </MaxWidthLeft>
+    </LeftPanel>
   )
 }

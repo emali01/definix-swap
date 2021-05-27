@@ -6,9 +6,9 @@ import ConnectWalletButton from 'components/ConnectWalletButton'
 import CurrencyInputPanel from 'components/CurrencyInputPanel'
 import DoubleCurrencyLogo from 'components/DoubleLogo'
 import { AddRemoveTabs } from 'components/NavigationTabs'
-import Pane from 'components/Pane'
 import { MinimalPositionCard } from 'components/PositionCard'
 import Row, { RowBetween, RowFlat } from 'components/Row'
+import { Dots } from 'components/swap/styleds'
 import TransactionConfirmationModal, { ConfirmationModalContent } from 'components/TransactionConfirmationModal'
 import { PairState } from 'data/Reserves'
 import { Currency, currencyEquals, ETHER, TokenAmount, WETH } from 'definixswap-sdk'
@@ -21,14 +21,15 @@ import { Field } from 'state/mint/actions'
 import { useDerivedMintInfo, useMintActionHandlers, useMintState } from 'state/mint/hooks'
 import { useTransactionAdder } from 'state/transactions/hooks'
 import { useIsExpertMode, useUserDeadline, useUserSlippageTolerance } from 'state/user/hooks'
-import { AddIcon, Button, CardBody, Heading, Text as UIKitText } from 'uikit-dev'
+import { AddIcon, Button, CardBody, Text, Text as UIKitText } from 'uikit-dev'
+import { LeftPanel, MaxWidthLeft } from 'uikit-dev/components/TwoPanelLayout'
 import { calculateGasMargin, calculateSlippageAmount, getRouterContract } from 'utils'
 import { currencyId } from 'utils/currencyId'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { wrappedCurrency } from 'utils/wrappedCurrency'
 import { ROUTER_ADDRESS } from '../../constants'
 import AppBody from '../AppBody'
-import { Dots, Wrapper } from '../Pool/styleds'
+import { Wrapper } from '../Pool/styleds'
 import { ConfirmAddModalBottom } from './ConfirmAddModalBottom'
 import { PoolPriceBar } from './PoolPriceBar'
 
@@ -283,84 +284,86 @@ export default function AddLiquidity({
   }, [onFieldAInput, txHash])
 
   return (
-    <>
-      {/* <CardNav activeIndex={1} /> */}
+    <LeftPanel isShowRightPanel={false}>
+      <MaxWidthLeft>
+        <AppBody>
+          <AddRemoveTabs adding />
 
-      <Heading as="h1" fontSize="32px !important" className="my-6">
-        Liquidity
-      </Heading>
-
-      <AppBody>
-        <AddRemoveTabs adding />
-        <Wrapper>
-          <TransactionConfirmationModal
-            isOpen={showConfirm}
-            onDismiss={handleDismissConfirmation}
-            attemptingTxn={attemptingTxn}
-            hash={txHash}
-            content={() => (
-              <ConfirmationModalContent
-                title={noLiquidity ? 'You are creating a pool' : 'You will receive'}
-                onDismiss={handleDismissConfirmation}
-                topContent={modalHeader}
-                bottomContent={modalBottom}
-              />
-            )}
-            pendingText={pendingText}
-          />
-          <CardBody>
-            <AutoColumn gap="20px">
-              {noLiquidity && (
-                <ColumnCenter>
-                  <Pane>
-                    <AutoColumn gap="12px">
-                      <UIKitText>You are the first liquidity provider.</UIKitText>
-                      <UIKitText>The ratio of tokens you add will set the price of this pool.</UIKitText>
-                      <UIKitText>Once you are happy with the rate click supply to review.</UIKitText>
-                    </AutoColumn>
-                  </Pane>
-                </ColumnCenter>
+          <Wrapper>
+            <TransactionConfirmationModal
+              isOpen={showConfirm}
+              onDismiss={handleDismissConfirmation}
+              attemptingTxn={attemptingTxn}
+              hash={txHash}
+              content={() => (
+                <ConfirmationModalContent
+                  title={noLiquidity ? 'You are creating a pool' : 'You will receive'}
+                  onDismiss={handleDismissConfirmation}
+                  topContent={modalHeader}
+                  bottomContent={modalBottom}
+                />
               )}
-              <CurrencyInputPanel
-                value={formattedAmounts[Field.CURRENCY_A]}
-                onUserInput={onFieldAInput}
-                onMax={() => {
-                  onFieldAInput(maxAmounts[Field.CURRENCY_A]?.toExact() ?? '')
-                }}
-                onCurrencySelect={handleCurrencyASelect}
-                showMaxButton={!atMaxAmounts[Field.CURRENCY_A]}
-                currency={currencies[Field.CURRENCY_A]}
-                id="add-liquidity-input-tokena"
-                showCommonBases={false}
-              />
-              <ColumnCenter>
-                <AddIcon color="textSubtle" />
-              </ColumnCenter>
-              <CurrencyInputPanel
-                value={formattedAmounts[Field.CURRENCY_B]}
-                onUserInput={onFieldBInput}
-                onCurrencySelect={handleCurrencyBSelect}
-                onMax={() => {
-                  onFieldBInput(maxAmounts[Field.CURRENCY_B]?.toExact() ?? '')
-                }}
-                showMaxButton={!atMaxAmounts[Field.CURRENCY_B]}
-                currency={currencies[Field.CURRENCY_B]}
-                id="add-liquidity-input-tokenb"
-                showCommonBases={false}
-              />
+              pendingText={pendingText}
+            />
+            <CardBody p="32px !important">
+              <div>
+                {noLiquidity && (
+                  <BorderCard className="mb-4">
+                    <AutoColumn gap="12px">
+                      <Text>You are the first liquidity provider.</Text>
+                      <Text>The ratio of tokens you add will set the price of this pool.</Text>
+                      <Text>Once you are happy with the rate click supply to review.</Text>
+                    </AutoColumn>
+                  </BorderCard>
+                )}
+
+                <CurrencyInputPanel
+                  value={formattedAmounts[Field.CURRENCY_A]}
+                  onUserInput={onFieldAInput}
+                  onMax={() => {
+                    onFieldAInput(maxAmounts[Field.CURRENCY_A]?.toExact() ?? '')
+                  }}
+                  onCurrencySelect={handleCurrencyASelect}
+                  showMaxButton={!atMaxAmounts[Field.CURRENCY_A]}
+                  currency={currencies[Field.CURRENCY_A]}
+                  id="add-liquidity-input-tokena"
+                  showCommonBases={false}
+                  className="mb-4"
+                />
+
+                <ColumnCenter>
+                  <AddIcon color="textSubtle" />
+                </ColumnCenter>
+
+                <CurrencyInputPanel
+                  value={formattedAmounts[Field.CURRENCY_B]}
+                  onUserInput={onFieldBInput}
+                  onCurrencySelect={handleCurrencyBSelect}
+                  onMax={() => {
+                    onFieldBInput(maxAmounts[Field.CURRENCY_B]?.toExact() ?? '')
+                  }}
+                  showMaxButton={!atMaxAmounts[Field.CURRENCY_B]}
+                  currency={currencies[Field.CURRENCY_B]}
+                  id="add-liquidity-input-tokenb"
+                  showCommonBases={false}
+                />
+              </div>
+            </CardBody>
+
+            <div className="pa-6 bd-t">
               {currencies[Field.CURRENCY_A] && currencies[Field.CURRENCY_B] && pairState !== PairState.INVALID && (
-                <div>
-                  <UIKitText style={{ fontWeight: 600 }} color="textSubtle" fontSize="12px" mb="2px">
+                <div className="mb-5">
+                  <Text color="textSubtle" fontSize="14px" className="mb-1">
                     {noLiquidity ? 'Initial Prices and Pool Share' : 'Prices and Pool Share'}
-                  </UIKitText>
-                  <Pane>
+                  </Text>
+                  <BorderCard>
                     <PoolPriceBar
                       currencies={currencies}
                       poolTokenPercentage={poolTokenPercentage}
                       noLiquidity={noLiquidity}
                       price={price}
                     />
-                  </Pane>
+                  </BorderCard>
                 </div>
               )}
 
@@ -379,6 +382,7 @@ export default function AddLiquidity({
                             onClick={approveACallback}
                             disabled={approvalA === ApprovalState.PENDING}
                             style={{ width: approvalB !== ApprovalState.APPROVED ? '48%' : '100%' }}
+                            radii="card"
                           >
                             {approvalA === ApprovalState.PENDING ? (
                               <Dots>Approving {currencies[Field.CURRENCY_A]?.symbol}</Dots>
@@ -392,6 +396,7 @@ export default function AddLiquidity({
                             onClick={approveBCallback}
                             disabled={approvalB === ApprovalState.PENDING}
                             style={{ width: approvalA !== ApprovalState.APPROVED ? '48%' : '100%' }}
+                            radii="card"
                           >
                             {approvalB === ApprovalState.PENDING ? (
                               <Dots>Approving {currencies[Field.CURRENCY_B]?.symbol}</Dots>
@@ -417,20 +422,22 @@ export default function AddLiquidity({
                         : 'primary'
                     }
                     fullWidth
+                    radii="card"
                   >
                     {error ?? 'Supply'}
                   </Button>
                 </AutoColumn>
               )}
-            </AutoColumn>
-          </CardBody>
-        </Wrapper>
-      </AppBody>
-      {pair && !noLiquidity && pairState !== PairState.INVALID ? (
-        <AutoColumn style={{ minWidth: '20rem', marginTop: '1rem' }}>
-          <MinimalPositionCard showUnwrapped={oneCurrencyIsWETH} pair={pair} />
-        </AutoColumn>
-      ) : null}
-    </>
+            </div>
+
+            {pair && !noLiquidity && pairState !== PairState.INVALID ? (
+              <div className="pa-6 bd-t">
+                <MinimalPositionCard showUnwrapped={oneCurrencyIsWETH} pair={pair} />
+              </div>
+            ) : null}
+          </Wrapper>
+        </AppBody>
+      </MaxWidthLeft>
+    </LeftPanel>
   )
 }
