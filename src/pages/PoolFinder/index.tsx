@@ -67,21 +67,13 @@ export default function PoolFinder() {
     setShowSearch(false)
   }, [setShowSearch])
 
-  const prerequisiteMessage = (
-    <BorderCard padding="24px">
-      <Text style={{ textAlign: 'center' }}>
-        {!account ? 'Connect to a wallet to find pools' : 'Select a token to find your liquidity.'}
-      </Text>
-    </BorderCard>
-  )
-
   return (
     <LeftPanel isShowRightPanel={false}>
       <MaxWidthLeft>
         <AppBody>
           <FindPoolTabs />
-          <CardBody>
-            <AutoColumn gap="md">
+          <CardBody p="32px !important">
+            <div className="mb-6">
               <Button
                 onClick={() => {
                   setShowSearch(true)
@@ -90,6 +82,8 @@ export default function PoolFinder() {
                 startIcon={currency0 ? <CurrencyLogo currency={currency0} style={{ marginRight: '.5rem' }} /> : null}
                 endIcon={<ChevronDownIcon width="24px" color="white" />}
                 fullWidth
+                radii="card"
+                className="mb-4"
               >
                 {currency0 ? currency0.symbol : <TranslatedText translationId={82}>Select a Token</TranslatedText>}
               </Button>
@@ -103,69 +97,74 @@ export default function PoolFinder() {
                   setShowSearch(true)
                   setActiveField(Fields.TOKEN1)
                 }}
-                className="mb-2"
+                className="mt-4"
                 startIcon={currency1 ? <CurrencyLogo currency={currency1} style={{ marginRight: '.5rem' }} /> : null}
                 endIcon={<ChevronDownIcon width="24px" color="white" />}
                 fullWidth
+                radii="card"
               >
                 {currency1 ? currency1.symbol : <TranslatedText translationId={82}>Select a Token</TranslatedText>}
               </Button>
+            </div>
 
-              {hasPosition && (
-                <ColumnCenter
-                  style={{ justifyItems: 'center', backgroundColor: '', padding: '12px 0px', borderRadius: '12px' }}
-                >
-                  <Text style={{ textAlign: 'center' }}>Pool Found!</Text>
-                </ColumnCenter>
-              )}
+            {hasPosition && (
+              <ColumnCenter
+                style={{ justifyItems: 'center', backgroundColor: '', padding: '12px 0px', borderRadius: '12px' }}
+              >
+                <Text textAlign="center">Pool Found!</Text>
+              </ColumnCenter>
+            )}
 
-              {currency0 && currency1 ? (
-                pairState === PairState.EXISTS ? (
-                  hasPosition && pair ? (
-                    <MinimalPositionCard pair={pair} />
-                  ) : (
-                    <BorderCard padding="45px 10px">
-                      <AutoColumn gap="sm" justify="center">
-                        <Text style={{ textAlign: 'center' }}>You don’t have liquidity in this pool yet.</Text>
-                        <StyledInternalLink to={`/add/${currencyId(currency0)}/${currencyId(currency1)}`}>
-                          <Text style={{ textAlign: 'center' }}>
-                            <TranslatedText translationId={100}>Add Liquidity</TranslatedText>
-                          </Text>
-                        </StyledInternalLink>
-                      </AutoColumn>
-                    </BorderCard>
-                  )
-                ) : validPairNoLiquidity ? (
-                  <BorderCard padding="45px 10px">
+            {currency0 && currency1 ? (
+              pairState === PairState.EXISTS ? (
+                hasPosition && pair ? (
+                  <MinimalPositionCard pair={pair} />
+                ) : (
+                  <BorderCard padding="32px">
                     <AutoColumn gap="sm" justify="center">
-                      <Text style={{ textAlign: 'center' }}>No pool found.</Text>
+                      <Text color="textSubtle" textAlign="center" fontSize="16px" className="mb-1">
+                        You don’t have liquidity in this pool yet.
+                      </Text>
+
                       <StyledInternalLink to={`/add/${currencyId(currency0)}/${currencyId(currency1)}`}>
-                        Create pool.
+                        <TranslatedText translationId={100}>Add Liquidity</TranslatedText>
                       </StyledInternalLink>
                     </AutoColumn>
                   </BorderCard>
-                ) : pairState === PairState.INVALID ? (
-                  <BorderCard padding="45px 10px">
-                    <AutoColumn gap="sm" justify="center">
-                      <Text style={{ textAlign: 'center' }}>
-                        <TranslatedText translationId={136}>Invalid pair.</TranslatedText>
-                      </Text>
-                    </AutoColumn>
-                  </BorderCard>
-                ) : pairState === PairState.LOADING ? (
-                  <BorderCard padding="45px 10px">
-                    <AutoColumn gap="sm" justify="center">
-                      <Text style={{ textAlign: 'center' }}>
-                        Loading
-                        <Dots />
-                      </Text>
-                    </AutoColumn>
-                  </BorderCard>
-                ) : null
-              ) : (
-                prerequisiteMessage
-              )}
-            </AutoColumn>
+                )
+              ) : validPairNoLiquidity ? (
+                <BorderCard padding="32px">
+                  <AutoColumn gap="sm" justify="center">
+                    <Text color="textSubtle" textAlign="center" fontSize="16px" className="mb-1">
+                      No pool found.
+                    </Text>
+                    <StyledInternalLink to={`/add/${currencyId(currency0)}/${currencyId(currency1)}`}>
+                      Create pool.
+                    </StyledInternalLink>
+                  </AutoColumn>
+                </BorderCard>
+              ) : pairState === PairState.INVALID ? (
+                <BorderCard padding="32px">
+                  <Text color="textSubtle" textAlign="center" fontSize="16px">
+                    <TranslatedText translationId={136}>Invalid pair.</TranslatedText>
+                  </Text>
+                </BorderCard>
+              ) : pairState === PairState.LOADING ? (
+                <BorderCard padding="32px">
+                  <AutoColumn gap="sm" justify="center">
+                    <Text color="textSubtle" textAlign="center" fontSize="16px">
+                      <Dots>Loading</Dots>
+                    </Text>
+                  </AutoColumn>
+                </BorderCard>
+              ) : null
+            ) : (
+              <BorderCard padding="32px">
+                <Text textAlign="center" color="textSubtle" fontSize="16px">
+                  {!account ? 'Connect to a wallet to find pools' : 'Select a token to find your liquidity.'}
+                </Text>
+              </BorderCard>
+            )}
 
             <CurrencySearchModal
               isOpen={showSearch}
