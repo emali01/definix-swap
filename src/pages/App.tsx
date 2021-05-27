@@ -4,7 +4,7 @@ import { injected } from 'connectors'
 import React, { Suspense, useEffect, useState } from 'react'
 import { HashRouter, Route, Switch } from 'react-router-dom'
 import styled from 'styled-components'
-import { TwoLayoutLayout } from 'uikit-dev/components/TwoPanelLayout'
+import { TwoPanelLayout } from 'uikit-dev/components/TwoPanelLayout'
 import Menu from '../components/Menu'
 import Popups from '../components/Popups'
 import Web3ReactManager from '../components/Web3ReactManager'
@@ -100,7 +100,7 @@ export default function App() {
           >
             <TranslationsContext.Provider value={{ translations, setTranslations }}>
               <Menu>
-                <TwoLayoutLayout>
+                <TwoPanelLayout>
                   <Popups />
                   <Web3ReactManager>
                     <Switch>
@@ -122,7 +122,7 @@ export default function App() {
                       <Route component={RedirectPathToSwapOnly} />
                     </Switch>
                   </Web3ReactManager>
-                </TwoLayoutLayout>
+                </TwoPanelLayout>
               </Menu>
             </TranslationsContext.Provider>
           </LanguageContext.Provider>

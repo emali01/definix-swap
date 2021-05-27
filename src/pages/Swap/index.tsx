@@ -550,7 +550,7 @@ const Swap = () => {
             <Heading fontSize="18px !important" className="mb-3">
               SWAP HISTORY
             </Heading>
-            <Card>
+            <Card style={{ overflow: 'auto' }}>
               {/* Mockup */}
               <TransactionHistoryBox
                 firstCoin={undefined}

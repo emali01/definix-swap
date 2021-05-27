@@ -18,6 +18,35 @@ import { TranslateString } from 'utils/translateTextHelpers'
 import Flip from '../../uikit-dev/components/Flip'
 import AppBody from '../AppBody'
 
+const TimerWrapper = ({ isPhrase2, date, children }) => {
+  return isPhrase2 ? (
+    children
+  ) : (
+    <>
+      <div>
+        <br />
+        <Flip date={date} />
+        <br />
+        <br />
+        <br />
+      </div>
+      <div
+        tabIndex={0}
+        role="button"
+        style={{ opacity: 0.4, pointerEvents: 'none' }}
+        onClick={(e) => {
+          e.preventDefault()
+        }}
+        onKeyDown={(e) => {
+          e.preventDefault()
+        }}
+      >
+        {children}
+      </div>
+    </>
+  )
+}
+
 export default function Pool() {
   const { account } = useActiveWeb3React()
   const [isShowRightPanel, setIsShowRightPanel] = useState(false)
@@ -160,7 +189,7 @@ export default function Pool() {
             <Heading fontSize="18px !important" className="mb-3">
               LIQUIDITY HISTORY
             </Heading>
-            <Card>
+            <Card style={{ overflow: 'auto' }}>
               {/* Mockup */}
               <TransactionHistoryBox
                 firstCoin={undefined}
@@ -190,34 +219,5 @@ export default function Pool() {
         )}
       </RightPanel>
     </TimerWrapper>
-  )
-}
-
-const TimerWrapper = ({ isPhrase2, date, children }) => {
-  return isPhrase2 ? (
-    children
-  ) : (
-    <>
-      <div>
-        <br />
-        <Flip date={date} />
-        <br />
-        <br />
-        <br />
-      </div>
-      <div
-        tabIndex={0}
-        role="button"
-        style={{ opacity: 0.4, pointerEvents: 'none' }}
-        onClick={(e) => {
-          e.preventDefault()
-        }}
-        onKeyDown={(e) => {
-          e.preventDefault()
-        }}
-      >
-        {children}
-      </div>
-    </>
   )
 }
