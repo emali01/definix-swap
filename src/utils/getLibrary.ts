@@ -1,7 +1,7 @@
-import { Web3Provider } from '@ethersproject/providers'
+import { CaverProvider } from 'finix-caver-providers'
 
-export default function getLibrary(provider: any): Web3Provider {
-  const library = new Web3Provider(provider)
+export default function getLibrary(provider: any): CaverProvider {
+  const library = new CaverProvider(provider)
   library.pollingInterval = 15000
   return library
 }

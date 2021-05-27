@@ -26,5 +26,21 @@ export default {
       decimals: 18,
       logoURI: '/images/coins/MUAY.png'
     },
+    {
+      name: 'BANK Token',
+      symbol: 'BANK',
+      address: '0xD0406FB48514F2D672F627DE3AC47dF3B6142785',
+      chainId: 1001,
+      decimals: 18,
+      logoURI: '/images/coins/BANK.png'
+    },
+    {
+      name: 'TUNG Token',
+      symbol: 'TUNG',
+      address: '0xFD9CFD32f038532d9C17B90D5341e3C565D847f0',
+      chainId: 1001,
+      decimals: 18,
+      logoURI: '/images/coins/TUNG.png'
+    },
   ]
 }

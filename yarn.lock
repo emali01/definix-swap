@@ -7164,10 +7164,10 @@ caverjs-react-core@^1.0.0:
     tiny-invariant "^1.0.6"
     tiny-warning "^1.0.3"
 
-caverjs-react-injected-connector@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/caverjs-react-injected-connector/-/caverjs-react-injected-connector-1.0.0.tgz#a571eb9a731ae94c52d64cdcce7a2abd641a9e95"
-  integrity sha512-9JWpx0ksdwAW7nvdX66uaEh0kKcf6xipFXFImKhZ9MIc6AyqgL26HaoCoFB9oy/hpZJnLy7zGSzcMdGhv5D+fQ==
+caverjs-react-injected-connector@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/caverjs-react-injected-connector/-/caverjs-react-injected-connector-1.0.1.tgz#7fd0029658e5636d2d28c1ea1898b5693eaf20d7"
+  integrity sha512-TsW1ekrhUOJ1PvVTWR9z6xZncbGiHUv0ktpZ7LYv7WFMzhvZkwEhPm3ifyuifCdH1MjT4vjF5aaRleKwAh1Qwg==
   dependencies:
     caverjs-react-abstract-connector "^1.0.0"
     caverjs-react-types "^1.0.0"
@@ -8808,10 +8808,10 @@ defined@~1.0.0:
   resolved "https://registry.yarnpkg.com/defined/-/defined-1.0.0.tgz#c98d9bcef75674188e110969151199e39b1fa693"
   integrity sha1-yY2bzvdWdBiOEQlpFRGZ45sfppM=
 
-definixswap-sdk@0.0.7-klaytn:
-  version "0.0.7-klaytn"
-  resolved "https://registry.yarnpkg.com/definixswap-sdk/-/definixswap-sdk-0.0.7-klaytn.tgz#c01363b639d01485edf804de5c785ce65ea545a1"
-  integrity sha512-QVcm9nbP4WoQSbw7Loq29Lk4A5x5X7WUtz13Kch2eqknfaW3m7HeVQVrMUqJJZvS8FQDMgXO+Q+wAAgULbyyaQ==
+definixswap-sdk@0.0.8-klaytn:
+  version "0.0.8-klaytn"
+  resolved "https://registry.yarnpkg.com/definixswap-sdk/-/definixswap-sdk-0.0.8-klaytn.tgz#7cd460dc466385569faa316e3236a1974a10e3cf"
+  integrity sha512-H2O2blVpwMBm6rzsPSssS/S0yk51z+GlAUj+Sm7TGKpwngYKkPvsFyCyX25ePQiVNCXOBWgbfWaKXlxN7LH6Xw==
   dependencies:
     "@pancakeswap-libs/pancake-swap-core" "^0.1.0"
     big.js "^5.2.2"
@@ -10985,6 +10985,31 @@ findup-sync@^3.0.0:
     is-glob "^4.0.0"
     micromatch "^3.0.4"
     resolve-dir "^1.0.1"
+
+finix-caver-providers@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/finix-caver-providers/-/finix-caver-providers-1.0.3.tgz#758e1c1e628a25f4b93cdc0ed7ef353d92bd98e1"
+  integrity sha512-aqtLfnOF6lvxmOrs57UwFy9UuUsYvXF2b3PyHjQ2tzd/wj6E9GHIGISVc5ne4QvjBJbqdDH6FvpiAfY/3cJG3w==
+  dependencies:
+    "@ethersproject/abstract-provider" "^5.0.8"
+    "@ethersproject/abstract-signer" "^5.0.10"
+    "@ethersproject/address" "^5.0.9"
+    "@ethersproject/basex" "^5.0.7"
+    "@ethersproject/bignumber" "^5.0.13"
+    "@ethersproject/bytes" "^5.0.9"
+    "@ethersproject/constants" "^5.0.8"
+    "@ethersproject/hash" "^5.0.10"
+    "@ethersproject/logger" "^5.0.8"
+    "@ethersproject/networks" "^5.0.7"
+    "@ethersproject/properties" "^5.0.7"
+    "@ethersproject/random" "^5.0.7"
+    "@ethersproject/rlp" "^5.0.7"
+    "@ethersproject/sha2" "^5.0.7"
+    "@ethersproject/strings" "^5.0.8"
+    "@ethersproject/transactions" "^5.0.9"
+    "@ethersproject/web" "^5.0.12"
+    bech32 "1.1.4"
+    ws "7.2.3"
 
 flat-cache@^3.0.4:
   version "3.0.4"

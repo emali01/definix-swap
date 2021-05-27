@@ -1,4 +1,4 @@
-import { Web3Provider } from '@ethersproject/providers'
+import { CaverProvider } from 'finix-caver-providers'
 import { InjectedConnector } from 'caverjs-react-injected-connector'
 // import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 // import { WalletLinkConnector } from '@web3-react/walletlink-connector'
@@ -22,10 +22,10 @@ export const network = new NetworkConnector({
   urls: { [NETWORK_CHAIN_ID]: NETWORK_URL },
 })
 
-let networkLibrary: Web3Provider | undefined
-export function getNetworkLibrary(): Web3Provider {
+let networkLibrary: CaverProvider | undefined
+export function getNetworkLibrary(): CaverProvider {
   // eslint-disable-next-line no-return-assign
-  return (networkLibrary = networkLibrary ?? new Web3Provider(network.provider as any))
+  return (networkLibrary = networkLibrary ?? new CaverProvider(network.provider as any))
 }
 
 export const injected = new InjectedConnector({

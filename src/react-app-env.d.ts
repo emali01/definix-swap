@@ -7,7 +7,7 @@ declare module 'jazzicon' {
 declare module 'fortmatic'
 
 interface Window {
-  ethereum?: {
+  klaytn?: {
     isMetaMask?: true
     on?: (...args: any[]) => void
     removeListener?: (...args: any[]) => void

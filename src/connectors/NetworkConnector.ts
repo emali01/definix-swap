@@ -125,7 +125,7 @@ class MiniRpcProvider implements AsyncSendable {
     if (typeof method !== 'string') {
       return this.request(method.method, method.params)
     }
-    if (method === 'eth_chainId') {
+    if (method === 'klay_chainId') {
       return `0x${this.chainId.toString(16)}`
     }
     const promise = new Promise((resolve, reject) => {
