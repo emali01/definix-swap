@@ -22,7 +22,7 @@ const getRowStatus = (sortedRecentTransaction: TransactionDetails) => {
     return { icon: <Loader />, color: 'text' }
   }
 
-  if (hash && receipt?.status === 1) {
+  if (hash && receipt?.status) {
     return { icon: <CheckmarkCircleIcon color="success" />, color: 'success' }
   }
 

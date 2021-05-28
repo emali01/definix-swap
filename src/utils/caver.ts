@@ -18,10 +18,10 @@ const getCaver = () => {
   const caver = baseCaver
   return caver
 }
-const getContract = (abi: any, address: string, contractOptions?: ContractOptions) => {
+const getCaverContract = (address: string, abi: any, contractOptions?: ContractOptions) => {
   const caver = getCaver()
   // eslint-disable-next-line
-  return new caver.contract((abi as unknown) as AbiItem, address, contractOptions)
+  return new caver.klay.Contract(abi as unknown as AbiItem, address, contractOptions)
 }
 
-export { getCaver, getContract, Contract }
+export { getCaver, getCaverContract, Contract }

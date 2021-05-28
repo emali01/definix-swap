@@ -4,6 +4,7 @@ import { useActiveWeb3React } from '../../hooks'
 import { useAddPopup, useBlockNumber } from '../application/hooks'
 import { AppDispatch, AppState } from '../index'
 import { checkedTransaction, finalizeTransaction } from './actions'
+import caver from '../../klaytn/caver'
 
 export function shouldCheck(
   lastBlockNumber: number,
@@ -46,7 +47,7 @@ export default function Updater(): null {
     Object.keys(transactions)
       .filter((hash) => shouldCheck(lastBlockNumber, transactions[hash]))
       .forEach((hash) => {
-        library
+        caver.klay
           .getTransactionReceipt(hash)
           .then((receipt) => {
             if (receipt) {
@@ -71,7 +72,7 @@ export default function Updater(): null {
                 {
                   txn: {
                     hash,
-                    success: receipt.status === 1,
+                    success: receipt.status,
                     summary: transactions[hash]?.summary,
                   },
                 },

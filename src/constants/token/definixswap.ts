@@ -11,36 +11,36 @@ export default {
   keywords: ['definix', 'default'],
   tokens: [
     {
-      name: 'GAS Token',
-      symbol: 'GAS',
-      address: '0x03CB8549cBCc01f90A8A699F3e069ebb971C9B8C',
+      name: 'FINIX',
+      symbol: 'FINIX',
+      address: '0x685a86A0Eb6C5200Cb2102082a1E50C645a86c90',
       chainId: 1001,
       decimals: 18,
-      logoURI: '/images/coins/GAS.png'
+      logoURI: '/images/coins/finix.png'
     },
     {
-      name: 'MUAY Token',
-      symbol: 'MUAY',
-      address: '0x4466E4922aB640CF84Cd87001fCc7B627b896ea6',
+      name: 'SIX',
+      symbol: 'SIX',
+      address: '0xfD7ce123dc38cDe88041a5d42ffBEc99B5B5363c',
       chainId: 1001,
       decimals: 18,
-      logoURI: '/images/coins/MUAY.png'
+      logoURI: '/images/coins/six.png'
     },
     {
-      name: 'BANK Token',
-      symbol: 'BANK',
-      address: '0xD0406FB48514F2D672F627DE3AC47dF3B6142785',
+      name: 'KUSDT',
+      symbol: 'KUSDT',
+      address: '0x72f58bF36Ce713D408a854C060FbF89A25F87C4C',
       chainId: 1001,
       decimals: 18,
-      logoURI: '/images/coins/BANK.png'
+      logoURI: '/images/coins/USDT.png'
     },
     {
-      name: 'TUNG Token',
-      symbol: 'TUNG',
-      address: '0xFD9CFD32f038532d9C17B90D5341e3C565D847f0',
+      name: 'KDAI',
+      symbol: 'KDAI',
+      address: '0xf24400CA87E2260FaA63233c2Be8e4259B214E4E',
       chainId: 1001,
       decimals: 18,
-      logoURI: '/images/coins/TUNG.png'
+      logoURI: '/images/coins/DAI.png'
     },
   ]
 }
