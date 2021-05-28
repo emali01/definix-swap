@@ -1,3 +1,5 @@
+/* eslint-disable no-nested-ternary */
+
 import styled, { DefaultTheme } from 'styled-components'
 import { space } from 'styled-system'
 import { ButtonProps, ButtonThemeVariant, variants } from './types'
@@ -38,12 +40,11 @@ const removePointerEvents = ({ disabled, as }: ThemedProps) => {
   return ''
 }
 
-const getButtonVariantProp = (prop: keyof ButtonThemeVariant) => ({
-  theme,
-  variant = variants.PRIMARY,
-}: ThemedProps) => {
-  return theme.button[variant][prop]
-}
+const getButtonVariantProp =
+  (prop: keyof ButtonThemeVariant) =>
+  ({ theme, variant = variants.PRIMARY }: ThemedProps) => {
+    return theme.button[variant][prop]
+  }
 
 const StyledButton = styled.button<ButtonProps>`
   align-items: center;

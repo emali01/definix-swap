@@ -1,3 +1,5 @@
+/* eslint-disable no-nested-ternary */
+
 import styled from 'styled-components'
 import Button from './Button'
 import { ButtonProps } from './types'
