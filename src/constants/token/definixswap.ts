@@ -11,68 +11,36 @@ export default {
   keywords: ['definix', 'default'],
   tokens: [
     {
-      name: 'FINIX Token',
-      symbol: 'FINIX',
-      address: process.env.REACT_APP_FINIX_ADDRESS_TESTNET,
-      chainId: 97,
+      name: 'GAS Token',
+      symbol: 'GAS',
+      address: '0x03CB8549cBCc01f90A8A699F3e069ebb971C9B8C',
+      chainId: 1001,
       decimals: 18,
-      logoURI: '/images/coins/FINIX.png'
+      logoURI: '/images/coins/GAS.png'
     },
     {
-      name: 'SIX Token',
-      symbol: 'SIX',
-      address: process.env.REACT_APP_SIX_ADDRESS_TESTNET,
-      chainId: 97,
+      name: 'MUAY Token',
+      symbol: 'MUAY',
+      address: '0x4466E4922aB640CF84Cd87001fCc7B627b896ea6',
+      chainId: 1001,
       decimals: 18,
-      logoURI: '/images/coins/SIX.png'
+      logoURI: '/images/coins/MUAY.png'
     },
     {
-      name: 'BUSD Token',
-      symbol: 'BUSD',
-      address: process.env.REACT_APP_BUSD_ADDRESS_TESTNET,
-      chainId: 97,
+      name: 'BANK Token',
+      symbol: 'BANK',
+      address: '0xD0406FB48514F2D672F627DE3AC47dF3B6142785',
+      chainId: 1001,
       decimals: 18,
-      logoURI: '/images/coins/BTC.png'
+      logoURI: '/images/coins/BANK.png'
     },
     {
-      name: 'USDT Token',
-      symbol: 'USDT',
-      address: process.env.REACT_APP_USDT_ADDRESS_TESTNET,
-      chainId: 97,
+      name: 'TUNG Token',
+      symbol: 'TUNG',
+      address: '0xFD9CFD32f038532d9C17B90D5341e3C565D847f0',
+      chainId: 1001,
       decimals: 18,
-      logoURI: '/images/coins/USDT.png'
-    },
-    {
-      name: 'FINIX Token',
-      symbol: 'FINIX',
-      address: process.env.REACT_APP_FINIX_ADDRESS_MAINNET,
-      chainId: 56,
-      decimals: 18,
-      logoURI: '/images/coins/FINIX.png'
-    },
-    {
-      name: 'SIX Token',
-      symbol: 'SIX',
-      address: process.env.REACT_APP_SIX_ADDRESS_MAINNET,
-      chainId: 56,
-      decimals: 18,
-      logoURI: '/images/coins/SIX.png'
-    },
-    {
-      name: 'BUSD Token',
-      symbol: 'BUSD',
-      address: process.env.REACT_APP_BUSD_ADDRESS_MAINNET,
-      chainId: 56,
-      decimals: 18,
-      logoURI: '/images/coins/BTC.png'
-    },
-    {
-      name: 'USDT Token',
-      symbol: 'USDT',
-      address: process.env.REACT_APP_USDT_ADDRESS_MAINNET,
-      chainId: 56,
-      decimals: 18,
-      logoURI: '/images/coins/USDT.png'
+      logoURI: '/images/coins/TUNG.png'
     },
   ]
 }

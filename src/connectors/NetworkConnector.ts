@@ -1,5 +1,5 @@
-import { ConnectorUpdate } from '@web3-react/types'
-import { AbstractConnector } from '@web3-react/abstract-connector'
+import { ConnectorUpdate } from 'caverjs-react-types'
+import { AbstractConnector } from 'caverjs-react-abstract-connector'
 import invariant from 'tiny-invariant'
 
 interface NetworkConnectorArguments {
@@ -125,7 +125,7 @@ class MiniRpcProvider implements AsyncSendable {
     if (typeof method !== 'string') {
       return this.request(method.method, method.params)
     }
-    if (method === 'eth_chainId') {
+    if (method === 'klay_chainId') {
       return `0x${this.chainId.toString(16)}`
     }
     const promise = new Promise((resolve, reject) => {

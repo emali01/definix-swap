@@ -1,21 +1,21 @@
-import { Web3Provider } from '@ethersproject/providers'
+import { CaverProvider } from 'finix-caver-providers'
 import { ChainId } from 'definixswap-sdk'
-import { useWeb3React as useWeb3ReactCore } from '@web3-react/core'
+import { useCaverJsReact as useCaverJsReactCore } from 'caverjs-react-core'
 // eslint-disable-next-line import/no-unresolved
-import { Web3ReactContextInterface } from '@web3-react/core/dist/types'
+import { CaverJsReactContextInterface } from 'caverjs-react-core/dist/types'
 import { useEffect, useState } from 'react'
 import { isMobile } from 'react-device-detect'
 import { injected } from '../connectors'
 import { NetworkContextName } from '../constants'
 
-export function useActiveWeb3React(): Web3ReactContextInterface<Web3Provider> & { chainId?: ChainId } {
-  const context = useWeb3ReactCore<Web3Provider>()
-  const contextNetwork = useWeb3ReactCore<Web3Provider>(NetworkContextName)
+export function useActiveWeb3React(): CaverJsReactContextInterface<CaverProvider> & { chainId?: ChainId } {
+  const context = useCaverJsReactCore<CaverProvider>()
+  const contextNetwork = useCaverJsReactCore<CaverProvider>(NetworkContextName)
   return context.active ? context : contextNetwork
 }
 
 export function useEagerConnect() {
-  const { activate, active } = useWeb3ReactCore() // specifically using useWeb3ReactCore because of what this hook does
+  const { activate, active } = useCaverJsReactCore() // specifically using useCaverJsReactCore because of what this hook does
   const [tried, setTried] = useState(false)
 
   useEffect(() => {
@@ -25,7 +25,7 @@ export function useEagerConnect() {
         activate(injected, undefined, true).catch(() => {
           setTried(true)
         })
-      } else if (isMobile && window.ethereum && hasSignedIn) {
+      } else if (isMobile && window.klaytn && hasSignedIn) {
         activate(injected, undefined, true).catch(() => {
           setTried(true)
         })
@@ -50,12 +50,12 @@ export function useEagerConnect() {
  * and out after checking what network theyre on
  */
 export function useInactiveListener(suppress = false) {
-  const { active, error, activate } = useWeb3ReactCore() // specifically using useWeb3React because of what this hook does
+  const { active, error, activate } = useCaverJsReactCore() // specifically using useCaverJsReact because of what this hook does
 
   useEffect(() => {
-    const { ethereum } = window
+    const { klaytn } = window
 
-    if (ethereum && ethereum.on && !active && !error && !suppress) {
+    if (klaytn && klaytn.on && !active && !error && !suppress) {
       const handleChainChanged = () => {
         // eat errors
         activate(injected, undefined, true).catch((e) => {
@@ -72,13 +72,13 @@ export function useInactiveListener(suppress = false) {
         }
       }
 
-      ethereum.on('chainChanged', handleChainChanged)
-      ethereum.on('accountsChanged', handleAccountsChanged)
+      klaytn.on('chainChanged', handleChainChanged)
+      klaytn.on('accountsChanged', handleAccountsChanged)
 
       return () => {
-        if (ethereum.removeListener) {
-          ethereum.removeListener('chainChanged', handleChainChanged)
-          ethereum.removeListener('accountsChanged', handleAccountsChanged)
+        if (klaytn.removeListener) {
+          klaytn.removeListener('chainChanged', handleChainChanged)
+          klaytn.removeListener('accountsChanged', handleAccountsChanged)
         }
       }
     }

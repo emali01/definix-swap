@@ -1,5 +1,5 @@
 import React from 'react'
-import { createWeb3ReactRoot, Web3ReactProvider } from '@web3-react/core'
+import { createCaverJsReactRoot, CaverJsReactProvider } from 'caverjs-react-core'
 import { Provider } from 'react-redux'
 import { ModalProvider } from 'uikit-dev'
 import { NetworkContextName } from './constants'
@@ -7,11 +7,11 @@ import store from './state'
 import getLibrary from './utils/getLibrary'
 import { ThemeContextProvider } from './ThemeContext'
 
-const Web3ProviderNetwork = createWeb3ReactRoot(NetworkContextName)
+const Web3ProviderNetwork = createCaverJsReactRoot(NetworkContextName)
 
 const Providers: React.FC = ({ children }) => {
   return (
-    <Web3ReactProvider getLibrary={getLibrary}>
+    <CaverJsReactProvider getLibrary={getLibrary}>
       <Web3ProviderNetwork getLibrary={getLibrary}>
         <Provider store={store}>
           <ThemeContextProvider>
@@ -19,7 +19,7 @@ const Providers: React.FC = ({ children }) => {
           </ThemeContextProvider>
         </Provider>
       </Web3ProviderNetwork>
-    </Web3ReactProvider>
+    </CaverJsReactProvider>
   )
 }
 

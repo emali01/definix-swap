@@ -2,7 +2,7 @@ import { Credentials, StringTranslations } from '@crowdin/crowdin-api-client'
 import React, { Suspense, useEffect, useState } from 'react'
 import { HashRouter, Route, Switch } from 'react-router-dom'
 import styled from 'styled-components'
-import { useWeb3React } from '@web3-react/core'
+import { useCaverJsReact } from 'caverjs-react-core'
 import { injected } from 'connectors'
 import Menu from '../components/Menu'
 import Popups from '../components/Popups'
@@ -109,7 +109,7 @@ export default function App() {
       })
   }
 
-  const { account, activate } = useWeb3React()
+  const { account, activate } = useCaverJsReact()
 
   useEffect(() => {
     if (!account && window.localStorage.getItem('accountStatus')) {
