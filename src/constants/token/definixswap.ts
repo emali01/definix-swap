@@ -32,7 +32,7 @@ export default {
       address: '0x72f58bF36Ce713D408a854C060FbF89A25F87C4C',
       chainId: 1001,
       decimals: 18,
-      logoURI: '/images/coins/USDT.png'
+      logoURI: '/images/coins/KUSDT.png'
     },
     {
       name: 'KDAI',
@@ -40,7 +40,7 @@ export default {
       address: '0xf24400CA87E2260FaA63233c2Be8e4259B214E4E',
       chainId: 1001,
       decimals: 18,
-      logoURI: '/images/coins/DAI.png'
+      logoURI: '/images/coins/KDAI.png'
     },
   ]
 }
