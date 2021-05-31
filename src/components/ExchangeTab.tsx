@@ -19,7 +19,7 @@ const Tab = styled(NavLink)<{ active: boolean }>`
   padding: 20px;
   font-size: 16px;
   font-weight: bold;
-  background: ${({ theme, active }) => (active ? theme.colors.primary : 'transparent')};
+  background: ${({ theme, active }) => (active ? theme.colors.backgroundBlueGradient : 'transparent')};
   color: ${({ theme, active }) => (active ? theme.colors.white : theme.colors.textSubtle)};
   border-right: 1px solid ${({ theme }) => theme.colors.textDisabled};
 
@@ -28,7 +28,7 @@ const Tab = styled(NavLink)<{ active: boolean }>`
     width: 0;
     height: 0;
     border: 8px solid transparent;
-    border-top-color: ${({ theme, active }) => (active ? theme.colors.primary : 'transparent')};
+    border-top-color: ${({ active }) => (active ? '#349BE7' : 'transparent')};
     position: absolute;
     top: 100%;
     left: calc(50% - 8px);
