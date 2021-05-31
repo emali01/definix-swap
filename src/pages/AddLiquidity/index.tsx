@@ -7,9 +7,13 @@ import CurrencyInputPanel from 'components/CurrencyInputPanel'
 import DoubleCurrencyLogo from 'components/DoubleLogo'
 import { AddRemoveTabs } from 'components/NavigationTabs'
 import { MinimalPositionCard } from 'components/PositionCard'
-import Row, { RowBetween, RowFlat } from 'components/Row'
+import { RowBetween, RowFixed } from 'components/Row'
 import { Dots } from 'components/swap/styleds'
-import TransactionConfirmationModal, { ConfirmationModalContent } from 'components/TransactionConfirmationModal'
+import TransactionConfirmationModal, {
+  ConfirmationModalContent,
+  TransactionErrorContent,
+  TransactionSubmittedContent,
+} from 'components/TransactionConfirmationModal'
 import { PairState } from 'data/Reserves'
 import { Currency, currencyEquals, ETHER, TokenAmount, WETH } from 'definixswap-sdk'
 import { useActiveWeb3React } from 'hooks'
@@ -69,9 +73,10 @@ export default function AddLiquidity({
 
   const isValid = !error
 
-  // modal and loading
+  // modal, loading, error
   const [showConfirm, setShowConfirm] = useState<boolean>(false)
   const [attemptingTxn, setAttemptingTxn] = useState<boolean>(false) // clicked confirm
+  const [errorMsg, setErrorMsg] = useState<string>('')
 
   // txn values
   const [deadline] = useUserDeadline() // custom from users settings
@@ -181,53 +186,57 @@ export default function AddLiquidity({
       )
       .catch((e) => {
         setAttemptingTxn(false)
+
         // we only care if the error is something _other_ than the user rejected the tx
         if (e?.code !== 4001) {
           console.error(e)
+          setErrorMsg(e)
         }
       })
   }
 
-  const modalHeader = () => {
-    return noLiquidity ? (
-      <BorderCard>
-        <RowFlat>
-          <DoubleCurrencyLogo
-            currency0={currencies[Field.CURRENCY_A]}
-            currency1={currencies[Field.CURRENCY_B]}
-            size={40}
-          />
-          <UIKitText className="mt-7">
-            {`${currencies[Field.CURRENCY_A]?.symbol}/${currencies[Field.CURRENCY_B]?.symbol}`}
-          </UIKitText>
-        </RowFlat>
-      </BorderCard>
-    ) : (
-      <div>
-        <RowBetween align="center">
-          <Row align="center">
+  const modalHeader = useCallback(() => {
+    return (
+      <div style={{ width: '480px' }}>
+        {noLiquidity ? (
+          <RowFixed mb="0 !important">
             <DoubleCurrencyLogo
               currency0={currencies[Field.CURRENCY_A]}
               currency1={currencies[Field.CURRENCY_B]}
               size={40}
             />
-            <UIKitText fontSize="28px" ml="3" fontWeight="500">
+            <UIKitText fontSize="24px" ml="3" fontWeight="500">
               {`${currencies[Field.CURRENCY_A]?.symbol}/${currencies[Field.CURRENCY_B]?.symbol}`}
             </UIKitText>
-          </Row>
+          </RowFixed>
+        ) : (
+          <AutoColumn gap="24px">
+            <RowBetween align="center">
+              <RowFixed mb="0 !important">
+                <DoubleCurrencyLogo
+                  currency0={currencies[Field.CURRENCY_A]}
+                  currency1={currencies[Field.CURRENCY_B]}
+                  size={40}
+                />
+                <UIKitText fontSize="24px" ml="3" fontWeight="500">
+                  {`${currencies[Field.CURRENCY_A]?.symbol}/${currencies[Field.CURRENCY_B]?.symbol}`}
+                </UIKitText>
+              </RowFixed>
 
-          <UIKitText fontSize="28px" fontWeight="500">
-            {liquidityMinted?.toSignificant(6)}
-          </UIKitText>
-        </RowBetween>
+              <UIKitText fontSize="24px" fontWeight="500">
+                {liquidityMinted?.toSignificant(6)}
+              </UIKitText>
+            </RowBetween>
 
-        <UIKitText className="mt-7">
-          Output is estimated. If the price changes by more than
-          <strong className="mx-1">{allowedSlippage / 100}%</strong>your transaction will revert.
-        </UIKitText>
+            <UIKitText>
+              Output is estimated. If the price changes by more than
+              <strong className="mx-1">{allowedSlippage / 100}%</strong>your transaction will revert.
+            </UIKitText>
+          </AutoColumn>
+        )}
       </div>
     )
-  }
+  }, [allowedSlippage, currencies, liquidityMinted, noLiquidity])
 
   const modalBottom = () => {
     return (
@@ -241,10 +250,6 @@ export default function AddLiquidity({
       />
     )
   }
-
-  const pendingText = `Supplying ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(6)} ${
-    currencies[Field.CURRENCY_A]?.symbol
-  } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(6)} ${currencies[Field.CURRENCY_B]?.symbol}`
 
   const handleCurrencyASelect = useCallback(
     (currA: Currency) => {
@@ -273,6 +278,54 @@ export default function AddLiquidity({
     [currencyIdA, history, currencyIdB]
   )
 
+  const submittedContent = useCallback(
+    () => (
+      <TransactionSubmittedContent
+        title="Swap Complete"
+        date="17 Apr 2021, 15:32"
+        chainId={chainId}
+        hash={txHash}
+        content={modalHeader}
+        button={
+          <Button
+            onClick={() => {
+              console.log('Add this Liquidity to Farm')
+            }}
+            radii="card"
+            fullWidth
+          >
+            Add this Liquidity to Farm
+          </Button>
+        }
+      />
+    ),
+    [chainId, modalHeader, txHash]
+  )
+
+  const errorContent = useCallback(
+    () => (
+      <TransactionErrorContent
+        title="Swap Failed"
+        date="17 Apr 2021, 15:32"
+        chainId={chainId}
+        hash={txHash}
+        content={modalHeader}
+        button={
+          <Button
+            onClick={() => {
+              console.log('Add Liquidity Again')
+            }}
+            radii="card"
+            fullWidth
+          >
+            Add Liquidity Again
+          </Button>
+        }
+      />
+    ),
+    [chainId, modalHeader, txHash]
+  )
+
   const handleDismissConfirmation = useCallback(() => {
     setShowConfirm(false)
     // if there was a tx hash, we want to clear the input
@@ -280,6 +333,7 @@ export default function AddLiquidity({
       onFieldAInput('')
     }
     setTxHash('')
+    setErrorMsg('')
   }, [onFieldAInput, txHash])
 
   return (
@@ -400,7 +454,9 @@ export default function AddLiquidity({
                           setShowConfirm(true)
                         }
                       }}
-                      // disabled={!isValid || approvalA !== ApprovalState.APPROVED || approvalB !== ApprovalState.APPROVED}
+                      disabled={
+                        !isValid || approvalA !== ApprovalState.APPROVED || approvalB !== ApprovalState.APPROVED
+                      }
                       variant={
                         !isValid && !!parsedAmounts[Field.CURRENCY_A] && !!parsedAmounts[Field.CURRENCY_B]
                           ? 'danger'
@@ -427,9 +483,9 @@ export default function AddLiquidity({
 
       <TransactionConfirmationModal
         isOpen={showConfirm}
-        onDismiss={handleDismissConfirmation}
-        attemptingTxn={attemptingTxn}
-        hash={txHash}
+        isPending={!!attemptingTxn}
+        isSubmitted={!!txHash}
+        isError={!!errorMsg}
         confirmContent={() => (
           <ConfirmationModalContent
             mainTitle="Confirm Liquidity"
@@ -438,9 +494,9 @@ export default function AddLiquidity({
             bottomContent={modalBottom}
           />
         )}
-        submittedContent={() => <>submit</>}
-        errorContent={() => <>error</>}
-        pendingText={pendingText}
+        submittedContent={submittedContent}
+        errorContent={errorContent}
+        onDismiss={handleDismissConfirmation}
       />
     </>
   )

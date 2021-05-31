@@ -322,20 +322,6 @@ const Swap = () => {
             <ExchangeTab current="/swap" />
 
             <Wrapper id="swap-page">
-              <ConfirmSwapModal
-                isOpen={showConfirm}
-                trade={trade}
-                originalTrade={tradeToConfirm}
-                onAcceptChanges={handleAcceptChanges}
-                attemptingTxn={attemptingTxn}
-                txHash={txHash}
-                recipient={recipient}
-                allowedSlippage={allowedSlippage}
-                onConfirm={handleSwap}
-                swapErrorMessage={swapErrorMessage}
-                onDismiss={handleConfirmDismiss}
-              />
-
               <CardBody p="32px !important">
                 <Heading textAlign="center" className="mb-4">
                   Trade tokens in an instant
@@ -413,7 +399,7 @@ const Swap = () => {
                   {showWrap
                     ? null
                     : (Boolean(trade) || allowedSlippage !== INITIAL_ALLOWED_SLIPPAGE) && (
-                        <div className="flex mt-5">
+                        <div className="flex mt-5 justify-end">
                           {Boolean(trade) && (
                             <div className="flex flex-wrap align-baseline justify-space-between col-6">
                               <Text fontSize="14px" color="textSubtle">
@@ -454,7 +440,7 @@ const Swap = () => {
                     </Button>
                   ) : noRoute && userHasSpecifiedInputOutput ? (
                     <GreyCard style={{ textAlign: 'center' }}>
-                      <Text mb="4px">Insufficient liquidity for this trade.</Text>
+                      <Text>Insufficient liquidity for this trade.</Text>
                     </GreyCard>
                   ) : showApproveFlow ? (
                     <RowBetween className="mb-3">
@@ -580,6 +566,19 @@ const Swap = () => {
         )}
       </RightPanel>
 
+      <ConfirmSwapModal
+        isOpen={showConfirm}
+        trade={trade}
+        originalTrade={tradeToConfirm}
+        onAcceptChanges={handleAcceptChanges}
+        attemptingTxn={attemptingTxn}
+        txHash={txHash}
+        recipient={recipient}
+        allowedSlippage={allowedSlippage}
+        onConfirm={handleSwap}
+        swapErrorMessage={swapErrorMessage}
+        onDismiss={handleConfirmDismiss}
+      />
       <TokenWarningModal
         isOpen={
           urlLoadedTokens.filter((x) => x.address.toLowerCase() !== SIX_ADDRESS[chainId].toLowerCase()).length > 0 &&

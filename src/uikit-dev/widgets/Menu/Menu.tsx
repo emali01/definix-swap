@@ -102,6 +102,8 @@ const InnerBg = styled.div`
   border-top-left-radius: ${({ theme }) => theme.radii.large};
   border-bottom-left-radius: ${({ theme }) => theme.radii.large};
   height: 100%;
+  display: flex;
+  flex-direction: column;
 `
 
 const MobileOnlyOverlay = styled(Overlay)`

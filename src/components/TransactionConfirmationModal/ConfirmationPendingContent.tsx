@@ -17,9 +17,7 @@ const TextCenter = styled(Text)`
   transform: translate(-50%, 0);
 `
 
-type ConfirmationPendingContentProps = { onDismiss: () => void; pendingText: string }
-
-const ConfirmationPendingContent = ({ onDismiss, pendingText }: ConfirmationPendingContentProps) => {
+const ConfirmationPendingContent = () => {
   return (
     <div
       className="flex align-center justify-center pa-6"

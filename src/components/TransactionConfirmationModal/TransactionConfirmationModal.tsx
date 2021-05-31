@@ -4,17 +4,16 @@ import { Modal } from 'uikit-dev'
 import bg from 'uikit-dev/images/for-ui-v2/bg.png'
 import { useActiveWeb3React } from '../../hooks'
 import ConfirmationPendingContent from './ConfirmationPendingContent'
-import TransactionSubmittedContent from './TransactionSubmittedContent'
 
 interface ConfirmationModalProps {
   isOpen: boolean
-  onDismiss: () => void
-  hash: string | undefined
+  isPending: boolean
+  isSubmitted: boolean
+  isError: boolean
   confirmContent: () => React.ReactNode
   submittedContent: () => React.ReactNode
   errorContent: () => React.ReactNode
-  attemptingTxn: boolean
-  pendingText: string
+  onDismiss: () => void
 }
 
 const ModalWrapper = styled.div`
@@ -36,13 +35,13 @@ const ModalWrapper = styled.div`
 
 const TransactionConfirmationModal = ({
   isOpen,
-  onDismiss,
-  attemptingTxn,
-  hash,
-  pendingText,
+  isPending,
+  isSubmitted,
+  isError,
   confirmContent,
   submittedContent,
   errorContent,
+  onDismiss,
 }: ConfirmationModalProps) => {
   const { chainId } = useActiveWeb3React()
 
@@ -53,23 +52,20 @@ const TransactionConfirmationModal = ({
     <ModalWrapper>
       <Modal
         title=""
-        onBack={!attemptingTxn && !hash ? onDismiss : undefined}
+        onBack={!isPending ? onDismiss : undefined}
         onDismiss={onDismiss}
         isRainbow={false}
         bodyPadding="0"
+        maxWidth="720px"
         hideCloseButton
         classHeader="bd-b-n"
       >
-        {attemptingTxn ? (
-          <ConfirmationPendingContent onDismiss={onDismiss} pendingText={pendingText} />
-        ) : hash ? (
-          <TransactionSubmittedContent
-            title=""
-            date="17 Apr 2021, 15:32"
-            chainId={chainId}
-            hash={hash}
-            onDismiss={onDismiss}
-          />
+        {isPending ? (
+          <ConfirmationPendingContent />
+        ) : isSubmitted ? (
+          submittedContent()
+        ) : isError ? (
+          errorContent()
         ) : (
           confirmContent()
         )}
