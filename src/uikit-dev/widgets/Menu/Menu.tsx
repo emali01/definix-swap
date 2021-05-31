@@ -69,7 +69,7 @@ const StyledNav = styled.nav<{ showMenu: boolean }>`
   }
 
   .network {
-    box-shadow: ${({ theme }) => theme.shadows.elevation1};
+    // box-shadow: ${({ theme }) => theme.shadows.elevation1};
   }
 `
 
