@@ -2,7 +2,7 @@ import { currencyEquals, Trade } from 'definixswap-sdk'
 import React, { useCallback, useMemo } from 'react'
 import TransactionConfirmationModal, {
   ConfirmationModalContent,
-  TransactionErrorContent
+  TransactionErrorContent,
 } from '../TransactionConfirmationModal'
 import SwapModalFooter from './SwapModalFooter'
 import SwapModalHeader from './SwapModalHeader'
@@ -33,7 +33,7 @@ export default function ConfirmSwapModal({
   swapErrorMessage,
   isOpen,
   attemptingTxn,
-  txHash
+  txHash,
 }: {
   isOpen: boolean
   trade: Trade | undefined
@@ -87,8 +87,8 @@ export default function ConfirmSwapModal({
         <TransactionErrorContent onDismiss={onDismiss} message={swapErrorMessage} />
       ) : (
         <ConfirmationModalContent
-          title="Confirm Swap"
-          onDismiss={onDismiss}
+          mainTitle="Confirm Swap"
+          title=""
           topContent={modalHeader}
           bottomContent={modalBottom}
         />
@@ -102,7 +102,9 @@ export default function ConfirmSwapModal({
       onDismiss={onDismiss}
       attemptingTxn={attemptingTxn}
       hash={txHash}
-      content={confirmationContent}
+      confirmContent={confirmationContent}
+      submittedContent={() => <>submit</>}
+      errorContent={() => <>error</>}
       pendingText={pendingText}
     />
   )

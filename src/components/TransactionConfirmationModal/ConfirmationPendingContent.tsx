@@ -1,35 +1,33 @@
 import React from 'react'
+import Lottie from 'react-lottie'
 import styled from 'styled-components'
 import { Text } from 'uikit-dev'
-import { Spinner } from '../Shared'
-import { AutoColumn } from '../Column'
-import { Wrapper, Section, ConfirmedIcon, ContentHeader } from './helpers'
+import processing from 'uikit-dev/animation/processing.json'
+
+const options = {
+  loop: true,
+  autoplay: true,
+  animationData: processing,
+}
+
+const TextCenter = styled(Text)`
+  position: absolute;
+  bottom: calc(50% - 48px);
+  left: 50%;
+  transform: translate(-50%, 0);
+`
 
 type ConfirmationPendingContentProps = { onDismiss: () => void; pendingText: string }
 
-const CustomLightSpinner = styled(Spinner)<{ size: string }>`
-  height: ${({ size }) => size};
-  width: ${({ size }) => size};
-`
-
 const ConfirmationPendingContent = ({ onDismiss, pendingText }: ConfirmationPendingContentProps) => {
   return (
-    <Wrapper>
-      <Section>
-        <ContentHeader onDismiss={onDismiss}>Waiting for confirmation</ContentHeader>
-        <ConfirmedIcon>
-          <CustomLightSpinner src="/images/blue-loader.svg" alt="loader" size="90px" />
-        </ConfirmedIcon>
-        <AutoColumn gap="12px" justify="center">
-          <AutoColumn gap="12px" justify="center">
-            <Text small>
-              <strong>{pendingText}</strong>
-            </Text>
-          </AutoColumn>
-          <Text small>Confirm this transaction in your wallet</Text>
-        </AutoColumn>
-      </Section>
-    </Wrapper>
+    <div
+      className="flex align-center justify-center pa-6"
+      style={{ position: 'relative', width: '480px', height: '480px' }}
+    >
+      <Lottie options={options} height={120} width={120} />
+      <TextCenter color="textSubtle">Progressing…</TextCenter>
+    </div>
   )
 }
 

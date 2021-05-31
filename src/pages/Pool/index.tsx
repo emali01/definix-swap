@@ -126,7 +126,7 @@ export default function Pool() {
 
             <div className="pa-6">
               <div className="flex align-center mb-5">
-                <Heading fontSize="20px !important">
+                <Heading fontSize="24px !important">
                   <TranslatedText translationId={102}>Your Liquidity</TranslatedText>
                 </Heading>
                 <Question

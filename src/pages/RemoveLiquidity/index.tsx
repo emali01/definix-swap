@@ -440,14 +440,16 @@ export default function RemoveLiquidity({
               onDismiss={handleDismissConfirmation}
               attemptingTxn={attemptingTxn}
               hash={txHash || ''}
-              content={() => (
+              confirmContent={() => (
                 <ConfirmationModalContent
+                  mainTitle="Confirm Liquidity"
                   title="You will receive"
-                  onDismiss={handleDismissConfirmation}
                   topContent={modalHeader}
                   bottomContent={modalBottom}
                 />
               )}
+              submittedContent={() => <>submit</>}
+              errorContent={() => <>error</>}
               pendingText={pendingText}
             />
             <CardBody p="32px !important">

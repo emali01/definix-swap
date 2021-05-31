@@ -25,7 +25,7 @@ export function FindPoolTabs() {
         <Text color="textSubtle">Back</Text>
       </HistoryLink>
       <div className="flex align-center mt-5">
-        <Heading fontSize="20px !important">Import Pool</Heading>
+        <Heading fontSize="24px !important">Import Pool</Heading>
         <QuestionHelper text={"Use this tool to find pairs that don't automatically appear in the interface."} />
       </div>
     </Tabs>
@@ -40,7 +40,7 @@ export function AddRemoveTabs({ adding }: { adding: boolean }) {
         <Text color="textSubtle">Back</Text>
       </HistoryLink>
       <div className="flex align-center mt-5">
-        <Heading fontSize="20px !important">{adding ? 'Add' : 'Remove'} Liquidity</Heading>
+        <Heading fontSize="24px !important">{adding ? 'Add' : 'Remove'} Liquidity</Heading>
         <QuestionHelper
           text={
             adding
