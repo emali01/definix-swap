@@ -83,6 +83,7 @@
     "@storybook/addon-essentials": "^6.1.18",
     "@storybook/addon-links": "^6.1.18",
     "@storybook/react": "^6.1.18",
+    "dotenv-cli": "^4.0.0",
     "@testing-library/jest-dom": "^5.11.6",
     "@testing-library/react": "^11.2.5",
     "@types/jest": "^26.0.20",
@@ -100,8 +101,8 @@
   "scripts": {
     "start": "NODE_ENV=development react-scripts start",
     "build": "react-scripts build",
-    "build:development": "NODE_ENV=development react-scripts build",
-    "build:production": "NODE_ENV=production react-scripts build",
+    "build:development": "NODE_ENV=development CI=false dotenv -e .env.development react-scripts build",
+    "build:production": "NODE_ENV=production CI=false dotenv -e .env.production react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}'",
