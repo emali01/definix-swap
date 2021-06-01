@@ -272,32 +272,32 @@ const Menu: React.FC<NavProps> = ({
                 <Button
                   variant="text"
                   size="sm"
-                  startIcon={<img src={bsc} alt="" width="24" className="mr-2" />}
+                  startIcon={<img src={klaytn} alt="" width="24" className="mr-2" />}
                   endIcon={<ChevronDownIcon className="ml-1" />}
                   color="text"
                   className="network"
                 >
                   <Text fontSize="12px" fontWeight="500">
-                    Binance Smart Chain
+                    Klaytn Chain
                   </Text>
                 </Button>
               }
             >
               <MenuButton
+                href="https://klaytn.definix.com"
+                variant="text"
+                startIcon={<img src={klaytn} alt="" width="24" className="mr-2" />}
+                className="color-primary mb-2"
+              >
+                Klaytn Chain
+              </MenuButton>
+              <MenuButton
+                href="https://bsc.definix.com"
                 variant="text"
                 startIcon={<img src={bsc} alt="" width="24" className="mr-2" />}
                 className="color-primary mb-2"
               >
                 Binance Smart Chain
-              </MenuButton>
-              <MenuButton
-                variant="text"
-                startIcon={<img src={klaytn} alt="" width="24" className="mr-2" />}
-                disabled
-                className="color-disable"
-                style={{ background: 'transparent' }}
-              >
-                Klaytn
               </MenuButton>
             </Dropdown>
           )}

@@ -1,6 +1,4 @@
 import { Credentials, StringTranslations } from '@crowdin/crowdin-api-client'
-import { useWeb3React } from '@web3-react/core'
-import { injected } from 'connectors'
 import React, { Suspense, useEffect, useState } from 'react'
 import { HashRouter, Route, Switch } from 'react-router-dom'
 import styled from 'styled-components'
