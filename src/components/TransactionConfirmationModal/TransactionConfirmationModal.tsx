@@ -1,41 +1,78 @@
 import React from 'react'
-import Modal from '../Modal'
+import styled from 'styled-components'
+import { Modal } from 'uikit-dev'
+import bg from 'uikit-dev/images/for-ui-v2/bg.png'
 import { useActiveWeb3React } from '../../hooks'
 import ConfirmationPendingContent from './ConfirmationPendingContent'
-import TransactionSubmittedContent from './TransactionSubmittedContent'
 
 interface ConfirmationModalProps {
   isOpen: boolean
+  isPending: boolean
+  isSubmitted: boolean
+  isError: boolean
+  confirmContent: () => React.ReactNode
+  submittedContent: () => React.ReactNode
+  errorContent: () => React.ReactNode
   onDismiss: () => void
-  hash: string | undefined
-  content: () => React.ReactNode
-  attemptingTxn: boolean
-  pendingText: string
 }
+
+const ModalWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: ${({ theme }) => theme.zIndices.modal - 1};
+  background: url(${bg});
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-color: ${({ theme }) => theme.colors.grayBlue};
+`
 
 const TransactionConfirmationModal = ({
   isOpen,
+  isPending,
+  isSubmitted,
+  isError,
+  confirmContent,
+  submittedContent,
+  errorContent,
   onDismiss,
-  attemptingTxn,
-  hash,
-  pendingText,
-  content
 }: ConfirmationModalProps) => {
   const { chainId } = useActiveWeb3React()
 
   if (!chainId) return null
 
   // confirmation screen
-  return (
-    <Modal isOpen={isOpen} onDismiss={onDismiss} maxHeight={90}>
-      {attemptingTxn ? (
-        <ConfirmationPendingContent onDismiss={onDismiss} pendingText={pendingText} />
-      ) : hash ? (
-        <TransactionSubmittedContent chainId={chainId} hash={hash} onDismiss={onDismiss} />
-      ) : (
-        content()
-      )}
-    </Modal>
+  return isOpen ? (
+    <ModalWrapper>
+      <Modal
+        title=""
+        onBack={!isPending ? onDismiss : undefined}
+        onDismiss={onDismiss}
+        isRainbow={false}
+        bodyPadding="0"
+        maxWidth="720px"
+        hideCloseButton
+        classHeader="bd-b-n"
+      >
+        {isPending ? (
+          <ConfirmationPendingContent />
+        ) : isSubmitted ? (
+          submittedContent()
+        ) : isError ? (
+          errorContent()
+        ) : (
+          confirmContent()
+        )}
+      </Modal>
+    </ModalWrapper>
+  ) : (
+    <></>
   )
 }
 

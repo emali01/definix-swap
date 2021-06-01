@@ -1,8 +1,11 @@
 import { currencyEquals, Trade } from 'definixswap-sdk'
+import { useActiveWeb3React } from 'hooks'
 import React, { useCallback, useMemo } from 'react'
+import { Button } from 'uikit-dev'
 import TransactionConfirmationModal, {
   ConfirmationModalContent,
-  TransactionErrorContent
+  TransactionErrorContent,
+  TransactionSubmittedContent,
 } from '../TransactionConfirmationModal'
 import SwapModalFooter from './SwapModalFooter'
 import SwapModalHeader from './SwapModalHeader'
@@ -33,7 +36,7 @@ export default function ConfirmSwapModal({
   swapErrorMessage,
   isOpen,
   attemptingTxn,
-  txHash
+  txHash,
 }: {
   isOpen: boolean
   trade: Trade | undefined
@@ -47,6 +50,8 @@ export default function ConfirmSwapModal({
   swapErrorMessage: string | undefined
   onDismiss: () => void
 }) {
+  const { chainId } = useActiveWeb3React()
+
   const showAcceptChanges = useMemo(
     () => Boolean(trade && originalTrade && tradeMeaningfullyDiffers(trade, originalTrade)),
     [originalTrade, trade]
@@ -64,6 +69,10 @@ export default function ConfirmSwapModal({
     ) : null
   }, [allowedSlippage, onAcceptChanges, recipient, showAcceptChanges, trade])
 
+  const modalHeaderWithoutAction = useCallback(() => {
+    return trade ? <SwapModalHeader trade={trade} onlyCurrency /> : null
+  }, [trade])
+
   const modalBottom = useCallback(() => {
     return trade ? (
       <SwapModalFooter
@@ -76,34 +85,64 @@ export default function ConfirmSwapModal({
     ) : null
   }, [allowedSlippage, onConfirm, showAcceptChanges, swapErrorMessage, trade])
 
-  // text to show while loading
-  const pendingText = `Swapping ${trade?.inputAmount?.toSignificant(6)} ${
-    trade?.inputAmount?.currency?.symbol
-  } for ${trade?.outputAmount?.toSignificant(6)} ${trade?.outputAmount?.currency?.symbol}`
+  const confirmContent = useCallback(
+    () => (
+      <ConfirmationModalContent
+        mainTitle="Confirm Swap"
+        title=""
+        topContent={modalHeader}
+        bottomContent={modalBottom}
+      />
+    ),
+    [modalBottom, modalHeader]
+  )
 
-  const confirmationContent = useCallback(
-    () =>
-      swapErrorMessage ? (
-        <TransactionErrorContent onDismiss={onDismiss} message={swapErrorMessage} />
-      ) : (
-        <ConfirmationModalContent
-          title="Confirm Swap"
-          onDismiss={onDismiss}
-          topContent={modalHeader}
-          bottomContent={modalBottom}
-        />
-      ),
-    [onDismiss, modalBottom, modalHeader, swapErrorMessage]
+  const submittedContent = useCallback(
+    () => (
+      <TransactionSubmittedContent
+        title="Swap Complete"
+        date="17 Apr 2021, 15:32"
+        chainId={chainId}
+        hash={txHash}
+        content={modalHeaderWithoutAction}
+        button={
+          <Button onClick={onDismiss} radii="card" fullWidth>
+            Back to Swap
+          </Button>
+        }
+      />
+    ),
+    [chainId, modalHeaderWithoutAction, onDismiss, txHash]
+  )
+
+  const errorContent = useCallback(
+    () => (
+      <TransactionErrorContent
+        title="Swap Failed"
+        date="17 Apr 2021, 15:32"
+        chainId={chainId}
+        hash={txHash}
+        content={modalHeaderWithoutAction}
+        button={
+          <Button onClick={onDismiss} radii="card" fullWidth>
+            Back to Swap
+          </Button>
+        }
+      />
+    ),
+    [chainId, modalHeaderWithoutAction, onDismiss, txHash]
   )
 
   return (
     <TransactionConfirmationModal
       isOpen={isOpen}
+      isPending={attemptingTxn}
+      isSubmitted={!!txHash}
+      isError={!!swapErrorMessage}
+      confirmContent={confirmContent}
+      submittedContent={submittedContent}
+      errorContent={errorContent}
       onDismiss={onDismiss}
-      attemptingTxn={attemptingTxn}
-      hash={txHash}
-      content={confirmationContent}
-      pendingText={pendingText}
     />
   )
 }
