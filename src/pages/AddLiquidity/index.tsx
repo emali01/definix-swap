@@ -26,6 +26,7 @@ import { useDerivedMintInfo, useMintActionHandlers, useMintState } from 'state/m
 import { useTransactionAdder } from 'state/transactions/hooks'
 import { useIsExpertMode, useUserDeadline, useUserSlippageTolerance } from 'state/user/hooks'
 import { AddIcon, Button, CardBody, Text, Text as UIKitText } from 'uikit-dev'
+import liquidity from 'uikit-dev/animation/liquidity.json'
 import { LeftPanel, MaxWidthLeft } from 'uikit-dev/components/TwoPanelLayout'
 import { calculateGasMargin, calculateSlippageAmount, getRouterContract } from 'utils'
 import { currencyId } from 'utils/currencyId'
@@ -494,6 +495,7 @@ export default function AddLiquidity({
             bottomContent={modalBottom}
           />
         )}
+        pendingIcon={liquidity}
         submittedContent={submittedContent}
         errorContent={errorContent}
         onDismiss={handleDismissConfirmation}

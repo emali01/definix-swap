@@ -11,6 +11,7 @@ interface ConfirmationModalProps {
   isSubmitted: boolean
   isError: boolean
   confirmContent: () => React.ReactNode
+  pendingIcon?: any
   submittedContent: () => React.ReactNode
   errorContent: () => React.ReactNode
   onDismiss: () => void
@@ -39,6 +40,7 @@ const TransactionConfirmationModal = ({
   isSubmitted,
   isError,
   confirmContent,
+  pendingIcon,
   submittedContent,
   errorContent,
   onDismiss,
@@ -61,7 +63,7 @@ const TransactionConfirmationModal = ({
         classHeader="bd-b-n"
       >
         {isPending ? (
-          <ConfirmationPendingContent />
+          <ConfirmationPendingContent pendingIcon={pendingIcon} />
         ) : isSubmitted ? (
           submittedContent()
         ) : isError ? (
