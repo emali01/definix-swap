@@ -22,6 +22,11 @@ export const FINIX_ADDRESS = {
   [ChainId.BAOBABTESTNET]: process.env.REACT_APP_FINIX_ADDRESS_TESTNET || "",
 }
 
+export const KSP_ADDRESS = {
+  [ChainId.MAINNET]: process.env.REACT_APP_KSP_ADDRESS_MAINNET || "",
+  [ChainId.BAOBABTESTNET]: process.env.REACT_APP_KSP_ADDRESS_TESTNET || "",
+}
+
 export const KDAI_ADDRESS = {
   [ChainId.MAINNET]: process.env.REACT_APP_KDAI_ADDRESS_MAINNET || "",
   [ChainId.BAOBABTESTNET]: process.env.REACT_APP_KDAI_ADDRESS_TESTNET || "",
@@ -52,9 +57,19 @@ export const FINIX_KLAY_LP = {
   [ChainId.BAOBABTESTNET]: process.env.REACT_APP_FINIX_KLAY_LP_TESTNET || "",
 }
 
+export const FINIX_KSP_LP = {
+  [ChainId.MAINNET]: process.env.REACT_APP_FINIX_KSP_LP_MAINNET || "",
+  [ChainId.BAOBABTESTNET]: process.env.REACT_APP_FINIX_KSP_LP_TESTNET || "",
+}
+
 export const SIX_KUSDT_LP = {
   [ChainId.MAINNET]: process.env.REACT_APP_SIX_KUSDT_LP_MAINNET || "",
   [ChainId.BAOBABTESTNET]: process.env.REACT_APP_SIX_KUSDT_LP_TESTNET || "",
+}
+
+export const SIX_KLAY_LP = {
+  [ChainId.MAINNET]: process.env.REACT_APP_SIX_KLAY_LP_MAINNET || "",
+  [ChainId.BAOBABTESTNET]: process.env.REACT_APP_SIX_KLAY_LP_TESTNET || "",
 }
 
 export const KUSDT_KDAI_LP = {
@@ -65,6 +80,36 @@ export const KUSDT_KDAI_LP = {
 export const KLAY_KUSDT_LP = {
   [ChainId.MAINNET]: process.env.REACT_APP_KLAY_KUSDT_LP_MAINNET || "",
   [ChainId.BAOBABTESTNET]: process.env.REACT_APP_KLAY_KUSDT_LP_TESTNET || "",
+}
+
+export const KLAY_KETH_LP = {
+  [ChainId.MAINNET]: process.env.REACT_APP_KLAY_KETH_LP_MAINNET || "",
+  [ChainId.BAOBABTESTNET]: process.env.REACT_APP_KLAY_KETH_LP_TESTNET || "",
+}
+
+export const KLAY_KBTC_LP = {
+  [ChainId.MAINNET]: process.env.REACT_APP_KLAY_KBTC_LP_MAINNET || "",
+  [ChainId.BAOBABTESTNET]: process.env.REACT_APP_KLAY_KBTC_LP_TESTNET || "",
+}
+
+export const KLAY_KXRP_LP = {
+  [ChainId.MAINNET]: process.env.REACT_APP_KLAY_KXRP_LP_MAINNET || "",
+  [ChainId.BAOBABTESTNET]: process.env.REACT_APP_KLAY_KXRP_LP_TESTNET || "",
+}
+
+export const KETH_KUSDT_LP = {
+  [ChainId.MAINNET]: process.env.REACT_APP_KETH_KUSDT_LP_MAINNET || "",
+  [ChainId.BAOBABTESTNET]: process.env.REACT_APP_KETH_KUSDT_LP_TESTNET || "",
+}
+
+export const KBTC_KUSDT_LP = {
+  [ChainId.MAINNET]: process.env.REACT_APP_KBTC_KUSDT_LP_MAINNET || "",
+  [ChainId.BAOBABTESTNET]: process.env.REACT_APP_KBTC_KUSDT_LP_TESTNET || "",
+}
+
+export const KXRP_KUSDT_LP = {
+  [ChainId.MAINNET]: process.env.REACT_APP_KXRP_KUSDT_LP_MAINNET || "",
+  [ChainId.BAOBABTESTNET]: process.env.REACT_APP_KXRP_KUSDT_LP_TESTNET || "",
 }
 
 export const HERODOTUS_ADDRESS = {
@@ -142,6 +187,10 @@ export const PINNED_PAIRS: { readonly [chainId in ChainId]?: [Token, Token][] } 
       new Token(ChainId.BAOBABTESTNET, WKLAY_ADDRESS[ChainId.MAINNET], 18, 'WKLAY', 'Wrapped KLAY'),
     ],
     [
+      new Token(ChainId.BAOBABTESTNET, FINIX_ADDRESS[ChainId.MAINNET], 18, 'FINIX', 'FINIX Token'),
+      new Token(ChainId.BAOBABTESTNET, KSP_ADDRESS[ChainId.MAINNET], 18, 'KSP', 'KLAY Swap Protocol'),
+    ],
+    [
       new Token(ChainId.BAOBABTESTNET, WKLAY_ADDRESS[ChainId.MAINNET], 18, 'WKLAY', 'Wrapped KLAY'),
       new Token(ChainId.BAOBABTESTNET, KUSDT_ADDRESS[ChainId.MAINNET], 18, 'KUSDT', 'USDT Token'),
     ],
@@ -170,6 +219,10 @@ export const PINNED_PAIRS: { readonly [chainId in ChainId]?: [Token, Token][] } 
     [
       new Token(ChainId.BAOBABTESTNET, FINIX_ADDRESS[ChainId.BAOBABTESTNET], 18, 'FINIX', 'FINIX Token'),
       new Token(ChainId.BAOBABTESTNET, WKLAY_ADDRESS[ChainId.BAOBABTESTNET], 18, 'WKLAY', 'Wrapped KLAY'),
+    ],
+    [
+      new Token(ChainId.BAOBABTESTNET, FINIX_ADDRESS[ChainId.BAOBABTESTNET], 18, 'FINIX', 'FINIX Token'),
+      new Token(ChainId.BAOBABTESTNET, KSP_ADDRESS[ChainId.BAOBABTESTNET], 18, 'KSP', 'KLAY Swap Protocol'),
     ],
     [
       new Token(ChainId.BAOBABTESTNET, WKLAY_ADDRESS[ChainId.BAOBABTESTNET], 18, 'WKLAY', 'Wrapped KLAY'),
