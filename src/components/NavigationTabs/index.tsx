@@ -1,9 +1,8 @@
 import QuestionHelper from 'components/QuestionHelper'
 import React from 'react'
-import { ArrowLeft } from 'react-feather'
 import { Link as HistoryLink } from 'react-router-dom'
 import styled from 'styled-components'
-import { Heading, Text } from 'uikit-dev'
+import { ArrowBackIcon, Button, Heading, Text } from 'uikit-dev'
 
 const Tabs = styled.div`
   display: flex;
@@ -11,19 +10,17 @@ const Tabs = styled.div`
   align-items: center;
   border-radius: ${({ theme }) => theme.radii.default};
   justify-content: space-evenly;
-`
-
-const StyledArrowLeft = styled(ArrowLeft)`
-  color: ${({ theme }) => theme.colors.text};
+  padding: 8px 8px 8px 24px !important;
 `
 
 export function FindPoolTabs() {
   return (
-    <Tabs className="flex flex-column pa-6 pb-0 align-start">
-      <HistoryLink to="/liquidity" className="flex align-center">
-        <StyledArrowLeft className="mr-2" width="16px" />
-        <Text color="textSubtle">Back</Text>
-      </HistoryLink>
+    <Tabs className="flex flex-column pb-0 align-start">
+      <Button variant="text" as={HistoryLink} to="/liquidity" ml="-12px" padding="0 12px" startIcon={<ArrowBackIcon />}>
+        <Text fontSize="14px" color="textSubtle">
+          Back
+        </Text>
+      </Button>
       <div className="flex align-center mt-5">
         <Heading fontSize="24px !important">Import Pool</Heading>
         <QuestionHelper text={"Use this tool to find pairs that don't automatically appear in the interface."} />
@@ -34,11 +31,12 @@ export function FindPoolTabs() {
 
 export function AddRemoveTabs({ adding }: { adding: boolean }) {
   return (
-    <Tabs className="flex flex-column pa-6 pb-0 align-start">
-      <HistoryLink to="/liquidity" className="flex align-center">
-        <StyledArrowLeft className="mr-2" width="16px" />
-        <Text color="textSubtle">Back</Text>
-      </HistoryLink>
+    <Tabs className="flex flex-column align-start">
+      <Button variant="text" as={HistoryLink} to="/liquidity" ml="-12px" padding="0 12px" startIcon={<ArrowBackIcon />}>
+        <Text fontSize="14px" color="textSubtle">
+          Back
+        </Text>
+      </Button>
       <div className="flex align-center mt-5">
         <Heading fontSize="24px !important">{adding ? 'Add' : 'Remove'} Liquidity</Heading>
         <QuestionHelper

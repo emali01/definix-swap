@@ -20,18 +20,19 @@ interface ConfirmationModalProps {
 const ModalWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
+  width: 100%;
+  padding: 24px;
   z-index: ${({ theme }) => theme.zIndices.modal - 1};
   background: url(${bg});
   background-size: cover;
   background-repeat: no-repeat;
   background-color: ${({ theme }) => theme.colors.grayBlue};
+
+  ${({ theme }) => theme.mediaQueries.sm} {
+    padding: 32px;
+  }
 `
 
 const TransactionConfirmationModal = ({
@@ -61,6 +62,7 @@ const TransactionConfirmationModal = ({
         maxWidth="720px"
         hideCloseButton
         classHeader="bd-b-n"
+        className="w-100"
       >
         {isPending ? (
           <ConfirmationPendingContent pendingIcon={pendingIcon} />

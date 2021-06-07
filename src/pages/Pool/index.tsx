@@ -12,7 +12,8 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { toV2LiquidityToken, useTrackedTokenPairs } from 'state/user/hooks'
 import { useTokenBalancesWithLoadingIndicator } from 'state/wallet/hooks'
-import { Button, Card, Heading, Text } from 'uikit-dev'
+import { Button, Card, Heading, Text, useMatchBreakpoints } from 'uikit-dev'
+import { Overlay } from 'uikit-dev/components/Overlay'
 import { LeftPanel, MaxWidthLeft, MaxWidthRight, RightPanel, ShowHideButton } from 'uikit-dev/components/TwoPanelLayout'
 import { TranslateString } from 'utils/translateTextHelpers'
 import Flip from '../../uikit-dev/components/Flip'
@@ -50,6 +51,8 @@ const TimerWrapper = ({ isPhrase2, date, children }) => {
 export default function Pool() {
   const { account } = useActiveWeb3React()
   const [isShowRightPanel, setIsShowRightPanel] = useState(false)
+  const { isXl } = useMatchBreakpoints()
+  const isMobileOrTablet = !isXl
 
   // fetch the user's balances of all tracked V2 LP tokens
   const trackedTokenPairs = useTrackedTokenPairs()
@@ -96,6 +99,12 @@ export default function Pool() {
   const allV2PairsWithLiquidity = v2Pairs.map(([, pair]) => pair).filter((v2Pair): v2Pair is Pair => Boolean(v2Pair))
 
   useEffect(() => {
+    if (isMobileOrTablet) {
+      setIsShowRightPanel(false)
+    }
+  }, [isMobileOrTablet])
+
+  useEffect(() => {
     return () => {
       setIsShowRightPanel(false)
     }
@@ -104,6 +113,13 @@ export default function Pool() {
   return (
     <TimerWrapper isPhrase2={!(currentTime < phrase2TimeStamp && isPhrase2 === false)} date={phrase2TimeStamp}>
       <LeftPanel isShowRightPanel={isShowRightPanel}>
+        <Overlay
+          show={isShowRightPanel && isMobileOrTablet}
+          style={{ position: 'absolute', zIndex: 6 }}
+          onClick={() => {
+            setIsShowRightPanel(false)
+          }}
+        />
         <MaxWidthLeft>
           <AppBody
             title={

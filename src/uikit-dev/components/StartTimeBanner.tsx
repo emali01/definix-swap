@@ -45,7 +45,7 @@ const StartTimeBanner = ({ logo, title, detail, topTitle, topValue, endTime, but
     days: 0,
     hours: 0,
     min: 0,
-    sec: 0
+    sec: 0,
   })
 
   const calculateCountdown = () => {
@@ -66,7 +66,7 @@ const StartTimeBanner = ({ logo, title, detail, topTitle, topValue, endTime, but
       hours: 0,
       min: 0,
       sec: 0,
-      millisec: 0
+      millisec: 0,
     }
 
     timeLeft.days = Math.floor(diff / 86400)
@@ -80,7 +80,7 @@ const StartTimeBanner = ({ logo, title, detail, topTitle, topValue, endTime, but
     return timeLeft
   }
 
-  const addLeadingZeros = value => {
+  const addLeadingZeros = (value) => {
     let val = String(value)
     while (val.length < 2) {
       val = `0${val}`
@@ -113,7 +113,7 @@ const StartTimeBanner = ({ logo, title, detail, topTitle, topValue, endTime, but
         {endTime && (
           <Text bold color="#ffd157" fontSize="24px" textAlign="center">
             {`${addLeadingZeros(timer.days)}:${addLeadingZeros(timer.hours)}:${addLeadingZeros(
-              timer.min
+              timer.min,
             )}:${addLeadingZeros(timer.sec)}`}
           </Text>
         )}

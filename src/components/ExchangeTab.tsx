@@ -9,6 +9,9 @@ const Tabs = styled.div`
   align-items: center;
   justify-content: stretch;
   background: ${({ theme }) => theme.colors.backgroundDisabled};
+  overflow-x: auto;
+  overflow-y: hidden;
+  height: 56px;
 `
 
 const Tab = styled(NavLink)<{ active: boolean }>`
@@ -17,7 +20,7 @@ const Tab = styled(NavLink)<{ active: boolean }>`
   flex-grow: 1;
   text-align: center;
   padding: 20px;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
   background: ${({ theme, active }) => (active ? theme.colors.backgroundBlueGradient : 'transparent')};
   color: ${({ theme, active }) => (active ? theme.colors.white : theme.colors.textSubtle)};
@@ -36,6 +39,10 @@ const Tab = styled(NavLink)<{ active: boolean }>`
 
   &:hover {
     color: ${({ theme, active }) => (active ? theme.colors.white : theme.colors.primary)};
+  }
+
+  ${({ theme }) => theme.mediaQueries.sm} {
+    font-size: 16px;
   }
 `
 

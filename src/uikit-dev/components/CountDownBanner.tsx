@@ -50,17 +50,17 @@ const CountDownBanner = ({
   topValue,
   endTime,
   button,
-  disableCountdown = false
+  disableCountdown = false,
 }: CountDownBannerProps) => {
   const currentTime = new Date().getTime()
   const [timer, setTime] = useState({
     days: 0,
     hours: 0,
     min: 0,
-    sec: 0
+    sec: 0,
   })
 
-  const calculateCountdown = endDate => {
+  const calculateCountdown = (endDate) => {
     let diff = (new Date(endDate).getTime() - new Date().getTime()) / 1000
 
     // clear countdown when date is reached
@@ -72,7 +72,7 @@ const CountDownBanner = ({
       hours: 0,
       min: 0,
       sec: 0,
-      millisec: 0
+      millisec: 0,
     }
 
     // calculate time difference between now and expected date
@@ -100,7 +100,7 @@ const CountDownBanner = ({
     return timeLeft
   }
 
-  const addLeadingZeros = value => {
+  const addLeadingZeros = (value) => {
     let val = String(value)
     while (val.length < 2) {
       val = `0${val}`

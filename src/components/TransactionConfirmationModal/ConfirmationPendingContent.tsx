@@ -21,7 +21,7 @@ const ConfirmationPendingContent = ({ pendingIcon }) => {
   return (
     <div
       className="flex align-center justify-center pa-6"
-      style={{ position: 'relative', width: '480px', height: '480px' }}
+      style={{ position: 'relative', width: '480px', maxWidth: '100%', height: '480px' }}
     >
       <Lottie options={options} height={120} width={120} />
       {pendingIcon && <TextCenter color="textSubtle">Progressing…</TextCenter>}
