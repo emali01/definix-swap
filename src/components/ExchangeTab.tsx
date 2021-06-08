@@ -9,22 +9,23 @@ const Tabs = styled.div`
   align-items: center;
   justify-content: stretch;
   background: ${({ theme }) => theme.colors.backgroundDisabled};
-  overflow-x: auto;
-  overflow-y: hidden;
   height: 56px;
 `
 
 const Tab = styled(NavLink)<{ active: boolean }>`
   position: relative;
-  display: block;
-  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
-  padding: 20px;
+  padding: 12px;
   font-size: 14px;
   font-weight: bold;
   background: ${({ theme, active }) => (active ? theme.colors.backgroundBlueGradient : 'transparent')};
   color: ${({ theme, active }) => (active ? theme.colors.white : theme.colors.textSubtle)};
   border-right: 1px solid ${({ theme }) => theme.colors.textDisabled};
+  width: 33.333%;
+  height: 100%;
 
   &:before {
     content: '';
@@ -43,6 +44,7 @@ const Tab = styled(NavLink)<{ active: boolean }>`
 
   ${({ theme }) => theme.mediaQueries.sm} {
     font-size: 16px;
+    padding: 16px;
   }
 `
 
@@ -52,6 +54,7 @@ const StyleButton = styled(IconButton)`
   background: transparent !important;
   height: 56px;
   border-radius: 0;
+  flex-shrink: 0;
 
   svg {
     stroke: ${({ theme }) => theme.colors.text} !important;
