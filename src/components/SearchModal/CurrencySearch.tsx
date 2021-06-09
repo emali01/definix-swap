@@ -188,7 +188,7 @@ export function CurrencySearch({
         {showCommonBases && (
           <CommonBases chainId={chainId} onSelect={handleCurrencySelect} selectedCurrency={selectedCurrency} />
         )}
-        <RowBetween>
+        <RowBetween className="pb-2">
           <Heading>
             <TranslatedText translationId={126}>Token name</TranslatedText>
           </Heading>

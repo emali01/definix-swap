@@ -1,6 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-import bg from 'uikit-dev/images/for-ui-v2/bg.png'
 import { Button } from './Button'
 import { ChevronLeftIcon, ChevronRightIcon } from './Svg'
 
@@ -32,7 +31,7 @@ export const MaxWidthRight = styled(MaxWidth)`
 export const LeftPanel = styled.div<{ isShowRightPanel: boolean }>`
   width: 100%;
   padding: 24px;
-  background: url(${bg});
+  background: url(${({ theme }) => theme.colors.backgroundPolygon});
   background-size: cover;
   background-repeat: no-repeat;
   transition: 0.1s;
@@ -53,12 +52,13 @@ export const RightPanel = styled.div<{ isShowRightPanel: boolean }>`
   transition: 0.1s;
   transform: ${({ isShowRightPanel }) => (isShowRightPanel ? 'translateX(0)' : 'translateX(100%)')};
   background: ${({ theme }) => theme.colors.backgroundRadial};
+  box-shadow: ${({ theme }) => theme.shadows.inset3};
 
   > .show-hide {
     position: absolute;
     top: 16px;
     right: 100%;
-    background: ${({ theme }) => theme.colors.white};
+    background: ${({ theme }) => theme.colors.card};
     border-radius: 0;
     border-top-left-radius: ${({ theme }) => theme.radii.medium};
     border-bottom-left-radius: ${({ theme }) => theme.radii.medium};
@@ -72,6 +72,7 @@ export const RightPanel = styled.div<{ isShowRightPanel: boolean }>`
 
     svg {
       margin: 0 0 2px 0;
+      fill: ${({ theme }) => theme.colors.textSubtle};
     }
   }
 

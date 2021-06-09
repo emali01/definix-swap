@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text } from 'uikit-dev'
+import { IconButton, Text } from 'uikit-dev'
 import styled from 'styled-components'
 import { RowFixed } from '../Row'
 
@@ -25,8 +25,8 @@ export default function SortButton({
   ascending: boolean
 }) {
   return (
-    <FilterWrapper onClick={toggleSortOrder}>
+    <IconButton size="sm" variant="text" onClick={toggleSortOrder}>
       <Text fontSize="1rem">{ascending ? '↑' : '↓'}</Text>
-    </FilterWrapper>
+    </IconButton>
   )
 }

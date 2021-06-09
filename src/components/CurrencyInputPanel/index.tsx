@@ -41,7 +41,7 @@ const CurrencySelect = styled.button<{ selected: boolean }>`
 
   :focus,
   :hover {
-    background-color: ${({ theme }) => theme.colors.input};
+    background-color: ${({ theme }) => theme.colors.tertiary};
   }
 `
 const Aligner = styled.span`
@@ -122,10 +122,10 @@ export default function CurrencyInputPanel({
                 onUserInput={(val) => {
                   onUserInput(val)
                 }}
-                style={{ width: isMobile && currency && showMaxButton && label ? '100%' : '0' }}
+                style={{ width: isMobile && currency && showMaxButton && label ? '100%' : 'auto' }}
               />
               {account && currency && showMaxButton && label !== 'To' && (
-                <div className="flex align-center justify-end" style={{ width: isMobile ? '100%' : '0' }}>
+                <div className="flex align-center justify-end" style={{ width: isMobile ? '100%' : 'auto' }}>
                   <AnountButton
                     title="25%"
                     onClick={() => {

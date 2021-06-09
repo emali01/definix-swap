@@ -1,6 +1,7 @@
 import axios from 'axios'
 import _ from 'lodash'
 import throttle from 'lodash/throttle'
+import numeral from 'numeral'
 import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import CountDownBanner from 'uikit-dev/components/CountDownBanner'
@@ -53,7 +54,7 @@ const StyledNav = styled.nav<{ showMenu: boolean }>`
   z-index: 20;
   height: ${MENU_HEIGHT}px;
   transform: translate3d(0, 0, 0);
-  background: ${({ theme }) => theme.colors.white};
+  background: ${({ theme }) => theme.colors.backgroundHeader};
 
   &:before {
     content: '';
@@ -80,7 +81,7 @@ const BodyWrapper = styled.div`
   position: relative;
   display: flex;
   flex-grow: 1;
-  background: ${({ theme }) => theme.colors.white};
+  background: ${({ theme }) => theme.colors.backgroundSideMenu};
 
   ${({ theme }) => theme.mediaQueries.md} {
     min-height: calc(100% - 124px);
@@ -94,7 +95,7 @@ const Inner = styled.div<{ isPushed: boolean; showMenu: boolean }>`
   max-width: 100%;
   overflow-y: auto;
   overflow-x: hidden;
-  background: ${({ theme }) => theme.colors.white};
+  background: ${({ theme }) => theme.colors.backgroundSideMenu};
 
   ${({ theme }) => theme.mediaQueries.md} {
     padding-top: 12px;
@@ -108,10 +109,11 @@ const InnerBg = styled.div`
   height: 100%;
   display: flex;
   flex-direction: column;
+  box-shadow: ${({ theme }) => theme.shadows.inset3};
 
   ${({ theme }) => theme.mediaQueries.md} {
-    border-top-left-radius: ${({ theme }) => theme.radii.large};
-    border-bottom-left-radius: ${({ theme }) => theme.radii.large};
+    border-top-left-radius: ${({ theme }) => theme.radii.medium};
+    border-bottom-left-radius: ${({ theme }) => theme.radii.medium};
   }
 `
 
@@ -157,7 +159,7 @@ const Menu: React.FC<NavProps> = ({
   login,
   logout,
   isDark,
-  toggleTheme,
+  setIsDark,
   langs,
   setLang,
   currentLang,
@@ -171,7 +173,7 @@ const Menu: React.FC<NavProps> = ({
   const [isPushed, setIsPushed] = useState(false)
   const [showMenu, setShowMenu] = useState(true)
   const refPrevOffset = useRef(window.pageYOffset)
-  const Icons = (IconModule as unknown) as { [key: string]: React.FC<SvgProps> }
+  const Icons = IconModule as unknown as { [key: string]: React.FC<SvgProps> }
   const { LanguageIcon } = Icons
   const IconFlag = () => {
     if (currentLang === 'en') {
@@ -307,7 +309,7 @@ const Menu: React.FC<NavProps> = ({
               <img src={FinixCoin} alt="" />
               <p>
                 <span>FINIX : </span>
-                <strong>${price}</strong>
+                <strong>${(price || 0) <= 0 ? 'N/A' : numeral(price).format('0,0.0000')}</strong>
               </p>
             </Price>
           )}
@@ -345,7 +347,7 @@ const Menu: React.FC<NavProps> = ({
           isMobile={isMobile}
           showMenu={showMenu}
           isDark={isDark}
-          toggleTheme={toggleTheme}
+          setIsDark={setIsDark}
           langs={langs}
           setLang={setLang}
           currentLang={currentLang}

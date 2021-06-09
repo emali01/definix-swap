@@ -1,7 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Modal } from 'uikit-dev'
-import bg from 'uikit-dev/images/for-ui-v2/bg.png'
 import { useActiveWeb3React } from '../../hooks'
 import ConfirmationPendingContent from './ConfirmationPendingContent'
 
@@ -25,10 +24,10 @@ const ModalWrapper = styled.div`
   width: 100%;
   padding: 24px;
   z-index: ${({ theme }) => theme.zIndices.modal - 1};
-  background: url(${bg});
+  background: url(${({ theme }) => theme.colors.backgroundPolygon});
   background-size: cover;
   background-repeat: no-repeat;
-  background-color: ${({ theme }) => theme.colors.grayBlue};
+  background-color: ${({ theme }) => theme.colors.backgroundRadial};
 
   ${({ theme }) => theme.mediaQueries.sm} {
     padding: 32px;

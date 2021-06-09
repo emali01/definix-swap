@@ -78,7 +78,7 @@ const ExchangeTab = ({ current }) => {
       <Tab to="/liquidity" active={current === '/liquidity'}>
         LIQUIDITY
       </Tab>
-      <Tab to="#" active={current === '/bridge'}>
+      <Tab as="a" href="https://bridge.six.network" target="_blank" active={current === '/bridge'}>
         BRIDGE
       </Tab>
       <StyleButton variant="text" onClick={onPresentSettings} title="Settings">
