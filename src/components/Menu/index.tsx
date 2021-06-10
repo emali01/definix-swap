@@ -14,7 +14,7 @@ import useFinixPrice from '../../hooks/useFinixPrice'
 const Menu: React.FC = (props) => {
   const { account, activate, deactivate } = useWeb3React()
   const { selectedLanguage, setSelectedLanguage } = useContext(LanguageContext)
-  const { isDark, setIsDark } = useTheme()
+  const { isDark, toggleTheme } = useTheme()
   const priceData = useGetPriceData()
   const finixPrice = useFinixPrice()
   const finixPriceUsd = priceData ? Number(priceData.prices.Finix) : undefined
@@ -37,7 +37,7 @@ const Menu: React.FC = (props) => {
       }}
       logout={deactivate}
       isDark={isDark}
-      setIsDark={setIsDark}
+      toggleTheme={toggleTheme}
       currentLang={selectedLanguage?.code || 'en'}
       langs={allLanguages}
       setLang={setSelectedLanguage}
