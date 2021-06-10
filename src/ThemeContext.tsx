@@ -1,19 +1,18 @@
 import React, { useState } from 'react'
 import { ThemeProvider as SCThemeProvider } from 'styled-components'
-import { light, dark } from 'uikit-dev'
+import light from 'uikit-dev/theme/light'
+import dark from 'uikit-dev/theme/dark'
 
 const CACHE_KEY = 'IS_DARK'
 
 export interface ThemeContextType {
   isDark: boolean
-  toggleTheme: () => void
-  setIsDark: (theme) => void
+  toggleTheme: (isDarkMode) => void
 }
 
 const ThemeContext = React.createContext<ThemeContextType>({
   isDark: false,
-  toggleTheme: () => null,
-  setIsDark: (theme) => null,
+  toggleTheme: (isDarkMode) => null,
 })
 
 const ThemeContextProvider: React.FC = ({ children }) => {
@@ -22,15 +21,15 @@ const ThemeContextProvider: React.FC = ({ children }) => {
     return isDarkUserSetting ? JSON.parse(isDarkUserSetting) : false
   })
 
-  const toggleTheme = () => {
-    setIsDark((prevState: any) => {
-      localStorage.setItem(CACHE_KEY, JSON.stringify(!prevState))
-      return !prevState
+  const toggleTheme = (isDarkmode) => {
+    setIsDark(() => {
+      localStorage.setItem(CACHE_KEY, JSON.stringify(isDarkmode))
+      return isDarkmode
     })
   }
 
   return (
-    <ThemeContext.Provider value={{ isDark, toggleTheme, setIsDark }}>
+    <ThemeContext.Provider value={{ isDark, toggleTheme }}>
       <SCThemeProvider theme={isDark ? dark : light}>{children}</SCThemeProvider>
     </ThemeContext.Provider>
   )
