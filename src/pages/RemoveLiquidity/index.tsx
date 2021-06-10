@@ -315,7 +315,7 @@ export default function RemoveLiquidity({
 
   const modalHeader = useCallback(() => {
     return (
-      <div style={{ width: '480px', maxWidth: '100%' }}>
+      <div>
         <AutoColumn gap="24px">
           <AutoColumn gap="16px">
             <RowBetween align="flex-end">

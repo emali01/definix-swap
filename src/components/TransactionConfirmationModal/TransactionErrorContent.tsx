@@ -16,9 +16,9 @@ type TransactionSubmittedContentProps = {
 
 const TransactionErrorContent = ({ title, date, chainId, hash, content, button }: TransactionSubmittedContentProps) => {
   return (
-    <div className="pa-6 pt-4" style={{ position: 'relative', width: '480px', maxWidth: '100%' }}>
+    <div className="pa-6 pt-4" style={{ position: 'relative' }}>
       <div className="flex flex-column align-center justify-center mb-6">
-        <ErrorIcon width="80px" className="mb-3" />
+        <ErrorIcon width="80px" color="failure" className="mb-3" />
         <Heading fontSize="24px !important" textAlign="center">
           {title}
         </Heading>

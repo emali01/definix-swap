@@ -27,10 +27,9 @@ const ModalWrapper = styled.div`
   background: url(${({ theme }) => theme.colors.backgroundPolygon});
   background-size: cover;
   background-repeat: no-repeat;
-  background-color: ${({ theme }) => theme.colors.backgroundRadial};
 
   ${({ theme }) => theme.mediaQueries.sm} {
-    padding: 32px;
+    padding: 40px;
   }
 `
 
@@ -58,7 +57,7 @@ const TransactionConfirmationModal = ({
         onDismiss={onDismiss}
         isRainbow={false}
         bodyPadding="0"
-        maxWidth="600px"
+        maxWidth="480px"
         hideCloseButton
         classHeader="bd-b-n"
         className="w-100"

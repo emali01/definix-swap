@@ -198,7 +198,7 @@ export default function AddLiquidity({
 
   const modalHeader = useCallback(() => {
     return (
-      <div style={{ width: '480px', maxWidth: '100%' }}>
+      <div>
         {noLiquidity ? (
           <RowFixed mb="0 !important">
             <DoubleCurrencyLogo

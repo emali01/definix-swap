@@ -31,7 +31,7 @@ const TransactionSubmittedContent = ({
   button,
 }: TransactionSubmittedContentProps) => {
   return (
-    <div className="pa-6 pt-4" style={{ position: 'relative', width: '480px', maxWidth: '100%' }}>
+    <div className="pa-6 pt-4" style={{ position: 'relative' }}>
       <div className="flex flex-column align-center justify-center mb-6">
         <Lottie options={options} height={120} width={120} />
         <Heading fontSize="24px !important" textAlign="center">

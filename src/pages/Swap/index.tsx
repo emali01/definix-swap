@@ -558,12 +558,14 @@ const Swap = () => {
         />
       )}
       <RightPanel isShowRightPanel={isShowRightPanel}>
-        <ShowHideButton
-          isShow={isShowRightPanel}
-          action={() => {
-            setIsShowRightPanel(!isShowRightPanel)
-          }}
-        />
+        {!showConfirm && (
+          <ShowHideButton
+            isShow={isShowRightPanel}
+            action={() => {
+              setIsShowRightPanel(!isShowRightPanel)
+            }}
+          />
+        )}
 
         {isShowRightPanel && (
           <MaxWidthRight>
