@@ -58,7 +58,7 @@ const TransactionConfirmationModal = ({
         onDismiss={onDismiss}
         isRainbow={false}
         bodyPadding="0"
-        maxWidth="720px"
+        maxWidth="600px"
         hideCloseButton
         classHeader="bd-b-n"
         className="w-100"

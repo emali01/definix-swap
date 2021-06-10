@@ -53,6 +53,7 @@ const StyleButton = styled(IconButton)`
   width: auto;
   background: transparent !important;
   height: 56px;
+  width: 56px !important;
   border-radius: 0;
   flex-shrink: 0;
 

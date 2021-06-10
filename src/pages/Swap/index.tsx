@@ -567,7 +567,7 @@ const Swap = () => {
 
         {isShowRightPanel && (
           <MaxWidthRight>
-            <Heading fontSize="18px !important" className="mb-3">
+            <Heading fontSize="20px !important" className="mb-3">
               SWAP HISTORY
             </Heading>
             <Card style={{ overflow: 'auto' }}>

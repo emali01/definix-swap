@@ -6,7 +6,7 @@ import CurrencyLogo from './CurrencyLogo'
 const Currency = styled.div`
   display: flex;
   align-items: center;
-  margin: 0 8px;
+  margin-right: 8px;
 `
 
 const Box = styled.div`
@@ -28,33 +28,50 @@ const TransactionHistoryBox = ({ title, firstCoin, secondCoin, withText, date, i
         <Text fontSize="12px" color={isFailed ? 'failure' : 'success'} className="flex align-center" bold>
           {isFailed ? (
             <>
-              <ErrorIcon className="mr-2" /> Failed
+              <ErrorIcon className="mr-2" color={isFailed ? 'failure' : 'success'} /> Failed
             </>
           ) : (
             <>
-              <CheckmarkCircleIcon className="mr-2" /> Complete
+              <CheckmarkCircleIcon className="mr-2" color={isFailed ? 'failure' : 'success'} /> Complete
             </>
           )}
         </Text>
       </div>
 
-      <div className="flex align-center flex-wrap my-2">
-        <Text>{title}</Text>
-        <Currency>
-          <CurrencyLogo currency={firstCoin} size="24px" style={{ marginRight: '8px' }} />
-          <Text bold>0.219 FINIX</Text>
-        </Currency>
-        <Text color="textSubtle">{withText}</Text>
-        <Currency>
-          <CurrencyLogo currency={secondCoin} size="24px" style={{ marginRight: '8px' }} />
-          <Text bold>0.00985 BNB</Text>
-        </Currency>
+      <div className="flex align-center justify-space-between my-2">
+        <Text fontSize="12px" bold>
+          {title}
+        </Text>
+        <Link
+          external
+          href="/"
+          bold={false}
+          color="textSubtle"
+          fontSize="12px"
+          style={{ display: 'inline-flex', marginRight: '-7px' }}
+        >
+          View on BscScan
+          <ChevronRightIcon color="textSubtle" />
+        </Link>
       </div>
 
-      <Link external href="/" bold={false} color="textSubtle" fontSize="12px" style={{ display: 'inline-flex' }}>
-        View on BscScan
-        <ChevronRightIcon color="textSubtle" />
-      </Link>
+      <div className="flex align-center flex-wrap">
+        <Currency>
+          <CurrencyLogo currency={firstCoin} size="20px" style={{ marginRight: '8px' }} />
+          <Text bold fontSize="12px">
+            0.219 FINIX
+          </Text>
+        </Currency>
+        <Text color="textSubtle" className="mr-2" fontSize="12px">
+          {withText}
+        </Text>
+        <Currency>
+          <CurrencyLogo currency={secondCoin} size="20px" style={{ marginRight: '8px' }} />
+          <Text bold fontSize="12px">
+            0.00985 BNB
+          </Text>
+        </Currency>
+      </div>
     </Box>
   )
 }
