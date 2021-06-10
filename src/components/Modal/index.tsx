@@ -32,9 +32,9 @@ const StyledDialogContent = styled(({ minHeight, maxHeight, mobile, isOpen, ...r
 })`
   &[data-reach-dialog-content] {
     margin: 0 0 2rem 0;
-    border: 1px solid ${({ theme }) => theme.colors.invertedContrast};
-    background-color: ${({ theme }) => theme.colors.invertedContrast};
-    box-shadow: 0 4px 8px 0 ${transparentize(0.95, '#191326')};
+    border: 1px solid ${({ theme }) => theme.colors.card};
+    background-color: ${({ theme }) => theme.colors.card};
+    box-shadow: 0px 20px 36px -8px rgba(14, 14, 44, 0.1), 0px 1px 1px rgba(0, 0, 0, 0.05);
     padding: 0px;
     width: 80%;
     overflow: hidden;

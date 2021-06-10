@@ -5,11 +5,16 @@ import { light, dark } from 'uikit-dev'
 const CACHE_KEY = 'IS_DARK'
 
 export interface ThemeContextType {
-  isDark: boolean;
-  toggleTheme: () => void;
+  isDark: boolean
+  toggleTheme: () => void
+  setIsDark: (theme) => void
 }
 
-const ThemeContext = React.createContext<ThemeContextType>({ isDark: false, toggleTheme: () => null })
+const ThemeContext = React.createContext<ThemeContextType>({
+  isDark: false,
+  toggleTheme: () => null,
+  setIsDark: (theme) => null,
+})
 
 const ThemeContextProvider: React.FC = ({ children }) => {
   const [isDark, setIsDark] = useState(() => {
@@ -25,7 +30,7 @@ const ThemeContextProvider: React.FC = ({ children }) => {
   }
 
   return (
-    <ThemeContext.Provider value={{ isDark, toggleTheme }}>
+    <ThemeContext.Provider value={{ isDark, toggleTheme, setIsDark }}>
       <SCThemeProvider theme={isDark ? dark : light}>{children}</SCThemeProvider>
     </ThemeContext.Provider>
   )

@@ -1,7 +1,7 @@
 import { Currency, Pair } from 'definixswap-sdk'
 import React, { useCallback, useState } from 'react'
 import styled from 'styled-components'
-import { ChevronDownIcon, Text } from 'uikit-dev'
+import { ChevronDownIcon, Text, useMatchBreakpoints } from 'uikit-dev'
 import AnountButton from 'uikit-dev/components/AnountButton'
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
@@ -17,7 +17,9 @@ const Container = styled.div<{ hideInput: boolean }>``
 const InputBox = styled.div`
   display: flex;
   flex-flow: row nowrap;
+  flex-wrap: wrap;
   align-items: center;
+  justify-content: flex-end;
   padding: 0.5rem 0.5rem 0.5rem 1rem;
   background: ${({ theme }) => theme.colors.backgroundBox};
   border-radius: ${({ theme }) => theme.radii.default};
@@ -39,7 +41,7 @@ const CurrencySelect = styled.button<{ selected: boolean }>`
 
   :focus,
   :hover {
-    background-color: ${({ theme }) => theme.colors.input};
+    background-color: ${({ theme }) => theme.colors.tertiary};
   }
 `
 const Aligner = styled.span`
@@ -85,6 +87,8 @@ export default function CurrencyInputPanel({
   const [modalOpen, setModalOpen] = useState(false)
   const { account } = useActiveWeb3React()
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
+  const { isXl, isMd } = useMatchBreakpoints()
+  const isMobile = !isXl && !isMd
 
   const handleDismissSearch = useCallback(() => {
     setModalOpen(false)
@@ -118,9 +122,10 @@ export default function CurrencyInputPanel({
                 onUserInput={(val) => {
                   onUserInput(val)
                 }}
+                style={{ width: isMobile && currency && showMaxButton && label ? '100%' : 'auto' }}
               />
               {account && currency && showMaxButton && label !== 'To' && (
-                <>
+                <div className="flex align-center justify-end" style={{ width: isMobile ? '100%' : 'auto' }}>
                   <AnountButton
                     title="25%"
                     onClick={() => {
@@ -134,7 +139,7 @@ export default function CurrencyInputPanel({
                     }}
                   />
                   <AnountButton title="MAX" onClick={onMax} />
-                </>
+                </div>
               )}
             </>
           )}

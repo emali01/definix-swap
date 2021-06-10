@@ -133,6 +133,11 @@ const GlobalStyle = createGlobalStyle`
   .bd-x-n { border-right: none; border-left: none !important; }
   .bd-y-n { border-top: none; border-bottom: none !important; }
 
+  .w-100 { width: 100% !important; }
+  .w-auto { width: auto !important; }
+  .h-100 { height: 100% !important; }
+  .h-auto { height: auto !important; }
+
   .ma-0 {
     margin: 0 !important;
   }

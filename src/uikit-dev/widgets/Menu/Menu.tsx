@@ -1,8 +1,9 @@
 import axios from 'axios'
+import _ from 'lodash'
 import throttle from 'lodash/throttle'
+import numeral from 'numeral'
 import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-import _ from 'lodash'
 import CountDownBanner from 'uikit-dev/components/CountDownBanner'
 import StartTimeBanner from 'uikit-dev/components/StartTimeBanner'
 import logoTrade from 'uikit-dev/images/for-trading-challenge/Definix-Trading-Challenge-29.png'
@@ -12,13 +13,11 @@ import Button from '../../components/Button/Button'
 import Dropdown from '../../components/Dropdown/Dropdown'
 import { Flex } from '../../components/Flex'
 import Footer from '../../components/Footer'
-import Link from '../../components/Link/Link'
 import Overlay from '../../components/Overlay/Overlay'
 import { SvgProps } from '../../components/Svg'
 import ChevronDownIcon from '../../components/Svg/Icons/ChevronDown'
 import Text from '../../components/Text/Text'
 import { useMatchBreakpoints } from '../../hooks'
-import logoDesktop from '../../images/Definix-advance-crypto-assets.png'
 import en from '../../images/en.png'
 import FinixCoin from '../../images/finix-coin.png'
 import bsc from '../../images/Logo-BinanceSmartChain.png'
@@ -26,6 +25,7 @@ import klaytn from '../../images/Logo-Klaytn.png'
 import th from '../../images/th.png'
 import { MENU_HEIGHT } from './config'
 import * as IconModule from './icons'
+import Logo from './Logo'
 import MenuButton from './MenuButton'
 import Panel from './Panel'
 import { NavProps } from './types'
@@ -48,13 +48,13 @@ const StyledNav = styled.nav<{ showMenu: boolean }>`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 24px;
+  padding: 0 16px;
   width: 100%;
   position: relative;
   z-index: 20;
   height: ${MENU_HEIGHT}px;
   transform: translate3d(0, 0, 0);
-  background: ${({ theme }) => theme.colors.white};
+  background: ${({ theme }) => theme.colors.backgroundHeader};
 
   &:before {
     content: '';
@@ -71,13 +71,17 @@ const StyledNav = styled.nav<{ showMenu: boolean }>`
   .network {
     // box-shadow: ${({ theme }) => theme.shadows.elevation1};
   }
+
+  ${({ theme }) => theme.mediaQueries.md} {
+    padding: 0 24px;
+  }
 `
 
 const BodyWrapper = styled.div`
   position: relative;
   display: flex;
   flex-grow: 1;
-  background: ${({ theme }) => theme.colors.white};
+  background: ${({ theme }) => theme.colors.backgroundSideMenu};
 
   ${({ theme }) => theme.mediaQueries.md} {
     min-height: calc(100% - 124px);
@@ -91,17 +95,26 @@ const Inner = styled.div<{ isPushed: boolean; showMenu: boolean }>`
   max-width: 100%;
   overflow-y: auto;
   overflow-x: hidden;
-  background: ${({ theme }) => theme.colors.white};
-  padding-top: 12px;
+  background: ${({ theme }) => theme.colors.backgroundSideMenu};
+
+  ${({ theme }) => theme.mediaQueries.md} {
+    padding-top: 12px;
+  }
 `
 
 const InnerBg = styled.div`
   position: relative;
   background: ${({ theme }) => theme.colors.backgroundRadial};
   overflow: hidden;
-  border-top-left-radius: ${({ theme }) => theme.radii.large};
-  border-bottom-left-radius: ${({ theme }) => theme.radii.large};
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  box-shadow: ${({ theme }) => theme.shadows.inset3};
+
+  ${({ theme }) => theme.mediaQueries.md} {
+    border-top-left-radius: ${({ theme }) => theme.radii.medium};
+    border-bottom-left-radius: ${({ theme }) => theme.radii.medium};
+  }
 `
 
 const MobileOnlyOverlay = styled(Overlay)`
@@ -110,23 +123,6 @@ const MobileOnlyOverlay = styled(Overlay)`
 
   ${({ theme }) => theme.mediaQueries.nav} {
     display: none;
-  }
-`
-
-const StyledLogo = styled(Link)`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: -6px 24px 0 0;
-
-  img {
-    height: 14px;
-  }
-
-  ${({ theme }) => theme.mediaQueries.nav} {
-    img {
-      height: 24px;
-    }
   }
 `
 
@@ -163,7 +159,7 @@ const Menu: React.FC<NavProps> = ({
   login,
   logout,
   isDark,
-  toggleTheme,
+  setIsDark,
   langs,
   setLang,
   currentLang,
@@ -172,9 +168,9 @@ const Menu: React.FC<NavProps> = ({
   children,
   price,
 }) => {
-  const { isXl } = useMatchBreakpoints()
-  const isMobile = isXl === false
-  const [isPushed, setIsPushed] = useState(!isMobile)
+  const { isXl, isMd } = useMatchBreakpoints()
+  const isMobile = !isMd && !isXl
+  const [isPushed, setIsPushed] = useState(false)
   const [showMenu, setShowMenu] = useState(true)
   const refPrevOffset = useRef(window.pageYOffset)
   const Icons = (IconModule as unknown) as { [key: string]: React.FC<SvgProps> }
@@ -261,28 +257,33 @@ const Menu: React.FC<NavProps> = ({
     <Wrapper>
       <StyledNav showMenu={showMenu}>
         <Flex alignItems="center">
-          <StyledLogo as="a" href="/" aria-label="Definix home page">
+          <Logo
+            isPushed={isPushed}
+            togglePush={() => setIsPushed((prevState: boolean) => !prevState)}
+            isDark={isDark}
+            href={homeLink?.href ?? '/'}
+          />
+          {/* <StyledLogo as="a" href="/" aria-label="Definix home page">
             <img src={logoDesktop} alt="" />
-          </StyledLogo>
+          </StyledLogo> */}
 
-          {!isMobile && (
-            <Dropdown
-              position="bottom"
-              target={
-                <Button
-                  variant="text"
-                  size="sm"
-                  startIcon={<img src={klaytn} alt="" width="24" className="mr-2" />}
-                  endIcon={<ChevronDownIcon className="ml-1" />}
-                  color="text"
-                  className="network"
-                >
-                  <Text fontSize="12px" fontWeight="500">
+          <Dropdown
+            position="bottom"
+            target={
+              <Button
+                variant="text"
+                size="sm"
+                startIcon={<img src={klaytn} alt="" width="20px" className="mr-2" />}
+                endIcon={<ChevronDownIcon className="ml-1" />}
+                color="text"
+                className="network px-2"
+              >
+                <Text fontSize="12px" fontWeight="500">
                     Klaytn Chain
-                  </Text>
-                </Button>
-              }
-            >
+                </Text>
+              </Button>
+            }
+          >
               <MenuButton
                 href="https://klaytn.definix.com"
                 variant="text"
@@ -299,18 +300,19 @@ const Menu: React.FC<NavProps> = ({
               >
                 Binance Smart Chain
               </MenuButton>
-            </Dropdown>
-          )}
+          </Dropdown>
         </Flex>
 
         <Flex alignItems="center">
-          <Price href="https://dex.guru/token/0x0f02b1f5af54e04fb6dd6550f009ac2429c4e30d-bsc" target="_blank">
-            <img src={FinixCoin} alt="" />
-            <p>
-              <span>FINIX : </span>
-              <strong>${price}</strong>
-            </p>
-          </Price>
+          {!isMobile && (
+            <Price href="https://dex.guru/token/0x0f02b1f5af54e04fb6dd6550f009ac2429c4e30d-bsc" target="_blank">
+              <img src={FinixCoin} alt="" />
+              <p>
+                <span>FINIX : </span>
+                <strong>${(price || 0) <= 0 ? 'N/A' : numeral(price).format('0,0.0000')}</strong>
+              </p>
+            </Price>
+          )}
           <UserBlock account={account} login={login} logout={logout} />
           {/* <Dropdown
             position="bottom-right"
@@ -345,7 +347,7 @@ const Menu: React.FC<NavProps> = ({
           isMobile={isMobile}
           showMenu={showMenu}
           isDark={isDark}
-          toggleTheme={toggleTheme}
+          setIsDark={setIsDark}
           langs={langs}
           setLang={setLang}
           currentLang={currentLang}
@@ -360,14 +362,14 @@ const Menu: React.FC<NavProps> = ({
           <InnerBg>
             <CountDownBanner
               logo={definixCoin}
-              title="암호화폐에 대한 여러분의 경험을 얘기하고,"
-              highlight="20$를 받으세요!"
+              title="Ceritakan tentang pengalamanmu di Crypto"
+              highlight="dan menangkan 20$"
               endTime=""
               button={
                 <Button
                   as="a"
                   target="_blank"
-                  href="https://docs.google.com/forms/d/e/1FAIpQLSe7X2x0ODo-Be_eC28NpS28Ae0qZ8fGjT-QO6feGLLfZS7OXA/viewform"
+                  href="https://docs.google.com/forms/d/e/1FAIpQLSeD1LOcZ9bIBrPrZGy3PV-pS9gF-ijg-aj3XyMEAluj7wCbBQ/viewform"
                   size="sm"
                 >
                   Click
@@ -417,7 +419,7 @@ const Menu: React.FC<NavProps> = ({
                 }
               />
             )}
-            {children}
+            <div style={{ width: '100%', flexGrow: 1 }}>{children}</div>
           </InnerBg>
         </Inner>
         <MobileOnlyOverlay show={isPushed} onClick={() => setIsPushed(false)} role="presentation" />

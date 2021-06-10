@@ -2,13 +2,7 @@ import React from 'react'
 import Lottie from 'react-lottie'
 import styled from 'styled-components'
 import { Text } from 'uikit-dev'
-import processing from 'uikit-dev/animation/processing.json'
-
-const options = {
-  loop: true,
-  autoplay: true,
-  animationData: processing,
-}
+import loading from 'uikit-dev/animation/loading.json'
 
 const TextCenter = styled(Text)`
   position: absolute;
@@ -17,14 +11,20 @@ const TextCenter = styled(Text)`
   transform: translate(-50%, 0);
 `
 
-const ConfirmationPendingContent = () => {
+const ConfirmationPendingContent = ({ pendingIcon }) => {
+  const options = {
+    loop: true,
+    autoplay: true,
+    animationData: pendingIcon || loading,
+  }
+
   return (
     <div
       className="flex align-center justify-center pa-6"
-      style={{ position: 'relative', width: '480px', height: '480px' }}
+      style={{ position: 'relative', width: '480px', maxWidth: '100%', height: '480px' }}
     >
       <Lottie options={options} height={120} width={120} />
-      <TextCenter color="textSubtle">Progressing…</TextCenter>
+      {pendingIcon && <TextCenter color="textSubtle">Progressing…</TextCenter>}
     </div>
   )
 }

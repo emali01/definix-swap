@@ -315,7 +315,7 @@ export default function RemoveLiquidity({
 
   const modalHeader = useCallback(() => {
     return (
-      <div style={{ width: '480px' }}>
+      <div style={{ width: '480px', maxWidth: '100%' }}>
         <AutoColumn gap="24px">
           <AutoColumn gap="16px">
             <RowBetween align="flex-end">
@@ -490,254 +490,256 @@ export default function RemoveLiquidity({
 
   return (
     <>
-      <LeftPanel isShowRightPanel={false}>
-        <MaxWidthLeft>
-          <AppBody>
-            <AddRemoveTabs adding={false} />
+      {!showConfirm ? (
+        <LeftPanel isShowRightPanel={false}>
+          <MaxWidthLeft>
+            <AppBody>
+              <AddRemoveTabs adding={false} />
 
-            <Wrapper>
-              <CardBody p="32px !important">
-                <BorderCard className="mb-4">
-                  <AutoColumn>
-                    <RowBetween>
-                      <Text>Amount</Text>
-                      <ClickableText
-                        onClick={() => {
-                          setShowDetailed(!showDetailed)
-                        }}
-                      >
-                        {showDetailed ? 'Simple' : 'Detailed'}
-                      </ClickableText>
-                    </RowBetween>
-                    <Flex justifyContent="start">
-                      <Text fontSize="64px">{formattedAmounts[Field.LIQUIDITY_PERCENT]}%</Text>
-                    </Flex>
-                    {!showDetailed && (
-                      <>
-                        <Flex mb="8px">
-                          <Slider value={innerLiquidityPercentage} onChange={setInnerLiquidityPercentage} />
-                        </Flex>
-                        <Flex justifyContent="space-around">
-                          <Button
-                            variant="tertiary"
-                            size="sm"
-                            onClick={() => onUserInput(Field.LIQUIDITY_PERCENT, '25')}
-                          >
-                            25%
-                          </Button>
-                          <Button
-                            variant="tertiary"
-                            size="sm"
-                            onClick={() => onUserInput(Field.LIQUIDITY_PERCENT, '50')}
-                          >
-                            50%
-                          </Button>
-                          <Button
-                            variant="tertiary"
-                            size="sm"
-                            onClick={() => onUserInput(Field.LIQUIDITY_PERCENT, '75')}
-                          >
-                            75%
-                          </Button>
-                          <Button
-                            variant="tertiary"
-                            size="sm"
-                            onClick={() => onUserInput(Field.LIQUIDITY_PERCENT, '100')}
-                          >
-                            Max
-                          </Button>
-                        </Flex>
-                      </>
-                    )}
-                  </AutoColumn>
-                </BorderCard>
-
-                {!showDetailed && (
-                  <>
-                    <ColumnCenter className="mb-4">
-                      <ArrowDown size="16" color={theme.colors.textSubtle} />
-                    </ColumnCenter>
-
-                    <BorderCard>
-                      <AutoColumn gap="10px">
-                        <RowBetween>
-                          <Text fontSize="24px">{formattedAmounts[Field.CURRENCY_A] || '-'}</Text>
-                          <RowFixed>
-                            <CurrencyLogo currency={currencyA} style={{ marginRight: '12px' }} />
-                            <Text fontSize="24px" id="remove-liquidity-tokena-symbol">
-                              {currencyA?.symbol}
-                            </Text>
-                          </RowFixed>
-                        </RowBetween>
-                        <RowBetween>
-                          <Text fontSize="24px">{formattedAmounts[Field.CURRENCY_B] || '-'}</Text>
-                          <RowFixed>
-                            <CurrencyLogo currency={currencyB} style={{ marginRight: '12px' }} />
-                            <Text fontSize="24px" id="remove-liquidity-tokenb-symbol">
-                              {currencyB?.symbol}
-                            </Text>
-                          </RowFixed>
-                        </RowBetween>
-                        {chainId && (oneCurrencyIsWETH || oneCurrencyIsETH) ? (
-                          <RowBetween style={{ justifyContent: 'flex-end' }}>
-                            {oneCurrencyIsETH ? (
-                              <StyledInternalLink
-                                to={`/remove/${currencyA === ETHER ? WETH[chainId].address : currencyIdA}/${
-                                  currencyB === ETHER ? WETH[chainId].address : currencyIdB
-                                }`}
-                              >
-                                Receive WBNB
-                              </StyledInternalLink>
-                            ) : oneCurrencyIsWETH ? (
-                              <StyledInternalLink
-                                to={`/remove/${
-                                  currencyA && currencyEquals(currencyA, WETH[chainId]) ? 'ETH' : currencyIdA
-                                }/${currencyB && currencyEquals(currencyB, WETH[chainId]) ? 'ETH' : currencyIdB}`}
-                              >
-                                Receive BNB
-                              </StyledInternalLink>
-                            ) : null}
-                          </RowBetween>
-                        ) : null}
-                      </AutoColumn>
-                    </BorderCard>
-                  </>
-                )}
-
-                {showDetailed && (
-                  <>
-                    <CurrencyInputPanel
-                      value={formattedAmounts[Field.LIQUIDITY]}
-                      onUserInput={onLiquidityInput}
-                      onMax={() => {
-                        onUserInput(Field.LIQUIDITY_PERCENT, '100')
-                      }}
-                      showMaxButton={!atMaxAmount}
-                      disableCurrencySelect
-                      currency={pair?.liquidityToken}
-                      pair={pair}
-                      id="liquidity-amount"
-                      className="mb-4"
-                    />
-
-                    <ColumnCenter className="mb-4">
-                      <ArrowDown size="16" color={theme.colors.textSubtle} />
-                    </ColumnCenter>
-
-                    <CurrencyInputPanel
-                      hideBalance
-                      value={formattedAmounts[Field.CURRENCY_A]}
-                      onUserInput={onCurrencyAInput}
-                      onMax={() => onUserInput(Field.LIQUIDITY_PERCENT, '100')}
-                      showMaxButton={!atMaxAmount}
-                      currency={currencyA}
-                      label="Output"
-                      onCurrencySelect={handleSelectCurrencyA}
-                      id="remove-liquidity-tokena"
-                      className="mb-4"
-                    />
-
-                    <ColumnCenter className="mb-4">
-                      <Plus size="16" color={theme.colors.textSubtle} />
-                    </ColumnCenter>
-
-                    <CurrencyInputPanel
-                      hideBalance
-                      value={formattedAmounts[Field.CURRENCY_B]}
-                      onUserInput={onCurrencyBInput}
-                      onMax={() => onUserInput(Field.LIQUIDITY_PERCENT, '100')}
-                      showMaxButton={!atMaxAmount}
-                      currency={currencyB}
-                      label="Output"
-                      onCurrencySelect={handleSelectCurrencyB}
-                      id="remove-liquidity-tokenb"
-                    />
-                  </>
-                )}
-
-                {pair && (
-                  <div className="mt-4">
-                    <Flex justifyContent="space-between" mb="8px">
-                      Price:
-                      <div>
-                        1 {currencyA?.symbol} = {tokenA ? pair.priceOf(tokenA).toSignificant(6) : '-'}{' '}
-                        {currencyB?.symbol}
-                      </div>
-                    </Flex>
-                    <Flex justifyContent="space-between">
-                      <div />
-                      <div>
-                        1 {currencyB?.symbol} = {tokenB ? pair.priceOf(tokenB).toSignificant(6) : '-'}{' '}
-                        {currencyA?.symbol}
-                      </div>
-                    </Flex>
-                  </div>
-                )}
-              </CardBody>
-
-              <div className="pa-6 bd-t">
-                {!account ? (
-                  <ConnectWalletButton fullWidth />
-                ) : (
-                  <RowBetween>
-                    <Button
-                      onClick={onAttemptToApprove}
-                      variant={approval === ApprovalState.APPROVED || signatureData !== null ? 'success' : 'primary'}
-                      disabled={approval !== ApprovalState.NOT_APPROVED || signatureData !== null}
-                      mr="8px"
-                    >
-                      {approval === ApprovalState.PENDING ? (
-                        <Dots>Approving</Dots>
-                      ) : approval === ApprovalState.APPROVED || signatureData !== null ? (
-                        'Approved'
-                      ) : (
-                        'Approve'
+              <Wrapper>
+                <CardBody p="32px !important">
+                  <BorderCard className="mb-4">
+                    <AutoColumn>
+                      <RowBetween>
+                        <Text>Amount</Text>
+                        <ClickableText
+                          onClick={() => {
+                            setShowDetailed(!showDetailed)
+                          }}
+                        >
+                          {showDetailed ? 'Simple' : 'Detailed'}
+                        </ClickableText>
+                      </RowBetween>
+                      <Flex justifyContent="start">
+                        <Text fontSize="64px">{formattedAmounts[Field.LIQUIDITY_PERCENT]}%</Text>
+                      </Flex>
+                      {!showDetailed && (
+                        <>
+                          <Flex mb="8px">
+                            <Slider value={innerLiquidityPercentage} onChange={setInnerLiquidityPercentage} />
+                          </Flex>
+                          <Flex justifyContent="space-around">
+                            <Button
+                              variant="tertiary"
+                              size="sm"
+                              onClick={() => onUserInput(Field.LIQUIDITY_PERCENT, '25')}
+                            >
+                              25%
+                            </Button>
+                            <Button
+                              variant="tertiary"
+                              size="sm"
+                              onClick={() => onUserInput(Field.LIQUIDITY_PERCENT, '50')}
+                            >
+                              50%
+                            </Button>
+                            <Button
+                              variant="tertiary"
+                              size="sm"
+                              onClick={() => onUserInput(Field.LIQUIDITY_PERCENT, '75')}
+                            >
+                              75%
+                            </Button>
+                            <Button
+                              variant="tertiary"
+                              size="sm"
+                              onClick={() => onUserInput(Field.LIQUIDITY_PERCENT, '100')}
+                            >
+                              Max
+                            </Button>
+                          </Flex>
+                        </>
                       )}
-                    </Button>
-                    <Button
-                      onClick={() => {
-                        setShowConfirm(true)
-                      }}
-                      disabled={!isValid || (signatureData === null && approval !== ApprovalState.APPROVED)}
-                      variant={
-                        !isValid && !!parsedAmounts[Field.CURRENCY_A] && !!parsedAmounts[Field.CURRENCY_B]
-                          ? 'danger'
-                          : 'primary'
-                      }
-                    >
-                      {error || 'Remove'}
-                    </Button>
-                  </RowBetween>
-                )}
-              </div>
-            </Wrapper>
+                    </AutoColumn>
+                  </BorderCard>
 
-            {pair ? (
-              <div className="pa-6 bd-t">
-                <MinimalPositionCard showUnwrapped={oneCurrencyIsWETH} pair={pair} />
-              </div>
-            ) : null}
-          </AppBody>
-        </MaxWidthLeft>
-      </LeftPanel>
+                  {!showDetailed && (
+                    <>
+                      <ColumnCenter className="mb-4">
+                        <ArrowDown size="16" color={theme.colors.textSubtle} />
+                      </ColumnCenter>
 
-      <TransactionConfirmationModal
-        isOpen={showConfirm}
-        isPending={!!attemptingTxn}
-        isSubmitted={!!txHash}
-        isError={!!errorMsg}
-        confirmContent={() => (
-          <ConfirmationModalContent
-            mainTitle="Confirm Liquidity"
-            title="You will receive"
-            topContent={modalHeader}
-            bottomContent={modalBottom}
-          />
-        )}
-        submittedContent={submittedContent}
-        errorContent={errorContent}
-        onDismiss={handleDismissConfirmation}
-      />
+                      <BorderCard>
+                        <AutoColumn gap="10px">
+                          <RowBetween>
+                            <Text fontSize="24px">{formattedAmounts[Field.CURRENCY_A] || '-'}</Text>
+                            <RowFixed>
+                              <CurrencyLogo currency={currencyA} style={{ marginRight: '12px' }} />
+                              <Text fontSize="24px" id="remove-liquidity-tokena-symbol">
+                                {currencyA?.symbol}
+                              </Text>
+                            </RowFixed>
+                          </RowBetween>
+                          <RowBetween>
+                            <Text fontSize="24px">{formattedAmounts[Field.CURRENCY_B] || '-'}</Text>
+                            <RowFixed>
+                              <CurrencyLogo currency={currencyB} style={{ marginRight: '12px' }} />
+                              <Text fontSize="24px" id="remove-liquidity-tokenb-symbol">
+                                {currencyB?.symbol}
+                              </Text>
+                            </RowFixed>
+                          </RowBetween>
+                          {chainId && (oneCurrencyIsWETH || oneCurrencyIsETH) ? (
+                            <RowBetween style={{ justifyContent: 'flex-end' }}>
+                              {oneCurrencyIsETH ? (
+                                <StyledInternalLink
+                                  to={`/remove/${currencyA === ETHER ? WETH[chainId].address : currencyIdA}/${
+                                    currencyB === ETHER ? WETH[chainId].address : currencyIdB
+                                  }`}
+                                >
+                                  Receive WBNB
+                                </StyledInternalLink>
+                              ) : oneCurrencyIsWETH ? (
+                                <StyledInternalLink
+                                  to={`/remove/${
+                                    currencyA && currencyEquals(currencyA, WETH[chainId]) ? 'ETH' : currencyIdA
+                                  }/${currencyB && currencyEquals(currencyB, WETH[chainId]) ? 'ETH' : currencyIdB}`}
+                                >
+                                  Receive BNB
+                                </StyledInternalLink>
+                              ) : null}
+                            </RowBetween>
+                          ) : null}
+                        </AutoColumn>
+                      </BorderCard>
+                    </>
+                  )}
+
+                  {showDetailed && (
+                    <>
+                      <CurrencyInputPanel
+                        value={formattedAmounts[Field.LIQUIDITY]}
+                        onUserInput={onLiquidityInput}
+                        onMax={() => {
+                          onUserInput(Field.LIQUIDITY_PERCENT, '100')
+                        }}
+                        showMaxButton={!atMaxAmount}
+                        disableCurrencySelect
+                        currency={pair?.liquidityToken}
+                        pair={pair}
+                        id="liquidity-amount"
+                        className="mb-4"
+                      />
+
+                      <ColumnCenter className="mb-4">
+                        <ArrowDown size="16" color={theme.colors.textSubtle} />
+                      </ColumnCenter>
+
+                      <CurrencyInputPanel
+                        hideBalance
+                        value={formattedAmounts[Field.CURRENCY_A]}
+                        onUserInput={onCurrencyAInput}
+                        onMax={() => onUserInput(Field.LIQUIDITY_PERCENT, '100')}
+                        showMaxButton={!atMaxAmount}
+                        currency={currencyA}
+                        label="Output"
+                        onCurrencySelect={handleSelectCurrencyA}
+                        id="remove-liquidity-tokena"
+                        className="mb-4"
+                      />
+
+                      <ColumnCenter className="mb-4">
+                        <Plus size="16" color={theme.colors.textSubtle} />
+                      </ColumnCenter>
+
+                      <CurrencyInputPanel
+                        hideBalance
+                        value={formattedAmounts[Field.CURRENCY_B]}
+                        onUserInput={onCurrencyBInput}
+                        onMax={() => onUserInput(Field.LIQUIDITY_PERCENT, '100')}
+                        showMaxButton={!atMaxAmount}
+                        currency={currencyB}
+                        label="Output"
+                        onCurrencySelect={handleSelectCurrencyB}
+                        id="remove-liquidity-tokenb"
+                      />
+                    </>
+                  )}
+
+                  {pair && (
+                    <div className="mt-4">
+                      <Flex justifyContent="space-between" mb="8px">
+                        Price:
+                        <div>
+                          1 {currencyA?.symbol} = {tokenA ? pair.priceOf(tokenA).toSignificant(6) : '-'}{' '}
+                          {currencyB?.symbol}
+                        </div>
+                      </Flex>
+                      <Flex justifyContent="space-between">
+                        <div />
+                        <div>
+                          1 {currencyB?.symbol} = {tokenB ? pair.priceOf(tokenB).toSignificant(6) : '-'}{' '}
+                          {currencyA?.symbol}
+                        </div>
+                      </Flex>
+                    </div>
+                  )}
+                </CardBody>
+
+                <div className="pa-6 bd-t">
+                  {!account ? (
+                    <ConnectWalletButton fullWidth />
+                  ) : (
+                    <RowBetween>
+                      <Button
+                        onClick={onAttemptToApprove}
+                        variant={approval === ApprovalState.APPROVED || signatureData !== null ? 'success' : 'primary'}
+                        disabled={approval !== ApprovalState.NOT_APPROVED || signatureData !== null}
+                        mr="8px"
+                      >
+                        {approval === ApprovalState.PENDING ? (
+                          <Dots>Approving</Dots>
+                        ) : approval === ApprovalState.APPROVED || signatureData !== null ? (
+                          'Approved'
+                        ) : (
+                          'Approve'
+                        )}
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          setShowConfirm(true)
+                        }}
+                        disabled={!isValid || (signatureData === null && approval !== ApprovalState.APPROVED)}
+                        variant={
+                          !isValid && !!parsedAmounts[Field.CURRENCY_A] && !!parsedAmounts[Field.CURRENCY_B]
+                            ? 'danger'
+                            : 'primary'
+                        }
+                      >
+                        {error || 'Remove'}
+                      </Button>
+                    </RowBetween>
+                  )}
+                </div>
+              </Wrapper>
+
+              {pair ? (
+                <div className="pa-6 bd-t">
+                  <MinimalPositionCard showUnwrapped={oneCurrencyIsWETH} pair={pair} />
+                </div>
+              ) : null}
+            </AppBody>
+          </MaxWidthLeft>
+        </LeftPanel>
+      ) : (
+        <TransactionConfirmationModal
+          isOpen={showConfirm}
+          isPending={!!attemptingTxn}
+          isSubmitted={!!txHash}
+          isError={!!errorMsg}
+          confirmContent={() => (
+            <ConfirmationModalContent
+              mainTitle="Confirm Liquidity"
+              title="You will receive"
+              topContent={modalHeader}
+              bottomContent={modalBottom}
+            />
+          )}
+          submittedContent={submittedContent}
+          errorContent={errorContent}
+          onDismiss={handleDismissConfirmation}
+        />
+      )}
     </>
   )
 }

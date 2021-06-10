@@ -9,19 +9,23 @@ const Tabs = styled.div`
   align-items: center;
   justify-content: stretch;
   background: ${({ theme }) => theme.colors.backgroundDisabled};
+  height: 56px;
 `
 
 const Tab = styled(NavLink)<{ active: boolean }>`
   position: relative;
-  display: block;
-  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
-  padding: 20px;
-  font-size: 16px;
+  padding: 12px;
+  font-size: 14px;
   font-weight: bold;
   background: ${({ theme, active }) => (active ? theme.colors.backgroundBlueGradient : 'transparent')};
   color: ${({ theme, active }) => (active ? theme.colors.white : theme.colors.textSubtle)};
   border-right: 1px solid ${({ theme }) => theme.colors.textDisabled};
+  width: 33.333%;
+  height: 100%;
 
   &:before {
     content: '';
@@ -37,6 +41,11 @@ const Tab = styled(NavLink)<{ active: boolean }>`
   &:hover {
     color: ${({ theme, active }) => (active ? theme.colors.white : theme.colors.primary)};
   }
+
+  ${({ theme }) => theme.mediaQueries.sm} {
+    font-size: 16px;
+    padding: 16px;
+  }
 `
 
 const StyleButton = styled(IconButton)`
@@ -45,6 +54,7 @@ const StyleButton = styled(IconButton)`
   background: transparent !important;
   height: 56px;
   border-radius: 0;
+  flex-shrink: 0;
 
   svg {
     stroke: ${({ theme }) => theme.colors.text} !important;
@@ -68,7 +78,7 @@ const ExchangeTab = ({ current }) => {
       <Tab to="/liquidity" active={current === '/liquidity'}>
         LIQUIDITY
       </Tab>
-      <Tab to="#" active={current === '/bridge'}>
+      <Tab as="a" href="https://bridge.six.network" target="_blank" active={current === '/bridge'}>
         BRIDGE
       </Tab>
       <StyleButton variant="text" onClick={onPresentSettings} title="Settings">

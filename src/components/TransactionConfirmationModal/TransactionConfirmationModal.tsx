@@ -1,7 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Modal } from 'uikit-dev'
-import bg from 'uikit-dev/images/for-ui-v2/bg.png'
 import { useActiveWeb3React } from '../../hooks'
 import ConfirmationPendingContent from './ConfirmationPendingContent'
 
@@ -11,6 +10,7 @@ interface ConfirmationModalProps {
   isSubmitted: boolean
   isError: boolean
   confirmContent: () => React.ReactNode
+  pendingIcon?: any
   submittedContent: () => React.ReactNode
   errorContent: () => React.ReactNode
   onDismiss: () => void
@@ -19,18 +19,19 @@ interface ConfirmationModalProps {
 const ModalWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
+  width: 100%;
+  padding: 24px;
   z-index: ${({ theme }) => theme.zIndices.modal - 1};
-  background: url(${bg});
+  background: url(${({ theme }) => theme.colors.backgroundPolygon});
   background-size: cover;
   background-repeat: no-repeat;
-  background-color: ${({ theme }) => theme.colors.grayBlue};
+  background-color: ${({ theme }) => theme.colors.backgroundRadial};
+
+  ${({ theme }) => theme.mediaQueries.sm} {
+    padding: 32px;
+  }
 `
 
 const TransactionConfirmationModal = ({
@@ -39,6 +40,7 @@ const TransactionConfirmationModal = ({
   isSubmitted,
   isError,
   confirmContent,
+  pendingIcon,
   submittedContent,
   errorContent,
   onDismiss,
@@ -59,9 +61,10 @@ const TransactionConfirmationModal = ({
         maxWidth="720px"
         hideCloseButton
         classHeader="bd-b-n"
+        className="w-100"
       >
         {isPending ? (
-          <ConfirmationPendingContent />
+          <ConfirmationPendingContent pendingIcon={pendingIcon} />
         ) : isSubmitted ? (
           submittedContent()
         ) : isError ? (
