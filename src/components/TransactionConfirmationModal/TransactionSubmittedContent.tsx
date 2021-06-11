@@ -57,7 +57,7 @@ const TransactionSubmittedContent = ({
 
             <Link
               external
-              href={getKlaytn ScopeLink(chainId, hash, 'transaction')}
+              href={getBscScanLink(chainId, hash, 'transaction')}
               bold={false}
               className="flex-shrink"
               color="textSubtle"
