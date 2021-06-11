@@ -91,8 +91,8 @@ export default function CurrencyInputPanel({
   const [modalOpen, setModalOpen] = useState(false)
   const { account } = useActiveWeb3React()
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
-  const { isXl, isMd } = useMatchBreakpoints()
-  const isMobile = !isXl && !isMd
+  const { isXl, isMd, isLg } = useMatchBreakpoints()
+  const isMobile = !isXl && !isMd && !isLg
 
   const handleDismissSearch = useCallback(() => {
     setModalOpen(false)
@@ -130,14 +130,8 @@ export default function CurrencyInputPanel({
               />
               {account && currency && showMaxButton && label !== 'To' && (
                 <div className="flex align-center justify-end" style={{ width: isMobile ? '100%' : 'auto' }}>
-                  <AnountButton
-                    title="25%"
-                    onClick={onQuarter}
-                  />
-                  <AnountButton
-                    title="50%"
-                    onClick={onHalf}
-                  />
+                  <AnountButton title="25%" onClick={onQuarter} />
+                  <AnountButton title="50%" onClick={onHalf} />
                   <AnountButton title="MAX" onClick={onMax} />
                 </div>
               )}
