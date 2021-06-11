@@ -309,7 +309,7 @@ export default function AddLiquidity({
         }
       />
     ),
-    [chainId, modalHeader, txHash]
+    [chainId, modalHeader, txHash, history]
   )
 
   const errorContent = useCallback(

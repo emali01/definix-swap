@@ -68,7 +68,7 @@ const TransactionSubmittedContent = ({
             </Link>
           </RowBetween>
 
-          <div className="flex justify-center mt-6">
+          {/* <div className="flex justify-center mt-6">
             <Button
               startIcon={<ArrowDownIcon />}
               onClick={() => {
@@ -79,7 +79,7 @@ const TransactionSubmittedContent = ({
             >
               Download IMG Transaction
             </Button>
-          </div>
+          </div> */}
         </div>
       )}
 
