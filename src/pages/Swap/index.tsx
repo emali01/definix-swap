@@ -1,3 +1,4 @@
+import numeral from 'numeral'
 import AddressInputPanel from 'components/AddressInputPanel'
 import { GreyCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
@@ -295,6 +296,18 @@ const Swap = () => {
     }
   }, [maxAmountInput, onUserInput])
 
+  const handleQuarterInput = useCallback(() => {
+    if (maxAmountInput) {
+      onUserInput(Field.INPUT, numeral(parseFloat(maxAmountInput.toExact()) / 4).format("0.00"))
+    }
+  }, [maxAmountInput, onUserInput])
+
+  const handleHalfInput = useCallback(() => {
+    if (maxAmountInput) {
+      onUserInput(Field.INPUT, numeral(parseFloat(maxAmountInput.toExact()) / 2).format("0.00"))
+    }
+  }, [maxAmountInput, onUserInput])
+
   const handleOutputSelect = useCallback(
     (outputCurrency) => {
       onCurrencySelection(Field.OUTPUT, outputCurrency)
@@ -357,6 +370,8 @@ const Swap = () => {
                       showMaxButton={!atMaxAmountInput}
                       currency={currencies[Field.INPUT]}
                       onUserInput={handleTypeInput}
+                      onQuarter={handleQuarterInput}
+                      onHalf={handleHalfInput}
                       onMax={handleMaxInput}
                       onCurrencySelect={handleInputSelect}
                       otherCurrency={currencies[Field.OUTPUT]}
