@@ -69,7 +69,9 @@ const StyledNav = styled.nav<{ showMenu: boolean }>`
   }
 
   .network {
-    // box-shadow: ${({ theme }) => theme.shadows.elevation1};
+    box-shadow: ${({ theme }) => theme.shadows.elevation1};
+    background: ${({ theme }) => theme.colors.networkBtnInner} !important;
+    border: 1px solid ${({ theme }) => theme.colors.networkBtnBorder} !important;
   }
 
   ${({ theme }) => theme.mediaQueries.md} {
@@ -284,22 +286,22 @@ const Menu: React.FC<NavProps> = ({
               </Button>
             }
           >
-              <MenuButton
-                href="https://klaytn.definix.com"
-                variant="text"
-                startIcon={<img src={klaytn} alt="" width="24" className="mr-2" />}
-                className="color-primary mb-2"
-              >
-                Klaytn Chain
-              </MenuButton>
-              <MenuButton
-                href="https://bsc.definix.com"
-                variant="text"
-                startIcon={<img src={bsc} alt="" width="24" className="mr-2" />}
-                className="color-primary mb-2"
-              >
-                Binance Smart Chain
-              </MenuButton>
+            <MenuButton
+              href="https://klaytn.definix.com"
+              variant="text"
+              startIcon={<img src={klaytn} alt="" width="20px" className="mr-2" />}
+              className="color-primary text-bold mb-2"
+            >
+              Klaytn Chain
+            </MenuButton>
+            <MenuButton
+              href="https://bsc.definix.com"
+              variant="text"
+              startIcon={<img src={bsc} alt="" width="20px" className="mr-2" />}
+              className="color-primary mb-2"
+            >
+              Binance Smart Chain
+            </MenuButton>
           </Dropdown>
         </Flex>
 
@@ -360,7 +362,7 @@ const Menu: React.FC<NavProps> = ({
         />
         <Inner isPushed={isPushed} showMenu={showMenu}>
           <InnerBg>
-            <CountDownBanner
+            {/* <CountDownBanner
               logo={definixCoin}
               title="Ceritakan tentang pengalamanmu di Crypto"
               highlight="dan menangkan 20$"
@@ -376,7 +378,7 @@ const Menu: React.FC<NavProps> = ({
                 </Button>
               }
               disableCountdown
-            />
+            /> */}
 
             <CountDownBanner
               logo={logoTrade}

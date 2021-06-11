@@ -220,7 +220,7 @@ export default function Pool() {
 
         {isShowRightPanel && (
           <MaxWidthRight>
-            <Heading fontSize="18px !important" className="mb-3">
+            <Heading fontSize="20px !important" className="mb-3">
               LIQUIDITY HISTORY
             </Heading>
             <Card style={{ overflow: 'auto' }}>

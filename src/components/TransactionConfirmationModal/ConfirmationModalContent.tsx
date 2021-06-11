@@ -11,7 +11,7 @@ type ConfirmationModalContentProps = {
 const ConfirmationModalContent = ({ mainTitle, title, topContent, bottomContent }: ConfirmationModalContentProps) => {
   return (
     <div>
-      <div className="pa-6 bd-b">
+      <div className="pa-6 pt-3 bd-b">
         <Heading fontSize="36px !important" className="mb-6">
           {mainTitle}
         </Heading>

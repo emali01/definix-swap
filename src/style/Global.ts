@@ -18,14 +18,14 @@ const GlobalStyle = createGlobalStyle`
   }
 
   .btn-secondary-disable:disabled {
-    background: ${({ theme }) => theme.colors.white};
+    background: ${({ theme }) => theme.colors.backgroundDisabled};
     border-color: ${({ theme }) => theme.colors.backgroundDisabled};
-    color: ${({ theme }) => theme.colors.backgroundDisabled};
+    color: ${({ theme }) => theme.colors.textDisabled};
 
-    svg { fill: ${({ theme }) => theme.colors.backgroundDisabled}; }
+    svg { fill: ${({ theme }) => theme.colors.textDisabled}; }
   }
 
-  .text-bold { font-weight: 600; color: ${({ theme }) => theme.colors.text}; }
+  .text-bold { font-weight: 600 !important; }
   .text-right { text-align: right; }
   .text-left { text-align: left; }
 
@@ -95,6 +95,7 @@ const GlobalStyle = createGlobalStyle`
     &.flex-row { flex-direction: row; }
     &.flex-row-reverse { flex-direction: row-reverse; }
     &.flex-wrap { flex-wrap: wrap; }
+    &.flex-grow { flex-grow: 1; }
     &.justify-start { justify-content: flex-start; }
     &.justify-end { justify-content: flex-end; }
     &.justify-center { justify-content: center; }
@@ -105,11 +106,16 @@ const GlobalStyle = createGlobalStyle`
     &.align-center { align-items: center; }
     &.align-baseline { align-items: baseline; }
     &.align-stretch { align-items: stretch; }
+
+    .align-self-center { align-self: center; }
+    .align-self-start { align-self: flex-start; }
+    .align-self-end { align-self: flex-end; }
   
     .flex-grow { flex-grow: 1; }
     .flex-shrink { flex-shrink: 0; }
     .col-12 { width: 100%; }
     .col-9 { width: 75%; }
+    .col-8 { width: 66.666%; }
     .col-7 { width: 60%; }
     .col-6 { width: 50%; }
     .col-5 { width: 40%; }
@@ -132,7 +138,6 @@ const GlobalStyle = createGlobalStyle`
   .bd-l-n { border-left: none !important; }
   .bd-x-n { border-right: none; border-left: none !important; }
   .bd-y-n { border-top: none; border-bottom: none !important; }
-
   .w-100 { width: 100% !important; }
   .w-auto { width: auto !important; }
   .h-100 { height: 100% !important; }

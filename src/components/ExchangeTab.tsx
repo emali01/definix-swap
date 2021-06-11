@@ -20,7 +20,7 @@ const Tab = styled(NavLink)<{ active: boolean }>`
   text-align: center;
   padding: 12px;
   font-size: 14px;
-  font-weight: bold;
+  font-weight: 600;
   background: ${({ theme, active }) => (active ? theme.colors.backgroundBlueGradient : 'transparent')};
   color: ${({ theme, active }) => (active ? theme.colors.white : theme.colors.textSubtle)};
   border-right: 1px solid ${({ theme }) => theme.colors.textDisabled};
@@ -53,11 +53,12 @@ const StyleButton = styled(IconButton)`
   width: auto;
   background: transparent !important;
   height: 56px;
+  width: 56px !important;
   border-radius: 0;
   flex-shrink: 0;
 
   svg {
-    stroke: ${({ theme }) => theme.colors.text} !important;
+    stroke: ${({ theme }) => theme.colors.textSubtle} !important;
   }
 
   &:hover {

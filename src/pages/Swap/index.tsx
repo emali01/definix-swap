@@ -575,16 +575,18 @@ const Swap = () => {
         />
       )}
       <RightPanel isShowRightPanel={isShowRightPanel}>
-        <ShowHideButton
-          isShow={isShowRightPanel}
-          action={() => {
-            setIsShowRightPanel(!isShowRightPanel)
-          }}
-        />
+        {!showConfirm && (
+          <ShowHideButton
+            isShow={isShowRightPanel}
+            action={() => {
+              setIsShowRightPanel(!isShowRightPanel)
+            }}
+          />
+        )}
 
         {isShowRightPanel && (
           <MaxWidthRight>
-            <Heading fontSize="18px !important" className="mb-3">
+            <Heading fontSize="20px !important" className="mb-3">
               SWAP HISTORY
             </Heading>
             <Card style={{ overflow: 'auto' }}>

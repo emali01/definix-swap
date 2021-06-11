@@ -9,8 +9,12 @@ const BodyWrapper = styled(Card)`
 
 const Maxwidth = styled.div`
   width: 100%;
-  max-width: 720px;
+  max-width: 600px;
   margin: 0 auto;
+
+  ${({ theme }) => theme.mediaQueries.sm} {
+    padding-bottom: 64px;
+  }
 `
 
 /**
