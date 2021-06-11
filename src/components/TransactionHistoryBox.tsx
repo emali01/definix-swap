@@ -18,7 +18,7 @@ const Box = styled.div`
   }
 `
 
-const TransactionHistoryBox = ({ title, firstCoin, secondCoin, withText, date, isFailed = false }) => {
+const TransactionHistoryBox = ({ href = "/", title, firstCoin, secondCoin, firstCoinAmount, secondCoinAmount, withText, date, isFailed = false }) => {
   return (
     <Box>
       <div className="flex justify-space-between">
@@ -42,17 +42,17 @@ const TransactionHistoryBox = ({ title, firstCoin, secondCoin, withText, date, i
         <Text>{title}</Text>
         <Currency>
           <CurrencyLogo currency={firstCoin} size="24px" style={{ marginRight: '8px' }} />
-          <Text bold>0.219 FINIX</Text>
+          <Text bold>{firstCoinAmount} {firstCoin.name}</Text>
         </Currency>
         <Text color="textSubtle">{withText}</Text>
         <Currency>
           <CurrencyLogo currency={secondCoin} size="24px" style={{ marginRight: '8px' }} />
-          <Text bold>0.00985 BNB</Text>
+          <Text bold>{secondCoinAmount} {secondCoin.name}</Text>
         </Currency>
       </div>
 
-      <Link external href="/" bold={false} color="textSubtle" fontSize="12px" style={{ display: 'inline-flex' }}>
-        View on BscScan
+      <Link external href={href} bold={false} color="textSubtle" fontSize="12px" style={{ display: 'inline-flex' }}>
+        View on Klaytn Scope
         <ChevronRightIcon color="textSubtle" />
       </Link>
     </Box>

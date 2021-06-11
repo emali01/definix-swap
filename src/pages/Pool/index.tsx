@@ -14,8 +14,12 @@ import { toV2LiquidityToken, useTrackedTokenPairs } from 'state/user/hooks'
 import { useTokenBalancesWithLoadingIndicator } from 'state/wallet/hooks'
 import { Button, Card, Heading, Text, useMatchBreakpoints } from 'uikit-dev'
 import { Overlay } from 'uikit-dev/components/Overlay'
+import { isTransactionRecent, useAllTransactions } from 'state/transactions/hooks'
+import { useAllTokens } from 'hooks/Tokens'
 import { LeftPanel, MaxWidthLeft, MaxWidthRight, RightPanel, ShowHideButton } from 'uikit-dev/components/TwoPanelLayout'
 import { TranslateString } from 'utils/translateTextHelpers'
+import { TransactionDetails } from 'state/transactions/reducer'
+import { getBscScanLink } from 'utils'
 import Flip from '../../uikit-dev/components/Flip'
 import AppBody from '../AppBody'
 
@@ -35,10 +39,10 @@ const TimerWrapper = ({ isPhrase2, date, children }) => {
         tabIndex={0}
         role="button"
         style={{ opacity: 0.4, pointerEvents: 'none' }}
-        onClick={(e) => {
+        onClick={e => {
           e.preventDefault()
         }}
-        onKeyDown={(e) => {
+        onKeyDown={e => {
           e.preventDefault()
         }}
       >
@@ -48,20 +52,34 @@ const TimerWrapper = ({ isPhrase2, date, children }) => {
   )
 }
 
+const newTransactionsFirst = (a: TransactionDetails, b: TransactionDetails) => b.addedTime - a.addedTime
+
 export default function Pool() {
-  const { account } = useActiveWeb3React()
+  const { account, chainId } = useActiveWeb3React()
   const [isShowRightPanel, setIsShowRightPanel] = useState(false)
   const { isXl } = useMatchBreakpoints()
   const isMobileOrTablet = !isXl
 
+  const allTransactions = useAllTransactions()
+  const allTokens = useAllTokens()
+
+  // Logic taken from Web3Status/index.tsx line 175
+  const sortedRecentTransactions = useMemo(() => {
+    const txs = Object.values(allTransactions)
+    return txs
+      .filter(isTransactionRecent)
+      .filter(t => t.type === 'addLiquidity' || t.type === 'removeLiquidity')
+      .sort(newTransactionsFirst)
+  }, [allTransactions])
+
   // fetch the user's balances of all tracked V2 LP tokens
   const trackedTokenPairs = useTrackedTokenPairs()
   const tokenPairsWithLiquidityTokens = useMemo(
-    () => trackedTokenPairs.map((tokens) => ({ liquidityToken: toV2LiquidityToken(tokens), tokens })),
+    () => trackedTokenPairs.map(tokens => ({ liquidityToken: toV2LiquidityToken(tokens), tokens })),
     [trackedTokenPairs]
   )
-  const liquidityTokens = useMemo(() => tokenPairsWithLiquidityTokens.map((tpwlt) => tpwlt.liquidityToken), [
-    tokenPairsWithLiquidityTokens,
+  const liquidityTokens = useMemo(() => tokenPairsWithLiquidityTokens.map(tpwlt => tpwlt.liquidityToken), [
+    tokenPairsWithLiquidityTokens
   ])
   const [v2PairsBalances, fetchingV2PairBalances] = useTokenBalancesWithLoadingIndicator(
     account ?? undefined,
@@ -94,7 +112,7 @@ export default function Pool() {
 
   const v2Pairs = usePairs(liquidityTokensWithBalances.map(({ tokens }) => tokens))
   const v2IsLoading =
-    fetchingV2PairBalances || v2Pairs?.length < liquidityTokensWithBalances.length || v2Pairs?.some((V2Pair) => !V2Pair)
+    fetchingV2PairBalances || v2Pairs?.length < liquidityTokensWithBalances.length || v2Pairs?.some(V2Pair => !V2Pair)
 
   const allV2PairsWithLiquidity = v2Pairs.map(([, pair]) => pair).filter((v2Pair): v2Pair is Pair => Boolean(v2Pair))
 
@@ -167,7 +185,7 @@ export default function Pool() {
                 </div>
               ) : allV2PairsWithLiquidity?.length > 0 ? (
                 <>
-                  {allV2PairsWithLiquidity.map((v2Pair) => (
+                  {allV2PairsWithLiquidity.map(v2Pair => (
                     <FullPositionCard key={v2Pair.liquidityToken.address} pair={v2Pair} />
                   ))}
                 </>
@@ -207,28 +225,29 @@ export default function Pool() {
             </Heading>
             <Card style={{ overflow: 'auto' }}>
               {/* Mockup */}
-              <TransactionHistoryBox
-                firstCoin={undefined}
-                secondCoin={undefined}
-                title="Add Liquidity"
-                withText="and"
-                date="17 Apr 2021, 15:32"
-              />
-              <TransactionHistoryBox
-                firstCoin={undefined}
-                secondCoin={undefined}
-                title="Remove Liquidity"
-                withText="and"
-                isFailed
-                date="17 Apr 2021, 15:32"
-              />
-              <TransactionHistoryBox
-                firstCoin={undefined}
-                secondCoin={undefined}
-                title="Remove Liquidity"
-                withText="and"
-                date="17 Apr 2021, 15:32"
-              />
+              {sortedRecentTransactions.map(tx => {
+                const firstToken = Object.values(allTokens).find(t => t.symbol === tx.data?.firstToken)
+                const secondToken = Object.values(allTokens).find(t => t.symbol === tx.data?.secondToken)
+                return (
+                  <TransactionHistoryBox
+                    href={chainId ? getBscScanLink(chainId, tx.hash, 'transaction') : "/"}
+                    firstCoin={firstToken}
+                    firstCoinAmount={tx.data?.firstTokenAmount}
+                    secondCoin={secondToken}
+                    secondCoinAmount={tx.data?.firstTokenAmount}
+                    title={tx.type === 'addLiquidity' ? 'Add Liquidity' : 'Remove Liquidity'}
+                    withText="and"
+                    isFailed={!tx.confirmedTime}
+                    date={tx.confirmedTime ? new Date(tx.confirmedTime || 0).toLocaleString('en-US', {
+                      day: 'numeric',
+                      month: 'short',
+                      year: 'numeric',
+                      hour: 'numeric',
+                      minute: 'numeric'
+                    }) : ""}
+                  />
+                )
+              })}
               {/* End Mockup */}
             </Card>
           </MaxWidthRight>

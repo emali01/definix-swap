@@ -19,7 +19,7 @@ import TransactionHistoryBox from 'components/TransactionHistoryBox'
 import { INITIAL_ALLOWED_SLIPPAGE } from 'constants/index'
 import { CurrencyAmount, JSBI, Token, Trade } from 'definixswap-sdk'
 import { useActiveWeb3React } from 'hooks'
-import { useCurrency } from 'hooks/Tokens'
+import { useCurrency, useAllTokens } from 'hooks/Tokens'
 import { ApprovalState, useApproveCallbackFromTrade } from 'hooks/useApproveCallback'
 import { useSwapCallback } from 'hooks/useSwapCallback'
 import useWrapCallback, { WrapType } from 'hooks/useWrapCallback'
@@ -35,6 +35,9 @@ import { LeftPanel, MaxWidthLeft, MaxWidthRight, RightPanel, ShowHideButton } fr
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { computeTradePriceBreakdown, warningSeverity } from 'utils/prices'
 import { TranslateString } from 'utils/translateTextHelpers'
+import { isTransactionRecent, useAllTransactions } from 'state/transactions/hooks'
+import { TransactionDetails } from 'state/transactions/reducer'
+import { getBscScanLink } from 'utils'
 import { SIX_ADDRESS } from '../../constants'
 import Flip from '../../uikit-dev/components/Flip'
 import AppBody from '../AppBody'
@@ -68,10 +71,24 @@ const TimerWrapper = ({ isPhrase2, date, children }) => {
   )
 }
 
+const newTransactionsFirst = (a: TransactionDetails, b: TransactionDetails) => b.addedTime - a.addedTime
+
 const Swap = () => {
   const loadedUrlParams = useDefaultsFromURLSearch()
   const { isXl } = useMatchBreakpoints()
   const isMobileOrTablet = !isXl
+
+  const allTransactions = useAllTransactions()
+  const allTokens = useAllTokens()
+
+  // Logic taken from Web3Status/index.tsx line 175
+  const sortedRecentTransactions = useMemo(() => {
+    const txs = Object.values(allTransactions)
+    return txs
+      .filter(isTransactionRecent)
+      .filter(t => t.type === 'swap')
+      .sort(newTransactionsFirst)
+  }, [allTransactions])
 
   // token warning stuff
   const [loadedInputCurrency, loadedOutputCurrency] = [
@@ -571,7 +588,30 @@ const Swap = () => {
               SWAP HISTORY
             </Heading>
             <Card style={{ overflow: 'auto' }}>
-              {/* Mockup */}
+              {sortedRecentTransactions.map(tx => {
+                const firstToken = Object.values(allTokens).find(t => t.symbol === tx.data?.firstToken)
+                const secondToken = Object.values(allTokens).find(t => t.symbol === tx.data?.secondToken)
+                return (
+                  <TransactionHistoryBox
+                    href={chainId ? getBscScanLink(chainId, tx.hash, 'transaction') : "/"}
+                    firstCoin={firstToken}
+                    firstCoinAmount={tx.data?.firstTokenAmount}
+                    secondCoin={secondToken}
+                    secondCoinAmount={tx.data?.firstTokenAmount}
+                    title="Swap"
+                    withText="and"
+                    isFailed={!tx.confirmedTime}
+                    date={tx.confirmedTime ? new Date(tx.confirmedTime || 0).toLocaleString('en-US', {
+                      day: 'numeric',
+                      month: 'short',
+                      year: 'numeric',
+                      hour: 'numeric',
+                      minute: 'numeric'
+                    }) : ""}
+                  />
+                )
+              })}
+              {/* 
               <TransactionHistoryBox
                 firstCoin={undefined}
                 secondCoin={undefined}
@@ -594,7 +634,7 @@ const Swap = () => {
                 withText="for"
                 date="17 Apr 2021, 15:32"
               />
-              {/* End Mockup */}
+               */}
             </Card>
           </MaxWidthRight>
         )}

@@ -177,6 +177,13 @@ export default function AddLiquidity({
           setAttemptingTxn(false)
 
           addTransaction(response, {
+            type: 'addLiquidity',
+            data: {
+              firstToken: currencies[Field.CURRENCY_A]?.symbol,
+              firstTokenAmount: parsedAmounts[Field.CURRENCY_A]?.toSignificant(3),
+              secondToken: currencies[Field.CURRENCY_B]?.symbol,
+              secondTokenAmount: parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)
+            },
             summary: `Add ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${
               currencies[Field.CURRENCY_A]?.symbol
             } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencies[Field.CURRENCY_B]?.symbol}`,

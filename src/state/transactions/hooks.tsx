@@ -10,7 +10,12 @@ import { TransactionDetails } from './reducer'
 // helper that can take a ethers library transaction response and add it to the list of transactions
 export function useTransactionAdder(): (
   response: TransactionResponse,
-  customData?: { summary?: string; approval?: { tokenAddress: string; spender: string } }
+  customData?: {
+    type?: string
+    data?: { firstToken?: string; firstTokenAmount?: string; secondToken?: string; secondTokenAmount?: string }
+    summary?: string
+    approval?: { tokenAddress: string; spender: string }
+  }
 ) => void {
   const { chainId, account } = useActiveWeb3React()
   const dispatch = useDispatch<AppDispatch>()
@@ -18,7 +23,17 @@ export function useTransactionAdder(): (
   return useCallback(
     (
       response: TransactionResponse,
-      { summary, approval }: { summary?: string; approval?: { tokenAddress: string; spender: string } } = {}
+      {
+        type,
+        data,
+        summary,
+        approval
+      }: {
+        type?: string
+        data?: { firstToken?: string; firstTokenAmount?: string; secondToken?: string; secondTokenAmount?: string }
+        summary?: string
+        approval?: { tokenAddress: string; spender: string }
+      } = {}
     ) => {
       if (!account) return
       if (!chainId) return
@@ -27,7 +42,7 @@ export function useTransactionAdder(): (
       if (!hash) {
         throw Error('No transaction hash found.')
       }
-      dispatch(addTransaction({ hash, from: account, chainId, approval, summary }))
+      dispatch(addTransaction({ type, data, hash, from: account, chainId, approval, summary }))
     },
     [dispatch, chainId, account]
   )
@@ -37,7 +52,7 @@ export function useTransactionAdder(): (
 export function useAllTransactions(): { [txHash: string]: TransactionDetails } {
   const { chainId } = useActiveWeb3React()
 
-  const state = useSelector<AppState, AppState['transactions']>((s) => s.transactions)
+  const state = useSelector<AppState, AppState['transactions']>(s => s.transactions)
 
   return chainId ? state[chainId] ?? {} : {}
 }
@@ -65,7 +80,7 @@ export function useHasPendingApproval(tokenAddress: string | undefined, spender:
     () =>
       typeof tokenAddress === 'string' &&
       typeof spender === 'string' &&
-      Object.keys(allTransactions).some((hash) => {
+      Object.keys(allTransactions).some(hash => {
         const tx = allTransactions[hash]
         if (!tx) return false
         if (tx.receipt) {
