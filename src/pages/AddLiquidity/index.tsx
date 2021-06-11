@@ -15,6 +15,7 @@ import TransactionConfirmationModal, {
   TransactionErrorContent,
   TransactionSubmittedContent,
 } from 'components/TransactionConfirmationModal'
+import { ExternalLink } from 'components/Shared'
 import { PairState } from 'data/Reserves'
 import { Currency, currencyEquals, ETHER, TokenAmount, WETH } from 'definixswap-sdk'
 import { useActiveWeb3React } from 'hooks'
@@ -298,7 +299,7 @@ export default function AddLiquidity({
         button={
           <Button
             onClick={() => {
-              console.log('Add this Liquidity to Farm')
+              history.push(`${process.env.REACT_APP_FRONTEND_URL}/farm`)
             }}
             radii="card"
             fullWidth
