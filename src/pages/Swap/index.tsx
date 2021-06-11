@@ -614,7 +614,7 @@ const Swap = () => {
                     firstCoin={firstToken}
                     firstCoinAmount={tx.data?.firstTokenAmount}
                     secondCoin={secondToken}
-                    secondCoinAmount={tx.data?.firstTokenAmount}
+                    secondCoinAmount={tx.data?.secondTokenAmount}
                     title="Swap"
                     withText="and"
                     isFailed={!tx.confirmedTime}
