@@ -78,7 +78,7 @@ const UserBlock: React.FC<Props> = ({ account, login, logout }) => {
               className="mb-2"
               fontSize="13px"
             >
-              View on BscScan
+              View on Klaytn Scope
             </LinkExternal>
             <CopyToClipboard noPadding toCopy={account}>
               Copy Address

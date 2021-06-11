@@ -74,7 +74,7 @@ function TokenWarningCard({ token }: TokenWarningCardProps) {
           </Text>
           {chainId && (
             <ExternalLink style={{ fontWeight: 400 }} href={getBscScanLink(chainId, token.address, 'token')}>
-              <Text title={token.address}>{shortenAddress(token.address)} (View on BscScan)</Text>
+              <Text title={token.address}>{shortenAddress(token.address)} (View on Klaytn Scope)</Text>
             </ExternalLink>
           )}
         </AutoColumn>

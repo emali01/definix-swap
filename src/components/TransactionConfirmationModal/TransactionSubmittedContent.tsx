@@ -57,13 +57,13 @@ const TransactionSubmittedContent = ({
 
             <Link
               external
-              href={getBscScanLink(chainId, hash, 'transaction')}
+              href={getKlaytn ScopeLink(chainId, hash, 'transaction')}
               bold={false}
               className="flex-shrink"
               color="textSubtle"
               fontSize="12px"
             >
-              View on BscScan
+              View on Klaytn Scope
               <ChevronRightIcon color="textSubtle" />
             </Link>
           </RowBetween>

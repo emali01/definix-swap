@@ -104,7 +104,7 @@ export default function AddressInputPanel({
               </Text>
               {address && chainId && (
                 <ExternalLink href={getBscScanLink(chainId, name ?? address, 'address')} style={{ fontSize: '14px' }}>
-                  (View on BscScan)
+                  (View on Klaytn Scope)
                 </ExternalLink>
               )}
             </RowBetween>

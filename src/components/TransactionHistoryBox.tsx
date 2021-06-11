@@ -44,13 +44,13 @@ const TransactionHistoryBox = ({ href = "/", title, firstCoin, secondCoin, first
         </Text>
         <Link
           external
-          href="/"
+          href={href}
           bold={false}
           color="textSubtle"
           fontSize="12px"
           style={{ display: 'inline-flex', marginRight: '-7px' }}
         >
-          View on BscScan
+          View on Klaytn Scope
           <ChevronRightIcon color="textSubtle" />
         </Link>
       </div>

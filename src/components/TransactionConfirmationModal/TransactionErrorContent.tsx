@@ -48,7 +48,7 @@ const TransactionErrorContent = ({ title, date, chainId, hash, content, button }
               color="textSubtle"
               fontSize="12px"
             >
-              View on BscScan
+              View on Klaytn Scope
               <ChevronRightIcon color="textSubtle" />
             </Link>
           </RowBetween>
