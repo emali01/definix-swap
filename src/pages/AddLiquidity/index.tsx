@@ -1,3 +1,4 @@
+import numeral from 'numeral'
 import { BigNumber } from '@ethersproject/bignumber'
 import { TransactionResponse } from '@ethersproject/providers'
 import { BorderCard } from 'components/Card'
@@ -289,7 +290,7 @@ export default function AddLiquidity({
   const submittedContent = useCallback(
     () => (
       <TransactionSubmittedContent
-        title="Swap Complete"
+        title="Add Liquidity Complete"
         date="17 Apr 2021, 15:32"
         chainId={chainId}
         hash={txHash}
@@ -313,7 +314,7 @@ export default function AddLiquidity({
   const errorContent = useCallback(
     () => (
       <TransactionErrorContent
-        title="Swap Failed"
+        title="Add Liquidity Failed"
         date="17 Apr 2021, 15:32"
         chainId={chainId}
         hash={txHash}
@@ -371,6 +372,12 @@ export default function AddLiquidity({
                       onMax={() => {
                         onFieldAInput(maxAmounts[Field.CURRENCY_A]?.toExact() ?? '')
                       }}
+                      onQuarter={() => {
+                        onFieldAInput(numeral(parseFloat(maxAmounts[Field.CURRENCY_A]?.toExact() || "") / 4).format("0.00") ?? '')
+                      }}
+                      onHalf={() => {
+                        onFieldAInput(numeral(parseFloat(maxAmounts[Field.CURRENCY_A]?.toExact() || "") / 2).format("0.00") ?? '')
+                      }}
                       onCurrencySelect={handleCurrencyASelect}
                       showMaxButton={!atMaxAmounts[Field.CURRENCY_A]}
                       currency={currencies[Field.CURRENCY_A]}
@@ -389,6 +396,12 @@ export default function AddLiquidity({
                       onCurrencySelect={handleCurrencyBSelect}
                       onMax={() => {
                         onFieldBInput(maxAmounts[Field.CURRENCY_B]?.toExact() ?? '')
+                      }}
+                      onQuarter={() => {
+                        onFieldBInput(numeral(parseFloat(maxAmounts[Field.CURRENCY_B]?.toExact() || "") / 4).format("0.00") ?? '')
+                      }}
+                      onHalf={() => {
+                        onFieldBInput(numeral(parseFloat(maxAmounts[Field.CURRENCY_B]?.toExact() || "") / 2).format("0.00") ?? '')
                       }}
                       showMaxButton={!atMaxAmounts[Field.CURRENCY_B]}
                       currency={currencies[Field.CURRENCY_B]}

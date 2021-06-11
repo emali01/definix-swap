@@ -63,6 +63,8 @@ interface CurrencyInputPanelProps {
   showCommonBases?: boolean
   className?: string
   onMax?: () => void
+  onQuarter?: () => void
+  onHalf?: () => void
   onUserInput: (value: string) => void
   onCurrencySelect?: (currency: Currency) => void
 }
@@ -81,6 +83,8 @@ export default function CurrencyInputPanel({
   showCommonBases,
   className,
   onMax,
+  onQuarter,
+  onHalf,
   onUserInput,
   onCurrencySelect,
 }: CurrencyInputPanelProps) {
@@ -128,15 +132,11 @@ export default function CurrencyInputPanel({
                 <div className="flex align-center justify-end" style={{ width: isMobile ? '100%' : 'auto' }}>
                   <AnountButton
                     title="25%"
-                    onClick={() => {
-                      console.log('25%')
-                    }}
+                    onClick={onQuarter}
                   />
                   <AnountButton
                     title="50%"
-                    onClick={() => {
-                      console.log('50%')
-                    }}
+                    onClick={onHalf}
                   />
                   <AnountButton title="MAX" onClick={onMax} />
                 </div>
