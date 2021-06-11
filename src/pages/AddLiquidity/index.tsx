@@ -283,7 +283,7 @@ export default function AddLiquidity({
   const submittedContent = useCallback(
     () => (
       <TransactionSubmittedContent
-        title="Swap Complete"
+        title="Add Liquidity Complete"
         date="17 Apr 2021, 15:32"
         chainId={chainId}
         hash={txHash}
@@ -307,7 +307,7 @@ export default function AddLiquidity({
   const errorContent = useCallback(
     () => (
       <TransactionErrorContent
-        title="Swap Failed"
+        title="Add Liquidity Failed"
         date="17 Apr 2021, 15:32"
         chainId={chainId}
         hash={txHash}

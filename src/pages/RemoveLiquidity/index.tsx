@@ -438,7 +438,7 @@ export default function RemoveLiquidity({
   const submittedContent = useCallback(
     () => (
       <TransactionSubmittedContent
-        title="Swap Complete"
+        title="Remove Liquidity Complete"
         date="17 Apr 2021, 15:32"
         chainId={chainId}
         hash={txHash}
@@ -446,12 +446,12 @@ export default function RemoveLiquidity({
         button={
           <Button
             onClick={() => {
-              console.log('Add this Liquidity to Farm')
+              console.log('Remove this Liquidity from Farm')
             }}
             radii="card"
             fullWidth
           >
-            Add this Liquidity to Farm
+            Remove this Liquidity from Farm
           </Button>
         }
       />
@@ -462,7 +462,7 @@ export default function RemoveLiquidity({
   const errorContent = useCallback(
     () => (
       <TransactionErrorContent
-        title="Swap Failed"
+        title="Remove Liquidity Failed"
         date="17 Apr 2021, 15:32"
         chainId={chainId}
         hash={txHash}
@@ -470,12 +470,12 @@ export default function RemoveLiquidity({
         button={
           <Button
             onClick={() => {
-              console.log('Add Liquidity Again')
+              console.log('Remove Liquidity Again')
             }}
             radii="card"
             fullWidth
           >
-            Add Liquidity Again
+            Remove Liquidity Again
           </Button>
         }
       />
