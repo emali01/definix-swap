@@ -133,7 +133,7 @@ export default function Pool() {
             <div className="pa-6 bd-b">
               <div className="flex align-center mb-5">
                 <Heading>Add liquidity to receive LP tokens</Heading>
-                <Question text="" />
+                {/* <Question text="" /> */}
               </div>
               <Button id="join-pool-button" as={Link} to="/add/ETH" fullWidth radii="card">
                 <TranslatedText translationId={100}>Add Liquidity</TranslatedText>
