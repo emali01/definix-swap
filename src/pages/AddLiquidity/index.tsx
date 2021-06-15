@@ -1,5 +1,6 @@
 import numeral from 'numeral'
 import { BigNumber } from '@ethersproject/bignumber'
+import BigNumberJs from 'bignumber.js'
 import { TransactionResponse } from '@ethersproject/providers'
 import { BorderCard } from 'components/Card'
 import { AutoColumn, ColumnCenter } from 'components/Column'
@@ -34,12 +35,13 @@ import { calculateGasMargin, calculateSlippageAmount, getRouterContract } from '
 import { currencyId } from 'utils/currencyId'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { wrappedCurrency } from 'utils/wrappedCurrency'
-import { ROUTER_ADDRESS } from '../../constants'
+import { ROUTER_ADDRESS, HERODOTUS_ADDRESS } from '../../constants'
 import AppBody from '../AppBody'
 import { Wrapper } from '../Pool/styleds'
 import { ConfirmAddModalBottom } from './ConfirmAddModalBottom'
 import { PoolPriceBar } from './PoolPriceBar'
 import farms from '../../constants/farm'
+import { useHerodotusContract } from '../../hooks/useContract'
 
 export default function AddLiquidity({
   match: {
@@ -50,6 +52,8 @@ export default function AddLiquidity({
   const { account, chainId, library } = useActiveWeb3React()
   const currencyA = useCurrency(currencyIdA)
   const currencyB = useCurrency(currencyIdB)
+  const herodotusContract = useHerodotusContract()
+  const herodotusAddress = HERODOTUS_ADDRESS[chainId || '']
 
   const oneCurrencyIsWETH = Boolean(
     chainId &&
@@ -117,6 +121,7 @@ export default function AddLiquidity({
   // check whether the user has approved the router on the tokens
   const [approvalA, approveACallback] = useApproveCallback(parsedAmounts[Field.CURRENCY_A], ROUTER_ADDRESS)
   const [approvalB, approveBCallback] = useApproveCallback(parsedAmounts[Field.CURRENCY_B], ROUTER_ADDRESS)
+  const [approvalLP, approveLPCallback] = useApproveCallback(liquidityMinted, herodotusAddress)
 
   const addTransaction = useTransactionAdder()
 
@@ -300,35 +305,63 @@ export default function AddLiquidity({
         button={
           <Button
             onClick={() => {
-const gas = farms
-const gas2 = currencies[Field.CURRENCY_A]
-const gas3 = currencies[Field.CURRENCY_B]
-console.log('d ja')
-console.log(history)
-// eslint-disable-next-line
-debugger
-              // history.push(`${process.env.REACT_APP_FRONTEND_URL}/farm`)
-              // if (pid === 0) {
-              //   return herodotusContract.methods
-              //     .enterStaking(new BigNumber(amount).times(new BigNumber(10).pow(18)).toString())
-              //     .send({ from: account, gas: 200000 })
-              //     .then(function (tx) {
-              //       return tx.transactionHash
-              //     })
-              //     .catch(function (tx) {
-              //       return tx.transactionHash
-              //     })
-              // }
+              const firstToken = currencies[Field.CURRENCY_A]
+              const secondToken = currencies[Field.CURRENCY_B]
+              const farm = farms.find(
+                x =>
+                  x.pid !== 0 &&
+                  x.pid !== 1 &&
+                  ((x.tokenSymbol === firstToken?.symbol && x.quoteTokenSymbol === secondToken?.symbol) ||
+                    (x.tokenSymbol === secondToken?.symbol && x.quoteTokenSymbol === firstToken?.symbol))
+              )
+              if (farm && farm.pid !== 1 && farm.pid !== 0 && liquidityMinted) {
+                return new Promise((resolve, reject) => {
+                  setAttemptingTxn(true)
+                  if (approvalLP !== ApprovalState.APPROVED) {
+                    approveLPCallback()
+                      .then(() => {
+                        resolve(true)
+                      })
+                      .catch(err => {
+                        reject(err)
+                      })
+                  } else {
+                    resolve(true)
+                  }
+                })
+                  .then(() => {
+                    const args = [
+                      farm.pid,
+                      new BigNumberJs(liquidityMinted.toExact()).times(new BigNumberJs(10).pow(18)).toString()
+                    ]
+                    const value = null
+                    return herodotusContract?.estimateGas.deposit(...args)
+                  })
 
-              // return herodotusContract.methods
-              //   .deposit(pid, new BigNumber(amount).times(new BigNumber(10).pow(18)).toString())
-              //   .send({ from: account, gas: 200000 })
-              //   .then(function (tx) {
-              //     return tx.transactionHash
-              //   })
-              //   .catch(function (tx) {
-              //     return tx.transactionHash
-              //   })
+                  .then(estimatedGasLimit => {
+                    if (estimatedGasLimit) {
+                      const args = [
+                        farm.pid,
+                        new BigNumberJs(liquidityMinted.toExact()).times(new BigNumberJs(10).pow(18)).toString()
+                      ]
+                      return herodotusContract?.deposit(...args, {
+                        gasLimit: calculateGasMargin(estimatedGasLimit)
+                      })
+                    }
+                    return true
+                  })
+
+                  .then(function (tx) {
+                    window.location.href = `${process.env.REACT_APP_FRONTEND_URL}/farm`
+                    return true
+                  })
+                  .catch(function (tx) {
+                    window.location.href = `${process.env.REACT_APP_FRONTEND_URL}/farm`
+                    return true
+                  })
+              }
+              window.location.href = `${process.env.REACT_APP_FRONTEND_URL}/farm`
+              return true
             }}
             radii="card"
             fullWidth
@@ -338,7 +371,7 @@ debugger
         }
       />
     ),
-    [chainId, modalHeader, txHash, history, currencies]
+    [chainId, modalHeader, txHash, currencies, herodotusContract, liquidityMinted, approvalLP, approveLPCallback]
   )
 
   const errorContent = useCallback(

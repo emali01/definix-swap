@@ -53,7 +53,7 @@ export function useENSRegistrarContract(withSignerIfPossible?: boolean): Contrac
 
 export function useHerodotusContract(): Contract | null {
   const { chainId } = useActiveWeb3React()
-  return useContract(chainId && HERODOTUS_ADDRESS[chainId], HERODOTUS_ABI, false)
+  return useContract(chainId && HERODOTUS_ADDRESS[chainId], HERODOTUS_ABI)
 }
 
 export function useENSResolverContract(address: string | undefined, withSignerIfPossible?: boolean): Contract | null {

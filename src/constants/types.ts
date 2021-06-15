@@ -6,6 +6,7 @@ export enum QuoteToken {
   'KETH' = 'KETH',
   'KXRP' = 'KXRP',
   'KBTC' = 'KBTC',
+  'KSP' = 'KSP',
   'KBNB' = 'KBNB',
   'SIX' = 'SIX',
   'FINIX' = 'FINIX',
