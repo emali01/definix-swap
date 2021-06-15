@@ -162,7 +162,7 @@ const Menu: React.FC<NavProps> = ({
   const [isPushed, setIsPushed] = useState(false)
   const [showMenu, setShowMenu] = useState(true)
   const refPrevOffset = useRef(window.pageYOffset)
-  const Icons = IconModule as unknown as { [key: string]: React.FC<SvgProps> }
+  const Icons = (IconModule as unknown) as { [key: string]: React.FC<SvgProps> }
   const { LanguageIcon } = Icons
   const IconFlag = () => {
     if (currentLang === 'en') {
@@ -287,24 +287,6 @@ const Menu: React.FC<NavProps> = ({
         />
         <Inner isPushed={isPushed} showMenu={showMenu}>
           <InnerBg>
-            {/* <CountDownBanner
-              logo={definixCoin}
-              title="Ceritakan tentang pengalamanmu di Crypto"
-              highlight="dan menangkan 20$"
-              endTime=""
-              button={
-                <Button
-                  as="a"
-                  target="_blank"
-                  href="https://docs.google.com/forms/d/e/1FAIpQLSeD1LOcZ9bIBrPrZGy3PV-pS9gF-ijg-aj3XyMEAluj7wCbBQ/viewform"
-                  size="sm"
-                >
-                  Click
-                </Button>
-              }
-              disableCountdown
-            /> */}
-
             <CountDownBanner
               logo={logoTrade}
               title="Definix Trading Tournament"
