@@ -27,6 +27,7 @@ export const Popup = styled.div`
   padding: 20px;
   padding-right: 35px;
   overflow: hidden;
+  box-shadow: ${({ theme }) => theme.shadows.elevation1};
 
   ${({ theme }) => theme.mediaQueries.sm} {
     min-width: 290px;
