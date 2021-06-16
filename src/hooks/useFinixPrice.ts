@@ -7,19 +7,22 @@ import {
   FINIX_SIX_LP,
   FINIX_KUSDT_LP,
   FINIX_KLAY_LP,
+  FINIX_KSP_LP,
   SIX_KUSDT_LP,
+  SIX_KLAY_LP,
   KLAY_KUSDT_LP,
   FINIX_ADDRESS,
   SIX_ADDRESS,
   WKLAY_ADDRESS,
   KDAI_ADDRESS,
   KUSDT_ADDRESS,
+  KSP_ADDRESS,
   HERODOTUS_ADDRESS,
   PANCAKE_MASTER_CHEF_ADDRESS
 } from '../constants'
 import erc20 from '../constants/abis/erc20.json'
 
-const getTotalBalanceLp = async (input) => {
+const getTotalBalanceLp = async input => {
   const { lpAddress, pair1, pair2, masterChefAddress, multicallAddress } = input
   let pair1Amount = 0
   let pair2Amount = 0
@@ -74,13 +77,6 @@ export default function useFinixPrice(): number {
         multicallAddress: multicallContractAddress
       }),
       getTotalBalanceLp({
-        lpAddress: FINIX_KUSDT_LP[chainId],
-        pair1: FINIX_ADDRESS[chainId],
-        pair2: KUSDT_ADDRESS[chainId],
-        masterChefAddress: HERODOTUS_ADDRESS[chainId],
-        multicallAddress: multicallContractAddress
-      }),
-      getTotalBalanceLp({
         lpAddress: FINIX_KLAY_LP[chainId],
         pair1: FINIX_ADDRESS[chainId],
         pair2: WKLAY_ADDRESS[chainId],
@@ -88,9 +84,30 @@ export default function useFinixPrice(): number {
         multicallAddress: multicallContractAddress
       }),
       getTotalBalanceLp({
+        lpAddress: FINIX_KSP_LP[chainId],
+        pair1: FINIX_ADDRESS[chainId],
+        pair2: KSP_ADDRESS[chainId],
+        masterChefAddress: HERODOTUS_ADDRESS[chainId],
+        multicallAddress: multicallContractAddress
+      }),
+      getTotalBalanceLp({
+        lpAddress: FINIX_KUSDT_LP[chainId],
+        pair1: FINIX_ADDRESS[chainId],
+        pair2: KUSDT_ADDRESS[chainId],
+        masterChefAddress: HERODOTUS_ADDRESS[chainId],
+        multicallAddress: multicallContractAddress
+      }),
+      getTotalBalanceLp({
         lpAddress: SIX_KUSDT_LP[chainId],
         pair1: SIX_ADDRESS[chainId],
         pair2: KUSDT_ADDRESS[chainId],
+        masterChefAddress: HERODOTUS_ADDRESS[chainId],
+        multicallAddress: multicallContractAddress
+      }),
+      getTotalBalanceLp({
+        lpAddress: SIX_KLAY_LP[chainId],
+        pair1: SIX_ADDRESS[chainId],
+        pair2: WKLAY_ADDRESS[chainId],
         masterChefAddress: HERODOTUS_ADDRESS[chainId],
         multicallAddress: multicallContractAddress
       }),
@@ -105,9 +122,11 @@ export default function useFinixPrice(): number {
     Promise.all(fetchPromise).then(response => {
       const [
         [totalFinixDefinixFinixSixPair, totalSixDefinixFinixSixPair],
-        [totalFinixDefinixFinixKusdtPair, totalBusdDefinixFinixKusdtPair],
         [totalFinixDefinixFinixKlayPair, totalKlayDefinixFinixKlayPair],
-        [totalSixDefinixSixKusdtPair, totalKlayDefinixSixKusdtPair],
+        [totalFinixDefinixFinixKspPair, totalKspDefinixFinixKspPair],
+        [totalFinixDefinixFinixKusdtPair, totalKusdtDefinixFinixKusdtPair],
+        [totalSixDefinixSixKusdtPair, totalKusdtDefinixSixKusdtPair],
+        [totalSixDefinixSixKlayPair, totalKlayDefinixSixKlayPair],
         [totalKlayInDefinixKlayKusdtPair, totalKusdtInDefinixKlayKusdtPair]
       ] = response
       // const totalFinixDefinixFinixSixPair = 10000000.0
@@ -116,25 +135,31 @@ export default function useFinixPrice(): number {
       // FINIX-BUSD
       // const totalFinixDefinixFinixBusdPair = 10000000.0
       // const totalBusdDefinixFinixBusdPair = 500000.0
-      const finixBusdRatio = totalBusdDefinixFinixKusdtPair / totalFinixDefinixFinixKusdtPair || 0
+      const finixKusdtRatio = totalKusdtDefinixFinixKusdtPair / totalFinixDefinixFinixKusdtPair || 0
       // FINIX-BNB
       // const totalFinixDefinixFinixBnbPair = 10000000.0
       // const totalBnbDefinixFinixBnbPair = 1824.82
-      const finixBnbRatio = totalKlayDefinixFinixKlayPair / totalFinixDefinixFinixKlayPair || 0
+      const finixKlayRatio = totalKlayDefinixFinixKlayPair / totalFinixDefinixFinixKlayPair || 0
+
+      const finixKspRatio = totalFinixDefinixFinixKspPair / totalKspDefinixFinixKspPair || 0
       // SIX-BUSD
       // const totalSixDefinixSixBusdPair = 12820512.82
       // const totalBnbDefinixSixBusdPair = 500000.0
-      const sixBusdRatio = totalKlayDefinixSixKusdtPair / totalSixDefinixSixKusdtPair || 0
+      const sixKusdtRatio = totalKusdtDefinixSixKusdtPair / totalSixDefinixSixKusdtPair || 0
+
+      const sixKlayRatio = totalSixDefinixSixKlayPair / totalKlayDefinixSixKlayPair || 0
       // PANCAKE BNB-BUSD
       // const totalBnbInDefinixBnbBusdPair = 557985
       // const totalBusdInDefinixBnbBusdPair = 152220163
-      const definixBnbBusdRatio = totalKusdtInDefinixKlayKusdtPair / totalKlayInDefinixKlayKusdtPair || 0
+      const definixKlayKusdtRatio = totalKusdtInDefinixKlayKusdtPair / totalKlayInDefinixKlayKusdtPair || 0
       // Price cal
-      const finixSixPrice = finixSixRatio * sixBusdRatio
-      const finixBnbPrice = finixBnbRatio * definixBnbBusdRatio
+      const finixSixPrice = finixSixRatio * sixKusdtRatio
+      const finixKlayPrice = finixKlayRatio * definixKlayKusdtRatio
+      const finixKspPrice = finixKspRatio * finixKusdtRatio
+      const sixKlayPrice = sixKlayRatio * definixKlayKusdtRatio
       const averageFinixPrice =
-        (finixBusdRatio * totalFinixDefinixFinixKusdtPair +
-          finixBnbPrice * totalFinixDefinixFinixKlayPair +
+        (finixKusdtRatio * totalFinixDefinixFinixKusdtPair +
+          finixKlayPrice * totalFinixDefinixFinixKlayPair +
           finixSixPrice * totalFinixDefinixFinixSixPair) /
         (totalFinixDefinixFinixKusdtPair + totalFinixDefinixFinixKlayPair + totalFinixDefinixFinixSixPair)
 
