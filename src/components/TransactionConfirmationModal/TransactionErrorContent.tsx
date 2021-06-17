@@ -53,7 +53,7 @@ const TransactionErrorContent = ({ title, date, chainId, hash, content, button }
             </Link>
           </RowBetween>
 
-          <div className="flex justify-center mt-6">
+          {false && <div className="flex justify-center mt-6">
             <Button
               startIcon={<ArrowDownIcon />}
               onClick={() => {
@@ -64,7 +64,7 @@ const TransactionErrorContent = ({ title, date, chainId, hash, content, button }
             >
               Download IMG Transaction
             </Button>
-          </div>
+          </div>}
         </div>
       )}
 
