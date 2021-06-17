@@ -39,6 +39,7 @@ export interface MenuEntry {
   initialOpenState?: boolean
   group?: string
   notHighlight?: boolean
+  newTab?: boolean
 }
 
 export interface PanelProps {
@@ -57,4 +58,5 @@ export interface NavProps extends PanelProps {
   profile?: Profile
   price?: number
   logout: () => void
+  value?: number
 }

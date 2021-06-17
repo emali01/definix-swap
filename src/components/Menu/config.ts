@@ -1,22 +1,27 @@
 import { MenuEntry } from 'uikit-dev'
+import newIcon from 'uikit-dev/images/for-trading-challenge/New-icon.png'
+import bridgeClick from 'uikit-dev/images/Menu-Icon/bridge-click.png'
+import bridge from 'uikit-dev/images/Menu-Icon/bridge.png'
 import dashboardClick from 'uikit-dev/images/Menu-Icon/dashboard-click.png'
 import dashboard from 'uikit-dev/images/Menu-Icon/dashboard.png'
 import exploreClick from 'uikit-dev/images/Menu-Icon/explore-click.png'
 import explore from 'uikit-dev/images/Menu-Icon/explore.png'
 import farmClick from 'uikit-dev/images/Menu-Icon/farm-click.png'
 import farm from 'uikit-dev/images/Menu-Icon/farm.png'
-import bridgeClick from 'uikit-dev/images/Menu-Icon/bridge-click.png'
-import bridge from 'uikit-dev/images/Menu-Icon/bridge.png'
+import gitbookClick from 'uikit-dev/images/Menu-Icon/Gitbook-click.png'
+import gitbook from 'uikit-dev/images/Menu-Icon/Gitbook.png'
 import liquidityClick from 'uikit-dev/images/Menu-Icon/liquidity-click.png'
 import liquidity from 'uikit-dev/images/Menu-Icon/liquidity.png'
+import myFundClick from 'uikit-dev/images/Menu-Icon/my-funds-click.png'
+import myFund from 'uikit-dev/images/Menu-Icon/my-funds.png'
+import partnerClick from 'uikit-dev/images/Menu-Icon/partnership-click.png'
+import partner from 'uikit-dev/images/Menu-Icon/partnership.png'
 import poolClick from 'uikit-dev/images/Menu-Icon/pool-click.png'
 import pool from 'uikit-dev/images/Menu-Icon/pool.png'
 import portfolioClick from 'uikit-dev/images/Menu-Icon/portfolio-click.png'
 import portfolio from 'uikit-dev/images/Menu-Icon/portfolio.png'
 import swapClick from 'uikit-dev/images/Menu-Icon/swap-click.png'
 import swap from 'uikit-dev/images/Menu-Icon/swap.png'
-import watchlistClick from 'uikit-dev/images/Menu-Icon/watchlist-click.png'
-import watchlist from 'uikit-dev/images/Menu-Icon/watchlist.png'
 
 const config: MenuEntry[] = [
   {
@@ -26,6 +31,7 @@ const config: MenuEntry[] = [
     href: 'https://d4uaxhhaz21z7.cloudfront.net/dashboard',
     group: 'wallet',
     notHighlight: false,
+    newTab: false,
   },
   {
     label: 'Swap',
@@ -34,6 +40,7 @@ const config: MenuEntry[] = [
     href: '/swap',
     group: 'dex',
     notHighlight: false,
+    newTab: false,
   },
   {
     label: 'Liquidity',
@@ -42,6 +49,7 @@ const config: MenuEntry[] = [
     href: '/liquidity',
     group: 'dex',
     notHighlight: false,
+    newTab: false,
   },
   {
     label: 'Farm',
@@ -50,6 +58,7 @@ const config: MenuEntry[] = [
     href: 'https://d4uaxhhaz21z7.cloudfront.net/farm',
     group: 'dex',
     notHighlight: false,
+    newTab: false,
   },
   {
     label: 'Pool',
@@ -58,30 +67,56 @@ const config: MenuEntry[] = [
     href: 'https://bsc.definix.com/pool',
     group: 'dex',
     notHighlight: false,
+    newTab: false,
+  },
+  // {
+  //   label: 'Register',
+  //   icon: newIcon,
+  //   iconActive: newIcon,
+  //   calloutClass: 'new',
+  //   href: 'https://bsc.definix.com/trading-challenge',
+  //   group: 'trading',
+  //   notHighlight: false,
+  //   newTab: false,
+  // },
+  {
+    label: 'Leaderboard',
+    icon: newIcon,
+    iconActive: newIcon,
+    calloutClass: 'new',
+    href: 'https://d4uaxhhaz21z7.cloudfront.net/leaderboard',
+    group: 'trading',
+    notHighlight: false,
+    newTab: false,
   },
   {
-    label: 'Portfolio',
+    label: 'Investors',
+    icon: myFundClick,
+    iconActive: myFund,
+    href: 'https://d4uaxhhaz21z7.cloudfront.net/info',
+    href: 'https://bsc.definix.com/info',
+    group: 'invest',
+    notHighlight: true,
+    newTab: false,
+  },
+  {
+    label: 'Fund Managers',
     icon: portfolioClick,
     iconActive: portfolio,
     href: 'https://d4uaxhhaz21z7.cloudfront.net/info',
+    href: 'https://bsc.definix.com/info',
     group: 'invest',
     notHighlight: true,
+    newTab: false,
   },
   {
-    label: 'Watchlist',
-    icon: watchlistClick,
-    iconActive: watchlist,
-    href: 'https://d4uaxhhaz21z7.cloudfront.net/info',
-    group: 'invest',
-    notHighlight: true,
-  },
-  {
-    label: 'Explore',
+    label: 'Network Monitor',
     icon: exploreClick,
     iconActive: explore,
     href: 'https://d4uaxhhaz21z7.cloudfront.net/info',
     group: 'invest',
     notHighlight: true,
+    newTab: false,
   },
   {
     label: 'Bridge',
@@ -90,6 +125,25 @@ const config: MenuEntry[] = [
     href: 'https://bridge.six.network',
     group: 'tool',
     notHighlight: true,
+    newTab: false,
+  },
+  {
+    label: 'Gitbook',
+    icon: gitbookClick,
+    iconActive: gitbook,
+    href: 'https://app.gitbook.com/@sixnetwork/s/definix/',
+    group: 'info',
+    notHighlight: true,
+    newTab: true,
+  },
+  {
+    label: 'Partnership',
+    icon: partnerClick,
+    iconActive: partner,
+    href: 'https://docs.google.com/forms/d/e/1FAIpQLSfKMRNlTsTCk__s4v_qnwE3Uw4-kro8XRMPVQTS5OE6zX2Uqg/viewform',
+    group: 'contact',
+    notHighlight: true,
+    newTab: true,
   },
 ]
 

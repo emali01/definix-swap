@@ -1,16 +1,23 @@
+import axios from 'axios'
 import throttle from 'lodash/throttle'
 import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
+import _ from 'lodash'
+import CountDownBanner from 'uikit-dev/components/CountDownBanner'
+import StartTimeBanner from 'uikit-dev/components/StartTimeBanner'
+import logoTrade from 'uikit-dev/images/for-trading-challenge/Definix-Trading-Challenge-29.png'
+import definixCoin from 'uikit-dev/images/KR-Banner/AWforDefinix-03.png'
 import Button from '../../components/Button/Button'
-import Text from '../../components/Text/Text'
 import Dropdown from '../../components/Dropdown/Dropdown'
 import { Flex } from '../../components/Flex'
 import Footer from '../../components/Footer'
 import Overlay from '../../components/Overlay/Overlay'
 import { SvgProps } from '../../components/Svg'
 import ChevronDownIcon from '../../components/Svg/Icons/ChevronDown'
+import Text from '../../components/Text/Text'
 import { useMatchBreakpoints } from '../../hooks'
 import en from '../../images/en.png'
+import FinixCoin from '../../images/finix-coin.png'
 import bsc from '../../images/Logo-BinanceSmartChain.png'
 import klaytn from '../../images/Logo-Klaytn.png'
 import th from '../../images/th.png'
@@ -20,7 +27,6 @@ import Logo from './Logo'
 import MenuButton from './MenuButton'
 import Panel from './Panel'
 import { NavProps } from './types'
-import FinixCoin from '../../images/finix-coin.png'
 
 const Wrapper = styled.div`
   position: relative;
@@ -95,7 +101,7 @@ const MobileOnlyOverlay = styled(Overlay)`
   }
 `
 
-const Price = styled.div`
+const Price = styled.a`
   display: flex;
   align-items: center;
   margin-right: 1rem;
@@ -136,7 +142,6 @@ const Menu: React.FC<NavProps> = ({
   links,
   children,
   price,
-  // profile,
 }) => {
   const { isXl } = useMatchBreakpoints()
   const isMobile = isXl === false
@@ -156,6 +161,20 @@ const Menu: React.FC<NavProps> = ({
 
     return <LanguageIcon color="textSubtle" width="24px" />
   }
+  const endRegisterTimestamp = process.env.REACT_APP_TRADE_COMPETITION_TIMESTAMP
+    ? parseInt(process.env.REACT_APP_TRADE_COMPETITION_TIMESTAMP || '', 10) || new Date().getTime()
+    : new Date().getTime()
+
+  // started - ended countdown
+  const currentTime = new Date().getTime()
+
+  const endStatedTradingTime = process.env.REACT_APP_START_END_TRADE_COMPETITION_TIMESTAMP
+    ? parseInt(process.env.REACT_APP_START_END_TRADE_COMPETITION_TIMESTAMP || '', 10) || new Date().getTime()
+    : new Date().getTime()
+
+  const endTradingTimestamp = process.env.REACT_APP_END_TRADE_COMPETITION_TIMESTAMP
+    ? parseInt(process.env.REACT_APP_END_TRADE_COMPETITION_TIMESTAMP || '', 10) || new Date().getTime()
+    : new Date().getTime()
 
   // const getLanguageName = (lang) => {
   //   return langs.find((l) => {
@@ -194,6 +213,20 @@ const Menu: React.FC<NavProps> = ({
 
   // Find the home link if provided
   const homeLink = links.find((link) => link.label === 'Home')
+
+  // API TRADING COMPET
+  const [valuePnl, setValuePnl] = React.useState(0)
+  useEffect(() => {
+    async function fetchLeaderBoard() {
+      const leaderBoardAPI = process.env.REACT_APP_API_LEADER_BOARD
+      const response = await axios.get(`${leaderBoardAPI}`)
+      if (response.data.success) {
+        const pnl = _.get(response.data, 'data.0.pnl')
+        setValuePnl(pnl.toFixed(2))
+      }
+    }
+    fetchLeaderBoard()
+  }, [valuePnl])
 
   return (
     <Wrapper>
@@ -243,7 +276,7 @@ const Menu: React.FC<NavProps> = ({
           )}
         </Flex>
         <Flex alignItems="center">
-          <Price>
+          <Price href="https://dex.guru/token/0x0f02b1f5af54e04fb6dd6550f009ac2429c4e30d-bsc" target="_blank">
             <img src={FinixCoin} alt="" />
             <p>
               <span>FINIX : </span>
@@ -260,7 +293,6 @@ const Menu: React.FC<NavProps> = ({
                 endIcon={<ChevronDownIcon className="ml-1" />}
                 style={{ borderRadius: '6px', padding: '0 8px 0 12px', boxShadow: '0 1px 2px rgba(0,0,0,0.16)' }}
               >
-              <Text color="textSubtle">{getLanguageName(currentLang)}</Text>
               </Button>
             }
           >
@@ -269,7 +301,6 @@ const Menu: React.FC<NavProps> = ({
                 key={lang.code}
                 fullWidth
                 onClick={() => setLang(lang)}
-                // Safari fix
                 style={{ minHeight: '32px', height: 'auto' }}
               >
                 {lang.language}
@@ -297,6 +328,47 @@ const Menu: React.FC<NavProps> = ({
           logout={logout}
         />
         <Inner isPushed={isPushed} showMenu={showMenu}>
+          <CountDownBanner
+            logo={logoTrade}
+            title="Definix Trading Tournament"
+            detail="Registration Period end in"
+            endTime={endRegisterTimestamp}
+            button={
+              <Button as="a" href="https://bsc.definix.com/trading-challenge" size="sm">
+                Register now
+              </Button>
+            }
+          />
+
+          {currentTime > endStatedTradingTime ? (
+            <CountDownBanner
+              logo={logoTrade}
+              title="The 1st Definix Trading Tournament"
+              detail="will end in"
+              topTitle="Top trader gain profit"
+              topValue={`${valuePnl}%`}
+              endTime={endTradingTimestamp}
+              button={
+                <Button as="a" href="https://bsc.definix.com/leaderboard" size="sm">
+                  See more
+                </Button>
+              }
+            />
+          ) : (
+            <StartTimeBanner
+              logo={logoTrade}
+              title="The 1st Definix Trading Tournament"
+              detail="has started"
+              topTitle="Top trader gain profit"
+              topValue={`${valuePnl}%`}
+              endTime={endStatedTradingTime}
+              button={
+                <Button as="a" href="https://bsc.definix.com/leaderboard" size="sm">
+                  See more
+                </Button>
+              }
+            />
+          )}
           {children}
         </Inner>
         <MobileOnlyOverlay show={isPushed} onClick={() => setIsPushed(false)} role="presentation" />
