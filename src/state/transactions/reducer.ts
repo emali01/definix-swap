@@ -11,6 +11,8 @@ const now = () => new Date().getTime()
 
 export interface TransactionDetails {
   hash: string
+  type?: string
+  data?: { firstToken?: string; firstTokenAmount?: string; secondToken?: string; secondTokenAmount?: string }
   approval?: { tokenAddress: string; spender: string }
   summary?: string
   receipt?: SerializableTransactionReceipt
@@ -30,12 +32,12 @@ export const initialState: TransactionState = {}
 
 export default createReducer(initialState, builder =>
   builder
-    .addCase(addTransaction, (transactions, { payload: { chainId, from, hash, approval, summary } }) => {
+    .addCase(addTransaction, (transactions, { payload: { type, data, chainId, from, hash, approval, summary } }) => {
       if (transactions[chainId]?.[hash]) {
         throw Error('Attempted to add existing transaction.')
       }
       const txs = transactions[chainId] ?? {}
-      txs[hash] = { hash, approval, summary, from, addedTime: now() }
+      txs[hash] = { type, data, hash, approval, summary, from, addedTime: now() }
       transactions[chainId] = txs
     })
     .addCase(clearAllTransactions, (transactions, { payload: { chainId } }) => {

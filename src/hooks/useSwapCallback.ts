@@ -199,6 +199,13 @@ export function useSwapCallback(
                   }`
 
             addTransaction(response, {
+              type: 'swap',
+              data: {
+                firstToken: inputSymbol,
+                firstTokenAmount: inputAmount,
+                secondToken: outputSymbol,
+                secondTokenAmount: outputAmount,
+              },
               summary: withRecipient,
             })
 
