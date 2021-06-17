@@ -1,28 +1,33 @@
-import React, { useState, useCallback } from 'react'
 import { Currency, Pair } from 'definixswap-sdk'
-import { Button, ChevronDownIcon, Text } from 'uikit-dev'
+import React, { useCallback, useState } from 'react'
 import styled from 'styled-components'
-import { border, darken } from 'polished'
+import { ChevronDownIcon, Text, useMatchBreakpoints } from 'uikit-dev'
+import AnountButton from 'uikit-dev/components/AnountButton'
+import { useActiveWeb3React } from '../../hooks'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
-import CurrencySearchModal from '../SearchModal/CurrencySearchModal'
+import { TranslateString } from '../../utils/translateTextHelpers'
 import CurrencyLogo from '../CurrencyLogo'
 import DoubleCurrencyLogo from '../DoubleLogo'
-import { RowBetween } from '../Row'
 import { Input as NumericalInput } from '../NumericalInput'
-import { useActiveWeb3React } from '../../hooks'
+import CurrencySearchModal from '../SearchModal/CurrencySearchModal'
 import TranslatedText from '../TranslatedText'
-import { TranslateString } from '../../utils/translateTextHelpers'
 
-const InputRow = styled.div<{ selected: boolean }>`
+const Container = styled.div<{ hideInput: boolean }>``
+
+const InputBox = styled.div`
   display: flex;
   flex-flow: row nowrap;
+  flex-wrap: wrap;
   align-items: center;
-  padding: ${({ selected }) => (selected ? '0.75rem 0.5rem 0.75rem 1rem' : '0.75rem 0.75rem 0.75rem 1rem')};
+  justify-content: flex-end;
+  padding: 0.5rem 0.5rem 0.5rem 1rem;
+  background: ${({ theme }) => theme.colors.backgroundBox};
+  border-radius: ${({ theme }) => theme.radii.default};
+  border: 1px solid ${({ theme }) => theme.colors.border};
 `
-
 const CurrencySelect = styled.button<{ selected: boolean }>`
   align-items: center;
-  height: 34px;
+  height: 32px;
   font-size: 16px;
   font-weight: 500;
   background-color: transparent;
@@ -36,53 +41,18 @@ const CurrencySelect = styled.button<{ selected: boolean }>`
 
   :focus,
   :hover {
-    background-color: ${({ theme }) => theme.colors.input};
+    background-color: ${({ theme }) => theme.colors.tertiary};
   }
 `
-
-const LabelRow = styled.div`
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-  color: ${({ theme }) => theme.colors.text};
-  font-size: 0.75rem;
-  line-height: 1rem;
-  padding: 0.75rem 1rem 0 1rem;
-  span:hover {
-    cursor: pointer;
-    color: ${({ theme }) => darken(0.2, theme.colors.textSubtle)};
-  }
-`
-
 const Aligner = styled.span`
   display: flex;
   align-items: center;
   justify-content: space-between;
 `
-
-const InputPanel = styled.div<{ hideInput?: boolean }>`
-  display: flex;
-  flex-flow: column nowrap;
-  position: relative;
-  // border-radius: ${({ hideInput }) => (hideInput ? '8px' : '20px')};
-  border-radius: ${({ theme }) => theme.radii.default};
-  background-color: ${({ theme }) => theme.colors.background};
-  z-index: 1;
-`
-
-const Container = styled.div<{ hideInput: boolean }>`
-  border-radius: ${({ theme }) => theme.radii.default};
-  background-color: ${({ theme }) => theme.colors.white};
-  border: 1px solid ${({ theme }) => theme.colors.border};
-`
-
 interface CurrencyInputPanelProps {
   value: string
-  onUserInput: (value: string) => void
-  onMax?: () => void
   showMaxButton: boolean
   label?: string
-  onCurrencySelect?: (currency: Currency) => void
   currency?: Currency | null
   disableCurrencySelect?: boolean
   hideBalance?: boolean
@@ -91,15 +61,18 @@ interface CurrencyInputPanelProps {
   otherCurrency?: Currency | null
   id: string
   showCommonBases?: boolean
+  className?: string
+  onMax?: () => void
+  onQuarter?: () => void
+  onHalf?: () => void
+  onUserInput: (value: string) => void
+  onCurrencySelect?: (currency: Currency) => void
 }
 
 export default function CurrencyInputPanel({
   value,
-  onUserInput,
-  onMax,
   showMaxButton,
   label = TranslateString(132, 'Input'),
-  onCurrencySelect,
   currency,
   disableCurrencySelect = false,
   hideBalance = false,
@@ -108,33 +81,43 @@ export default function CurrencyInputPanel({
   otherCurrency,
   id,
   showCommonBases,
+  className,
+  onMax,
+  onQuarter,
+  onHalf,
+  onUserInput,
+  onCurrencySelect,
 }: CurrencyInputPanelProps) {
   const [modalOpen, setModalOpen] = useState(false)
   const { account } = useActiveWeb3React()
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
+  const { isXl, isMd, isLg } = useMatchBreakpoints()
+  const isMobile = !isXl && !isMd && !isLg
 
   const handleDismissSearch = useCallback(() => {
     setModalOpen(false)
   }, [setModalOpen])
 
   return (
-    <InputPanel id={id}>
-      <Container hideInput={hideInput}>
+    <>
+      <Container id={id} hideInput={hideInput} className={className}>
         {!hideInput && (
-          <LabelRow>
-            <RowBetween>
-              <Text fontSize="14px">{label}</Text>
-              {account && (
-                <Text onClick={onMax} fontSize="14px" style={{ display: 'inline', cursor: 'pointer' }}>
-                  {!hideBalance && !!currency && selectedCurrencyBalance
-                    ? `Balance: ${selectedCurrencyBalance?.toSignificant(6)}`
-                    : ' -'}
-                </Text>
-              )}
-            </RowBetween>
-          </LabelRow>
+          <div className="flex justify-space-between mb-1">
+            <Text fontSize="14px" color="textSubtle">
+              {label}
+            </Text>
+            {account && (
+              <Text fontSize="14px" color="textSubtle">
+                Balance:{' '}
+                {!hideBalance && !!currency && selectedCurrencyBalance
+                  ? selectedCurrencyBalance?.toSignificant(6)
+                  : ' -'}
+              </Text>
+            )}
+          </div>
         )}
-        <InputRow style={hideInput ? { padding: '0', borderRadius: '8px' } : {}} selected={disableCurrencySelect}>
+
+        <InputBox style={hideInput ? { padding: '0', borderRadius: '8px' } : {}}>
           {!hideInput && (
             <>
               <NumericalInput
@@ -143,11 +126,14 @@ export default function CurrencyInputPanel({
                 onUserInput={(val) => {
                   onUserInput(val)
                 }}
+                style={{ width: isMobile && currency && showMaxButton && label ? '100%' : 'auto' }}
               />
               {account && currency && showMaxButton && label !== 'To' && (
-                <Button onClick={onMax} size="sm" variant="text" style={{ borderRadius: '6px' }}>
-                  MAX
-                </Button>
+                <div className="flex align-center justify-end" style={{ width: isMobile ? '100%' : 'auto' }}>
+                  <AnountButton title="25%" onClick={onQuarter} />
+                  <AnountButton title="50%" onClick={onHalf} />
+                  <AnountButton title="MAX" onClick={onMax} />
+                </div>
               )}
             </>
           )}
@@ -177,14 +163,15 @@ export default function CurrencyInputPanel({
                         currency.symbol.length - 5,
                         currency.symbol.length
                       )}`
-                    : currency?.symbol) || <TranslatedText translationId={82}>Select a token</TranslatedText>}
+                    : currency?.symbol) || <TranslatedText translationId={82}>Select Token</TranslatedText>}
                 </Text>
               )}
               {!disableCurrencySelect && <ChevronDownIcon />}
             </Aligner>
           </CurrencySelect>
-        </InputRow>
+        </InputBox>
       </Container>
+
       {!disableCurrencySelect && onCurrencySelect && (
         <CurrencySearchModal
           isOpen={modalOpen}
@@ -195,6 +182,6 @@ export default function CurrencyInputPanel({
           showCommonBases={showCommonBases}
         />
       )}
-    </InputPanel>
+    </>
   )
 }

@@ -1,31 +1,29 @@
 import { Currency, ETHER, Token } from 'definixswap-sdk'
 import React, { KeyboardEvent, RefObject, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
-import { Text, CloseIcon, Heading } from 'uikit-dev'
-import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import AutoSizer from 'react-virtualized-auto-sizer'
 import { FixedSizeList } from 'react-window'
 import styled, { ThemeContext } from 'styled-components'
-import AutoSizer from 'react-virtualized-auto-sizer'
+import { CloseIcon, Heading, IconButton, Text } from 'uikit-dev'
+import searchIcon from '../../assets/svg/search.svg'
 import { useActiveWeb3React } from '../../hooks'
-import { AppState } from '../../state'
 import { useAllTokens, useToken } from '../../hooks/Tokens'
 import { useSelectedListInfo } from '../../state/lists/hooks'
-import { LinkStyledButton } from '../Shared'
 import { isAddress } from '../../utils'
+import { TranslateString } from '../../utils/translateTextHelpers'
 import Card from '../Card'
 import Column from '../Column'
 import ListLogo from '../ListLogo'
 import QuestionHelper from '../QuestionHelper'
 import Row, { RowBetween } from '../Row'
+import { LinkStyledButton } from '../Shared'
+import TranslatedText from '../TranslatedText'
 import CommonBases from './CommonBases'
 import CurrencyList from './CurrencyList'
 import { filterTokens } from './filtering'
 import SortButton from './SortButton'
 import { useTokenComparator } from './sorting'
 import { PaddedColumn, SearchInput, Separator } from './styleds'
-import TranslatedText from '../TranslatedText'
-import { TranslateString } from '../../utils/translateTextHelpers'
-import searchIcon from '../../assets/svg/search.svg'
 
 interface CurrencySearchProps {
   isOpen: boolean
@@ -44,13 +42,13 @@ const SearchInputWithIcon = styled.div`
     position: absolute;
     top: 0;
     right: 0;
-    width: 56px;
-    height: 56px;
+    width: 46px;
+    height: 46px;
     padding: 16px;
   }
 
   input {
-    padding-right: 56px;
+    padding-right: 46px;
   }
 `
 
@@ -171,7 +169,9 @@ export function CurrencySearch({
               />
             </Heading>
           </Text>
-          <CloseIcon onClick={onDismiss} />
+          <IconButton onClick={onDismiss} variant="text">
+            <CloseIcon />
+          </IconButton>
         </RowBetween>
         <SearchInputWithIcon>
           <SearchInput
@@ -188,7 +188,7 @@ export function CurrencySearch({
         {showCommonBases && (
           <CommonBases chainId={chainId} onSelect={handleCurrencySelect} selectedCurrency={selectedCurrency} />
         )}
-        <RowBetween>
+        <RowBetween className="pb-2">
           <Heading>
             <TranslatedText translationId={126}>Token name</TranslatedText>
           </Heading>

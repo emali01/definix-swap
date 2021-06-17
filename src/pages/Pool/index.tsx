@@ -1,28 +1,58 @@
-import { BorderCard } from 'components/Card'
-import { AutoColumn } from 'components/Column'
-import PageHeader from 'components/PageHeader'
+import ExchangeTab from 'components/ExchangeTab'
 import FullPositionCard from 'components/PositionCard'
 import Question from 'components/QuestionHelper'
-import { RowBetween } from 'components/Row'
 import { StyledInternalLink } from 'components/Shared'
 import { Dots } from 'components/swap/styleds'
+import TransactionHistoryBox from 'components/TransactionHistoryBox'
 import TranslatedText from 'components/TranslatedText'
 import { usePairs } from 'data/Reserves'
 import { Pair } from 'definixswap-sdk'
 import { useActiveWeb3React } from 'hooks'
-import React, { useContext, useMemo, useState, useEffect } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { toV2LiquidityToken, useTrackedTokenPairs } from 'state/user/hooks'
 import { useTokenBalancesWithLoadingIndicator } from 'state/wallet/hooks'
-import { ThemeContext } from 'styled-components'
-import { Button, CardBody, Heading, Text } from 'uikit-dev'
+import { Button, Card, Heading, Text, useMatchBreakpoints } from 'uikit-dev'
+import { Overlay } from 'uikit-dev/components/Overlay'
+import { LeftPanel, MaxWidthLeft, MaxWidthRight, RightPanel, ShowHideButton } from 'uikit-dev/components/TwoPanelLayout'
 import { TranslateString } from 'utils/translateTextHelpers'
-import AppBody from '../AppBody'
 import Flip from '../../uikit-dev/components/Flip'
+import AppBody from '../AppBody'
+
+const TimerWrapper = ({ isPhrase2, date, children }) => {
+  return isPhrase2 ? (
+    children
+  ) : (
+    <>
+      <div>
+        <br />
+        <Flip date={date} />
+        <br />
+        <br />
+        <br />
+      </div>
+      <div
+        tabIndex={0}
+        role="button"
+        style={{ opacity: 0.4, pointerEvents: 'none' }}
+        onClick={(e) => {
+          e.preventDefault()
+        }}
+        onKeyDown={(e) => {
+          e.preventDefault()
+        }}
+      >
+        {children}
+      </div>
+    </>
+  )
+}
 
 export default function Pool() {
-  const theme = useContext(ThemeContext)
   const { account } = useActiveWeb3React()
+  const [isShowRightPanel, setIsShowRightPanel] = useState(false)
+  const { isXl } = useMatchBreakpoints()
+  const isMobileOrTablet = !isXl
 
   // fetch the user's balances of all tracked V2 LP tokens
   const trackedTokenPairs = useTrackedTokenPairs()
@@ -68,104 +98,142 @@ export default function Pool() {
 
   const allV2PairsWithLiquidity = v2Pairs.map(([, pair]) => pair).filter((v2Pair): v2Pair is Pair => Boolean(v2Pair))
 
+  useEffect(() => {
+    if (isMobileOrTablet) {
+      setIsShowRightPanel(false)
+    }
+  }, [isMobileOrTablet])
+
+  useEffect(() => {
+    return () => {
+      setIsShowRightPanel(false)
+    }
+  }, [])
+
   return (
-    <>
-      {/* <CardNav activeIndex={1} /> */}
+    <TimerWrapper isPhrase2={!(currentTime < phrase2TimeStamp && isPhrase2 === false)} date={phrase2TimeStamp}>
+      <LeftPanel isShowRightPanel={isShowRightPanel}>
+        <Overlay
+          show={isShowRightPanel && isMobileOrTablet}
+          style={{ position: 'absolute', zIndex: 6 }}
+          onClick={() => {
+            setIsShowRightPanel(false)
+          }}
+        />
+        <MaxWidthLeft>
+          <AppBody
+            title={
+              <Heading as="h1" fontSize="32px !important" className="mb-5" textAlign="left">
+                EXCHANGE
+              </Heading>
+            }
+          >
+            <ExchangeTab current="/liquidity" />
 
-      <Heading as="h1" fontSize="32px !important" className="mb-6 mt-2">
-        Liquidity
-      </Heading>
+            <div className="pa-6 bd-b">
+              <div className="flex align-center mb-5">
+                <Heading>Add liquidity to receive LP tokens</Heading>
+                {/* <Question text="" /> */}
+              </div>
+              <Button id="join-pool-button" as={Link} to="/add/ETH" fullWidth radii="card">
+                <TranslatedText translationId={100}>Add Liquidity</TranslatedText>
+              </Button>
+            </div>
 
-      <TimerWrapper isPhrase2={!(currentTime < phrase2TimeStamp && isPhrase2 === false)} date={phrase2TimeStamp}>
-        <AppBody>
-          <PageHeader title="Add liquidity to receive LP tokens">
-            <Button id="join-pool-button" as={Link} to="/add/ETH" fullWidth>
-              <TranslatedText translationId={100}>Add Liquidity</TranslatedText>
-            </Button>
-          </PageHeader>
-          <AutoColumn gap="lg" justify="center">
-            <CardBody style={{ width: '100%' }}>
-              <AutoColumn gap="12px" style={{ width: '100%' }}>
-                <RowBetween padding="0.5rem 0 1.5rem 0" className="flex justify-start">
-                  <Heading>
-                    <TranslatedText translationId={102}>Your Liquidity</TranslatedText>
-                  </Heading>
-                  <Question
-                    text={TranslateString(
-                      130,
-                      'When you add liquidity, you are given pool tokens that represent your share. If you don’t see a pool you joined in this list, try importing a pool below.'
-                    )}
-                  />
-                </RowBetween>
+            <div className="pa-6">
+              <div className="flex align-center mb-5">
+                <Heading fontSize="24px !important">
+                  <TranslatedText translationId={102}>Your Liquidity</TranslatedText>
+                </Heading>
+                <Question
+                  text={TranslateString(
+                    130,
+                    'When you add liquidity, you are given pool tokens that represent your share. If you don’t see a pool you joined in this list, try importing a pool below.'
+                  )}
+                />
+              </div>
 
-                {!account ? (
-                  <BorderCard padding="24px">
-                    <Text color={theme.colors.textDisabled} textAlign="center">
-                      Connect to a wallet to view your liquidity.
-                    </Text>
-                  </BorderCard>
-                ) : v2IsLoading ? (
-                  <BorderCard padding="24px">
-                    <Text color={theme.colors.textDisabled} textAlign="center">
-                      <Dots>Loading</Dots>
-                    </Text>
-                  </BorderCard>
-                ) : allV2PairsWithLiquidity?.length > 0 ? (
-                  <>
-                    {allV2PairsWithLiquidity.map((v2Pair) => (
-                      <FullPositionCard key={v2Pair.liquidityToken.address} pair={v2Pair} />
-                    ))}
-                  </>
-                ) : (
-                  <BorderCard padding="24px">
-                    <Text color="textDisabled" textAlign="center">
-                      <TranslatedText translationId={104}>No liquidity found.</TranslatedText>
-                    </Text>
-                  </BorderCard>
-                )}
-
-                <div>
-                  <Heading style={{ padding: '1.5rem 0 .5rem 0' }}>
-                    {TranslateString(106, "Don't see a pool you joined?")}{' '}
-                    <StyledInternalLink id="import-pool-link" to="/find">
-                      {TranslateString(108, 'Import it.')}
-                    </StyledInternalLink>
-                  </Heading>
+              {!account ? (
+                <div className="pa-6">
+                  <Text color="textSubtle" textAlign="center" fontSize="16px">
+                    Connect to a wallet to view your liquidity.
+                  </Text>
                 </div>
-              </AutoColumn>
-            </CardBody>
-          </AutoColumn>
-        </AppBody>
-      </TimerWrapper>
-    </>
-  )
-}
+              ) : v2IsLoading ? (
+                <div className="pa-6">
+                  <Text color="textSubtle" textAlign="center" fontSize="16px">
+                    <Dots>Loading</Dots>
+                  </Text>
+                </div>
+              ) : allV2PairsWithLiquidity?.length > 0 ? (
+                <>
+                  {allV2PairsWithLiquidity.map((v2Pair) => (
+                    <FullPositionCard key={v2Pair.liquidityToken.address} pair={v2Pair} />
+                  ))}
+                </>
+              ) : (
+                <div className="pa-6">
+                  <Text color="textSubtle" textAlign="center" fontSize="16px">
+                    <TranslatedText translationId={104}>No liquidity found.</TranslatedText>
+                  </Text>
+                </div>
+              )}
 
-const TimerWrapper = ({ isPhrase2, date, children }) => {
-  return isPhrase2 ? (
-    children
-  ) : (
-    <>
-      <div>
-        <br />
-        <Flip date={date} />
-        <br />
-        <br />
-        <br />
-      </div>
-      <div
-        tabIndex={0}
-        role="button"
-        style={{ opacity: 0.4, pointerEvents: 'none' }}
-        onClick={(e) => {
-          e.preventDefault()
-        }}
-        onKeyDown={(e) => {
-          e.preventDefault()
-        }}
-      >
-        {children}
-      </div>
-    </>
+              <div className="mt-4">
+                <Text className="mb-2">
+                  {TranslateString(106, "Don't see a pool you joined?")}{' '}
+                  <StyledInternalLink id="import-pool-link" to="/find">
+                    {TranslateString(108, 'Import it.')}
+                  </StyledInternalLink>
+                </Text>
+                <Text>Or, if you staked your LP tokens in a farm, unstake them to see them here</Text>
+              </div>
+            </div>
+          </AppBody>
+        </MaxWidthLeft>
+      </LeftPanel>
+      <RightPanel isShowRightPanel={isShowRightPanel}>
+        <ShowHideButton
+          isShow={isShowRightPanel}
+          action={() => {
+            setIsShowRightPanel(!isShowRightPanel)
+          }}
+        />
+
+        {isShowRightPanel && (
+          <MaxWidthRight>
+            <Heading fontSize="20px !important" className="mb-3">
+              LIQUIDITY HISTORY
+            </Heading>
+            <Card style={{ overflow: 'auto' }}>
+              {/* Mockup */}
+              <TransactionHistoryBox
+                firstCoin={undefined}
+                secondCoin={undefined}
+                title="Add Liquidity"
+                withText="and"
+                date="17 Apr 2021, 15:32"
+              />
+              <TransactionHistoryBox
+                firstCoin={undefined}
+                secondCoin={undefined}
+                title="Remove Liquidity"
+                withText="and"
+                isFailed
+                date="17 Apr 2021, 15:32"
+              />
+              <TransactionHistoryBox
+                firstCoin={undefined}
+                secondCoin={undefined}
+                title="Remove Liquidity"
+                withText="and"
+                date="17 Apr 2021, 15:32"
+              />
+              {/* End Mockup */}
+            </Card>
+          </MaxWidthRight>
+        )}
+      </RightPanel>
+    </TimerWrapper>
   )
 }

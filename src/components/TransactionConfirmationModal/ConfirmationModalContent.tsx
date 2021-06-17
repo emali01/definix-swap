@@ -1,22 +1,27 @@
 import React from 'react'
-import { Wrapper, Section, BottomSection, ContentHeader } from './helpers'
+import { Heading } from 'uikit-dev'
 
 type ConfirmationModalContentProps = {
+  mainTitle: string
   title: string
-  onDismiss: () => void
   topContent: () => React.ReactNode
   bottomContent: () => React.ReactNode
 }
 
-const ConfirmationModalContent = ({ title, bottomContent, onDismiss, topContent }: ConfirmationModalContentProps) => {
+const ConfirmationModalContent = ({ mainTitle, title, topContent, bottomContent }: ConfirmationModalContentProps) => {
   return (
-    <Wrapper>
-      <Section>
-        <ContentHeader onDismiss={onDismiss}>{title}</ContentHeader>
+    <div>
+      <div className="pa-6 pt-3 bd-b">
+        <Heading fontSize="36px !important" className="mb-6">
+          {mainTitle}
+        </Heading>
+
+        <Heading className="mb-6">{title}</Heading>
         {topContent()}
-      </Section>
-      <BottomSection gap="12px">{bottomContent()}</BottomSection>
-    </Wrapper>
+      </div>
+
+      <div className="pa-6">{bottomContent()}</div>
+    </div>
   )
 }
 

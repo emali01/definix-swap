@@ -18,7 +18,7 @@ export const LightCard = styled(Card)`
 `
 
 export const GreyCard = styled(Card)`
-  background-color: ${({ theme }) => theme.colors.tertiary};
+  background-color: ${({ theme }) => theme.colors.backgroundBox};
 `
 
 export const OutlineCard = styled(Card)`
@@ -37,8 +37,16 @@ export const PinkCard = styled(Card)`
   font-weight: 500;
 `
 
-export const BorderCard = styled(Card)`
+export const BorderCard = styled(Card)<{ className?: string }>`
   border: 1px solid ${({ theme }) => theme.colors.border};
+`
+
+export const HoverCard = styled(Card)`
+  border: 1px solid ${({ theme }) => theme.colors.border};
+
+  &:hover {
+    border-color: ${({ theme }) => theme.colors.primary};
+  }
 `
 
 const BlueCardStyled = styled(Card)`
