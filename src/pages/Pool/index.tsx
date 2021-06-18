@@ -240,36 +240,42 @@ export default function Pool() {
             <Heading fontSize="20px !important" className="mb-3">
               LIQUIDITY HISTORY
             </Heading>
-            <Card style={{ overflow: 'auto' }}>
-              {/* Mockup */}
-              {sortedRecentTransactions.map((tx) => {
-                const firstToken = Object.values(allTokens).find((t) => t.symbol === tx.data?.firstToken)
-                const secondToken = Object.values(allTokens).find((t) => t.symbol === tx.data?.secondToken)
-                return (
-                  <TransactionHistoryBox
-                    href={chainId ? getBscScanLink(chainId, tx.hash, 'transaction') : '/'}
-                    firstCoin={firstToken}
-                    firstCoinAmount={tx.data?.firstTokenAmount}
-                    secondCoin={secondToken}
-                    secondCoinAmount={tx.data?.firstTokenAmount}
-                    title={tx.type === 'addLiquidity' ? 'Add Liquidity' : 'Remove Liquidity'}
-                    withText="and"
-                    isFailed={!tx.confirmedTime}
-                    date={
-                      tx.confirmedTime
-                        ? new Date(tx.confirmedTime || 0).toLocaleString('en-US', {
-                            day: 'numeric',
-                            month: 'short',
-                            year: 'numeric',
-                            hour: 'numeric',
-                            minute: 'numeric',
-                          })
-                        : ''
-                    }
-                  />
-                )
-              })}
-              {/* End Mockup */}
+            <Card style={{ overflow: 'auto', flexGrow: 1 }}>
+              {sortedRecentTransactions.length > 0 ? (
+                sortedRecentTransactions.map((tx) => {
+                  const firstToken = Object.values(allTokens).find((t) => t.symbol === tx.data?.firstToken)
+                  const secondToken = Object.values(allTokens).find((t) => t.symbol === tx.data?.secondToken)
+                  return (
+                    <TransactionHistoryBox
+                      href={chainId ? getBscScanLink(chainId, tx.hash, 'transaction') : '/'}
+                      firstCoin={firstToken}
+                      firstCoinAmount={tx.data?.firstTokenAmount}
+                      secondCoin={secondToken}
+                      secondCoinAmount={tx.data?.firstTokenAmount}
+                      title={tx.type === 'addLiquidity' ? 'Add Liquidity' : 'Remove Liquidity'}
+                      withText="and"
+                      isFailed={!tx.confirmedTime}
+                      date={
+                        tx.confirmedTime
+                          ? new Date(tx.confirmedTime || 0).toLocaleString('en-US', {
+                              day: 'numeric',
+                              month: 'short',
+                              year: 'numeric',
+                              hour: 'numeric',
+                              minute: 'numeric',
+                            })
+                          : ''
+                      }
+                    />
+                  )
+                })
+              ) : (
+                <div className="flex align-center justify-center" style={{ height: '100%' }}>
+                  <Text color="textSubtle" fontSize="14px" textAlign="center">
+                    No Liquidity History
+                  </Text>
+                </div>
+              )}
             </Card>
           </MaxWidthRight>
         )}
