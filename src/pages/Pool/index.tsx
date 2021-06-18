@@ -5,7 +5,7 @@ import { StyledInternalLink } from 'components/Shared'
 import { Dots } from 'components/swap/styleds'
 import TransactionHistoryBox from 'components/TransactionHistoryBox'
 import TranslatedText from 'components/TranslatedText'
-import { bsc, injected, walletconnect } from 'connectors'
+import { injected } from 'connectors'
 import { usePairs } from 'data/Reserves'
 import { Pair } from 'definixswap-sdk'
 import { useActiveWeb3React } from 'hooks'
@@ -178,14 +178,6 @@ export default function Pool() {
                   <UserBlock
                     account={account as string}
                     login={(connectorId: ConnectorId) => {
-                      if (connectorId === 'walletconnect') {
-                        return activate(walletconnect)
-                      }
-
-                      if (connectorId === 'bsc') {
-                        return activate(bsc)
-                      }
-
                       return activate(injected)
                     }}
                     logout={deactivate}
