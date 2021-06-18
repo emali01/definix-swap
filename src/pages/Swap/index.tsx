@@ -315,13 +315,13 @@ const Swap = () => {
 
   const handleQuarterInput = useCallback(() => {
     if (maxAmountInput) {
-      onUserInput(Field.INPUT, numeral(parseFloat(maxAmountInput.toExact()) / 4).format("0.00"))
+      onUserInput(Field.INPUT, numeral(parseFloat(maxAmountInput.toExact()) / 4).format('0.00'))
     }
   }, [maxAmountInput, onUserInput])
 
   const handleHalfInput = useCallback(() => {
     if (maxAmountInput) {
-      onUserInput(Field.INPUT, numeral(parseFloat(maxAmountInput.toExact()) / 2).format("0.00"))
+      onUserInput(Field.INPUT, numeral(parseFloat(maxAmountInput.toExact()) / 2).format('0.00'))
     }
   }, [maxAmountInput, onUserInput])
 
@@ -604,54 +604,42 @@ const Swap = () => {
             <Heading fontSize="20px !important" className="mb-3">
               SWAP HISTORY
             </Heading>
-            <Card style={{ overflow: 'auto' }}>
-              {sortedRecentTransactions.map(tx => {
-                const firstToken = Object.values(allTokens).find(t => t.symbol === tx.data?.firstToken)
-                const secondToken = Object.values(allTokens).find(t => t.symbol === tx.data?.secondToken)
-                return (
-                  <TransactionHistoryBox
-                    href={chainId ? getBscScanLink(chainId, tx.hash, 'transaction') : "/"}
-                    firstCoin={firstToken}
-                    firstCoinAmount={tx.data?.firstTokenAmount}
-                    secondCoin={secondToken}
-                    secondCoinAmount={tx.data?.secondTokenAmount}
-                    title="Swap"
-                    withText="and"
-                    isFailed={!tx.confirmedTime}
-                    date={tx.confirmedTime ? new Date(tx.confirmedTime || 0).toLocaleString('en-US', {
-                      day: 'numeric',
-                      month: 'short',
-                      year: 'numeric',
-                      hour: 'numeric',
-                      minute: 'numeric'
-                    }) : ""}
-                  />
-                )
-              })}
-              {/* 
-              <TransactionHistoryBox
-                firstCoin={undefined}
-                secondCoin={undefined}
-                title="Swap"
-                withText="for"
-                date="17 Apr 2021, 15:32"
-              />
-              <TransactionHistoryBox
-                firstCoin={undefined}
-                secondCoin={undefined}
-                title="Swap"
-                withText="for"
-                isFailed
-                date="17 Apr 2021, 15:32"
-              />
-              <TransactionHistoryBox
-                firstCoin={undefined}
-                secondCoin={undefined}
-                title="Swap"
-                withText="for"
-                date="17 Apr 2021, 15:32"
-              />
-               */}
+            <Card style={{ overflow: 'auto', flexGrow: 1 }}>
+              {sortedRecentTransactions.length > 0 ? (
+                sortedRecentTransactions.map((tx) => {
+                  const firstToken = Object.values(allTokens).find((t) => t.symbol === tx.data?.firstToken)
+                  const secondToken = Object.values(allTokens).find((t) => t.symbol === tx.data?.secondToken)
+                  return (
+                    <TransactionHistoryBox
+                      href={chainId ? getBscScanLink(chainId, tx.hash, 'transaction') : '/'}
+                      firstCoin={firstToken}
+                      firstCoinAmount={tx.data?.firstTokenAmount}
+                      secondCoin={secondToken}
+                      secondCoinAmount={tx.data?.firstTokenAmount}
+                      title="Swap"
+                      withText="and"
+                      isFailed={!tx.confirmedTime}
+                      date={
+                        tx.confirmedTime
+                          ? new Date(tx.confirmedTime || 0).toLocaleString('en-US', {
+                              day: 'numeric',
+                              month: 'short',
+                              year: 'numeric',
+                              hour: 'numeric',
+                              minute: 'numeric',
+                            })
+                          : ''
+                      }
+                    />
+                  )
+                })
+              ) : (
+                <div className="flex align-center justify-center" style={{ height: '100%' }}>
+                  <Text color="textSubtle" fontSize="14px" textAlign="center">
+                    No Swap History
+                  </Text>
+                </div>
+              )}
             </Card>
           </MaxWidthRight>
         )}
