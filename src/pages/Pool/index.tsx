@@ -5,6 +5,7 @@ import { StyledInternalLink } from 'components/Shared'
 import { Dots } from 'components/swap/styleds'
 import TransactionHistoryBox from 'components/TransactionHistoryBox'
 import TranslatedText from 'components/TranslatedText'
+import { bsc, injected, walletconnect } from 'connectors'
 import { usePairs } from 'data/Reserves'
 import { Pair } from 'definixswap-sdk'
 import { useActiveWeb3React } from 'hooks'
@@ -12,9 +13,10 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { toV2LiquidityToken, useTrackedTokenPairs } from 'state/user/hooks'
 import { useTokenBalancesWithLoadingIndicator } from 'state/wallet/hooks'
-import { Button, Card, Heading, Text, useMatchBreakpoints } from 'uikit-dev'
+import { Button, Card, ConnectorId, Heading, Text, useMatchBreakpoints } from 'uikit-dev'
 import { Overlay } from 'uikit-dev/components/Overlay'
 import { LeftPanel, MaxWidthLeft, MaxWidthRight, RightPanel, ShowHideButton } from 'uikit-dev/components/TwoPanelLayout'
+import UserBlock from 'uikit-dev/widgets/Menu/UserBlock'
 import { TranslateString } from 'utils/translateTextHelpers'
 import Flip from '../../uikit-dev/components/Flip'
 import AppBody from '../AppBody'
@@ -49,7 +51,7 @@ const TimerWrapper = ({ isPhrase2, date, children }) => {
 }
 
 export default function Pool() {
-  const { account } = useActiveWeb3React()
+  const { account, activate, deactivate } = useActiveWeb3React()
   const [isShowRightPanel, setIsShowRightPanel] = useState(false)
   const { isXl } = useMatchBreakpoints()
   const isMobileOrTablet = !isXl
@@ -154,8 +156,23 @@ export default function Pool() {
               </div>
 
               {!account ? (
-                <div className="pa-6">
-                  <Text color="textSubtle" textAlign="center" fontSize="16px">
+                <div className="pa-6 flex flex-column align-center">
+                  <UserBlock
+                    account={account as string}
+                    login={(connectorId: ConnectorId) => {
+                      if (connectorId === 'walletconnect') {
+                        return activate(walletconnect)
+                      }
+
+                      if (connectorId === 'bsc') {
+                        return activate(bsc)
+                      }
+
+                      return activate(injected)
+                    }}
+                    logout={deactivate}
+                  />
+                  <Text color="textSubtle" textAlign="center" fontSize="16px" className="mt-2">
                     Connect to a wallet to view your liquidity.
                   </Text>
                 </div>
