@@ -20,8 +20,8 @@ const Box = styled.div`
 const TransactionHistoryBox = ({
   href = '/',
   title,
-  firstCoin = {},
-  secondCoin = {},
+  firstCoin,
+  secondCoin,
   firstCoinAmount,
   secondCoinAmount,
   withText,
@@ -52,14 +52,14 @@ const TransactionHistoryBox = ({
         <Currency>
           <CurrencyLogo currency={firstCoin} size="24px" style={{ marginRight: '8px' }} />
           <Text bold>
-            {firstCoinAmount} {firstCoin.name}
+            {firstCoinAmount} {(firstCoin || {}).name}
           </Text>
         </Currency>
         <Text color="textSubtle">{withText}</Text>
         <Currency>
           <CurrencyLogo currency={secondCoin} size="24px" style={{ marginRight: '8px' }} />
           <Text bold>
-            {secondCoinAmount} {secondCoin.name}
+            {secondCoinAmount} {(secondCoin || {}).name}
           </Text>
         </Currency>
       </div>
