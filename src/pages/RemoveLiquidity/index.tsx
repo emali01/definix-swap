@@ -750,7 +750,7 @@ export default function RemoveLiquidity({
               bottomContent={modalBottom}
             />
           )}
-          submittedContent={submittedContent}
+          // submittedContent={submittedContent}
           errorContent={errorContent}
           onDismiss={handleDismissConfirmation}
         />
