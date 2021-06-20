@@ -18,7 +18,7 @@ import SyrupWarningModal from 'components/SyrupWarningModal'
 import TokenWarningModal from 'components/TokenWarningModal'
 import TransactionHistoryBox from 'components/TransactionHistoryBox'
 import { INITIAL_ALLOWED_SLIPPAGE } from 'constants/index'
-import { CurrencyAmount, JSBI, Token, Trade } from 'definixswap-sdk'
+import { ETHER, CurrencyAmount, JSBI, Token, Trade } from 'definixswap-sdk'
 import { useActiveWeb3React } from 'hooks'
 import { useCurrency, useAllTokens } from 'hooks/Tokens'
 import { ApprovalState, useApproveCallbackFromTrade } from 'hooks/useApproveCallback'
@@ -607,15 +607,15 @@ const Swap = () => {
             <Card style={{ overflow: 'auto', flexGrow: 1 }}>
               {sortedRecentTransactions.length > 0 ? (
                 sortedRecentTransactions.map((tx) => {
-                  const firstToken = Object.values(allTokens).find((t) => t.symbol === tx.data?.firstToken)
-                  const secondToken = Object.values(allTokens).find((t) => t.symbol === tx.data?.secondToken)
+                  const firstToken = tx.data?.firstToken === 'KLAY' ? ETHER : Object.values(allTokens).find((t) => t.symbol === tx.data?.firstToken)
+                  const secondToken = tx.data?.secondToken === 'KLAY' ? ETHER : Object.values(allTokens).find((t) => t.symbol === tx.data?.secondToken)
                   return (
                     <TransactionHistoryBox
                       href={chainId ? getBscScanLink(chainId, tx.hash, 'transaction') : '/'}
                       firstCoin={firstToken}
                       firstCoinAmount={tx.data?.firstTokenAmount}
                       secondCoin={secondToken}
-                      secondCoinAmount={tx.data?.firstTokenAmount}
+                      secondCoinAmount={tx.data?.secondTokenAmount}
                       title="Swap"
                       withText="and"
                       isFailed={!tx.confirmedTime}
