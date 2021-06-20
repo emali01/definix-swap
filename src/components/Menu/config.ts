@@ -22,7 +22,7 @@ const config: MenuEntry[] = [
     label: 'Home',
     icon: homeBlack,
     iconActive: homeWhite,
-    href: `${process.env.REACT_APP_FRONTEND_URL}/dashboard`,
+    href: `${process.env.REACT_APP_FRONTEND_URL}/`,
     notHighlight: false,
     newTab: false,
   },
