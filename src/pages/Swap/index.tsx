@@ -77,9 +77,9 @@ const newTransactionsFirst = (a: TransactionDetails, b: TransactionDetails) => b
 
 export default function Swap({
   match: {
-    params: { currencyIdA, currencyIdB },
+    params: { currencyIdA, currencyIdB }
   },
-  history,
+  history
 }: RouteComponentProps<{ currencyIdA?: string; currencyIdB?: string }>) {
   const loadedUrlParams = useDefaultsFromURLSearch()
   const { isXl } = useMatchBreakpoints()
@@ -653,12 +653,14 @@ export default function Swap({
 
       <TokenWarningModal
         isOpen={
-          urlLoadedTokens.filter(x => x.address.toLowerCase() !== SIX_ADDRESS[chainId].toLowerCase()).length > 0 &&
-          x.address.toLowerCase() !== FINIX_ADDRESS[chainId].toLowerCase()).length > 0 &&
-          x.address.toLowerCase() !== BNB_ADDRESS[chainId].toLowerCase()).length > 0 &&
-          x.address.toLowerCase() !== BUSD_ADDRESS[chainId].toLowerCase()).length > 0 &&
-          x.address.toLowerCase() !== USDT_ADDRESS[chainId].toLowerCase()).length > 0 &&
-          !dismissTokenWarning
+          urlLoadedTokens.filter(
+            x =>
+              x.address.toLowerCase() !== SIX_ADDRESS[chainId].toLowerCase() &&
+              x.address.toLowerCase() !== FINIX_ADDRESS[chainId].toLowerCase() &&
+              x.address.toLowerCase() !== BNB_ADDRESS[chainId].toLowerCase() &&
+              x.address.toLowerCase() !== BUSD_ADDRESS[chainId].toLowerCase() &&
+              x.address.toLowerCase() !== USDT_ADDRESS[chainId].toLowerCase()
+          ).length > 0 && !dismissTokenWarning
         }
         tokens={urlLoadedTokens}
         onConfirm={handleConfirmTokenWarning}
@@ -671,4 +673,3 @@ export default function Swap({
     </TimerWrapper>
   )
 }
-
