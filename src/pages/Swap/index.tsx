@@ -77,9 +77,9 @@ const newTransactionsFirst = (a: TransactionDetails, b: TransactionDetails) => b
 
 export default function Swap({
   match: {
-    params: { currencyIdA, currencyIdB },
+    params: { currencyIdA, currencyIdB }
   },
-  history,
+  history
 }: RouteComponentProps<{ currencyIdA?: string; currencyIdB?: string }>) {
   const loadedUrlParams = useDefaultsFromURLSearch()
   const { isXl } = useMatchBreakpoints()
@@ -612,9 +612,15 @@ export default function Swap({
             </Heading>
             <Card style={{ overflow: 'auto', flexGrow: 1 }}>
               {sortedRecentTransactions.length > 0 ? (
-                sortedRecentTransactions.map((tx) => {
-                  const firstToken = tx.data?.firstToken === 'KLAY' ? ETHER : Object.values(allTokens).find((t) => t.symbol === tx.data?.firstToken)
-                  const secondToken = tx.data?.secondToken === 'KLAY' ? ETHER : Object.values(allTokens).find((t) => t.symbol === tx.data?.secondToken)
+                sortedRecentTransactions.map(tx => {
+                  const firstToken =
+                    tx.data?.firstToken === 'KLAY'
+                      ? ETHER
+                      : Object.values(allTokens).find(t => t.symbol === tx.data?.firstToken)
+                  const secondToken =
+                    tx.data?.secondToken === 'KLAY'
+                      ? ETHER
+                      : Object.values(allTokens).find(t => t.symbol === tx.data?.secondToken)
                   return (
                     <TransactionHistoryBox
                       href={chainId ? getBscScanLink(chainId, tx.hash, 'transaction') : '/'}
@@ -653,17 +659,19 @@ export default function Swap({
 
       <TokenWarningModal
         isOpen={
-          urlLoadedTokens.filter(x => x.address.toLowerCase() !== SIX_ADDRESS[chainId].toLowerCase()).length > 0 &&
-          x.address.toLowerCase() !== FINIX_ADDRESS[chainId].toLowerCase()).length > 0 &&
-          x.address.toLowerCase() !== KSP_ADDRESS[chainId].toLowerCase()).length > 0 &&
-          x.address.toLowerCase() !== KDAI_ADDRESS[chainId].toLowerCase()).length > 0 &&
-          x.address.toLowerCase() !== KUSDT_ADDRESS[chainId].toLowerCase()).length > 0 &&
-          x.address.toLowerCase() !== WKLAY_ADDRESS[chainId].toLowerCase()).length > 0 &&
-          x.address.toLowerCase() !== KBNB_ADDRESS[chainId].toLowerCase()).length > 0 &&
-          x.address.toLowerCase() !== KXRP_ADDRESS[chainId].toLowerCase()).length > 0 &&
-          x.address.toLowerCase() !== KETH_ADDRESS[chainId].toLowerCase()).length > 0 &&
-          x.address.toLowerCase() !== KBTC_ADDRESS[chainId].toLowerCase()).length > 0 &&
-          !dismissTokenWarning
+          urlLoadedTokens.filter(
+            x =>
+              x.address.toLowerCase() !== SIX_ADDRESS[chainId].toLowerCase() &&
+              x.address.toLowerCase() !== FINIX_ADDRESS[chainId].toLowerCase() &&
+              x.address.toLowerCase() !== KSP_ADDRESS[chainId].toLowerCase() &&
+              x.address.toLowerCase() !== KDAI_ADDRESS[chainId].toLowerCase() &&
+              x.address.toLowerCase() !== KUSDT_ADDRESS[chainId].toLowerCase() &&
+              x.address.toLowerCase() !== WKLAY_ADDRESS[chainId].toLowerCase() &&
+              x.address.toLowerCase() !== KBNB_ADDRESS[chainId].toLowerCase() &&
+              x.address.toLowerCase() !== KXRP_ADDRESS[chainId].toLowerCase() &&
+              x.address.toLowerCase() !== KETH_ADDRESS[chainId].toLowerCase() &&
+              x.address.toLowerCase() !== KBTC_ADDRESS[chainId].toLowerCase()
+          ).length > 0 && !dismissTokenWarning
         }
         tokens={urlLoadedTokens}
         onConfirm={handleConfirmTokenWarning}
@@ -676,4 +684,3 @@ export default function Swap({
     </TimerWrapper>
   )
 }
-
