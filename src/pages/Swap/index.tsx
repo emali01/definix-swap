@@ -40,7 +40,7 @@ import { isTransactionRecent, useAllTransactions } from 'state/transactions/hook
 import { TransactionDetails } from 'state/transactions/reducer'
 import { getBscScanLink } from 'utils'
 import { RouteComponentProps } from 'react-router-dom'
-import { SIX_ADDRESS, FINIX_ADDRESS, KSP_ADDRESS, KDAI_ADDRESS, KUSDT_ADDRESS, WKLAY_ADDRESS, KBNB_ADDRESS, KXRP_ADDRESS, KETH_ADDRESS, KBTC_ADDRESS } from '../../constants'
+import { SIX_ADDRESS, FINIX_ADDRESS, KSP_ADDRESS, KDAI_ADDRESS, KUSDT_ADDRESS, WKLAY_ADDRESS, KBNB_ADDRESS, KXRP_ADDRESS, KETH_ADDRESS, KWBTC_ADDRESS } from '../../constants'
 import Flip from '../../uikit-dev/components/Flip'
 import AppBody from '../AppBody'
 
@@ -670,7 +670,7 @@ export default function Swap({
               x.address.toLowerCase() !== KBNB_ADDRESS[chainId].toLowerCase() &&
               x.address.toLowerCase() !== KXRP_ADDRESS[chainId].toLowerCase() &&
               x.address.toLowerCase() !== KETH_ADDRESS[chainId].toLowerCase() &&
-              x.address.toLowerCase() !== KBTC_ADDRESS[chainId].toLowerCase()
+              x.address.toLowerCase() !== KWBTC_ADDRESS[chainId].toLowerCase()
           ).length > 0 && !dismissTokenWarning
         }
         tokens={urlLoadedTokens}
