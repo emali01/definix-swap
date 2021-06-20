@@ -40,7 +40,7 @@ import { isTransactionRecent, useAllTransactions } from 'state/transactions/hook
 import { TransactionDetails } from 'state/transactions/reducer'
 import { getBscScanLink } from 'utils'
 import { RouteComponentProps } from 'react-router-dom'
-import { SIX_ADDRESS, FINIX_ADDRESS, BNB_ADDRESS, USDT_ADDRESS, BUSD_ADDRESS } from '../../constants'
+import { SIX_ADDRESS, FINIX_ADDRESS, WBNB_ADDRESS, USDT_ADDRESS, BUSD_ADDRESS } from '../../constants'
 import Flip from '../../uikit-dev/components/Flip'
 import AppBody from '../AppBody'
 
@@ -657,7 +657,7 @@ export default function Swap({
             (x) =>
               x.address.toLowerCase() !== SIX_ADDRESS[chainId].toLowerCase() &&
               x.address.toLowerCase() !== FINIX_ADDRESS[chainId].toLowerCase() &&
-              x.address.toLowerCase() !== BNB_ADDRESS[chainId].toLowerCase() &&
+              x.address.toLowerCase() !== WBNB_ADDRESS[chainId].toLowerCase() &&
               x.address.toLowerCase() !== BUSD_ADDRESS[chainId].toLowerCase() &&
               x.address.toLowerCase() !== USDT_ADDRESS[chainId].toLowerCase()
           ).length > 0 && !dismissTokenWarning
