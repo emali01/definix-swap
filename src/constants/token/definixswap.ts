@@ -103,7 +103,7 @@ export default {
       symbol: 'KUSDT',
       address: process.env.REACT_APP_KUSDT_ADDRESS_MAINNET,
       chainId: 8217,
-      decimals: 18,
+      decimals: 6,
       logoURI: '/images/coins/KUSDT.png'
     },
     {
@@ -127,7 +127,7 @@ export default {
       symbol: 'KWBTC',
       address: process.env.REACT_APP_KWBTC_ADDRESS_MAINNET,
       chainId: 8217,
-      decimals: 18,
+      decimals: 8,
       logoURI: '/images/coins/KWBTC.png'
     },
     {
@@ -135,7 +135,7 @@ export default {
       symbol: 'KXRP',
       address: process.env.REACT_APP_KXRP_ADDRESS_MAINNET,
       chainId: 8217,
-      decimals: 18,
+      decimals: 6,
       logoURI: '/images/coins/KXRP.png'
     },
     {
