@@ -39,6 +39,7 @@ import { TranslateString } from 'utils/translateTextHelpers'
 import { isTransactionRecent, useAllTransactions } from 'state/transactions/hooks'
 import { TransactionDetails } from 'state/transactions/reducer'
 import { getBscScanLink } from 'utils'
+import { RouteComponentProps } from 'react-router-dom'
 import { SIX_ADDRESS } from '../../constants'
 import Flip from '../../uikit-dev/components/Flip'
 import AppBody from '../AppBody'
@@ -59,10 +60,10 @@ const TimerWrapper = ({ isPhrase2, date, children }) => {
         tabIndex={0}
         role="button"
         style={{ opacity: 0.4, pointerEvents: 'none' }}
-        onClick={(e) => {
+        onClick={e => {
           e.preventDefault()
         }}
-        onKeyDown={(e) => {
+        onKeyDown={e => {
           e.preventDefault()
         }}
       >
@@ -74,7 +75,12 @@ const TimerWrapper = ({ isPhrase2, date, children }) => {
 
 const newTransactionsFirst = (a: TransactionDetails, b: TransactionDetails) => b.addedTime - a.addedTime
 
-const Swap = () => {
+export default function Swap({
+  match: {
+    params: { currencyIdA, currencyIdB },
+  },
+  history,
+}: RouteComponentProps<{ currencyIdA?: string; currencyIdB?: string }>) {
   const loadedUrlParams = useDefaultsFromURLSearch()
   const { isXl } = useMatchBreakpoints()
   const isMobileOrTablet = !isXl
@@ -94,7 +100,7 @@ const Swap = () => {
   // token warning stuff
   const [loadedInputCurrency, loadedOutputCurrency] = [
     useCurrency(loadedUrlParams?.inputCurrencyId),
-    useCurrency(loadedUrlParams?.outputCurrencyId),
+    useCurrency(loadedUrlParams?.outputCurrencyId)
   ]
   const [dismissTokenWarning, setDismissTokenWarning] = useState<boolean>(false)
   const [isSyrup, setIsSyrup] = useState<boolean>(false)
@@ -151,11 +157,11 @@ const Swap = () => {
   const parsedAmounts = showWrap
     ? {
         [Field.INPUT]: parsedAmount,
-        [Field.OUTPUT]: parsedAmount,
+        [Field.OUTPUT]: parsedAmount
       }
     : {
         [Field.INPUT]: independentField === Field.INPUT ? parsedAmount : trade?.inputAmount,
-        [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : trade?.outputAmount,
+        [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : trade?.outputAmount
       }
 
   const { onSwitchTokens, onCurrencySelection, onUserInput, onChangeRecipient } = useSwapActionHandlers()
@@ -187,14 +193,14 @@ const Swap = () => {
     tradeToConfirm: undefined,
     attemptingTxn: false,
     swapErrorMessage: undefined,
-    txHash: undefined,
+    txHash: undefined
   })
 
   const formattedAmounts = {
     [independentField]: typedValue,
     [dependentField]: showWrap
       ? parsedAmounts[independentField]?.toExact() ?? ''
-      : parsedAmounts[dependentField]?.toSignificant(6) ?? '',
+      : parsedAmounts[dependentField]?.toSignificant(6) ?? ''
   }
 
   const route = trade?.route
@@ -236,22 +242,22 @@ const Swap = () => {
     if (!swapCallback) {
       return
     }
-    setSwapState((prevState) => ({ ...prevState, attemptingTxn: true, swapErrorMessage: undefined, txHash: undefined }))
+    setSwapState(prevState => ({ ...prevState, attemptingTxn: true, swapErrorMessage: undefined, txHash: undefined }))
     swapCallback()
-      .then((hash) => {
-        setSwapState((prevState) => ({
+      .then(hash => {
+        setSwapState(prevState => ({
           ...prevState,
           attemptingTxn: false,
           swapErrorMessage: undefined,
-          txHash: hash,
+          txHash: hash
         }))
       })
-      .catch((error) => {
-        setSwapState((prevState) => ({
+      .catch(error => {
+        setSwapState(prevState => ({
           ...prevState,
           attemptingTxn: false,
           swapErrorMessage: error.message,
-          txHash: undefined,
+          txHash: undefined
         }))
       })
   }, [priceImpactWithoutFee, swapCallback, setSwapState])
@@ -272,7 +278,7 @@ const Swap = () => {
     !(priceImpactSeverity > 3 && !isExpertMode)
 
   const handleConfirmDismiss = useCallback(() => {
-    setSwapState((prevState) => ({ ...prevState, showConfirm: false }))
+    setSwapState(prevState => ({ ...prevState, showConfirm: false }))
 
     // if there was a tx hash, we want to clear the input
     if (txHash) {
@@ -281,7 +287,7 @@ const Swap = () => {
   }, [onUserInput, txHash, setSwapState])
 
   const handleAcceptChanges = useCallback(() => {
-    setSwapState((prevState) => ({ ...prevState, tradeToConfirm: trade }))
+    setSwapState(prevState => ({ ...prevState, tradeToConfirm: trade }))
   }, [trade])
 
   // This will check to see if the user has selected Syrup to either buy or sell.
@@ -297,7 +303,7 @@ const Swap = () => {
   )
 
   const handleInputSelect = useCallback(
-    (inputCurrency) => {
+    inputCurrency => {
       setApprovalSubmitted(false) // reset 2 step UI for approvals
       onCurrencySelection(Field.INPUT, inputCurrency)
       if (inputCurrency.symbol.toLowerCase() === 'syrup') {
@@ -326,7 +332,7 @@ const Swap = () => {
   }, [maxAmountInput, onUserInput])
 
   const handleOutputSelect = useCallback(
-    (outputCurrency) => {
+    outputCurrency => {
       onCurrencySelection(Field.OUTPUT, outputCurrency)
       if (outputCurrency.symbol.toLowerCase() === 'syrup') {
         checkForSyrup(outputCurrency.symbol.toLowerCase(), 'Buying')
@@ -520,7 +526,7 @@ const Swap = () => {
                                 attemptingTxn: false,
                                 swapErrorMessage: undefined,
                                 showConfirm: true,
-                                txHash: undefined,
+                                txHash: undefined
                               })
                             }
                           }}
@@ -550,7 +556,7 @@ const Swap = () => {
                               attemptingTxn: false,
                               swapErrorMessage: undefined,
                               showConfirm: true,
-                              txHash: undefined,
+                              txHash: undefined
                             })
                           }
                         }}
@@ -626,7 +632,7 @@ const Swap = () => {
                               month: 'short',
                               year: 'numeric',
                               hour: 'numeric',
-                              minute: 'numeric',
+                              minute: 'numeric'
                             })
                           : ''
                       }
@@ -647,7 +653,16 @@ const Swap = () => {
 
       <TokenWarningModal
         isOpen={
-          urlLoadedTokens.filter((x) => x.address.toLowerCase() !== SIX_ADDRESS[chainId].toLowerCase()).length > 0 &&
+          urlLoadedTokens.filter(x => x.address.toLowerCase() !== SIX_ADDRESS[chainId].toLowerCase()).length > 0 &&
+          x.address.toLowerCase() !== FINIX_ADDRESS[chainId].toLowerCase()).length > 0 &&
+          x.address.toLowerCase() !== KSP_ADDRESS[chainId].toLowerCase()).length > 0 &&
+          x.address.toLowerCase() !== KDAI_ADDRESS[chainId].toLowerCase()).length > 0 &&
+          x.address.toLowerCase() !== KUSDT_ADDRESS[chainId].toLowerCase()).length > 0 &&
+          x.address.toLowerCase() !== WKLAY_ADDRESS[chainId].toLowerCase()).length > 0 &&
+          x.address.toLowerCase() !== KBNB_ADDRESS[chainId].toLowerCase()).length > 0 &&
+          x.address.toLowerCase() !== KXRP_ADDRESS[chainId].toLowerCase()).length > 0 &&
+          x.address.toLowerCase() !== KETH_ADDRESS[chainId].toLowerCase()).length > 0 &&
+          x.address.toLowerCase() !== KBTC_ADDRESS[chainId].toLowerCase()).length > 0 &&
           !dismissTokenWarning
         }
         tokens={urlLoadedTokens}
@@ -662,4 +677,3 @@ const Swap = () => {
   )
 }
 
-export default Swap

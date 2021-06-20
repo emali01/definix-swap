@@ -18,7 +18,7 @@ import PoolFinder from './PoolFinder'
 import RemoveLiquidity from './RemoveLiquidity'
 import { RedirectOldRemoveLiquidityPathStructure } from './RemoveLiquidity/redirects'
 import Swap from './Swap'
-import { RedirectPathToSwapOnly } from './Swap/redirects'
+import { RedirectPathToSwapOnly, RedirectToSwap } from './Swap/redirects'
 // import WaitingPage from 'uikit-dev/components/WaitingPage'
 
 const AppWrapper = styled.div`
@@ -105,6 +105,8 @@ export default function App() {
                   <Web3ReactManager>
                     <Switch>
                       <Route exact strict path="/swap" component={Swap} />
+                      <Route exact path="/swap/:currencyIdA/:currencyIdB" component={RedirectToSwap} />
+                      <Route exact path="/swap/:currencyIdA" component={RedirectToSwap} />
                       <Route exact strict path="/find" component={PoolFinder} />
                       <Route exact strict path="/liquidity" component={Pool} />
                       <Route exact path="/add" component={AddLiquidity} />
