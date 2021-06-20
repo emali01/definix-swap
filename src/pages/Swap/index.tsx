@@ -40,7 +40,7 @@ import { isTransactionRecent, useAllTransactions } from 'state/transactions/hook
 import { TransactionDetails } from 'state/transactions/reducer'
 import { getBscScanLink } from 'utils'
 import { RouteComponentProps } from 'react-router-dom'
-import { SIX_ADDRESS } from '../../constants'
+import { SIX_ADDRESS, FINIX_ADDRESS, BNB_ADDRESS, USDT_ADDRESS, BUSD_ADDRESS } from '../../constants'
 import Flip from '../../uikit-dev/components/Flip'
 import AppBody from '../AppBody'
 
