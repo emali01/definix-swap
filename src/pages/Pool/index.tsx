@@ -5,6 +5,7 @@ import { StyledInternalLink } from 'components/Shared'
 import { Dots } from 'components/swap/styleds'
 import TransactionHistoryBox from 'components/TransactionHistoryBox'
 import TranslatedText from 'components/TranslatedText'
+import { bsc, injected, walletconnect } from 'connectors'
 import { usePairs } from 'data/Reserves'
 import { Pair } from 'definixswap-sdk'
 import { useActiveWeb3React } from 'hooks'
@@ -12,11 +13,12 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { toV2LiquidityToken, useTrackedTokenPairs } from 'state/user/hooks'
 import { useTokenBalancesWithLoadingIndicator } from 'state/wallet/hooks'
-import { Button, Card, Heading, Text, useMatchBreakpoints } from 'uikit-dev'
+import { Button, Card, ConnectorId, Heading, Text, useMatchBreakpoints } from 'uikit-dev'
 import { Overlay } from 'uikit-dev/components/Overlay'
 import { isTransactionRecent, useAllTransactions } from 'state/transactions/hooks'
 import { useAllTokens } from 'hooks/Tokens'
 import { LeftPanel, MaxWidthLeft, MaxWidthRight, RightPanel, ShowHideButton } from 'uikit-dev/components/TwoPanelLayout'
+import UserBlock from 'uikit-dev/widgets/Menu/UserBlock'
 import { TranslateString } from 'utils/translateTextHelpers'
 import { TransactionDetails } from 'state/transactions/reducer'
 import { getBscScanLink } from 'utils'
@@ -55,7 +57,7 @@ const TimerWrapper = ({ isPhrase2, date, children }) => {
 const newTransactionsFirst = (a: TransactionDetails, b: TransactionDetails) => b.addedTime - a.addedTime
 
 export default function Pool() {
-  const { account, chainId } = useActiveWeb3React()
+  const { account, chainId, activate, deactivate } = useActiveWeb3React()
   const [isShowRightPanel, setIsShowRightPanel] = useState(false)
   const { isXl } = useMatchBreakpoints()
   const isMobileOrTablet = !isXl
@@ -68,7 +70,7 @@ export default function Pool() {
     const txs = Object.values(allTransactions)
     return txs
       .filter(isTransactionRecent)
-      .filter(t => t.type === 'addLiquidity' || t.type === 'removeLiquidity')
+      .filter((t) => t.type === 'addLiquidity' || t.type === 'removeLiquidity')
       .sort(newTransactionsFirst)
   }, [allTransactions])
 
@@ -172,8 +174,23 @@ export default function Pool() {
               </div>
 
               {!account ? (
-                <div className="pa-6">
-                  <Text color="textSubtle" textAlign="center" fontSize="16px">
+                <div className="py-6 flex flex-column align-center">
+                  <UserBlock
+                    account={account as string}
+                    login={(connectorId: ConnectorId) => {
+                      if (connectorId === 'walletconnect') {
+                        return activate(walletconnect)
+                      }
+
+                      if (connectorId === 'bsc') {
+                        return activate(bsc)
+                      }
+
+                      return activate(injected)
+                    }}
+                    logout={deactivate}
+                  />
+                  <Text color="textSubtle" textAlign="center" fontSize="16px" className="mt-2">
                     Connect to a wallet to view your liquidity.
                   </Text>
                 </div>
@@ -223,32 +240,42 @@ export default function Pool() {
             <Heading fontSize="20px !important" className="mb-3">
               LIQUIDITY HISTORY
             </Heading>
-            <Card style={{ overflow: 'auto' }}>
-              {/* Mockup */}
-              {sortedRecentTransactions.map(tx => {
-                const firstToken = Object.values(allTokens).find(t => t.symbol === tx.data?.firstToken)
-                const secondToken = Object.values(allTokens).find(t => t.symbol === tx.data?.secondToken)
-                return (
-                  <TransactionHistoryBox
-                    href={chainId ? getBscScanLink(chainId, tx.hash, 'transaction') : "/"}
-                    firstCoin={firstToken}
-                    firstCoinAmount={tx.data?.firstTokenAmount}
-                    secondCoin={secondToken}
-                    secondCoinAmount={tx.data?.firstTokenAmount}
-                    title={tx.type === 'addLiquidity' ? 'Add Liquidity' : 'Remove Liquidity'}
-                    withText="and"
-                    isFailed={!tx.confirmedTime}
-                    date={tx.confirmedTime ? new Date(tx.confirmedTime || 0).toLocaleString('en-US', {
-                      day: 'numeric',
-                      month: 'short',
-                      year: 'numeric',
-                      hour: 'numeric',
-                      minute: 'numeric'
-                    }) : ""}
-                  />
-                )
-              })}
-              {/* End Mockup */}
+            <Card style={{ overflow: 'auto', flexGrow: 1 }}>
+              {sortedRecentTransactions.length > 0 ? (
+                sortedRecentTransactions.map((tx) => {
+                  const firstToken = Object.values(allTokens).find((t) => t.symbol === tx.data?.firstToken)
+                  const secondToken = Object.values(allTokens).find((t) => t.symbol === tx.data?.secondToken)
+                  return (
+                    <TransactionHistoryBox
+                      href={chainId ? getBscScanLink(chainId, tx.hash, 'transaction') : '/'}
+                      firstCoin={firstToken}
+                      firstCoinAmount={tx.data?.firstTokenAmount}
+                      secondCoin={secondToken}
+                      secondCoinAmount={tx.data?.firstTokenAmount}
+                      title={tx.type === 'addLiquidity' ? 'Add Liquidity' : 'Remove Liquidity'}
+                      withText="and"
+                      isFailed={!tx.confirmedTime}
+                      date={
+                        tx.confirmedTime
+                          ? new Date(tx.confirmedTime || 0).toLocaleString('en-US', {
+                              day: 'numeric',
+                              month: 'short',
+                              year: 'numeric',
+                              hour: 'numeric',
+                              minute: 'numeric',
+                            })
+                          : ''
+                      }
+                    />
+                  )
+                })
+              ) : (
+                <div className="flex align-center justify-center" style={{ height: '100%' }}>
+                  <Text color="textSubtle" fontSize="14px" textAlign="center">
+                    No Liquidity History
+                  </Text>
+                </div>
+              )}
             </Card>
           </MaxWidthRight>
         )}

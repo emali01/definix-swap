@@ -39,7 +39,8 @@ import { TranslateString } from 'utils/translateTextHelpers'
 import { isTransactionRecent, useAllTransactions } from 'state/transactions/hooks'
 import { TransactionDetails } from 'state/transactions/reducer'
 import { getBscScanLink } from 'utils'
-import { SIX_ADDRESS } from '../../constants'
+import { RouteComponentProps } from 'react-router-dom'
+import { SIX_ADDRESS, FINIX_ADDRESS, WBNB_ADDRESS, USDT_ADDRESS, BUSD_ADDRESS } from '../../constants'
 import Flip from '../../uikit-dev/components/Flip'
 import AppBody from '../AppBody'
 
@@ -74,7 +75,12 @@ const TimerWrapper = ({ isPhrase2, date, children }) => {
 
 const newTransactionsFirst = (a: TransactionDetails, b: TransactionDetails) => b.addedTime - a.addedTime
 
-const Swap = () => {
+export default function Swap({
+  match: {
+    params: { currencyIdA, currencyIdB },
+  },
+  history,
+}: RouteComponentProps<{ currencyIdA?: string; currencyIdB?: string }>) {
   const loadedUrlParams = useDefaultsFromURLSearch()
   const { isXl } = useMatchBreakpoints()
   const isMobileOrTablet = !isXl
@@ -87,7 +93,7 @@ const Swap = () => {
     const txs = Object.values(allTransactions)
     return txs
       .filter(isTransactionRecent)
-      .filter(t => t.type === 'swap')
+      .filter((t) => t.type === 'swap')
       .sort(newTransactionsFirst)
   }, [allTransactions])
 
@@ -315,13 +321,13 @@ const Swap = () => {
 
   const handleQuarterInput = useCallback(() => {
     if (maxAmountInput) {
-      onUserInput(Field.INPUT, numeral(parseFloat(maxAmountInput.toExact()) / 4).format("0.00"))
+      onUserInput(Field.INPUT, numeral(parseFloat(maxAmountInput.toExact()) / 4).format('0.00'))
     }
   }, [maxAmountInput, onUserInput])
 
   const handleHalfInput = useCallback(() => {
     if (maxAmountInput) {
-      onUserInput(Field.INPUT, numeral(parseFloat(maxAmountInput.toExact()) / 2).format("0.00"))
+      onUserInput(Field.INPUT, numeral(parseFloat(maxAmountInput.toExact()) / 2).format('0.00'))
     }
   }, [maxAmountInput, onUserInput])
 
@@ -604,30 +610,42 @@ const Swap = () => {
             <Heading fontSize="20px !important" className="mb-3">
               SWAP HISTORY
             </Heading>
-            <Card style={{ overflow: 'auto' }}>
-              {sortedRecentTransactions.map(tx => {
-                const firstToken = Object.values(allTokens).find(t => t.symbol === tx.data?.firstToken)
-                const secondToken = Object.values(allTokens).find(t => t.symbol === tx.data?.secondToken)
-                return (
-                  <TransactionHistoryBox
-                    href={chainId ? getBscScanLink(chainId, tx.hash, 'transaction') : "/"}
-                    firstCoin={firstToken}
-                    firstCoinAmount={tx.data?.firstTokenAmount}
-                    secondCoin={secondToken}
-                    secondCoinAmount={tx.data?.firstTokenAmount}
-                    title="Swap"
-                    withText="and"
-                    isFailed={!tx.confirmedTime}
-                    date={tx.confirmedTime ? new Date(tx.confirmedTime || 0).toLocaleString('en-US', {
-                      day: 'numeric',
-                      month: 'short',
-                      year: 'numeric',
-                      hour: 'numeric',
-                      minute: 'numeric'
-                    }) : ""}
-                  />
-                )
-              })}
+            <Card style={{ overflow: 'auto', flexGrow: 1 }}>
+              {sortedRecentTransactions.length > 0 ? (
+                sortedRecentTransactions.map((tx) => {
+                  const firstToken = Object.values(allTokens).find((t) => t.symbol === tx.data?.firstToken)
+                  const secondToken = Object.values(allTokens).find((t) => t.symbol === tx.data?.secondToken)
+                  return (
+                    <TransactionHistoryBox
+                      href={chainId ? getBscScanLink(chainId, tx.hash, 'transaction') : '/'}
+                      firstCoin={firstToken}
+                      firstCoinAmount={tx.data?.firstTokenAmount}
+                      secondCoin={secondToken}
+                      secondCoinAmount={tx.data?.firstTokenAmount}
+                      title="Swap"
+                      withText="and"
+                      isFailed={!tx.confirmedTime}
+                      date={
+                        tx.confirmedTime
+                          ? new Date(tx.confirmedTime || 0).toLocaleString('en-US', {
+                              day: 'numeric',
+                              month: 'short',
+                              year: 'numeric',
+                              hour: 'numeric',
+                              minute: 'numeric',
+                            })
+                          : ''
+                      }
+                    />
+                  )
+                })
+              ) : (
+                <div className="flex align-center justify-center" style={{ height: '100%' }}>
+                  <Text color="textSubtle" fontSize="14px" textAlign="center">
+                    No Swap History
+                  </Text>
+                </div>
+              )}
             </Card>
           </MaxWidthRight>
         )}
@@ -635,8 +653,14 @@ const Swap = () => {
 
       <TokenWarningModal
         isOpen={
-          urlLoadedTokens.filter((x) => x.address.toLowerCase() !== SIX_ADDRESS[chainId].toLowerCase()).length > 0 &&
-          !dismissTokenWarning
+          urlLoadedTokens.filter(
+            (x) =>
+              x.address.toLowerCase() !== SIX_ADDRESS[chainId].toLowerCase() &&
+              x.address.toLowerCase() !== FINIX_ADDRESS[chainId].toLowerCase() &&
+              x.address.toLowerCase() !== WBNB_ADDRESS[chainId].toLowerCase() &&
+              x.address.toLowerCase() !== BUSD_ADDRESS[chainId].toLowerCase() &&
+              x.address.toLowerCase() !== USDT_ADDRESS[chainId].toLowerCase()
+          ).length > 0 && !dismissTokenWarning
         }
         tokens={urlLoadedTokens}
         onConfirm={handleConfirmTokenWarning}
@@ -649,5 +673,3 @@ const Swap = () => {
     </TimerWrapper>
   )
 }
-
-export default Swap
