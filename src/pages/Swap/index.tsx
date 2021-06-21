@@ -376,7 +376,7 @@ export default function Swap({
               <ExchangeTab current="/swap" />
 
               <Wrapper id="swap-page">
-                <CardBody p="32px !important">
+                <CardBody p={isMobileOrTablet ? '24px !important' : '32px !important'}>
                   <Heading textAlign="center" className="mb-4">
                     Trade tokens in an instant
                   </Heading>
@@ -469,7 +469,11 @@ export default function Swap({
                               </div>
                             )}
                             {allowedSlippage !== INITIAL_ALLOWED_SLIPPAGE && (
-                              <div className="flex flex-wrap align-baseline justify-space-between col-6 pl-6">
+                              <div
+                                className={`flex flex-wrap align-baseline justify-space-between col-6 ${
+                                  isMobileOrTablet ? 'pl-5' : 'pl-6'
+                                }`}
+                              >
                                 <Text fontSize="14px" color="textSubtle">
                                   Slippage Tolerance
                                 </Text>
@@ -483,7 +487,7 @@ export default function Swap({
                   </div>
                 </CardBody>
 
-                <div className="pa-6 bd-t">
+                <div className={`${isMobileOrTablet ? 'pa-5' : 'pa-6'} bd-t`}>
                   <AdvancedSwapDetailsDropdown trade={trade} />
 
                   <BottomGrouping>

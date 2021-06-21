@@ -175,21 +175,24 @@ export default function Pool() {
 
               {!account ? (
                 <div className="py-6 flex flex-column align-center">
-                  <UserBlock
-                    account={account as string}
-                    login={(connectorId: ConnectorId) => {
-                      if (connectorId === 'walletconnect') {
-                        return activate(walletconnect)
-                      }
+                  {isMobileOrTablet && (
+                    <UserBlock
+                      account={account as string}
+                      login={(connectorId: ConnectorId) => {
+                        if (connectorId === 'walletconnect') {
+                          return activate(walletconnect)
+                        }
 
-                      if (connectorId === 'bsc') {
-                        return activate(bsc)
-                      }
+                        if (connectorId === 'bsc') {
+                          return activate(bsc)
+                        }
 
-                      return activate(injected)
-                    }}
-                    logout={deactivate}
-                  />
+                        return activate(injected)
+                      }}
+                      logout={deactivate}
+                    />
+                  )}
+
                   <Text color="textSubtle" textAlign="center" fontSize="16px" className="mt-2">
                     Connect to a wallet to view your liquidity.
                   </Text>
