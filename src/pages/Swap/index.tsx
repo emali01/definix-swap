@@ -40,7 +40,18 @@ import { isTransactionRecent, useAllTransactions } from 'state/transactions/hook
 import { TransactionDetails } from 'state/transactions/reducer'
 import { getBscScanLink } from 'utils'
 import { RouteComponentProps } from 'react-router-dom'
-import { SIX_ADDRESS, FINIX_ADDRESS, KSP_ADDRESS, KDAI_ADDRESS, KUSDT_ADDRESS, WKLAY_ADDRESS, KBNB_ADDRESS, KXRP_ADDRESS, KETH_ADDRESS, KWBTC_ADDRESS } from '../../constants'
+import {
+  SIX_ADDRESS,
+  FINIX_ADDRESS,
+  KSP_ADDRESS,
+  KDAI_ADDRESS,
+  KUSDT_ADDRESS,
+  WKLAY_ADDRESS,
+  KBNB_ADDRESS,
+  KXRP_ADDRESS,
+  KETH_ADDRESS,
+  KWBTC_ADDRESS,
+} from '../../constants'
 import Flip from '../../uikit-dev/components/Flip'
 import AppBody from '../AppBody'
 
@@ -376,7 +387,7 @@ export default function Swap({
               <ExchangeTab current="/swap" />
 
               <Wrapper id="swap-page">
-                <CardBody p="32px !important">
+                <CardBody p={isMobileOrTablet ? '24px !important' : '32px !important'}>
                   <Heading textAlign="center" className="mb-4">
                     Trade tokens in an instant
                   </Heading>
@@ -469,7 +480,11 @@ export default function Swap({
                               </div>
                             )}
                             {allowedSlippage !== INITIAL_ALLOWED_SLIPPAGE && (
-                              <div className="flex flex-wrap align-baseline justify-space-between col-6 pl-6">
+                              <div
+                                className={`flex flex-wrap align-baseline justify-space-between col-6 ${
+                                  isMobileOrTablet ? 'pl-5' : 'pl-6'
+                                }`}
+                              >
                                 <Text fontSize="14px" color="textSubtle">
                                   Slippage Tolerance
                                 </Text>
@@ -483,7 +498,7 @@ export default function Swap({
                   </div>
                 </CardBody>
 
-                <div className="pa-6 bd-t">
+                <div className={`${isMobileOrTablet ? 'pa-5' : 'pa-6'} bd-t`}>
                   <AdvancedSwapDetailsDropdown trade={trade} />
 
                   <BottomGrouping>
@@ -612,15 +627,15 @@ export default function Swap({
             </Heading>
             <Card style={{ overflow: 'auto', flexGrow: 1 }}>
               {sortedRecentTransactions.length > 0 ? (
-                sortedRecentTransactions.map(tx => {
+                sortedRecentTransactions.map((tx) => {
                   const firstToken =
                     tx.data?.firstToken === 'KLAY'
                       ? ETHER
-                      : Object.values(allTokens).find(t => t.symbol === tx.data?.firstToken)
+                      : Object.values(allTokens).find((t) => t.symbol === tx.data?.firstToken)
                   const secondToken =
                     tx.data?.secondToken === 'KLAY'
                       ? ETHER
-                      : Object.values(allTokens).find(t => t.symbol === tx.data?.secondToken)
+                      : Object.values(allTokens).find((t) => t.symbol === tx.data?.secondToken)
                   return (
                     <TransactionHistoryBox
                       href={chainId ? getBscScanLink(chainId, tx.hash, 'transaction') : '/'}

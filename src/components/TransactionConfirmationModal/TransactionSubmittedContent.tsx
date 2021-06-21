@@ -48,9 +48,11 @@ const TransactionSubmittedContent = ({
         <div>
           <RowBetween className="mt-6">
             <div className="flex">
-              <Text className="mr-2">Transaction Hash</Text>
+              <Text className="mr-2" fontSize="12px">
+                Transaction Hash
+              </Text>
               <Text className="mr-2" bold>
-                {`${hash.substring(0, 8)}...${hash.substring(hash.length - 8)}`}
+                {`${hash.substring(0, 6)}...${hash.substring(hash.length - 4)}`}
               </Text>
               <CopyToClipboard noPadding toCopy={hash} />
             </div>
@@ -68,18 +70,20 @@ const TransactionSubmittedContent = ({
             </Link>
           </RowBetween>
 
-          {false && <div className="flex justify-center mt-6">
-            <Button
-              startIcon={<ArrowDownIcon />}
-              onClick={() => {
-                console.log('Download IMG')
-              }}
-              variant="secondary"
-              size="sm"
-            >
-              Download IMG Transaction
-            </Button>
-          </div>}
+          {false && (
+            <div className="flex justify-center mt-6">
+              <Button
+                startIcon={<ArrowDownIcon />}
+                onClick={() => {
+                  console.log('Download IMG')
+                }}
+                variant="secondary"
+                size="sm"
+              >
+                Download IMG Transaction
+              </Button>
+            </div>
+          )}
         </div>
       )}
 
