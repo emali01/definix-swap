@@ -1,7 +1,7 @@
 import React from 'react'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
 import Swap from './index'
-import { WKLAY_ADDRESS } from 'config'
+import { WKLAY_ADDRESS } from '../../config'
 
 // Redirects to swap but only replace the pathname
 export function RedirectPathToSwapOnly({ location }: RouteComponentProps) {
