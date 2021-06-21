@@ -13,7 +13,10 @@ export function RedirectToSwap(props: RouteComponentProps<{ currencyIdA: string;
       params: { currencyIdA, currencyIdB },
     },
   } = props
-  if (currencyIdA.toLowerCase() === currencyIdB.toLowerCase()) {
+  if (currencyIdA && currencyIdB && currencyIdA.toLowerCase() === currencyIdB.toLowerCase()) {
+    return <Redirect to={`/swap?inputCurrency=${currencyIdA}`} />
+  }
+  if (currencyIdA && !currencyIdB) {
     return <Redirect to={`/swap?inputCurrency=${currencyIdA}`} />
   }
   if (currencyIdA && currencyIdB) {
