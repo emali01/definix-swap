@@ -5,6 +5,7 @@ import { FindPoolTabs } from 'components/NavigationTabs'
 import { MinimalPositionCard } from 'components/PositionCard'
 import CurrencySearchModal from 'components/SearchModal/CurrencySearchModal'
 import { StyledInternalLink } from 'components/Shared'
+import { Dots } from 'components/swap/styleds'
 import TranslatedText from 'components/TranslatedText'
 import { PairState, usePair } from 'data/Reserves'
 import { Currency, ETHER, JSBI, TokenAmount } from 'definixswap-sdk'
@@ -12,10 +13,10 @@ import { useActiveWeb3React } from 'hooks'
 import React, { useCallback, useEffect, useState } from 'react'
 import { usePairAdder } from 'state/user/hooks'
 import { useTokenBalance } from 'state/wallet/hooks'
-import { AddIcon, Button, CardBody, ChevronDownIcon, Heading, Text } from 'uikit-dev'
+import { AddIcon, Button, CardBody, ChevronDownIcon, Text } from 'uikit-dev'
+import { LeftPanel, MaxWidthLeft } from 'uikit-dev/components/TwoPanelLayout'
 import { currencyId } from 'utils/currencyId'
 import AppBody from '../AppBody'
-import { Dots } from '../Pool/styleds'
 
 enum Fields {
   TOKEN0 = 0,
@@ -66,60 +67,51 @@ export default function PoolFinder() {
     setShowSearch(false)
   }, [setShowSearch])
 
-  const prerequisiteMessage = (
-    <BorderCard padding="24px">
-      <Text style={{ textAlign: 'center' }}>
-        {!account ? 'Connect to a wallet to find pools' : 'Select a token to find your liquidity.'}
-      </Text>
-    </BorderCard>
-  )
-
   return (
-    <>
-      {/* <CardNav activeIndex={1} /> */}
+    <LeftPanel isShowRightPanel={false}>
+      <MaxWidthLeft>
+        <AppBody>
+          <FindPoolTabs />
+          <CardBody p="32px !important">
+            <div className="mb-6">
+              <Button
+                onClick={() => {
+                  setShowSearch(true)
+                  setActiveField(Fields.TOKEN0)
+                }}
+                startIcon={currency0 ? <CurrencyLogo currency={currency0} style={{ marginRight: '.5rem' }} /> : null}
+                endIcon={<ChevronDownIcon width="24px" color="white" />}
+                fullWidth
+                radii="card"
+                className="mb-4"
+              >
+                {currency0 ? currency0.symbol : <TranslatedText translationId={82}>Select a Token</TranslatedText>}
+              </Button>
 
-      <Heading as="h1" fontSize="32px !important" className="my-6">
-        Liquidity
-      </Heading>
+              <ColumnCenter>
+                <AddIcon color="textSubtle" />
+              </ColumnCenter>
 
-      <AppBody>
-        <FindPoolTabs />
-        <CardBody>
-          <AutoColumn gap="md">
-            <Button
-              onClick={() => {
-                setShowSearch(true)
-                setActiveField(Fields.TOKEN0)
-              }}
-              startIcon={currency0 ? <CurrencyLogo currency={currency0} style={{ marginRight: '.5rem' }} /> : null}
-              endIcon={<ChevronDownIcon width="24px" color="white" />}
-              fullWidth
-            >
-              {currency0 ? currency0.symbol : <TranslatedText translationId={82}>Select a Token</TranslatedText>}
-            </Button>
-
-            <ColumnCenter>
-              <AddIcon color="textSubtle" />
-            </ColumnCenter>
-
-            <Button
-              onClick={() => {
-                setShowSearch(true)
-                setActiveField(Fields.TOKEN1)
-              }}
-              className="mb-2"
-              startIcon={currency1 ? <CurrencyLogo currency={currency1} style={{ marginRight: '.5rem' }} /> : null}
-              endIcon={<ChevronDownIcon width="24px" color="white" />}
-              fullWidth
-            >
-              {currency1 ? currency1.symbol : <TranslatedText translationId={82}>Select a Token</TranslatedText>}
-            </Button>
+              <Button
+                onClick={() => {
+                  setShowSearch(true)
+                  setActiveField(Fields.TOKEN1)
+                }}
+                className="mt-4"
+                startIcon={currency1 ? <CurrencyLogo currency={currency1} style={{ marginRight: '.5rem' }} /> : null}
+                endIcon={<ChevronDownIcon width="24px" color="white" />}
+                fullWidth
+                radii="card"
+              >
+                {currency1 ? currency1.symbol : <TranslatedText translationId={82}>Select a Token</TranslatedText>}
+              </Button>
+            </div>
 
             {hasPosition && (
               <ColumnCenter
                 style={{ justifyItems: 'center', backgroundColor: '', padding: '12px 0px', borderRadius: '12px' }}
               >
-                <Text style={{ textAlign: 'center' }}>Pool Found!</Text>
+                <Text textAlign="center">Pool Found!</Text>
               </ColumnCenter>
             )}
 
@@ -128,58 +120,62 @@ export default function PoolFinder() {
                 hasPosition && pair ? (
                   <MinimalPositionCard pair={pair} />
                 ) : (
-                  <BorderCard padding="45px 10px">
+                  <BorderCard padding="32px">
                     <AutoColumn gap="sm" justify="center">
-                      <Text style={{ textAlign: 'center' }}>You don’t have liquidity in this pool yet.</Text>
+                      <Text color="textSubtle" textAlign="center" fontSize="16px" className="mb-1">
+                        You don’t have liquidity in this pool yet.
+                      </Text>
+
                       <StyledInternalLink to={`/add/${currencyId(currency0)}/${currencyId(currency1)}`}>
-                        <Text style={{ textAlign: 'center' }}>
-                          <TranslatedText translationId={100}>Add Liquidity</TranslatedText>
-                        </Text>
+                        <TranslatedText translationId={100}>Add Liquidity</TranslatedText>
                       </StyledInternalLink>
                     </AutoColumn>
                   </BorderCard>
                 )
               ) : validPairNoLiquidity ? (
-                <BorderCard padding="45px 10px">
+                <BorderCard padding="32px">
                   <AutoColumn gap="sm" justify="center">
-                    <Text style={{ textAlign: 'center' }}>No pool found.</Text>
+                    <Text color="textSubtle" textAlign="center" fontSize="16px" className="mb-1">
+                      No pool found.
+                    </Text>
                     <StyledInternalLink to={`/add/${currencyId(currency0)}/${currencyId(currency1)}`}>
                       Create pool.
                     </StyledInternalLink>
                   </AutoColumn>
                 </BorderCard>
               ) : pairState === PairState.INVALID ? (
-                <BorderCard padding="45px 10px">
-                  <AutoColumn gap="sm" justify="center">
-                    <Text style={{ textAlign: 'center' }}>
-                      <TranslatedText translationId={136}>Invalid pair.</TranslatedText>
-                    </Text>
-                  </AutoColumn>
+                <BorderCard padding="32px">
+                  <Text color="textSubtle" textAlign="center" fontSize="16px">
+                    <TranslatedText translationId={136}>Invalid pair.</TranslatedText>
+                  </Text>
                 </BorderCard>
               ) : pairState === PairState.LOADING ? (
-                <BorderCard padding="45px 10px">
+                <BorderCard padding="32px">
                   <AutoColumn gap="sm" justify="center">
-                    <Text style={{ textAlign: 'center' }}>
-                      Loading
-                      <Dots />
+                    <Text color="textSubtle" textAlign="center" fontSize="16px">
+                      <Dots>Loading</Dots>
                     </Text>
                   </AutoColumn>
                 </BorderCard>
               ) : null
             ) : (
-              prerequisiteMessage
+              <BorderCard padding="32px">
+                <Text textAlign="center" color="textSubtle" fontSize="16px">
+                  {!account ? 'Connect to a wallet to find pools' : 'Select a token to find your liquidity.'}
+                </Text>
+              </BorderCard>
             )}
-          </AutoColumn>
 
-          <CurrencySearchModal
-            isOpen={showSearch}
-            onCurrencySelect={handleCurrencySelect}
-            onDismiss={handleSearchDismiss}
-            showCommonBases
-            selectedCurrency={(activeField === Fields.TOKEN0 ? currency1 : currency0) ?? undefined}
-          />
-        </CardBody>
-      </AppBody>
-    </>
+            <CurrencySearchModal
+              isOpen={showSearch}
+              onCurrencySelect={handleCurrencySelect}
+              onDismiss={handleSearchDismiss}
+              showCommonBases
+              selectedCurrency={(activeField === Fields.TOKEN0 ? currency1 : currency0) ?? undefined}
+            />
+          </CardBody>
+        </AppBody>
+      </MaxWidthLeft>
+    </LeftPanel>
   )
 }

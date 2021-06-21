@@ -1,23 +1,24 @@
 import { Credentials, StringTranslations } from '@crowdin/crowdin-api-client'
+import { useWeb3React } from '@web3-react/core'
+import { injected } from 'connectors'
 import React, { Suspense, useEffect, useState } from 'react'
 import { HashRouter, Route, Switch } from 'react-router-dom'
 import styled from 'styled-components'
-import { useWeb3React } from '@web3-react/core'
-import { injected } from 'connectors'
+import { TwoPanelLayout } from 'uikit-dev/components/TwoPanelLayout'
 import Menu from '../components/Menu'
 import Popups from '../components/Popups'
 import Web3ReactManager from '../components/Web3ReactManager'
 import { allLanguages, EN } from '../constants/localisation/languageCodes'
 import { LanguageContext } from '../hooks/LanguageContext'
 import { TranslationsContext } from '../hooks/TranslationsContext'
-import { RedirectDuplicateTokenIds, RedirectOldAddLiquidityPathStructure } from './AddLiquidity/redirects'
-import { RedirectOldRemoveLiquidityPathStructure } from './RemoveLiquidity/redirects'
 import AddLiquidity from './AddLiquidity'
+import { RedirectDuplicateTokenIds, RedirectOldAddLiquidityPathStructure } from './AddLiquidity/redirects'
 import Pool from './Pool'
 import PoolFinder from './PoolFinder'
 import RemoveLiquidity from './RemoveLiquidity'
+import { RedirectOldRemoveLiquidityPathStructure } from './RemoveLiquidity/redirects'
 import Swap from './Swap'
-import { RedirectPathToSwapOnly } from './Swap/redirects'
+import { RedirectPathToSwapOnly, RedirectToSwap } from './Swap/redirects'
 // import WaitingPage from 'uikit-dev/components/WaitingPage'
 
 const AppWrapper = styled.div`
@@ -26,40 +27,6 @@ const AppWrapper = styled.div`
   align-items: flex-start;
   // overflow-x: hidden;
   height: 100%;
-`
-
-const BodyWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  padding: 24px;
-  align-items: center;
-  justify-content: center;
-  flex: 1;
-  z-index: 1;
-  justify-content: center;
-
-  // background-image: url('/images/group-definix.svg');
-  // background-repeat: no-repeat;
-  // background-position: bottom 24px center;
-  // background-size: 90%;
-
-  // ${({ theme }) => theme.mediaQueries.xs} {
-  //   background-size: auto;
-  // }
-
-  // ${({ theme }) => theme.mediaQueries.lg} {
-  //   background-image: url('/images/arch-${({ theme }) => (theme.isDark ? 'dark' : 'light')}.svg'),
-  //     url('/images/left-definix.svg'), url('/images/right-definix.svg');
-  //   background-repeat: no-repeat;
-  //   background-position: center 420px, 10% 230px, 90% 230px;
-  //   background-size: contain, 266px, 266px;
-  //   min-height: 90vh;
-  // }
-`
-
-const Marginer = styled.div`
-  margin-top: 5rem;
 `
 
 export default function App() {
@@ -133,11 +100,13 @@ export default function App() {
           >
             <TranslationsContext.Provider value={{ translations, setTranslations }}>
               <Menu>
-                <BodyWrapper>
+                <TwoPanelLayout>
                   <Popups />
                   <Web3ReactManager>
                     <Switch>
                       <Route exact strict path="/swap" component={Swap} />
+                      <Route exact path="/swap/:currencyIdA/:currencyIdB" component={RedirectToSwap} />
+                      <Route exact path="/swap/:currencyIdA" component={RedirectToSwap} />
                       <Route exact strict path="/find" component={PoolFinder} />
                       <Route exact strict path="/liquidity" component={Pool} />
                       <Route exact path="/add" component={AddLiquidity} />
@@ -155,8 +124,7 @@ export default function App() {
                       <Route component={RedirectPathToSwapOnly} />
                     </Switch>
                   </Web3ReactManager>
-                  <Marginer />
-                </BodyWrapper>
+                </TwoPanelLayout>
               </Menu>
             </TranslationsContext.Provider>
           </LanguageContext.Provider>

@@ -4,41 +4,41 @@ import { useActivePopups } from '../../state/application/hooks'
 import { AutoColumn } from '../Column'
 import PopupItem from './PopupItem'
 
-const MobilePopupWrapper = styled.div<{ height: string | number }>`
-  position: relative;
-  max-width: 100%;
-  height: ${({ height }) => height};
-  margin: ${({ height }) => (height ? '0 auto;' : 0)};
-  margin-bottom: ${({ height }) => (height ? '20px' : 0)}};
-  display: none;
+// const MobilePopupWrapper = styled.div<{ height: string | number }>`
+//   position: relative;
+//   max-width: 100%;
+//   height: ${({ height }) => height};
+//   margin: ${({ height }) => (height ? '0 auto;' : 0)};
+//   margin-bottom: ${({ height }) => (height ? '20px' : 0)}};
+//   display: none;
 
-  ${({ theme }) => theme.mediaQueries.sm} {
-    display: block;
-  }
-`
+//   ${({ theme }) => theme.mediaQueries.sm} {
+//     display: block;
+//   }
+// `
 
-const MobilePopupInner = styled.div`
-  height: 99%;
-  overflow-x: auto;
-  overflow-y: hidden;
-  display: flex;
-  flex-direction: row;
-  -webkit-overflow-scrolling: touch;
-  ::-webkit-scrollbar {
-    display: none;
-  }
-`
+// const MobilePopupInner = styled.div`
+//   height: 99%;
+//   overflow-x: auto;
+//   overflow-y: hidden;
+//   display: flex;
+//   flex-direction: row;
+//   -webkit-overflow-scrolling: touch;
+//   ::-webkit-scrollbar {
+//     display: none;
+//   }
+// `
 
 const FixedPopupColumn = styled(AutoColumn)`
   position: fixed;
-  top: 64px;
-  right: 1rem;
-  max-width: 355px !important;
-  width: 100%;
-  z-index: 2;
+  top: 32px;
+  right: 16px;
+  max-width: 100% !important;
+  width: calc(100% - 32px);
+  z-index: 6;
 
   ${({ theme }) => theme.mediaQueries.sm} {
-    display: none;
+    max-width: 320px !important;
   }
 `
 
@@ -53,16 +53,16 @@ export default function Popups() {
           <PopupItem key={item.key} content={item.content} popKey={item.key} removeAfterMs={item.removeAfterMs} />
         ))}
       </FixedPopupColumn>
-      <MobilePopupWrapper height={activePopups?.length > 0 ? 'fit-content' : 0}>
+      {/* <MobilePopupWrapper height={activePopups?.length > 0 ? 'fit-content' : 0}>
         <MobilePopupInner>
-          {activePopups // reverse so new items up front
+          {aaa // reverse so new items up front
             .slice(0)
             .reverse()
             .map((item) => (
               <PopupItem key={item.key} content={item.content} popKey={item.key} removeAfterMs={item.removeAfterMs} />
             ))}
         </MobilePopupInner>
-      </MobilePopupWrapper>
+      </MobilePopupWrapper> */}
     </>
   )
 }

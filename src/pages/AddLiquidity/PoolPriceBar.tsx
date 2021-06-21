@@ -33,7 +33,7 @@ export function PoolPriceBar({
           </Text>
         </AutoColumn>
         <AutoColumn justify="center">
-          <Text fontWeight="bold">
+          <Text fontWeight="bold" color="success">
             {noLiquidity && price
               ? '100'
               : (poolTokenPercentage?.lessThan(ONE_BIPS) ? '<0.01' : poolTokenPercentage?.toFixed(2)) ?? '0'}

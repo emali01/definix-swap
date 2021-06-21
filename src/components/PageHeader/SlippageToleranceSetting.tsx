@@ -104,7 +104,11 @@ const SlippageToleranceSettings = () => {
 
             return (
               <Option key={predefinedValue}>
-                <Button variant={value === predefinedValue ? 'primary' : 'tertiary'} onClick={handleClick}>
+                <Button
+                  variant={value === predefinedValue ? 'primary' : 'secondary'}
+                  onClick={handleClick}
+                  radii="card"
+                >
                   {label}
                 </Button>
               </Option>
@@ -125,7 +129,7 @@ const SlippageToleranceSettings = () => {
             />
           </Option>
           <Option>
-            <Text fontSize="18px">%</Text>
+            <Text fontSize="16px">%</Text>
           </Option>
         </Flex>
       </Options>

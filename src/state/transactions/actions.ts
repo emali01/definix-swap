@@ -17,6 +17,8 @@ export const addTransaction = createAction<{
   hash: string
   from: string
   approval?: { tokenAddress: string; spender: string }
+  type?: string
+  data?: { firstToken?: string; firstTokenAmount?: string; secondToken?: string; secondTokenAmount?: string }
   summary?: string
 }>('transactions/addTransaction')
 export const clearAllTransactions = createAction<{ chainId: ChainId }>('transactions/clearAllTransactions')
