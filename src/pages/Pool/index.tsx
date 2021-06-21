@@ -243,7 +243,7 @@ export default function Pool() {
                       firstCoin={firstToken}
                       firstCoinAmount={tx.data?.firstTokenAmount}
                       secondCoin={secondToken}
-                      secondCoinAmount={tx.data?.firstTokenAmount}
+                      secondCoinAmount={tx.data?.secondTokenAmount}
                       title={tx.type === 'addLiquidity' ? 'Add Liquidity' : 'Remove Liquidity'}
                       withText="and"
                       isFailed={!tx.confirmedTime}
