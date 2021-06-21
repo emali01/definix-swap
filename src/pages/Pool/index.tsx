@@ -41,10 +41,10 @@ const TimerWrapper = ({ isPhrase2, date, children }) => {
         tabIndex={0}
         role="button"
         style={{ opacity: 0.4, pointerEvents: 'none' }}
-        onClick={e => {
+        onClick={(e) => {
           e.preventDefault()
         }}
-        onKeyDown={e => {
+        onKeyDown={(e) => {
           e.preventDefault()
         }}
       >
@@ -70,18 +70,18 @@ export default function Pool() {
     const txs = Object.values(allTransactions)
     return txs
       .filter(isTransactionRecent)
-      .filter(t => t.type === 'addLiquidity' || t.type === 'removeLiquidity')
+      .filter((t) => t.type === 'addLiquidity' || t.type === 'removeLiquidity')
       .sort(newTransactionsFirst)
   }, [allTransactions])
 
   // fetch the user's balances of all tracked V2 LP tokens
   const trackedTokenPairs = useTrackedTokenPairs()
   const tokenPairsWithLiquidityTokens = useMemo(
-    () => trackedTokenPairs.map(tokens => ({ liquidityToken: toV2LiquidityToken(tokens), tokens })),
+    () => trackedTokenPairs.map((tokens) => ({ liquidityToken: toV2LiquidityToken(tokens), tokens })),
     [trackedTokenPairs]
   )
-  const liquidityTokens = useMemo(() => tokenPairsWithLiquidityTokens.map(tpwlt => tpwlt.liquidityToken), [
-    tokenPairsWithLiquidityTokens
+  const liquidityTokens = useMemo(() => tokenPairsWithLiquidityTokens.map((tpwlt) => tpwlt.liquidityToken), [
+    tokenPairsWithLiquidityTokens,
   ])
   const [v2PairsBalances, fetchingV2PairBalances] = useTokenBalancesWithLoadingIndicator(
     account ?? undefined,
@@ -114,7 +114,7 @@ export default function Pool() {
 
   const v2Pairs = usePairs(liquidityTokensWithBalances.map(({ tokens }) => tokens))
   const v2IsLoading =
-    fetchingV2PairBalances || v2Pairs?.length < liquidityTokensWithBalances.length || v2Pairs?.some(V2Pair => !V2Pair)
+    fetchingV2PairBalances || v2Pairs?.length < liquidityTokensWithBalances.length || v2Pairs?.some((V2Pair) => !V2Pair)
 
   const allV2PairsWithLiquidity = v2Pairs.map(([, pair]) => pair).filter((v2Pair): v2Pair is Pair => Boolean(v2Pair))
 
@@ -175,13 +175,16 @@ export default function Pool() {
 
               {!account ? (
                 <div className="py-6 flex flex-column align-center">
-                  <UserBlock
-                    account={account as string}
-                    login={(connectorId: ConnectorId) => {
-                      return activate(injected)
-                    }}
-                    logout={deactivate}
-                  />
+                  {isMobileOrTablet && (
+                    <UserBlock
+                      account={account as string}
+                      login={(connectorId: ConnectorId) => {
+                        return activate(injected)
+                      }}
+                      logout={deactivate}
+                    />
+                  )}
+
                   <Text color="textSubtle" textAlign="center" fontSize="16px" className="mt-2">
                     Connect to a wallet to view your liquidity.
                   </Text>
@@ -194,7 +197,7 @@ export default function Pool() {
                 </div>
               ) : allV2PairsWithLiquidity?.length > 0 ? (
                 <>
-                  {allV2PairsWithLiquidity.map(v2Pair => (
+                  {allV2PairsWithLiquidity.map((v2Pair) => (
                     <FullPositionCard key={v2Pair.liquidityToken.address} pair={v2Pair} />
                   ))}
                 </>
