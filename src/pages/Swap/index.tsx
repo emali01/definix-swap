@@ -627,7 +627,7 @@ export default function Swap({
                       secondCoin={secondToken}
                       secondCoinAmount={tx.data?.secondTokenAmount}
                       title="Swap"
-                      withText="and"
+                      withText="to"
                       isFailed={!tx.confirmedTime}
                       date={
                         tx.confirmedTime
