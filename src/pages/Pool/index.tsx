@@ -249,7 +249,7 @@ export default function Pool() {
                   const firstToken = Object.values(allTokens).find((t) => t.symbol === tx.data?.firstToken)
                   const secondToken = Object.values(allTokens).find((t) => t.symbol === tx.data?.secondToken)
                   return !!firstToken && !!secondToken
-                })..map((tx) => {
+                }).map((tx) => {
                   const firstToken = Object.values(allTokens).find((t) => t.symbol === tx.data?.firstToken)
                   const secondToken = Object.values(allTokens).find((t) => t.symbol === tx.data?.secondToken)
                   return (
