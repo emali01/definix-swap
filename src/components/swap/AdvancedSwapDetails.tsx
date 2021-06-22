@@ -27,7 +27,7 @@ function TradeSummary({
     <div className={className}>
       <RowBetween align="baseline">
         <RowFixed>
-          <Text fontSize="14px" color="textSubtle">
+          <Text fontSize="12px" color="textSubtle">
             {isExactIn ? 'Minimum received' : 'Maximum sold'}
           </Text>
           <QuestionHelper text="Your transaction will revert if there is a large, unfavorable price movement before it is confirmed." />
@@ -44,7 +44,7 @@ function TradeSummary({
 
       <RowBetween align="baseline">
         <RowFixed margin="0">
-          <Text fontSize="14px" color="textSubtle">
+          <Text fontSize="12px" color="textSubtle">
             Price Impact
           </Text>
           <QuestionHelper text="The difference between the market price and estimated price due to trade size." />
@@ -54,7 +54,7 @@ function TradeSummary({
 
       <RowBetween>
         <RowFixed marginBottom="0 !important">
-          <Text fontSize="14px" color="textSubtle">
+          <Text fontSize="12px" color="textSubtle">
             Liquidity Provider Fee
           </Text>
           <QuestionHelper

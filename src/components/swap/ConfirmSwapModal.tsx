@@ -102,7 +102,7 @@ export default function ConfirmSwapModal({
     () => (
       <TransactionSubmittedContent
         title="Swap Complete"
-        date="17 Apr 2021, 15:32"
+        date={`${new Date().toDateString()}, ${new Date().toTimeString().split(" ")[0]}`}
         chainId={chainId}
         hash={txHash}
         content={modalHeaderWithoutAction}
@@ -120,7 +120,7 @@ export default function ConfirmSwapModal({
     () => (
       <TransactionErrorContent
         title="Swap Failed"
-        date="17 Apr 2021, 15:32"
+        date={`${new Date().toDateString()}, ${new Date().toTimeString().split(" ")[0]}`}
         chainId={chainId}
         hash={txHash}
         content={modalHeaderWithoutAction}
