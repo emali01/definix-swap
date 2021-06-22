@@ -616,7 +616,11 @@ export default function Swap({
             </Heading>
             <Card style={{ overflow: 'auto', flexGrow: 1 }}>
               {sortedRecentTransactions.length > 0 ? (
-                sortedRecentTransactions.map((tx) => {
+                sortedRecentTransactions.filter((tx) => {
+                  const firstToken = Object.values(allTokens).find((t) => t.symbol === tx.data?.firstToken)
+                  const secondToken = Object.values(allTokens).find((t) => t.symbol === tx.data?.secondToken)
+                  return !!firstToken && !!secondToken
+                }).map((tx) => {
                   const firstToken = Object.values(allTokens).find((t) => t.symbol === tx.data?.firstToken)
                   const secondToken = Object.values(allTokens).find((t) => t.symbol === tx.data?.secondToken)
                   return (
