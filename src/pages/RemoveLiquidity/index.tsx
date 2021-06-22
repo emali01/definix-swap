@@ -446,7 +446,7 @@ export default function RemoveLiquidity({
     () => (
       <TransactionSubmittedContent
         title="Remove Liquidity Complete"
-        date="17 Apr 2021, 15:32"
+        date={`${new Date().toDateString()}, ${new Date().toTimeString().split(" ")[0]}`}
         chainId={chainId}
         hash={txHash}
         content={modalHeader}
@@ -470,7 +470,7 @@ export default function RemoveLiquidity({
     () => (
       <TransactionErrorContent
         title="Remove Liquidity Failed"
-        date="17 Apr 2021, 15:32"
+        date={`${new Date().toDateString()}, ${new Date().toTimeString().split(" ")[0]}`}
         chainId={chainId}
         hash={txHash}
         content={modalHeader}

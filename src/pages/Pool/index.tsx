@@ -238,8 +238,14 @@ export default function Pool() {
             <Card style={{ overflow: 'auto', flexGrow: 1 }}>
               {sortedRecentTransactions.length > 0 ? (
                 sortedRecentTransactions.map((tx) => {
-                  const firstToken = Object.values(allTokens).find((t) => t.symbol === tx.data?.firstToken)
-                  const secondToken = Object.values(allTokens).find((t) => t.symbol === tx.data?.secondToken)
+                  const firstToken =
+                    tx.data?.firstToken === 'KLAY'
+                      ? ETHER
+                      : Object.values(allTokens).find((t) => t.symbol === tx.data?.firstToken)
+                  const secondToken =
+                    tx.data?.secondToken === 'KLAY'
+                      ? ETHER
+                      : Object.values(allTokens).find((t) => t.symbol === tx.data?.secondToken)
                   return (
                     <TransactionHistoryBox
                       href={chainId ? getBscScanLink(chainId, tx.hash, 'transaction') : '/'}
