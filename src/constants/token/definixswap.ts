@@ -43,6 +43,14 @@ export default {
       logoURI: '/images/coins/USDT.png'
     },
     {
+      name: 'BTCB Token',
+      symbol: 'BTCB',
+      address: process.env.REACT_APP_BTCB_ADDRESS_TESTNET,
+      chainId: 97,
+      decimals: 18,
+      logoURI: '/images/coins/BTCB.png'
+    },
+    {
       name: 'FINIX Token',
       symbol: 'FINIX',
       address: process.env.REACT_APP_FINIX_ADDRESS_MAINNET,
@@ -73,6 +81,14 @@ export default {
       chainId: 56,
       decimals: 18,
       logoURI: '/images/coins/USDT.png'
+    },
+    {
+      name: 'BTCB Token',
+      symbol: 'BTCB',
+      address: process.env.REACT_APP_BTCB_ADDRESS_MAINNET,
+      chainId: 56,
+      decimals: 18,
+      logoURI: '/images/coins/BTCB.png'
     },
   ]
 }
