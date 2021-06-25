@@ -18,7 +18,7 @@ import SyrupWarningModal from 'components/SyrupWarningModal'
 import TokenWarningModal from 'components/TokenWarningModal'
 import TransactionHistoryBox from 'components/TransactionHistoryBox'
 import { INITIAL_ALLOWED_SLIPPAGE } from 'constants/index'
-import { ETHER, CurrencyAmount, JSBI, Token, Trade } from 'definixswap-sdk'
+import { ETHER, CurrencyAmount, JSBI, Trade, Token } from 'definixswap-sdk'
 import { useActiveWeb3React } from 'hooks'
 import { useCurrency, useAllTokens } from 'hooks/Tokens'
 import { ApprovalState, useApproveCallbackFromTrade } from 'hooks/useApproveCallback'
@@ -146,6 +146,7 @@ export default function Swap({
   }, [currentTime, phrase2TimeStamp])
 
   const { account, chainId = '' } = useActiveWeb3React()
+  const wklay = new Token(chainId || 0, WKLAY_ADDRESS[chainId || 0], 18, 'WKLAY', 'Wrapped KLAY')
   const theme = useContext(ThemeContext)
 
   const [isExpertMode] = useExpertModeManager()
@@ -629,12 +630,12 @@ export default function Swap({
               {sortedRecentTransactions.length > 0 ? (
                 sortedRecentTransactions.map((tx) => {
                   const firstToken =
-                    tx.data?.firstToken === 'KLAY'
-                      ? ETHER
+                    tx.data?.firstToken === 'KLAY' || tx.data?.firstToken === 'WKLAY'
+                      ? tx.data?.firstToken === 'WKLAY' ? wklay : ETHER
                       : Object.values(allTokens).find((t) => t.symbol === tx.data?.firstToken)
                   const secondToken =
-                    tx.data?.secondToken === 'KLAY'
-                      ? ETHER
+                    tx.data?.secondToken === 'KLAY' || tx.data?.secondToken === 'WKLAY'
+                      ? tx.data?.secondToken === 'WKLAY' ? wklay : ETHER
                       : Object.values(allTokens).find((t) => t.symbol === tx.data?.secondToken)
                   return (
                     <TransactionHistoryBox
