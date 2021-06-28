@@ -7,7 +7,7 @@ import TransactionHistoryBox from 'components/TransactionHistoryBox'
 import TranslatedText from 'components/TranslatedText'
 import { injected } from 'connectors'
 import { usePairs } from 'data/Reserves'
-import { Pair } from 'definixswap-sdk'
+import { ETHER, Pair, Token } from 'definixswap-sdk'
 import { useActiveWeb3React } from 'hooks'
 import React, { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
@@ -24,6 +24,7 @@ import { TransactionDetails } from 'state/transactions/reducer'
 import { getBscScanLink } from 'utils'
 import Flip from '../../uikit-dev/components/Flip'
 import AppBody from '../AppBody'
+import { WKLAY_ADDRESS } from '../../constants'
 
 const TimerWrapper = ({ isPhrase2, date, children }) => {
   return isPhrase2 ? (
@@ -64,6 +65,8 @@ export default function Pool() {
 
   const allTransactions = useAllTransactions()
   const allTokens = useAllTokens()
+  const wklay = new Token(chainId || 0, WKLAY_ADDRESS[chainId || 0], 18, 'WKLAY', 'Wrapped KLAY')
+
 
   // Logic taken from Web3Status/index.tsx line 175
   const sortedRecentTransactions = useMemo(() => {
@@ -238,8 +241,14 @@ export default function Pool() {
             <Card style={{ overflow: 'auto', flexGrow: 1 }}>
               {sortedRecentTransactions.length > 0 ? (
                 sortedRecentTransactions.map((tx) => {
-                  const firstToken = Object.values(allTokens).find((t) => t.symbol === tx.data?.firstToken)
-                  const secondToken = Object.values(allTokens).find((t) => t.symbol === tx.data?.secondToken)
+                  const firstToken =
+                    tx.data?.firstToken === 'KLAY' || tx.data?.firstToken === 'WKLAY'
+                      ? tx.data?.firstToken === 'WKLAY' ? wklay : ETHER
+                      : Object.values(allTokens).find((t) => t.symbol === tx.data?.firstToken)
+                  const secondToken =
+                    tx.data?.secondToken === 'KLAY' || tx.data?.secondToken === 'WKLAY'
+                      ? tx.data?.secondToken === 'WKLAY' ? wklay : ETHER
+                      : Object.values(allTokens).find((t) => t.symbol === tx.data?.secondToken)
                   return (
                     <TransactionHistoryBox
                       href={chainId ? getBscScanLink(chainId, tx.hash, 'transaction') : '/'}
