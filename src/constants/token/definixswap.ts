@@ -51,6 +51,14 @@ export default {
       logoURI: '/images/coins/BTCB.png'
     },
     {
+      name: 'ETHER Token',
+      symbol: 'ETHER',
+      address: process.env.REACT_APP_ETHER_ADDRESS_TESTNET,
+      chainId: 07,
+      decimals: 18,
+      logoURI: '/images/coins/ETHER.png'
+    },
+    {
       name: 'FINIX Token',
       symbol: 'FINIX',
       address: process.env.REACT_APP_FINIX_ADDRESS_MAINNET,
@@ -89,6 +97,14 @@ export default {
       chainId: 56,
       decimals: 18,
       logoURI: '/images/coins/BTCB.png'
+    },
+    {
+      name: 'ETHER Token',
+      symbol: 'ETHER',
+      address: process.env.REACT_APP_ETHER_ADDRESS_MAINNET,
+      chainId: 56,
+      decimals: 18,
+      logoURI: '/images/coins/ETHER.png'
     },
   ]
 }
