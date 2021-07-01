@@ -54,7 +54,7 @@ export default {
       name: 'ETH Token',
       symbol: 'ETH',
       address: process.env.REACT_APP_ETH_ADDRESS_TESTNET,
-      chainId: 07,
+      chainId: 97,
       decimals: 18,
       logoURI: '/images/coins/ETH.png'
     },
