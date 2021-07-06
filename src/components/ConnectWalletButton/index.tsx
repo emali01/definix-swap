@@ -1,15 +1,26 @@
 import React from 'react'
 import { useCaverJsReact } from 'caverjs-react-core'
 import { Button, ButtonProps, ConnectorId, useWalletModal } from 'uikit-dev'
-import { injected } from 'connectors'
+import { injected, klip } from 'connectors'
+import { KlipModalContext } from "klaytn-use-wallet"
 import useI18n from 'hooks/useI18n'
 
 const UnlockButton: React.FC<ButtonProps> = props => {
+  const { setShowModal, showModal } = React.useContext(KlipModalContext())
   const TranslateString = useI18n()
   const { account, activate, deactivate } = useCaverJsReact()
-
+  const showModalKlip = () => {
+    setShowModal(true)
+  }
+  const closeModalKlip = () => {
+    setShowModal(false)
+  }
   const handleLogin = (connectorId: ConnectorId) => {
-    return activate(injected)
+    if (connectorId === "klip") {   
+      return activate(klip(showModalKlip, closeModalKlip))
+    } 
+      return activate(injected)
+    
   }
 
   const { onPresentConnectModal } = useWalletModal(handleLogin, deactivate, account as string)

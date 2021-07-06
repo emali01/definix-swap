@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 import ReactGA from 'react-ga';
 import TagManager from 'react-gtm-module';
 import { ResetCSS } from 'uikit-dev'
+import { KlipModalProvider } from "klaytn-use-wallet"
 import GlobalStyle from './style/Global'
 import App from './pages/App'
 import ApplicationUpdater from './state/application/updater'
@@ -31,11 +32,12 @@ if ('klaytn' in window) {
 }
 
 window.addEventListener('error', () => {
-   localStorage?.removeItem('redux_localstorage_simple_lists')
+  localStorage?.removeItem('redux_localstorage_simple_lists')
 })
 
 ReactDOM.render(
   <StrictMode>
+    <KlipModalProvider>
     <Providers>
       <>
         <ListsUpdater />
@@ -47,6 +49,7 @@ ReactDOM.render(
       <GlobalStyle />
       <App />
     </Providers>
+    </KlipModalProvider>
   </StrictMode>,
   document.getElementById('root')
 )

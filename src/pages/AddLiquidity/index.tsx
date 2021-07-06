@@ -9,7 +9,10 @@ import CurrencyInputPanel from 'components/CurrencyInputPanel'
 import DoubleCurrencyLogo from 'components/DoubleLogo'
 import { AddRemoveTabs } from 'components/NavigationTabs'
 import { MinimalPositionCard } from 'components/PositionCard'
+import { KlipModalContext } from 'klaytn-use-wallet'
+import { useCaverJsReact } from 'caverjs-react-core'
 import { RowBetween, RowFixed } from 'components/Row'
+import { KlipConnector } from "@kanthakran/klip-connr"
 import { Dots } from 'components/swap/styleds'
 import TransactionConfirmationModal, {
   ConfirmationModalContent,
@@ -22,8 +25,9 @@ import { Currency, currencyEquals, ETHER, TokenAmount, WETH } from 'definixswap-
 import { useActiveWeb3React } from 'hooks'
 import { useCurrency } from 'hooks/Tokens'
 import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useState,useContext } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
+
 import { Field } from 'state/mint/actions'
 import { useDerivedMintInfo, useMintActionHandlers, useMintState } from 'state/mint/hooks'
 import { useTransactionAdder } from 'state/transactions/hooks'
@@ -42,6 +46,8 @@ import { ConfirmAddModalBottom } from './ConfirmAddModalBottom'
 import { PoolPriceBar } from './PoolPriceBar'
 import farms from '../../constants/farm'
 import { useHerodotusContract } from '../../hooks/useContract'
+import * as klipProvider from '../../hooks/KlipProvider'
+import { getAbiByName } from '../../hooks/HookHelper'
 
 export default function AddLiquidity({
   match: {
@@ -50,15 +56,18 @@ export default function AddLiquidity({
   history
 }: RouteComponentProps<{ currencyIdA?: string; currencyIdB?: string }>) {
   const { account, chainId, library } = useActiveWeb3React()
+  const { connector } = useCaverJsReact()
+  const { setShowModal } = useContext(KlipModalContext())
   const currencyA = useCurrency(currencyIdA)
   const currencyB = useCurrency(currencyIdB)
+  
   const herodotusContract = useHerodotusContract()
   const herodotusAddress = HERODOTUS_ADDRESS[chainId || '']
 
   const oneCurrencyIsWETH = Boolean(
     chainId &&
-      ((currencyA && currencyEquals(currencyA, WETH[chainId])) ||
-        (currencyB && currencyEquals(currencyB, WETH[chainId])))
+    ((currencyA && currencyEquals(currencyA, WETH[chainId])) ||
+      (currencyB && currencyEquals(currencyB, WETH[chainId])))
   )
   const expertMode = useIsExpertMode()
 
@@ -145,10 +154,12 @@ export default function AddLiquidity({
     let method: (...args: any) => Promise<TransactionResponse>
     let args: Array<string | string[] | number>
     let value: BigNumber | null
+    let methodName: string
     if (currencyA === ETHER || currencyB === ETHER) {
       const tokenBIsETH = currencyB === ETHER
       estimate = router.estimateGas.addLiquidityETH
       method = router.addLiquidityETH
+      methodName = "addLiquidityETH"
       args = [
         wrappedCurrency(tokenBIsETH ? currencyA : currencyB, chainId)?.address ?? '', // token
         (tokenBIsETH ? parsedAmountA : parsedAmountB).raw.toString(), // token desired
@@ -161,6 +172,7 @@ export default function AddLiquidity({
     } else {
       estimate = router.estimateGas.addLiquidity
       method = router.addLiquidity
+      methodName = "addLiquidity"
       args = [
         wrappedCurrency(currencyA, chainId)?.address ?? '',
         wrappedCurrency(currencyB, chainId)?.address ?? '',
@@ -176,39 +188,56 @@ export default function AddLiquidity({
 
     setAttemptingTxn(true)
     // const aa = await estimate(...args, value ? { value } : {})
-    await estimate(...args, value ? { value } : {})
-      .then(estimatedGasLimit =>
-        method(...args, {
-          ...(value ? { value } : {}),
-          gasLimit: calculateGasMargin(estimatedGasLimit)
-        }).then(response => {
+
+    console.log("value ",value)
+    if (isKlipConnector(connector)) {
+      // klipProvider.genQRcodeContactInteract(router.address,JSON.stringify(method))
+      setShowModal(true)
+      klipProvider.genQRcodeContactInteract(
+        router.address,
+        JSON.stringify(getAbiByName(methodName)),
+        JSON.stringify(args),
+        value ? `${(+value._hex).toString()}` : "0"
+      )
+      setTxHash(await klipProvider.checkResponse())
+      
+      setShowModal(false)
+      // console.log("add lp method", JSON.stringify(args), "getAbiByName(methodName)", getAbiByName(methodName))
+      
+    } else {
+      await estimate(...args, value ? { value } : {})
+        .then(estimatedGasLimit =>
+          method(...args, {
+            ...(value ? { value } : {}),
+            gasLimit: calculateGasMargin(estimatedGasLimit)
+          }).then(response => {
+            setAttemptingTxn(false)
+
+            addTransaction(response, {
+              type: 'addLiquidity',
+              data: {
+                firstToken: currencies[Field.CURRENCY_A]?.symbol,
+                firstTokenAmount: parsedAmounts[Field.CURRENCY_A]?.toSignificant(3),
+                secondToken: currencies[Field.CURRENCY_B]?.symbol,
+                secondTokenAmount: parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)
+              },
+              summary: `Add ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${currencies[Field.CURRENCY_A]?.symbol
+                } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencies[Field.CURRENCY_B]?.symbol}`
+            })
+
+            setTxHash(response.hash)
+          })
+        )
+        .catch(e => {
           setAttemptingTxn(false)
 
-          addTransaction(response, {
-            type: 'addLiquidity',
-            data: {
-              firstToken: currencies[Field.CURRENCY_A]?.symbol,
-              firstTokenAmount: parsedAmounts[Field.CURRENCY_A]?.toSignificant(3),
-              secondToken: currencies[Field.CURRENCY_B]?.symbol,
-              secondTokenAmount: parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)
-            },
-            summary: `Add ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${
-              currencies[Field.CURRENCY_A]?.symbol
-            } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencies[Field.CURRENCY_B]?.symbol}`
-          })
-
-          setTxHash(response.hash)
+          // we only care if the error is something _other_ than the user rejected the tx
+          if (e?.code !== 4001) {
+            console.error(e)
+            setErrorMsg(e)
+          }
         })
-      )
-      .catch(e => {
-        setAttemptingTxn(false)
-
-        // we only care if the error is something _other_ than the user rejected the tx
-        if (e?.code !== 4001) {
-          console.error(e)
-          setErrorMsg(e)
-        }
-      })
+    }// else 
   }
 
   const modalHeader = useCallback(() => {
@@ -596,3 +625,5 @@ export default function AddLiquidity({
     </>
   )
 }
+
+const isKlipConnector = (connector) => connector instanceof KlipConnector

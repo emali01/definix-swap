@@ -13,6 +13,11 @@ const connectors: Config[] = [
     icon: Dcent,
     connectorId: 'injected',
   },
+  {
+    title: 'Klip',
+    icon: Dcent,
+    connectorId: "klip"
+  }
 ]
 
 export default connectors

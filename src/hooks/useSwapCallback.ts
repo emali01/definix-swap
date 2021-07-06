@@ -1,15 +1,20 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
 import { JSBI, Percent, Router, SwapParameters, Trade, TradeType } from 'definixswap-sdk'
-import { useMemo } from 'react'
-import { BIPS_BASE, DEFAULT_DEADLINE_FROM_NOW, INITIAL_ALLOWED_SLIPPAGE } from '../constants'
+import { useMemo, useContext } from 'react'
+import { KlipModalContext } from "klaytn-use-wallet"
+import { KlipConnector } from "@kanthakran/klip-connr"
+import { useCaverJsReact } from 'caverjs-react-core'
+import { BIPS_BASE, DEFAULT_DEADLINE_FROM_NOW, INITIAL_ALLOWED_SLIPPAGE, ROUTER_ADDRESS } from '../constants'
 import { useTransactionAdder } from '../state/transactions/hooks'
 import { calculateGasMargin, getRouterContract, isAddress, shortenAddress } from '../utils'
 import isZero from '../utils/isZero'
 import { useActiveWeb3React } from './index'
 import useENS from './useENS'
+import { getAbiByName } from './HookHelper'
+import * as klipProvider from './KlipProvider'
 
- enum SwapCallbackState {
+enum SwapCallbackState {
   INVALID,
   LOADING,
   VALID,
@@ -95,9 +100,9 @@ export function useSwapCallback(
   recipientAddressOrName: string | null // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
 ): { state: SwapCallbackState; callback: null | (() => Promise<string>); error: string | null } {
   const { account, chainId, library } = useActiveWeb3React()
-
+  const { connector } = useCaverJsReact()
   const swapCalls = useSwapCallArguments(trade, allowedSlippage, deadline, recipientAddressOrName)
-
+  const { setShowModal } = useContext(KlipModalContext())
   const addTransaction = useTransactionAdder()
 
   const { address: recipientAddress } = useENS(recipientAddressOrName)
@@ -118,13 +123,35 @@ export function useSwapCallback(
       state: SwapCallbackState.VALID,
       callback: async function onSwap(): Promise<string> {
         const estimatedCalls: EstimatedSwapCall[] = await Promise.all(
-          swapCalls.map((call) => {
+          await swapCalls.map(async (call) => {
             const {
               parameters: { methodName, args, value },
               contract,
             } = call
             const options = !value || isZero(value) ? {} : { value }
+            // if
 
+            console.log(methodName, " options:", options)
+            if (isKlipConnector(connector)) {
+              // return "string"
+              // methodName
+              console.log(methodName, " call:", contract[methodName])
+              const abi = JSON.stringify(getAbiByName(methodName))
+              const input = JSON.stringify(convertArgKlip(args, abi))
+              if (ROUTER_ADDRESS) {
+                setShowModal(true)
+                klipProvider.genQRcodeContactInteract(ROUTER_ADDRESS, abi, input,options.value ? (+options.value).toString() : "0")
+                await klipProvider.checkResponse()
+
+                setShowModal(false)
+
+              }
+              return {
+                call,
+                gasEstimate:BigNumber.from(0)
+              }
+            }
+            // else {
             return contract.estimateGas[methodName](...args, options)
               .then((gasEstimate) => {
                 return {
@@ -155,6 +182,7 @@ export function useSwapCallback(
                     return { call, error: new Error(errorMessage) }
                   })
               })
+            // }
           })
         )
 
@@ -192,11 +220,10 @@ export function useSwapCallback(
             const withRecipient =
               recipient === account
                 ? base
-                : `${base} to ${
-                    recipientAddressOrName && isAddress(recipientAddressOrName)
-                      ? shortenAddress(recipientAddressOrName)
-                      : recipientAddressOrName
-                  }`
+                : `${base} to ${recipientAddressOrName && isAddress(recipientAddressOrName)
+                  ? shortenAddress(recipientAddressOrName)
+                  : recipientAddressOrName
+                }`
 
             addTransaction(response, {
               type: 'swap',
@@ -221,10 +248,45 @@ export function useSwapCallback(
               throw new Error(`Swap failed: ${error.message}`)
             }
           })
-      },
+      }
+      ,
       error: null,
     }
-  }, [trade, library, account, chainId, recipient, recipientAddressOrName, swapCalls, addTransaction])
+  }, [trade, library, account, connector, chainId, recipient, recipientAddressOrName, swapCalls, addTransaction, setShowModal])
 }
 
 export default useSwapCallback
+
+const isKlipConnector = (connector) => connector instanceof KlipConnector
+const convertArgKlip = (args: (string[] | string)[], abi) => {
+  console.log("in fn", args.length)
+  const argToString: (string[] | string)[] = []
+  const abiArr = JSON.parse(abi)
+  try {
+
+
+    for (let i = 0; i < args.length; i++) {
+      const element = args[i]
+
+      console.log("abiabi ", abiArr)
+      const abiType = abiArr.inputs[i].type
+      console.log("in array ", (element), abiType)
+
+      console.log(element, "abi.input[i].type :", abiType, " f ", abiType === "uint256")
+      if (abiType === "uint256") {
+        console.log(abiType, "fk", (+element).toString())
+        argToString.push((+element).toString())
+      }
+      else {
+        argToString.push(element)
+      }
+
+    }
+    console.log("argToString", argToString)
+    return argToString
+  } catch (error) {
+    console.log("ee,", error)
+    throw new Error(error)
+  }
+
+}

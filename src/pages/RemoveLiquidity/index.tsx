@@ -9,6 +9,9 @@ import TransactionConfirmationModal, {
   TransactionErrorContent,
   TransactionSubmittedContent
 } from 'components/TransactionConfirmationModal'
+import { KlipModalContext } from 'klaytn-use-wallet'
+import { useCaverJsReact } from 'caverjs-react-core'
+import { KlipConnector } from "@kanthakran/klip-connr"
 import { Currency, currencyEquals, ETHER, Percent, WETH } from 'definixswap-sdk'
 import React, { useCallback, useContext, useMemo, useState } from 'react'
 import { ArrowDown, Plus } from 'react-feather'
@@ -41,6 +44,8 @@ import useDebouncedChangeHandler from '../../utils/useDebouncedChangeHandler'
 import { wrappedCurrency } from '../../utils/wrappedCurrency'
 import AppBody from '../AppBody'
 import { ClickableText, Wrapper } from '../Pool/styleds'
+import * as klipProvider from '../../hooks/KlipProvider'
+import { getAbiByName } from '../../hooks/HookHelper'
 
 export default function RemoveLiquidity({
   history,
@@ -57,6 +62,8 @@ export default function RemoveLiquidity({
   ])
 
   const theme = useContext(ThemeContext)
+  const { connector } = useCaverJsReact()
+  const { setShowModal } = useContext(KlipModalContext())
 
   // burn state
   const { independentField, typedValue } = useBurnState()
@@ -79,8 +86,8 @@ export default function RemoveLiquidity({
     [Field.LIQUIDITY_PERCENT]: parsedAmounts[Field.LIQUIDITY_PERCENT].equalTo('0')
       ? '0'
       : parsedAmounts[Field.LIQUIDITY_PERCENT].lessThan(new Percent('1', '100'))
-      ? '<1'
-      : parsedAmounts[Field.LIQUIDITY_PERCENT].toFixed(0),
+        ? '<1'
+        : parsedAmounts[Field.LIQUIDITY_PERCENT].toFixed(0),
     [Field.LIQUIDITY]:
       independentField === Field.LIQUIDITY ? typedValue : parsedAmounts[Field.LIQUIDITY]?.toSignificant(6) ?? '',
     [Field.CURRENCY_A]:
@@ -290,33 +297,47 @@ export default function RemoveLiquidity({
       const safeGasEstimate = safeGasEstimates[indexOfSuccessfulEstimation]
 
       setAttemptingTxn(true)
-      await router[methodName](...args, {
-        gasLimit: safeGasEstimate
-      })
-        .then((response: TransactionResponse) => {
-          setAttemptingTxn(false)
 
-          addTransaction(response, {
-            type: 'removeLiquidity',
-            data: {
-              firstToken: currencyA?.symbol,
-              firstTokenAmount: parsedAmounts[Field.CURRENCY_A]?.toSignificant(3),
-              secondToken: currencyB?.symbol,
-              secondTokenAmount: parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)
-            },
-            summary: `Remove ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${
-              currencyA?.symbol
-            } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencyB?.symbol}`
+
+      if (isKlipConnector(connector)) {
+        setShowModal(true)
+        klipProvider.genQRcodeContactInteract(
+          router.address,
+          JSON.stringify(getAbiByName(methodName)),
+          JSON.stringify(args),
+          "0"
+        )
+        setTxHash(await klipProvider.checkResponse())
+
+        setShowModal(false)
+      } else {
+        await router[methodName](...args, {
+          gasLimit: safeGasEstimate
+        })
+          .then((response: TransactionResponse) => {
+            setAttemptingTxn(false)
+
+            addTransaction(response, {
+              type: 'removeLiquidity',
+              data: {
+                firstToken: currencyA?.symbol,
+                firstTokenAmount: parsedAmounts[Field.CURRENCY_A]?.toSignificant(3),
+                secondToken: currencyB?.symbol,
+                secondTokenAmount: parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)
+              },
+              summary: `Remove ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${currencyA?.symbol
+                } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencyB?.symbol}`
+            })
+
+            setTxHash(response.hash)
           })
-
-          setTxHash(response.hash)
-        })
-        .catch((e: Error) => {
-          setAttemptingTxn(false)
-          setErrorMsg(e.message)
-          // we only care if the error is something _other_ than the user rejected the tx
-          console.error(e)
-        })
+          .catch((e: Error) => {
+            setAttemptingTxn(false)
+            setErrorMsg(e.message)
+            // we only care if the error is something _other_ than the user rejected the tx
+            console.error(e)
+          })
+      }
     }
   }
 
@@ -349,9 +370,8 @@ export default function RemoveLiquidity({
           </AutoColumn>
 
           <Text small color="textSubtle" textAlign="left" padding="12px 0 0 0" style={{ fontStyle: 'italic' }}>
-            {`Output is estimated. If the price changes by more than ${
-              allowedSlippage / 100
-            }% your transaction will revert.`}
+            {`Output is estimated. If the price changes by more than ${allowedSlippage / 100
+              }% your transaction will revert.`}
           </Text>
         </AutoColumn>
       </div>
@@ -406,8 +426,8 @@ export default function RemoveLiquidity({
   const oneCurrencyIsETH = currencyA === ETHER || currencyB === ETHER
   const oneCurrencyIsWETH = Boolean(
     chainId &&
-      ((currencyA && currencyEquals(WETH[chainId], currencyA)) ||
-        (currencyB && currencyEquals(WETH[chainId], currencyB)))
+    ((currencyA && currencyEquals(WETH[chainId], currencyA)) ||
+      (currencyB && currencyEquals(WETH[chainId], currencyB)))
   )
 
   const handleSelectCurrencyA = useCallback(
@@ -590,17 +610,15 @@ export default function RemoveLiquidity({
                             <RowBetween style={{ justifyContent: 'flex-end' }}>
                               {oneCurrencyIsETH ? (
                                 <StyledInternalLink
-                                  to={`/remove/${currencyA === ETHER ? WETH[chainId].address : currencyIdA}/${
-                                    currencyB === ETHER ? WETH[chainId].address : currencyIdB
-                                  }`}
+                                  to={`/remove/${currencyA === ETHER ? WETH[chainId].address : currencyIdA}/${currencyB === ETHER ? WETH[chainId].address : currencyIdB
+                                    }`}
                                 >
                                   Receive WBNB
                                 </StyledInternalLink>
                               ) : oneCurrencyIsWETH ? (
                                 <StyledInternalLink
-                                  to={`/remove/${
-                                    currencyA && currencyEquals(currencyA, WETH[chainId]) ? 'KLAY' : currencyIdA
-                                  }/${currencyB && currencyEquals(currencyB, WETH[chainId]) ? 'KLAY' : currencyIdB}`}
+                                  to={`/remove/${currencyA && currencyEquals(currencyA, WETH[chainId]) ? 'KLAY' : currencyIdA
+                                    }/${currencyB && currencyEquals(currencyB, WETH[chainId]) ? 'KLAY' : currencyIdB}`}
                                 >
                                   Receive BNB
                                 </StyledInternalLink>
@@ -758,3 +776,4 @@ export default function RemoveLiquidity({
     </>
   )
 }
+const isKlipConnector = (connector) => connector instanceof KlipConnector
