@@ -1,15 +1,14 @@
-import { TransactionResponse } from '@ethersproject/providers'
 import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { useActiveWeb3React } from '../../hooks'
 import { AppDispatch, AppState } from '../index'
-import { addTransaction } from './actions'
+import { addTransaction, KlaytnTransactionResponse } from './actions'
 import { TransactionDetails } from './reducer'
 
 // helper that can take a ethers library transaction response and add it to the list of transactions
 export function useTransactionAdder(): (
-  response: TransactionResponse,
+  response: KlaytnTransactionResponse,
   customData?: {
     type?: string
     data?: { firstToken?: string; firstTokenAmount?: string; secondToken?: string; secondTokenAmount?: string }
@@ -22,7 +21,7 @@ export function useTransactionAdder(): (
 
   return useCallback(
     (
-      response: TransactionResponse,
+      response: KlaytnTransactionResponse,
       {
         type,
         data,
@@ -38,11 +37,11 @@ export function useTransactionAdder(): (
       if (!account) return
       if (!chainId) return
 
-      const { hash } = response
-      if (!hash) {
+      const { hash, transactionHash } = response
+      if (!hash && !transactionHash) {
         throw Error('No transaction hash found.')
       }
-      dispatch(addTransaction({ type, data, hash, from: account, chainId, approval, summary }))
+      dispatch(addTransaction({ type, data, hash: transactionHash, from: account, chainId, approval, summary }))
     },
     [dispatch, chainId, account]
   )

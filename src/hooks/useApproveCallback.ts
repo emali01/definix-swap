@@ -1,15 +1,24 @@
+import Caver from 'caver-js'
+import { ethers } from 'ethers'
 import { MaxUint256 } from '@ethersproject/constants'
-import { TransactionResponse } from '@ethersproject/providers'
 import { Trade, TokenAmount, CurrencyAmount, ETHER } from 'definixswap-sdk'
 import { useCallback, useMemo } from 'react'
 import { ROUTER_ADDRESS } from '../constants'
 import { useTokenAllowance } from '../data/Allowances'
 import { Field } from '../state/swap/actions'
+import { KlaytnTransactionResponse } from '../state/transactions/actions'
 import { useTransactionAdder, useHasPendingApproval } from '../state/transactions/hooks'
 import { computeSlippageAdjustedAmounts } from '../utils/prices'
-import { calculateGasMargin } from '../utils'
 import { useTokenContract } from './useContract'
 import { useActiveWeb3React } from './index'
+import ERC20_ABI from '../constants/abis/erc20.json'
+import { calculateGasMargin  } from '../utils'
+
+const caverFeeDelegate = new Caver(process.env.REACT_APP_SIX_KLAYTN_EN_URL)
+const feePayerAddress = process.env.REACT_APP_FEE_PAYER_ADDRESS
+
+// @ts-ignore
+const caver = new Caver(window.caver)
 
 export enum ApprovalState {
   UNKNOWN,
@@ -78,22 +87,58 @@ export function useApproveCallback(
       return tokenContract.estimateGas.approve(spender, amountToApprove.raw.toString())
     })
 
+    const iface = new ethers.utils.Interface(ERC20_ABI)
+    // const data = iface.encodeFunctionData("approve", [spender, useExact ? amountToApprove.raw.toString() : MaxUint256])
+
     // eslint-disable-next-line consistent-return
-    return tokenContract
-      .approve(spender, useExact ? amountToApprove.raw.toString() : MaxUint256, {
-        gasLimit: calculateGasMargin(estimatedGas),
-      })
-      .then((response: TransactionResponse) => {
-        addTransaction(response, {
-          summary: `Approve ${amountToApprove.currency.symbol}`,
-          approval: { tokenAddress: token.address, spender },
+    return caver.klay
+    .signTransaction({
+      type: 'FEE_DELEGATED_SMART_CONTRACT_EXECUTION',
+      from: account,
+      to: token?.address,
+      gas: calculateGasMargin(estimatedGas),
+      data: iface.encodeFunctionData("approve", [spender, useExact ? amountToApprove.raw.toString() : MaxUint256]),
+    })
+    .then(function (userSignTx) {
+      console.log('userSignTx tx = ', userSignTx)
+      const userSigned = caver.transaction.decode(userSignTx.rawTransaction)
+      console.log('userSigned tx = ', userSigned)
+      userSigned.feePayer = feePayerAddress
+      console.log('userSigned After add feePayer tx = ', userSigned)
+
+      return caverFeeDelegate.rpc.klay.signTransactionAsFeePayer(userSigned).then(function (feePayerSigningResult) {
+        console.log('feePayerSigningResult tx = ', feePayerSigningResult)
+        return caver.rpc.klay.sendRawTransaction(feePayerSigningResult.raw).then((tx: KlaytnTransactionResponse) => {
+          console.log('approve tx = ', tx)
+          addTransaction(tx, {
+            summary: `Approve ${amountToApprove.currency.symbol}`,
+            approval: { tokenAddress: token.address, spender },
+          })
+        }).catch((error: Error) => {
+          console.error('Failed to approve token', error)
+          throw error
         })
       })
-      .catch((error: Error) => {
-        console.error('Failed to approve token', error)
-        throw error
-      })
-  }, [approvalState, token, tokenContract, amountToApprove, spender, addTransaction])
+    })
+    .catch(function (tx) {
+      console.log('approve error tx = ', tx)
+      return tx.transactionHash
+    })
+    // return tokenContract
+    //   .approve(spender, useExact ? amountToApprove.raw.toString() : MaxUint256, {
+    //     gasLimit: calculateGasMargin(estimatedGas),
+    //   })
+    //   .then((response: TransactionResponse) => {
+    //     addTransaction(response, {
+    //       summary: `Approve ${amountToApprove.currency.symbol}`,
+    //       approval: { tokenAddress: token.address, spender },
+    //     })
+    //   })
+    //   .catch((error: Error) => {
+    //     console.error('Failed to approve token', error)
+    //     throw error
+    //   })
+  }, [approvalState, token, account, tokenContract, amountToApprove, spender, addTransaction])
 
   return [approvalState, approve]
 }

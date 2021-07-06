@@ -11,7 +11,6 @@ import WETH_ABI from '../constants/abis/weth.json'
 import HERODOTUS_ABI from '../constants/abis/herodotus.json'
 import { MULTICALL_ABI, MULTICALL_NETWORKS } from '../constants/multicall'
 import { getContract } from '../utils'
-import { getCaverContract } from '../utils/caver'
 import { useActiveWeb3React } from './index'
 
 // returns null on errors
@@ -21,7 +20,6 @@ function useContract(address: string | undefined, ABI: any, withSignerIfPossible
   return useMemo(() => {
     if (!address || !ABI || !library) return null
     try {
-      // return getCaverContract(address, ABI)
       return getContract(address, ABI, library, withSignerIfPossible && account ? account : undefined)
     } catch (error) {
       console.error('Failed to get contract', error)

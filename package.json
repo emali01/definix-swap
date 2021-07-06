@@ -33,7 +33,7 @@
     "@web3-react/walletconnect-connector": "^6.1.4",
     "@web3-react/walletlink-connector": "^6.1.1",
     "ajv": "^6.12.3",
-    "caver-js": "^1.6.1",
+    "caver-js": "1.6.3-rc.4",
     "caverjs-react-abstract-connector": "^1.0.0",
     "caverjs-react-core": "^1.0.0",
     "caverjs-react-injected-connector": "^1.0.1",

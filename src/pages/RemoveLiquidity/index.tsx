@@ -1,7 +1,9 @@
+import Caver from 'caver-js'
+import { ethers } from 'ethers'
 import { BigNumber } from '@ethersproject/bignumber'
 import { splitSignature } from '@ethersproject/bytes'
 import { Contract } from '@ethersproject/contracts'
-import { TransactionResponse } from '@ethersproject/providers'
+import { abi as IUniswapV2Router02ABI } from '@uniswap/v2-periphery/build/IUniswapV2Router02.json'
 import { BorderCard } from 'components/Card'
 import ConnectWalletButton from 'components/ConnectWalletButton'
 import TransactionConfirmationModal, {
@@ -34,6 +36,7 @@ import { usePairContract } from '../../hooks/useContract'
 import { Field } from '../../state/burn/actions'
 import { useBurnActionHandlers, useBurnState, useDerivedBurnInfo } from '../../state/burn/hooks'
 import { useTransactionAdder } from '../../state/transactions/hooks'
+import { KlaytnTransactionResponse } from '../../state/transactions/actions'
 import { useUserDeadline, useUserSlippageTolerance } from '../../state/user/hooks'
 import { calculateGasMargin, calculateSlippageAmount, getRouterContract } from '../../utils'
 import { currencyId } from '../../utils/currencyId'
@@ -41,6 +44,12 @@ import useDebouncedChangeHandler from '../../utils/useDebouncedChangeHandler'
 import { wrappedCurrency } from '../../utils/wrappedCurrency'
 import AppBody from '../AppBody'
 import { ClickableText, Wrapper } from '../Pool/styleds'
+
+const caverFeeDelegate = new Caver(process.env.REACT_APP_SIX_KLAYTN_EN_URL)
+const feePayerAddress = process.env.REACT_APP_FEE_PAYER_ADDRESS
+
+// @ts-ignore
+const caver = new Caver(window.caver)
 
 export default function RemoveLiquidity({
   history,
@@ -290,33 +299,85 @@ export default function RemoveLiquidity({
       const safeGasEstimate = safeGasEstimates[indexOfSuccessfulEstimation]
 
       setAttemptingTxn(true)
-      await router[methodName](...args, {
-        gasLimit: safeGasEstimate
+
+      const iface = new ethers.utils.Interface(IUniswapV2Router02ABI)
+
+      await caver.klay.signTransaction({
+        type: 'FEE_DELEGATED_SMART_CONTRACT_EXECUTION',
+        from: account,
+        to: ROUTER_ADDRESS,
+        gas: safeGasEstimate,
+        data: iface.encodeFunctionData(methodName, [...args]),
       })
-        .then((response: TransactionResponse) => {
-          setAttemptingTxn(false)
+        .then(function (userSignTx) {
+          console.log('userSignTx tx = ', userSignTx)
+          const userSigned = caver.transaction.decode(userSignTx.rawTransaction)
+          console.log('userSigned tx = ', userSigned)
+          userSigned.feePayer = feePayerAddress
+          console.log('userSigned After add feePayer tx = ', userSigned)
 
-          addTransaction(response, {
-            type: 'removeLiquidity',
-            data: {
-              firstToken: currencyA?.symbol,
-              firstTokenAmount: parsedAmounts[Field.CURRENCY_A]?.toSignificant(3),
-              secondToken: currencyB?.symbol,
-              secondTokenAmount: parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)
-            },
-            summary: `Remove ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${
-              currencyA?.symbol
-            } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencyB?.symbol}`
+          caverFeeDelegate.rpc.klay.signTransactionAsFeePayer(userSigned).then(function (feePayerSigningResult) {
+            console.log('feePayerSigningResult tx = ', feePayerSigningResult)
+            caver.rpc.klay.sendRawTransaction(feePayerSigningResult.raw).then((response: KlaytnTransactionResponse) => {
+              console.log(methodName, ' tx = ', response)
+              setAttemptingTxn(false)
+
+              addTransaction(response, {
+                type: 'removeLiquidity',
+                data: {
+                  firstToken: currencyA?.symbol,
+                  firstTokenAmount: parsedAmounts[Field.CURRENCY_A]?.toSignificant(3),
+                  secondToken: currencyB?.symbol,
+                  secondTokenAmount: parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)
+                },
+                summary: `Remove ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${
+                  currencyA?.symbol
+                } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencyB?.symbol}`
+              })
+
+              setTxHash(response.transactionHash)
+            }).catch(e => {
+              setAttemptingTxn(false)
+              setErrorMsg(e.message)
+              // we only care if the error is something _other_ than the user rejected the tx
+              console.error(e)
+            })
           })
-
-          setTxHash(response.hash)
         })
-        .catch((e: Error) => {
+        .catch(e => {
           setAttemptingTxn(false)
           setErrorMsg(e.message)
           // we only care if the error is something _other_ than the user rejected the tx
           console.error(e)
         })
+
+      // await router[methodName](...args, {
+      //   gasLimit: safeGasEstimate
+      // })
+      //   .then((response: KlaytnTransactionResponse) => {
+      //     setAttemptingTxn(false)
+
+      //     addTransaction(response, {
+      //       type: 'removeLiquidity',
+      //       data: {
+      //         firstToken: currencyA?.symbol,
+      //         firstTokenAmount: parsedAmounts[Field.CURRENCY_A]?.toSignificant(3),
+      //         secondToken: currencyB?.symbol,
+      //         secondTokenAmount: parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)
+      //       },
+      //       summary: `Remove ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${
+      //         currencyA?.symbol
+      //       } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencyB?.symbol}`
+      //     })
+
+      //     setTxHash(response.hash)
+      //   })
+      //   .catch((e: Error) => {
+      //     setAttemptingTxn(false)
+      //     setErrorMsg(e.message)
+      //     // we only care if the error is something _other_ than the user rejected the tx
+      //     console.error(e)
+      //   })
     }
   }
 

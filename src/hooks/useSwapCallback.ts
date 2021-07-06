@@ -1,13 +1,23 @@
+import Caver from 'caver-js'
+import { ethers } from 'ethers'
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
+import { abi as IUniswapV2Router02ABI } from '@uniswap/v2-periphery/build/IUniswapV2Router02.json'
 import { JSBI, Percent, Router, SwapParameters, Trade, TradeType } from 'definixswap-sdk'
 import { useMemo } from 'react'
-import { BIPS_BASE, DEFAULT_DEADLINE_FROM_NOW, INITIAL_ALLOWED_SLIPPAGE } from '../constants'
+import { BIPS_BASE, DEFAULT_DEADLINE_FROM_NOW, INITIAL_ALLOWED_SLIPPAGE, ROUTER_ADDRESS } from '../constants'
 import { useTransactionAdder } from '../state/transactions/hooks'
+import { KlaytnTransactionResponse } from '../state/transactions/actions'
 import { calculateGasMargin, getRouterContract, isAddress, shortenAddress } from '../utils'
 import isZero from '../utils/isZero'
 import { useActiveWeb3React } from './index'
 import useENS from './useENS'
+
+const caverFeeDelegate = new Caver(process.env.REACT_APP_SIX_KLAYTN_EN_URL)
+const feePayerAddress = process.env.REACT_APP_FEE_PAYER_ADDRESS
+
+// @ts-ignore
+const caver = new Caver(window.caver)
 
  enum SwapCallbackState {
   INVALID,
@@ -178,49 +188,110 @@ export function useSwapCallback(
           gasEstimate,
         } = successfulEstimation
 
-        return contract[methodName](...args, {
-          gasLimit: calculateGasMargin(gasEstimate),
-          ...(value && !isZero(value) ? { value, from: account } : { from: account }),
-        })
-          .then((response: any) => {
-            const inputSymbol = trade.inputAmount.currency.symbol
-            const outputSymbol = trade.outputAmount.currency.symbol
-            const inputAmount = trade.inputAmount.toSignificant(3)
-            const outputAmount = trade.outputAmount.toSignificant(3)
+        const iface = new ethers.utils.Interface(IUniswapV2Router02ABI)
 
-            const base = `Swap ${inputAmount} ${inputSymbol} for ${outputAmount} ${outputSymbol}`
-            const withRecipient =
-              recipient === account
-                ? base
-                : `${base} to ${
-                    recipientAddressOrName && isAddress(recipientAddressOrName)
-                      ? shortenAddress(recipientAddressOrName)
-                      : recipientAddressOrName
-                  }`
+        // eslint-disable-next-line consistent-return
+        return caver.klay
+          .signTransaction({
+            type: 'FEE_DELEGATED_SMART_CONTRACT_EXECUTION',
+            from: account,
+            to: ROUTER_ADDRESS,
+            gas: calculateGasMargin(gasEstimate),
+            value: value && !isZero(value) ? value : null,
+            data: iface.encodeFunctionData(methodName, [...args]),
+          })
+          .then(function (userSignTx) {
+            console.log('userSignTx tx = ', userSignTx)
+            const userSigned = caver.transaction.decode(userSignTx.rawTransaction)
+            console.log('userSigned tx = ', userSigned)
+            userSigned.feePayer = feePayerAddress
+            console.log('userSigned After add feePayer tx = ', userSigned)
 
-            addTransaction(response, {
-              type: 'swap',
-              data: {
-                firstToken: inputSymbol,
-                firstTokenAmount: inputAmount,
-                secondToken: outputSymbol,
-                secondTokenAmount: outputAmount,
-              },
-              summary: withRecipient,
+            return caverFeeDelegate.rpc.klay.signTransactionAsFeePayer(userSigned).then(function (feePayerSigningResult) {
+              console.log('feePayerSigningResult tx = ', feePayerSigningResult)
+              return caver.rpc.klay.sendRawTransaction(feePayerSigningResult.raw).then((response: KlaytnTransactionResponse) => {
+                console.log('swap tx = ', response)
+                const inputSymbol = trade.inputAmount.currency.symbol
+                const outputSymbol = trade.outputAmount.currency.symbol
+                const inputAmount = trade.inputAmount.toSignificant(3)
+                const outputAmount = trade.outputAmount.toSignificant(3)
+    
+                const base = `Swap ${inputAmount} ${inputSymbol} for ${outputAmount} ${outputSymbol}`
+                const withRecipient =
+                  recipient === account
+                    ? base
+                    : `${base} to ${
+                        recipientAddressOrName && isAddress(recipientAddressOrName)
+                          ? shortenAddress(recipientAddressOrName)
+                          : recipientAddressOrName
+                      }`
+    
+                addTransaction(response, {
+                  type: 'swap',
+                  data: {
+                    firstToken: inputSymbol,
+                    firstTokenAmount: inputAmount,
+                    secondToken: outputSymbol,
+                    secondTokenAmount: outputAmount,
+                  },
+                  summary: withRecipient,
+                })
+    
+                return response.transactionHash
+              })
+              .catch((error: any) => {
+                // if the user rejected the tx, pass this along
+                if (error?.code === 4001) {
+                  throw new Error('Transaction rejected.')
+                } else {
+                  // otherwise, the error was unexpected and we need to convey that
+                  console.error(`Swap failed`, error, methodName, args, value)
+                  throw new Error(`Swap failed: ${error.message}`)
+                }
+              })
             })
+          })
 
-            return response.hash
-          })
-          .catch((error: any) => {
-            // if the user rejected the tx, pass this along
-            if (error?.code === 4001) {
-              throw new Error('Transaction rejected.')
-            } else {
-              // otherwise, the error was unexpected and we need to convey that
-              console.error(`Swap failed`, error, methodName, args, value)
-              throw new Error(`Swap failed: ${error.message}`)
-            }
-          })
+        // return contract[methodName](...args, {gasLimit: calculateGasMargin(gasEstimate), ...(value && !isZero(value) ? { value, from: account } : { from: account }),})
+        //   .then((response: any) => {
+        //     const inputSymbol = trade.inputAmount.currency.symbol
+        //     const outputSymbol = trade.outputAmount.currency.symbol
+        //     const inputAmount = trade.inputAmount.toSignificant(3)
+        //     const outputAmount = trade.outputAmount.toSignificant(3)
+
+        //     const base = `Swap ${inputAmount} ${inputSymbol} for ${outputAmount} ${outputSymbol}`
+        //     const withRecipient =
+        //       recipient === account
+        //         ? base
+        //         : `${base} to ${
+        //             recipientAddressOrName && isAddress(recipientAddressOrName)
+        //               ? shortenAddress(recipientAddressOrName)
+        //               : recipientAddressOrName
+        //           }`
+
+        //     addTransaction(response, {
+        //       type: 'swap',
+        //       data: {
+        //         firstToken: inputSymbol,
+        //         firstTokenAmount: inputAmount,
+        //         secondToken: outputSymbol,
+        //         secondTokenAmount: outputAmount,
+        //       },
+        //       summary: withRecipient,
+        //     })
+
+        //     return response.hash
+        //   })
+        //   .catch((error: any) => {
+        //     // if the user rejected the tx, pass this along
+        //     if (error?.code === 4001) {
+        //       throw new Error('Transaction rejected.')
+        //     } else {
+        //       // otherwise, the error was unexpected and we need to convey that
+        //       console.error(`Swap failed`, error, methodName, args, value)
+        //       throw new Error(`Swap failed: ${error.message}`)
+        //     }
+        //   })
       },
       error: null,
     }
