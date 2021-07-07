@@ -1,6 +1,6 @@
 import { Currency, ETHER, Token } from 'definixswap-sdk'
 import React, { KeyboardEvent, RefObject, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'contexts/Localization'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { FixedSizeList } from 'react-window'
 import styled, { ThemeContext } from 'styled-components'
@@ -10,7 +10,6 @@ import { useActiveWeb3React } from '../../hooks'
 import { useAllTokens, useToken } from '../../hooks/Tokens'
 import { useSelectedListInfo } from '../../state/lists/hooks'
 import { isAddress } from '../../utils'
-import { TranslateString } from '../../utils/translateTextHelpers'
 import Card from '../Card'
 import Column from '../Column'
 import ListLogo from '../ListLogo'
@@ -162,8 +161,7 @@ export function CurrencySearch({
             <Heading>
               <TranslatedText translationId={82}>Select a token</TranslatedText>
               <QuestionHelper
-                text={TranslateString(
-                  130,
+                text={t(
                   'Find a token by searching for its name or symbol or by pasting its address below.'
                 )}
               />

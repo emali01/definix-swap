@@ -2,10 +2,10 @@ import React from 'react'
 import { useWeb3React } from '@web3-react/core'
 import { Button, ButtonProps, ConnectorId, useWalletModal } from 'uikit-dev'
 import { injected, walletconnect } from 'connectors'
-import useI18n from 'hooks/useI18n'
+import { useTranslation } from 'contexts/Localization'
 
 const UnlockButton: React.FC<ButtonProps> = props => {
-  const TranslateString = useI18n()
+  const { t: translate } = useTranslation()
   const { account, activate, deactivate } = useWeb3React()
 
   const handleLogin = (connectorId: ConnectorId) => {
@@ -19,7 +19,7 @@ const UnlockButton: React.FC<ButtonProps> = props => {
 
   return (
     <Button onClick={onPresentConnectModal} {...props}>
-      {TranslateString(292, 'Unlock Wallet')}
+      {translate('Unlock Wallet')}
     </Button>
   )
 }
