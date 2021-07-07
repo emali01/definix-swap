@@ -1,9 +1,12 @@
+import { languageList } from 'config/localization/languages'
 import React, { useState } from 'react'
 import Lottie from 'react-lottie'
 import styled from 'styled-components'
 import moon from '../../animation/moon.json'
 import sun from '../../animation/sun.json'
 import Button from '../../components/Button/Button'
+import Dropdown from '../../components/Dropdown/Dropdown'
+import MenuButton from './MenuButton'
 import { ChevronDownIcon } from '../../components/Svg'
 import Text from '../../components/Text/Text'
 import { MENU_ENTRY_HEIGHT } from './config'
@@ -113,11 +116,11 @@ const PanelFooter: React.FC<Props> = ({
   toggleTheme,
   isDark,
   currentLang,
+  setLang,
   // isPushed,
   // pushNav,
   // finixPriceUsd,
   // langs,
-  // setLang,
 }) => {
   const [isStopped, setIsStop] = useState(false)
   const [direction, setDirection] = useState(isDark ? 1 : -1)
@@ -206,17 +209,34 @@ const PanelFooter: React.FC<Props> = ({
             </MenuButton>
           ))}
         </Dropdown> */}
-        <ChangeLanguage
-          variant="text"
-          radii="card"
-          padding="0 16px"
-          endIcon={<ChevronDownIcon color="textDisabled" width="24px" />}
-          disabled
+        <Dropdown
+          position="top"
+          target={
+          <ChangeLanguage
+              variant="text"
+              radii="card"
+              endIcon={<ChevronDownIcon color="textDisabled" width="24px" />}
+              padding="0 16px"
+              disabled
+            >
+              <Text color="textSubtle" bold>
+                {currentLang?.toUpperCase()}
+              </Text>
+          </ChangeLanguage>
+        }
         >
-          <Text color="textSubtle" bold>
-            {currentLang?.toUpperCase()}
-          </Text>
-        </ChangeLanguage>
+          {languageList.map((lang) => (
+            <MenuButton
+              key={lang.code}
+              fullWidth
+              onClick={() => setLang(lang)}
+              // Safari fix
+              style={{ minHeight: '32px', height: 'auto' }}
+            >
+              {lang.language}
+            </MenuButton>
+          ))}
+        </Dropdown>
         <ChangeTheme isDark={isDark}>
           <Button variant="text" size="sm" radii="card" onClick={() => clickChangeTheme(false)}>
             <Lottie options={sunOptions} height={56} width={56} isStopped={isStopped} direction={direction} speed={3} />

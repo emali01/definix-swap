@@ -2,10 +2,10 @@ import React from 'react'
 import { useCaverJsReact } from 'caverjs-react-core'
 import { Button, ButtonProps, ConnectorId, useWalletModal } from 'uikit-dev'
 import { injected } from 'connectors'
-import useI18n from 'hooks/useI18n'
+import { useTranslation } from 'contexts/Localization'
 
 const UnlockButton: React.FC<ButtonProps> = props => {
-  const TranslateString = useI18n()
+  const { t: translate } = useTranslation()
   const { account, activate, deactivate } = useCaverJsReact()
 
   const handleLogin = (connectorId: ConnectorId) => {
@@ -16,7 +16,7 @@ const UnlockButton: React.FC<ButtonProps> = props => {
 
   return (
     <Button onClick={onPresentConnectModal} {...props}>
-      {TranslateString(292, 'Unlock Wallet')}
+      {translate('Unlock Wallet')}
     </Button>
   )
 }

@@ -1,4 +1,5 @@
 import numeral from 'numeral'
+import { useTranslation } from 'contexts/Localization'
 import AddressInputPanel from 'components/AddressInputPanel'
 import { GreyCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
@@ -35,7 +36,6 @@ import { Overlay } from 'uikit-dev/components/Overlay'
 import { LeftPanel, MaxWidthLeft, MaxWidthRight, RightPanel, ShowHideButton } from 'uikit-dev/components/TwoPanelLayout'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { computeTradePriceBreakdown, warningSeverity } from 'utils/prices'
-import { TranslateString } from 'utils/translateTextHelpers'
 import { isTransactionRecent, useAllTransactions } from 'state/transactions/hooks'
 import { TransactionDetails } from 'state/transactions/reducer'
 import { getBscScanLink } from 'utils'
@@ -92,6 +92,7 @@ export default function Swap({
   },
   history,
 }: RouteComponentProps<{ currencyIdA?: string; currencyIdB?: string }>) {
+  const { t: translate } = useTranslation()
   const loadedUrlParams = useDefaultsFromURLSearch()
   const { isXl } = useMatchBreakpoints()
   const isMobileOrTablet = !isXl
@@ -399,7 +400,7 @@ export default function Swap({
                       label={
                         independentField === Field.OUTPUT && !showWrap && trade
                           ? 'From (estimated)'
-                          : TranslateString(76, 'From')
+                          : translate('From')
                       }
                       value={formattedAmounts[Field.INPUT]}
                       showMaxButton={!atMaxAmountInput}
@@ -441,7 +442,7 @@ export default function Swap({
                       label={
                         independentField === Field.INPUT && !showWrap && trade
                           ? 'To (estimated)'
-                          : TranslateString(80, 'To')
+                          : translate('To')
                       }
                       showMaxButton={false}
                       currency={currencies[Field.OUTPUT]}

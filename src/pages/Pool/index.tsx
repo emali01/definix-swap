@@ -1,4 +1,5 @@
 import ExchangeTab from 'components/ExchangeTab'
+import { useTranslation } from 'contexts/Localization'
 import FullPositionCard from 'components/PositionCard'
 import Question from 'components/QuestionHelper'
 import { StyledInternalLink } from 'components/Shared'
@@ -19,7 +20,6 @@ import { isTransactionRecent, useAllTransactions } from 'state/transactions/hook
 import { useAllTokens } from 'hooks/Tokens'
 import { LeftPanel, MaxWidthLeft, MaxWidthRight, RightPanel, ShowHideButton } from 'uikit-dev/components/TwoPanelLayout'
 import UserBlock from 'uikit-dev/widgets/Menu/UserBlock'
-import { TranslateString } from 'utils/translateTextHelpers'
 import { TransactionDetails } from 'state/transactions/reducer'
 import { getBscScanLink } from 'utils'
 import Flip from '../../uikit-dev/components/Flip'
@@ -67,6 +67,7 @@ export default function Pool() {
   const allTokens = useAllTokens()
   const wklay = new Token(chainId || 0, WKLAY_ADDRESS[chainId || 0], 18, 'WKLAY', 'Wrapped KLAY')
 
+  const { t: translate } = useTranslation()
 
   // Logic taken from Web3Status/index.tsx line 175
   const sortedRecentTransactions = useMemo(() => {
@@ -169,8 +170,7 @@ export default function Pool() {
                   <TranslatedText translationId={102}>Your Liquidity</TranslatedText>
                 </Heading>
                 <Question
-                  text={TranslateString(
-                    130,
+                  text={translate(
                     'When you add liquidity, you are given pool tokens that represent your share. If you don’t see a pool you joined in this list, try importing a pool below.'
                   )}
                 />
@@ -214,9 +214,9 @@ export default function Pool() {
 
               <div className="mt-4">
                 <Text className="mb-2">
-                  {TranslateString(106, "Don't see a pool you joined?")}{' '}
+                  {translate("Don't see a pool you joined?")}{' '}
                   <StyledInternalLink id="import-pool-link" to="/find">
-                    {TranslateString(108, 'Import it.')}
+                    {translate('Import it.')}
                   </StyledInternalLink>
                 </Text>
                 <Text>Or, if you staked your LP tokens in a farm, unstake them to see them here</Text>
