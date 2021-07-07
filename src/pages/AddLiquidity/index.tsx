@@ -44,6 +44,7 @@ import { ConfirmAddModalBottom } from './ConfirmAddModalBottom'
 import { PoolPriceBar } from './PoolPriceBar'
 import farms from '../../constants/farm'
 import { useHerodotusContract } from '../../hooks/useContract'
+import HERODOTUS_ABI from '../../constants/abis/herodotus.json'
 
 const caverFeeDelegate = new Caver(process.env.REACT_APP_SIX_KLAYTN_EN_URL)
 const feePayerAddress = process.env.REACT_APP_FEE_PAYER_ADDRESS
@@ -413,13 +414,45 @@ export default function AddLiquidity({
                         farm.pid,
                         new BigNumberJs(liquidityMinted.toExact()).times(new BigNumberJs(10).pow(18)).toString()
                       ]
-                      return herodotusContract?.deposit(...args, {
-                        gasLimit: calculateGasMargin(estimatedGasLimit)
-                      })
+
+                      const iface = new ethers.utils.Interface(HERODOTUS_ABI)
+                      
+                      return caver.klay
+                        .signTransaction({
+                          type: 'FEE_DELEGATED_SMART_CONTRACT_EXECUTION',
+                          from: account,
+                          to: herodotusAddress,
+                          gas: calculateGasMargin(estimatedGasLimit),
+                          data: iface.encodeFunctionData("deposit", [...args]),
+                        })
+                        .then(function (userSignTx) {
+                          console.log('userSignTx tx = ', userSignTx)
+                          const userSigned = caver.transaction.decode(userSignTx.rawTransaction)
+                          console.log('userSigned tx = ', userSigned)
+                          userSigned.feePayer = feePayerAddress
+                          console.log('userSigned After add feePayer tx = ', userSigned)
+
+                          return caverFeeDelegate.rpc.klay.signTransactionAsFeePayer(userSigned).then(function (feePayerSigningResult) {
+                            console.log('feePayerSigningResult tx = ', feePayerSigningResult)
+                            return caverFeeDelegate.rpc.klay
+                              .sendRawTransaction(feePayerSigningResult.raw)
+                              .on('transactionHash', (depositTx) => {
+                                console.log('deposit tx = ', depositTx)
+                                return depositTx.transactionHash
+                              })
+                          })
+                        })
+                        .catch(function (tx) {
+                          console.log('deposit error tx = ', tx)
+                          return tx.transactionHash
+                        })
+
+                      // return herodotusContract?.deposit(...args, {
+                      //   gasLimit: calculateGasMargin(estimatedGasLimit)
+                      // })
                     }
                     return true
                   })
-
                   .then(function (tx) {
                     window.location.href = `${process.env.REACT_APP_FRONTEND_URL}/farm`
                     return true
@@ -440,7 +473,7 @@ export default function AddLiquidity({
         }
       />
     ),
-    [chainId, modalHeader, txHash, currencies, herodotusContract, liquidityMinted, approvalLP, approveLPCallback]
+    [chainId, modalHeader, txHash, currencies, herodotusContract, herodotusAddress, liquidityMinted, approvalLP, approveLPCallback, account]
   )
 
   const errorContent = useCallback(
