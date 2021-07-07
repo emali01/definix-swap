@@ -59,6 +59,14 @@ export default {
       logoURI: '/images/coins/ETH.png'
     },
     {
+      name: 'XRP Token',
+      symbol: 'XRP',
+      address: process.env.REACT_APP_XRP_ADDRESS_TESTNET,
+      chainId: 97,
+      decimals: 18,
+      logoURI: '/images/coins/XRP.png'
+    },
+    {
       name: 'FINIX Token',
       symbol: 'FINIX',
       address: process.env.REACT_APP_FINIX_ADDRESS_MAINNET,
@@ -105,6 +113,14 @@ export default {
       chainId: 56,
       decimals: 18,
       logoURI: '/images/coins/ETH.png'
+    },
+    {
+      name: 'XRP Token',
+      symbol: 'XRP',
+      address: process.env.REACT_APP_XRP_ADDRESS_MAINNET,
+      chainId: 56,
+      decimals: 18,
+      logoURI: '/images/coins/XRP.png'
     },
   ]
 }
