@@ -1,6 +1,8 @@
 import Kaikas from './icons/Kaikas'
 import Dcent from './icons/Dcent'
+import KlipConnect from './icons/KlipConnect'
 import { Config } from './types'
+
 
 const connectors: Config[] = [
   {
@@ -15,7 +17,7 @@ const connectors: Config[] = [
   },
   {
     title: 'Klip',
-    icon: Dcent,
+    icon: KlipConnect,
     connectorId: "klip"
   }
 ]

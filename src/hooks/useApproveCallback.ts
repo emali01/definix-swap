@@ -1,10 +1,10 @@
 import { MaxUint256 } from '@ethersproject/constants'
 import { TransactionResponse } from '@ethersproject/providers'
 import { Trade, TokenAmount, CurrencyAmount, ETHER } from 'definixswap-sdk'
-import { KlipConnector } from "@kanthakran/klip-connr"
-import { KlipModalContext } from "klaytn-use-wallet"
+import { KlipConnector } from "@kanthakarn-test/klip-connector"
+import { KlipModalContext } from "@kanthakarn-test/klaytn-use-wallet"
 import { useCallback, useMemo, useContext } from 'react'
-import { useCaverJsReact } from 'caverjs-react-core'
+import { useCaverJsReact } from '@kanthakarn-test/caverjs-react-core'
 import { ROUTER_ADDRESS } from '../constants'
 import { useTokenAllowance } from '../data/Allowances'
 import { Field } from '../state/swap/actions'

@@ -2,9 +2,9 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
 import { JSBI, Percent, Router, SwapParameters, Trade, TradeType } from 'definixswap-sdk'
 import { useMemo, useContext } from 'react'
-import { KlipModalContext } from "klaytn-use-wallet"
-import { KlipConnector } from "@kanthakran/klip-connr"
-import { useCaverJsReact } from 'caverjs-react-core'
+import { KlipModalContext } from "@kanthakarn-test/klaytn-use-wallet"
+import { KlipConnector } from "@kanthakarn-test/klip-connector"
+import { useCaverJsReact } from '@kanthakarn-test/caverjs-react-core'
 import { BIPS_BASE, DEFAULT_DEADLINE_FROM_NOW, INITIAL_ALLOWED_SLIPPAGE, ROUTER_ADDRESS } from '../constants'
 import { useTransactionAdder } from '../state/transactions/hooks'
 import { calculateGasMargin, getRouterContract, isAddress, shortenAddress } from '../utils'

@@ -9,10 +9,10 @@ import CurrencyInputPanel from 'components/CurrencyInputPanel'
 import DoubleCurrencyLogo from 'components/DoubleLogo'
 import { AddRemoveTabs } from 'components/NavigationTabs'
 import { MinimalPositionCard } from 'components/PositionCard'
-import { KlipModalContext } from 'klaytn-use-wallet'
-import { useCaverJsReact } from 'caverjs-react-core'
+import { KlipModalContext } from '@kanthakarn-test/klaytn-use-wallet'
+import { useCaverJsReact } from '@kanthakarn-test/caverjs-react-core'
 import { RowBetween, RowFixed } from 'components/Row'
-import { KlipConnector } from "@kanthakran/klip-connr"
+import { KlipConnector } from "@kanthakarn-test/klip-connector"
 import { Dots } from 'components/swap/styleds'
 import TransactionConfirmationModal, {
   ConfirmationModalContent,

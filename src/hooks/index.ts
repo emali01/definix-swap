@@ -1,8 +1,8 @@
 import { CaverProvider } from 'finix-caver-providers'
 import { ChainId } from 'definixswap-sdk'
-import { useCaverJsReact as useCaverJsReactCore } from 'caverjs-react-core'
+import { useCaverJsReact as useCaverJsReactCore } from '@kanthakarn-test/caverjs-react-core'
 // eslint-disable-next-line import/no-unresolved
-import { CaverJsReactContextInterface } from 'caverjs-react-core/dist/types'
+import { CaverJsReactContextInterface } from '@kanthakarn-test/caverjs-react-core/dist/types'
 import { useEffect, useState } from 'react'
 import { isMobile } from 'react-device-detect'
 import { injected } from '../connectors'

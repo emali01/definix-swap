@@ -1,5 +1,5 @@
-import { ConnectorUpdate } from 'caverjs-react-types'
-import { AbstractConnector } from 'caverjs-react-abstract-connector'
+import { ConnectorUpdate } from '@kanthakarn-test/caverjs-react-types'
+import { AbstractConnector } from '@kanthakarn-test/caverjs-react-abstract-connector'
 import invariant from 'tiny-invariant'
 
 interface NetworkConnectorArguments {

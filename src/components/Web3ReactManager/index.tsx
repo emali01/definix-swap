@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useCaverJsReact } from 'caverjs-react-core'
+import { useCaverJsReact } from '@kanthakarn-test/caverjs-react-core'
 import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
 
