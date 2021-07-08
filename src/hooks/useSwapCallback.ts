@@ -5,6 +5,7 @@ import { Contract } from '@ethersproject/contracts'
 import { abi as IUniswapV2Router02ABI } from '@uniswap/v2-periphery/build/IUniswapV2Router02.json'
 import { JSBI, Percent, Router, SwapParameters, Trade, TradeType } from 'definixswap-sdk'
 import { useMemo } from 'react'
+import UseDeParam from 'hooks/useDeParam'
 import { BIPS_BASE, DEFAULT_DEADLINE_FROM_NOW, INITIAL_ALLOWED_SLIPPAGE, ROUTER_ADDRESS } from '../constants'
 import { useTransactionAdder } from '../state/transactions/hooks'
 import { KlaytnTransactionResponse } from '../state/transactions/actions'
@@ -190,108 +191,113 @@ export function useSwapCallback(
 
         const iface = new ethers.utils.Interface(IUniswapV2Router02ABI)
 
-        // eslint-disable-next-line consistent-return
-        return caver.klay
-          .signTransaction({
-            type: 'FEE_DELEGATED_SMART_CONTRACT_EXECUTION',
-            from: account,
-            to: ROUTER_ADDRESS,
-            gas: calculateGasMargin(gasEstimate),
-            value: value && !isZero(value) ? value : null,
-            data: iface.encodeFunctionData(methodName, [...args]),
-          })
-          .then(function (userSignTx) {
-            console.log('userSignTx tx = ', userSignTx)
-            const userSigned = caver.transaction.decode(userSignTx.rawTransaction)
-            console.log('userSigned tx = ', userSigned)
-            userSigned.feePayer = feePayerAddress
-            console.log('userSigned After add feePayer tx = ', userSigned)
+        const flagFeeDelegate = await UseDeParam('KLAYTN_FEE_DELEGATE', 'N')
 
-            return caverFeeDelegate.rpc.klay.signTransactionAsFeePayer(userSigned).then(function (feePayerSigningResult) {
-              console.log('feePayerSigningResult tx = ', feePayerSigningResult)
-              return caver.rpc.klay.sendRawTransaction(feePayerSigningResult.raw).then((response: KlaytnTransactionResponse) => {
-                console.log('swap tx = ', response)
-                const inputSymbol = trade.inputAmount.currency.symbol
-                const outputSymbol = trade.outputAmount.currency.symbol
-                const inputAmount = trade.inputAmount.toSignificant(3)
-                const outputAmount = trade.outputAmount.toSignificant(3)
-    
-                const base = `Swap ${inputAmount} ${inputSymbol} for ${outputAmount} ${outputSymbol}`
-                const withRecipient =
-                  recipient === account
-                    ? base
-                    : `${base} to ${
-                        recipientAddressOrName && isAddress(recipientAddressOrName)
-                          ? shortenAddress(recipientAddressOrName)
-                          : recipientAddressOrName
-                      }`
-    
-                addTransaction(response, {
-                  type: 'swap',
-                  data: {
-                    firstToken: inputSymbol,
-                    firstTokenAmount: inputAmount,
-                    secondToken: outputSymbol,
-                    secondTokenAmount: outputAmount,
-                  },
-                  summary: withRecipient,
+        if (flagFeeDelegate === "Y") {
+          // eslint-disable-next-line consistent-return
+          return caver.klay
+            .signTransaction({
+              type: 'FEE_DELEGATED_SMART_CONTRACT_EXECUTION',
+              from: account,
+              to: ROUTER_ADDRESS,
+              gas: calculateGasMargin(gasEstimate),
+              value: value && !isZero(value) ? value : null,
+              data: iface.encodeFunctionData(methodName, [...args]),
+            })
+            .then(function (userSignTx) {
+              // console.log('userSignTx tx = ', userSignTx)
+              const userSigned = caver.transaction.decode(userSignTx.rawTransaction)
+              // console.log('userSigned tx = ', userSigned)
+              userSigned.feePayer = feePayerAddress
+              // console.log('userSigned After add feePayer tx = ', userSigned)
+
+              return caverFeeDelegate.rpc.klay.signTransactionAsFeePayer(userSigned).then(function (feePayerSigningResult) {
+                // console.log('feePayerSigningResult tx = ', feePayerSigningResult)
+                return caver.rpc.klay.sendRawTransaction(feePayerSigningResult.raw).then((response: KlaytnTransactionResponse) => {
+                  console.log('swap tx = ', response)
+                  const inputSymbol = trade.inputAmount.currency.symbol
+                  const outputSymbol = trade.outputAmount.currency.symbol
+                  const inputAmount = trade.inputAmount.toSignificant(3)
+                  const outputAmount = trade.outputAmount.toSignificant(3)
+      
+                  const base = `Swap ${inputAmount} ${inputSymbol} for ${outputAmount} ${outputSymbol}`
+                  const withRecipient =
+                    recipient === account
+                      ? base
+                      : `${base} to ${
+                          recipientAddressOrName && isAddress(recipientAddressOrName)
+                            ? shortenAddress(recipientAddressOrName)
+                            : recipientAddressOrName
+                        }`
+      
+                  addTransaction(response, {
+                    type: 'swap',
+                    data: {
+                      firstToken: inputSymbol,
+                      firstTokenAmount: inputAmount,
+                      secondToken: outputSymbol,
+                      secondTokenAmount: outputAmount,
+                    },
+                    summary: withRecipient,
+                  })
+      
+                  return response.transactionHash
                 })
-    
-                return response.transactionHash
-              })
-              .catch((error: any) => {
-                // if the user rejected the tx, pass this along
-                if (error?.code === 4001) {
-                  throw new Error('Transaction rejected.')
-                } else {
-                  // otherwise, the error was unexpected and we need to convey that
-                  console.error(`Swap failed`, error, methodName, args, value)
-                  throw new Error(`Swap failed: ${error.message}`)
-                }
+                .catch((error: any) => {
+                  // if the user rejected the tx, pass this along
+                  if (error?.code === 4001) {
+                    throw new Error('Transaction rejected.')
+                  } else {
+                    // otherwise, the error was unexpected and we need to convey that
+                    console.error(`Swap failed`, error, methodName, args, value)
+                    throw new Error(`Swap failed: ${error.message}`)
+                  }
+                })
               })
             })
+        }
+
+        // eslint-disable-next-line consistent-return
+        return contract[methodName](...args, {gasLimit: calculateGasMargin(gasEstimate), ...(value && !isZero(value) ? { value, from: account } : { from: account }),})
+          .then((response: any) => {
+            const inputSymbol = trade.inputAmount.currency.symbol
+            const outputSymbol = trade.outputAmount.currency.symbol
+            const inputAmount = trade.inputAmount.toSignificant(3)
+            const outputAmount = trade.outputAmount.toSignificant(3)
+
+            const base = `Swap ${inputAmount} ${inputSymbol} for ${outputAmount} ${outputSymbol}`
+            const withRecipient =
+              recipient === account
+                ? base
+                : `${base} to ${
+                    recipientAddressOrName && isAddress(recipientAddressOrName)
+                      ? shortenAddress(recipientAddressOrName)
+                      : recipientAddressOrName
+                  }`
+
+            addTransaction(response, {
+              type: 'swap',
+              data: {
+                firstToken: inputSymbol,
+                firstTokenAmount: inputAmount,
+                secondToken: outputSymbol,
+                secondTokenAmount: outputAmount,
+              },
+              summary: withRecipient,
+            })
+
+            return response.hash
           })
-
-        // return contract[methodName](...args, {gasLimit: calculateGasMargin(gasEstimate), ...(value && !isZero(value) ? { value, from: account } : { from: account }),})
-        //   .then((response: any) => {
-        //     const inputSymbol = trade.inputAmount.currency.symbol
-        //     const outputSymbol = trade.outputAmount.currency.symbol
-        //     const inputAmount = trade.inputAmount.toSignificant(3)
-        //     const outputAmount = trade.outputAmount.toSignificant(3)
-
-        //     const base = `Swap ${inputAmount} ${inputSymbol} for ${outputAmount} ${outputSymbol}`
-        //     const withRecipient =
-        //       recipient === account
-        //         ? base
-        //         : `${base} to ${
-        //             recipientAddressOrName && isAddress(recipientAddressOrName)
-        //               ? shortenAddress(recipientAddressOrName)
-        //               : recipientAddressOrName
-        //           }`
-
-        //     addTransaction(response, {
-        //       type: 'swap',
-        //       data: {
-        //         firstToken: inputSymbol,
-        //         firstTokenAmount: inputAmount,
-        //         secondToken: outputSymbol,
-        //         secondTokenAmount: outputAmount,
-        //       },
-        //       summary: withRecipient,
-        //     })
-
-        //     return response.hash
-        //   })
-        //   .catch((error: any) => {
-        //     // if the user rejected the tx, pass this along
-        //     if (error?.code === 4001) {
-        //       throw new Error('Transaction rejected.')
-        //     } else {
-        //       // otherwise, the error was unexpected and we need to convey that
-        //       console.error(`Swap failed`, error, methodName, args, value)
-        //       throw new Error(`Swap failed: ${error.message}`)
-        //     }
-        //   })
+          .catch((error: any) => {
+            // if the user rejected the tx, pass this along
+            if (error?.code === 4001) {
+              throw new Error('Transaction rejected.')
+            } else {
+              // otherwise, the error was unexpected and we need to convey that
+              console.error(`Swap failed`, error, methodName, args, value)
+              throw new Error(`Swap failed: ${error.message}`)
+            }
+          })
       },
       error: null,
     }

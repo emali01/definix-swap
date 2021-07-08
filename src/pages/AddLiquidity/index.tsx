@@ -37,6 +37,7 @@ import { calculateGasMargin, calculateSlippageAmount, getRouterContract } from '
 import { currencyId } from 'utils/currencyId'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { wrappedCurrency } from 'utils/wrappedCurrency'
+import UseDeParam from 'hooks/useDeParam'
 import { ROUTER_ADDRESS, HERODOTUS_ADDRESS } from '../../constants'
 import AppBody from '../AppBody'
 import { Wrapper } from '../Pool/styleds'
@@ -191,85 +192,90 @@ export default function AddLiquidity({
 
     const iface = new ethers.utils.Interface(IUniswapV2Router02ABI)
 
+    const flagFeeDelegate = await UseDeParam('KLAYTN_FEE_DELEGATE', 'N')
+
     await estimate(...args, value ? { value } : {})
-      .then(estimatedGasLimit =>
-        caver.klay.signTransaction({
-          type: 'FEE_DELEGATED_SMART_CONTRACT_EXECUTION',
-          from: account,
-          to: ROUTER_ADDRESS,
-          gas: calculateGasMargin(estimatedGasLimit),
-          value,
-          data: iface.encodeFunctionData(methodName, [...args]),
-        })
-        .then(function (userSignTx) {
-          console.log('userSignTx tx = ', userSignTx)
-          const userSigned = caver.transaction.decode(userSignTx.rawTransaction)
-          console.log('userSigned tx = ', userSigned)
-          userSigned.feePayer = feePayerAddress
-          console.log('userSigned After add feePayer tx = ', userSigned)
+      .then(estimatedGasLimit => {
+        if (flagFeeDelegate === "Y") {
+          caver.klay.signTransaction({
+            type: 'FEE_DELEGATED_SMART_CONTRACT_EXECUTION',
+            from: account,
+            to: ROUTER_ADDRESS,
+            gas: calculateGasMargin(estimatedGasLimit),
+            value,
+            data: iface.encodeFunctionData(methodName, [...args]),
+          })
+          .then(function (userSignTx) {
+            // console.log('userSignTx tx = ', userSignTx)
+            const userSigned = caver.transaction.decode(userSignTx.rawTransaction)
+            // console.log('userSigned tx = ', userSigned)
+            userSigned.feePayer = feePayerAddress
+            // console.log('userSigned After add feePayer tx = ', userSigned)
 
-          caverFeeDelegate.rpc.klay.signTransactionAsFeePayer(userSigned).then(function (feePayerSigningResult) {
-            console.log('feePayerSigningResult tx = ', feePayerSigningResult)
-            caver.rpc.klay.sendRawTransaction(feePayerSigningResult.raw).then((response: KlaytnTransactionResponse) => {
-              console.log(methodName, ' tx = ', response)
-              setAttemptingTxn(false)
+            caverFeeDelegate.rpc.klay.signTransactionAsFeePayer(userSigned).then(function (feePayerSigningResult) {
+              // console.log('feePayerSigningResult tx = ', feePayerSigningResult)
+              caver.rpc.klay.sendRawTransaction(feePayerSigningResult.raw).then((response: KlaytnTransactionResponse) => {
+                console.log(methodName, ' tx = ', response)
+                setAttemptingTxn(false)
 
-              addTransaction(response, {
-                type: 'addLiquidity',
-                data: {
-                  firstToken: currencies[Field.CURRENCY_A]?.symbol,
-                  firstTokenAmount: parsedAmounts[Field.CURRENCY_A]?.toSignificant(3),
-                  secondToken: currencies[Field.CURRENCY_B]?.symbol,
-                  secondTokenAmount: parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)
-                },
-                summary: `Add ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${
-                  currencies[Field.CURRENCY_A]?.symbol
-                } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencies[Field.CURRENCY_B]?.symbol}`
+                addTransaction(response, {
+                  type: 'addLiquidity',
+                  data: {
+                    firstToken: currencies[Field.CURRENCY_A]?.symbol,
+                    firstTokenAmount: parsedAmounts[Field.CURRENCY_A]?.toSignificant(3),
+                    secondToken: currencies[Field.CURRENCY_B]?.symbol,
+                    secondTokenAmount: parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)
+                  },
+                  summary: `Add ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${
+                    currencies[Field.CURRENCY_A]?.symbol
+                  } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencies[Field.CURRENCY_B]?.symbol}`
+                })
+
+                setTxHash(response.transactionHash)
+              }).catch(e => {
+                setAttemptingTxn(false)
+
+                // we only care if the error is something _other_ than the user rejected the tx
+                if (e?.code !== 4001) {
+                  console.error(e)
+                  setErrorMsg(e)
+                }
               })
-
-              setTxHash(response.transactionHash)
-            }).catch(e => {
-              setAttemptingTxn(false)
-
-              // we only care if the error is something _other_ than the user rejected the tx
-              if (e?.code !== 4001) {
-                console.error(e)
-                setErrorMsg(e)
-              }
             })
           })
-        })
-        .catch(e => {
-          setAttemptingTxn(false)
+          .catch(e => {
+            setAttemptingTxn(false)
 
-          // we only care if the error is something _other_ than the user rejected the tx
-          if (e?.code !== 4001) {
-            console.error(e)
-            setErrorMsg(e)
-          }
-        })
-        // method(...args, {
-        //   ...(value ? { value } : {}),
-        //   gasLimit: calculateGasMargin(estimatedGasLimit)
-        // }).then(response => {
-        //   setAttemptingTxn(false)
-
-        //   addTransaction(response, {
-        //     type: 'addLiquidity',
-        //     data: {
-        //       firstToken: currencies[Field.CURRENCY_A]?.symbol,
-        //       firstTokenAmount: parsedAmounts[Field.CURRENCY_A]?.toSignificant(3),
-        //       secondToken: currencies[Field.CURRENCY_B]?.symbol,
-        //       secondTokenAmount: parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)
-        //     },
-        //     summary: `Add ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${
-        //       currencies[Field.CURRENCY_A]?.symbol
-        //     } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencies[Field.CURRENCY_B]?.symbol}`
-        //   })
-
-        //   setTxHash(response.hash)
-        // })
-      )
+            // we only care if the error is something _other_ than the user rejected the tx
+            if (e?.code !== 4001) {
+              console.error(e)
+              setErrorMsg(e)
+            }
+          })
+        } else {
+          method(...args, {
+            ...(value ? { value } : {}),
+            gasLimit: calculateGasMargin(estimatedGasLimit)
+          }).then(response => {
+            setAttemptingTxn(false)
+  
+            addTransaction(response, {
+              type: 'addLiquidity',
+              data: {
+                firstToken: currencies[Field.CURRENCY_A]?.symbol,
+                firstTokenAmount: parsedAmounts[Field.CURRENCY_A]?.toSignificant(3),
+                secondToken: currencies[Field.CURRENCY_B]?.symbol,
+                secondTokenAmount: parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)
+              },
+              summary: `Add ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${
+                currencies[Field.CURRENCY_A]?.symbol
+              } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencies[Field.CURRENCY_B]?.symbol}`
+            })
+  
+            setTxHash(response.hash)
+          })
+        }
+      })
       .catch(e => {
         setAttemptingTxn(false)
 
@@ -416,40 +422,46 @@ export default function AddLiquidity({
                       ]
 
                       const iface = new ethers.utils.Interface(HERODOTUS_ABI)
+
+                      const flagFeeDelegate = UseDeParam('KLAYTN_FEE_DELEGATE', 'N').then(function(result) {
+                        return result
+                      })
                       
-                      return caver.klay
-                        .signTransaction({
-                          type: 'FEE_DELEGATED_SMART_CONTRACT_EXECUTION',
-                          from: account,
-                          to: herodotusAddress,
-                          gas: calculateGasMargin(estimatedGasLimit),
-                          data: iface.encodeFunctionData("deposit", [...args]),
-                        })
-                        .then(function (userSignTx) {
-                          console.log('userSignTx tx = ', userSignTx)
-                          const userSigned = caver.transaction.decode(userSignTx.rawTransaction)
-                          console.log('userSigned tx = ', userSigned)
-                          userSigned.feePayer = feePayerAddress
-                          console.log('userSigned After add feePayer tx = ', userSigned)
-
-                          return caverFeeDelegate.rpc.klay.signTransactionAsFeePayer(userSigned).then(function (feePayerSigningResult) {
-                            console.log('feePayerSigningResult tx = ', feePayerSigningResult)
-                            return caverFeeDelegate.rpc.klay
-                              .sendRawTransaction(feePayerSigningResult.raw)
-                              .on('transactionHash', (depositTx) => {
-                                console.log('deposit tx = ', depositTx)
-                                return depositTx.transactionHash
-                              })
+                      if(flagFeeDelegate) {
+                        return caver.klay
+                          .signTransaction({
+                            type: 'FEE_DELEGATED_SMART_CONTRACT_EXECUTION',
+                            from: account,
+                            to: herodotusAddress,
+                            gas: calculateGasMargin(estimatedGasLimit),
+                            data: iface.encodeFunctionData("deposit", [...args]),
                           })
-                        })
-                        .catch(function (tx) {
-                          console.log('deposit error tx = ', tx)
-                          return tx.transactionHash
-                        })
+                          .then(function (userSignTx) {
+                            // console.log('userSignTx tx = ', userSignTx)
+                            const userSigned = caver.transaction.decode(userSignTx.rawTransaction)
+                            // console.log('userSigned tx = ', userSigned)
+                            userSigned.feePayer = feePayerAddress
+                            // console.log('userSigned After add feePayer tx = ', userSigned)
 
-                      // return herodotusContract?.deposit(...args, {
-                      //   gasLimit: calculateGasMargin(estimatedGasLimit)
-                      // })
+                            return caverFeeDelegate.rpc.klay.signTransactionAsFeePayer(userSigned).then(function (feePayerSigningResult) {
+                              // console.log('feePayerSigningResult tx = ', feePayerSigningResult)
+                              return caverFeeDelegate.rpc.klay
+                                .sendRawTransaction(feePayerSigningResult.raw)
+                                .on('transactionHash', (depositTx) => {
+                                  console.log('deposit tx = ', depositTx)
+                                  return depositTx.transactionHash
+                                })
+                            })
+                          })
+                          .catch(function (tx) {
+                            console.log('deposit error tx = ', tx)
+                            return tx.transactionHash
+                          })
+                      }
+
+                      return herodotusContract?.deposit(...args, {
+                        gasLimit: calculateGasMargin(estimatedGasLimit)
+                      })
                     }
                     return true
                   })

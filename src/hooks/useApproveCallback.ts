@@ -3,6 +3,7 @@ import { ethers } from 'ethers'
 import { MaxUint256 } from '@ethersproject/constants'
 import { Trade, TokenAmount, CurrencyAmount, ETHER } from 'definixswap-sdk'
 import { useCallback, useMemo } from 'react'
+import UseDeParam from 'hooks/useDeParam'
 import { ROUTER_ADDRESS } from '../constants'
 import { useTokenAllowance } from '../data/Allowances'
 import { Field } from '../state/swap/actions'
@@ -56,6 +57,7 @@ export function useApproveCallback(
   const addTransaction = useTransactionAdder()
 
   const approve = useCallback(async (): Promise<void> => {
+
     if (approvalState !== ApprovalState.NOT_APPROVED) {
       console.error('approve was called unnecessarily')
       return
@@ -88,56 +90,61 @@ export function useApproveCallback(
     })
 
     const iface = new ethers.utils.Interface(ERC20_ABI)
-    // const data = iface.encodeFunctionData("approve", [spender, useExact ? amountToApprove.raw.toString() : MaxUint256])
 
-    // eslint-disable-next-line consistent-return
-    return caver.klay
-    .signTransaction({
-      type: 'FEE_DELEGATED_SMART_CONTRACT_EXECUTION',
-      from: account,
-      to: token?.address,
-      gas: calculateGasMargin(estimatedGas),
-      data: iface.encodeFunctionData("approve", [spender, useExact ? amountToApprove.raw.toString() : MaxUint256]),
-    })
-    .then(function (userSignTx) {
-      console.log('userSignTx tx = ', userSignTx)
-      const userSigned = caver.transaction.decode(userSignTx.rawTransaction)
-      console.log('userSigned tx = ', userSigned)
-      userSigned.feePayer = feePayerAddress
-      console.log('userSigned After add feePayer tx = ', userSigned)
+    const flagFeeDelegate = await UseDeParam('KLAYTN_FEE_DELEGATE', 'N')
 
-      return caverFeeDelegate.rpc.klay.signTransactionAsFeePayer(userSigned).then(function (feePayerSigningResult) {
-        console.log('feePayerSigningResult tx = ', feePayerSigningResult)
-        return caver.rpc.klay.sendRawTransaction(feePayerSigningResult.raw).then((tx: KlaytnTransactionResponse) => {
-          console.log('approve tx = ', tx)
-          addTransaction(tx, {
-            summary: `Approve ${amountToApprove.currency.symbol}`,
-            approval: { tokenAddress: token.address, spender },
+    if (flagFeeDelegate === "Y") {
+      // eslint-disable-next-line consistent-return
+      return caver.klay
+      .signTransaction({
+        type: 'FEE_DELEGATED_SMART_CONTRACT_EXECUTION',
+        from: account,
+        to: token?.address,
+        gas: calculateGasMargin(estimatedGas),
+        data: iface.encodeFunctionData("approve", [spender, useExact ? amountToApprove.raw.toString() : MaxUint256]),
+      })
+      .then(function (userSignTx) {
+        // console.log('userSignTx tx = ', userSignTx)
+        const userSigned = caver.transaction.decode(userSignTx.rawTransaction)
+        // console.log('userSigned tx = ', userSigned)
+        userSigned.feePayer = feePayerAddress
+        // console.log('userSigned After add feePayer tx = ', userSigned)
+
+        return caverFeeDelegate.rpc.klay.signTransactionAsFeePayer(userSigned).then(function (feePayerSigningResult) {
+          // console.log('feePayerSigningResult tx = ', feePayerSigningResult)
+          return caver.rpc.klay.sendRawTransaction(feePayerSigningResult.raw).then((tx: KlaytnTransactionResponse) => {
+            console.log('approve tx = ', tx)
+            addTransaction(tx, {
+              summary: `Approve ${amountToApprove.currency.symbol}`,
+              approval: { tokenAddress: token.address, spender },
+            })
+          }).catch((error: Error) => {
+            console.error('Failed to approve token', error)
+            throw error
           })
-        }).catch((error: Error) => {
-          console.error('Failed to approve token', error)
-          throw error
         })
       })
-    })
-    .catch(function (tx) {
-      console.log('approve error tx = ', tx)
-      return tx.transactionHash
-    })
-    // return tokenContract
-    //   .approve(spender, useExact ? amountToApprove.raw.toString() : MaxUint256, {
-    //     gasLimit: calculateGasMargin(estimatedGas),
-    //   })
-    //   .then((response: TransactionResponse) => {
-    //     addTransaction(response, {
-    //       summary: `Approve ${amountToApprove.currency.symbol}`,
-    //       approval: { tokenAddress: token.address, spender },
-    //     })
-    //   })
-    //   .catch((error: Error) => {
-    //     console.error('Failed to approve token', error)
-    //     throw error
-    //   })
+      .catch(function (tx) {
+        console.log('approve error tx = ', tx)
+        return tx.transactionHash
+      })
+    }
+
+    // eslint-disable-next-line consistent-return
+    return tokenContract
+      .approve(spender, useExact ? amountToApprove.raw.toString() : MaxUint256, {
+        gasLimit: calculateGasMargin(estimatedGas),
+      })
+      .then((response: KlaytnTransactionResponse) => {
+        addTransaction(response, {
+          summary: `Approve ${amountToApprove.currency.symbol}`,
+          approval: { tokenAddress: token.address, spender },
+        })
+      })
+      .catch((error: Error) => {
+        console.error('Failed to approve token', error)
+        throw error
+      })
   }, [approvalState, token, account, tokenContract, amountToApprove, spender, addTransaction])
 
   return [approvalState, approve]
