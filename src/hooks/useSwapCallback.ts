@@ -122,6 +122,7 @@ export function useSwapCallback(
     return {
       state: SwapCallbackState.VALID,
       callback: async function onSwap(): Promise<string> {
+
         const estimatedCalls: EstimatedSwapCall[] = await Promise.all(
           await swapCalls.map(async (call) => {
             const {
@@ -129,29 +130,7 @@ export function useSwapCallback(
               contract,
             } = call
             const options = !value || isZero(value) ? {} : { value }
-            // if
 
-            console.log(methodName, " options:", options)
-            if (isKlipConnector(connector)) {
-              // return "string"
-              // methodName
-              console.log(methodName, " call:", contract[methodName])
-              const abi = JSON.stringify(getAbiByName(methodName))
-              const input = JSON.stringify(convertArgKlip(args, abi))
-              if (ROUTER_ADDRESS) {
-                setShowModal(true)
-                klipProvider.genQRcodeContactInteract(ROUTER_ADDRESS, abi, input,options.value ? (+options.value).toString() : "0")
-                await klipProvider.checkResponse()
-
-                setShowModal(false)
-
-              }
-              return {
-                call,
-                gasEstimate:BigNumber.from(0)
-              }
-            }
-            // else {
             return contract.estimateGas[methodName](...args, options)
               .then((gasEstimate) => {
                 return {
@@ -182,7 +161,7 @@ export function useSwapCallback(
                     return { call, error: new Error(errorMessage) }
                   })
               })
-            // }
+
           })
         )
 
@@ -205,7 +184,24 @@ export function useSwapCallback(
           },
           gasEstimate,
         } = successfulEstimation
+        if (isKlipConnector(connector)) {
+          // return "string"
+          // methodName
+          // console.log(methodName, " call:", contract[methodName])
 
+          const abi = JSON.stringify(getAbiByName(methodName))
+          const input = JSON.stringify(convertArgKlip(args, abi))
+          if (ROUTER_ADDRESS) {
+            setShowModal(true)
+            klipProvider.genQRcodeContactInteract(ROUTER_ADDRESS, abi, input, (+value).toString())
+
+            const klipTx = await klipProvider.checkResponse()
+            setShowModal(false)
+
+
+            return klipTx
+          }
+        }
         return contract[methodName](...args, {
           gasLimit: calculateGasMargin(gasEstimate),
           ...(value && !isZero(value) ? { value, from: account } : { from: account }),
@@ -259,22 +255,16 @@ export default useSwapCallback
 
 const isKlipConnector = (connector) => connector instanceof KlipConnector
 const convertArgKlip = (args: (string[] | string)[], abi) => {
-  console.log("in fn", args.length)
+
   const argToString: (string[] | string)[] = []
   const abiArr = JSON.parse(abi)
   try {
-
-
     for (let i = 0; i < args.length; i++) {
       const element = args[i]
-
-      console.log("abiabi ", abiArr)
       const abiType = abiArr.inputs[i].type
-      console.log("in array ", (element), abiType)
 
-      console.log(element, "abi.input[i].type :", abiType, " f ", abiType === "uint256")
       if (abiType === "uint256") {
-        console.log(abiType, "fk", (+element).toString())
+
         argToString.push((+element).toString())
       }
       else {
@@ -282,7 +272,7 @@ const convertArgKlip = (args: (string[] | string)[], abi) => {
       }
 
     }
-    console.log("argToString", argToString)
+
     return argToString
   } catch (error) {
     console.log("ee,", error)
