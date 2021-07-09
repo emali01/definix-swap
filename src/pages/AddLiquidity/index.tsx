@@ -47,12 +47,6 @@ import farms from '../../constants/farm'
 import { useHerodotusContract } from '../../hooks/useContract'
 import HERODOTUS_ABI from '../../constants/abis/herodotus.json'
 
-const caverFeeDelegate = new Caver(process.env.REACT_APP_SIX_KLAYTN_EN_URL)
-const feePayerAddress = process.env.REACT_APP_FEE_PAYER_ADDRESS
-
-// @ts-ignore
-const caver = new Caver(window.caver)
-
 export default function AddLiquidity({
   match: {
     params: { currencyIdA, currencyIdB }
@@ -197,6 +191,12 @@ export default function AddLiquidity({
     await estimate(...args, value ? { value } : {})
       .then(estimatedGasLimit => {
         if (flagFeeDelegate === "Y") {
+          const caverFeeDelegate = new Caver(process.env.REACT_APP_SIX_KLAYTN_EN_URL)
+          const feePayerAddress = process.env.REACT_APP_FEE_PAYER_ADDRESS
+
+          // @ts-ignore
+          const caver = new Caver(window.caver)
+
           caver.klay.signTransaction({
             type: 'FEE_DELEGATED_SMART_CONTRACT_EXECUTION',
             from: account,
@@ -428,6 +428,12 @@ export default function AddLiquidity({
                       })
                       
                       if(flagFeeDelegate) {
+                        const caverFeeDelegate = new Caver(process.env.REACT_APP_SIX_KLAYTN_EN_URL)
+                        const feePayerAddress = process.env.REACT_APP_FEE_PAYER_ADDRESS
+
+                        // @ts-ignore
+                        const caver = new Caver(window.caver)
+
                         return caver.klay
                           .signTransaction({
                             type: 'FEE_DELEGATED_SMART_CONTRACT_EXECUTION',

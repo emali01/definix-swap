@@ -14,12 +14,6 @@ import isZero from '../utils/isZero'
 import { useActiveWeb3React } from './index'
 import useENS from './useENS'
 
-const caverFeeDelegate = new Caver(process.env.REACT_APP_SIX_KLAYTN_EN_URL)
-const feePayerAddress = process.env.REACT_APP_FEE_PAYER_ADDRESS
-
-// @ts-ignore
-const caver = new Caver(window.caver)
-
  enum SwapCallbackState {
   INVALID,
   LOADING,
@@ -194,6 +188,12 @@ export function useSwapCallback(
         const flagFeeDelegate = await UseDeParam('KLAYTN_FEE_DELEGATE', 'N')
 
         if (flagFeeDelegate === "Y") {
+          const caverFeeDelegate = new Caver(process.env.REACT_APP_SIX_KLAYTN_EN_URL)
+          const feePayerAddress = process.env.REACT_APP_FEE_PAYER_ADDRESS
+
+          // @ts-ignore
+          const caver = new Caver(window.caver)
+
           // eslint-disable-next-line consistent-return
           return caver.klay
             .signTransaction({

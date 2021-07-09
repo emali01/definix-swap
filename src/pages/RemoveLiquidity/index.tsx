@@ -46,12 +46,6 @@ import { wrappedCurrency } from '../../utils/wrappedCurrency'
 import AppBody from '../AppBody'
 import { ClickableText, Wrapper } from '../Pool/styleds'
 
-const caverFeeDelegate = new Caver(process.env.REACT_APP_SIX_KLAYTN_EN_URL)
-const feePayerAddress = process.env.REACT_APP_FEE_PAYER_ADDRESS
-
-// @ts-ignore
-const caver = new Caver(window.caver)
-
 export default function RemoveLiquidity({
   history,
   match: {
@@ -306,6 +300,12 @@ export default function RemoveLiquidity({
       const flagFeeDelegate = await UseDeParam('KLAYTN_FEE_DELEGATE', 'N')
 
       if (flagFeeDelegate === "Y") {
+        const caverFeeDelegate = new Caver(process.env.REACT_APP_SIX_KLAYTN_EN_URL)
+        const feePayerAddress = process.env.REACT_APP_FEE_PAYER_ADDRESS
+
+        // @ts-ignore
+        const caver = new Caver(window.caver)
+
         await caver.klay.signTransaction({
           type: 'FEE_DELEGATED_SMART_CONTRACT_EXECUTION',
           from: account,

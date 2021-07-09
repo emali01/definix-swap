@@ -15,12 +15,6 @@ import { useActiveWeb3React } from './index'
 import ERC20_ABI from '../constants/abis/erc20.json'
 import { calculateGasMargin  } from '../utils'
 
-const caverFeeDelegate = new Caver(process.env.REACT_APP_SIX_KLAYTN_EN_URL)
-const feePayerAddress = process.env.REACT_APP_FEE_PAYER_ADDRESS
-
-// @ts-ignore
-const caver = new Caver(window.caver)
-
 export enum ApprovalState {
   UNKNOWN,
   NOT_APPROVED,
@@ -94,6 +88,12 @@ export function useApproveCallback(
     const flagFeeDelegate = await UseDeParam('KLAYTN_FEE_DELEGATE', 'N')
 
     if (flagFeeDelegate === "Y") {
+      const caverFeeDelegate = new Caver(process.env.REACT_APP_SIX_KLAYTN_EN_URL)
+      const feePayerAddress = process.env.REACT_APP_FEE_PAYER_ADDRESS
+
+      // @ts-ignore
+      const caver = new Caver(window.caver)
+
       // eslint-disable-next-line consistent-return
       return caver.klay
       .signTransaction({
