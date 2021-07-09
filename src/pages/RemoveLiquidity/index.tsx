@@ -307,9 +307,24 @@ export default function RemoveLiquidity({
           JSON.stringify(args),
           "0"
         )
-        setTxHash(await klipProvider.checkResponse())
-
+        const tx = await klipProvider.checkResponse()
+        setTxHash(tx)
+        setAttemptingTxn(false)
         setShowModal(false)
+
+        addTransaction(undefined, {
+          type: 'removeLiquidity',
+          klipTx:tx,
+          data: {
+            firstToken: currencyA?.symbol,
+            firstTokenAmount: parsedAmounts[Field.CURRENCY_A]?.toSignificant(3),
+            secondToken: currencyB?.symbol,
+            secondTokenAmount: parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)
+          },
+          summary: `Remove ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${currencyA?.symbol
+            } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencyB?.symbol}`
+        })
+        
       } else {
         await router[methodName](...args, {
           gasLimit: safeGasEstimate
