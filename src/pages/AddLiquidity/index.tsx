@@ -14,6 +14,7 @@ import { useCaverJsReact } from '@kanthakarn-test/caverjs-react-core'
 import { RowBetween, RowFixed } from 'components/Row'
 import { KlipConnector } from "@kanthakarn-test/klip-connector"
 import { Dots } from 'components/swap/styleds'
+import { Transaction } from "@ethersproject/transactions";
 import TransactionConfirmationModal, {
   ConfirmationModalContent,
   TransactionErrorContent,
@@ -25,9 +26,9 @@ import { Currency, currencyEquals, ETHER, TokenAmount, WETH } from 'definixswap-
 import { useActiveWeb3React } from 'hooks'
 import { useCurrency } from 'hooks/Tokens'
 import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
-import React, { useCallback, useState,useContext } from 'react'
+import React, { useCallback, useState, useContext } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
-
+import { useDispatch, useSelector } from 'react-redux'
 import { Field } from 'state/mint/actions'
 import { useDerivedMintInfo, useMintActionHandlers, useMintState } from 'state/mint/hooks'
 import { useTransactionAdder } from 'state/transactions/hooks'
@@ -48,6 +49,8 @@ import farms from '../../constants/farm'
 import { useHerodotusContract } from '../../hooks/useContract'
 import * as klipProvider from '../../hooks/KlipProvider'
 import { getAbiByName } from '../../hooks/HookHelper'
+// import { AppDispatch, AppState } from '../../state/index'
+// import { addTransaction as addTxn } from '../../state/transactions/actions'
 
 export default function AddLiquidity({
   match: {
@@ -60,7 +63,7 @@ export default function AddLiquidity({
   const { setShowModal } = useContext(KlipModalContext())
   const currencyA = useCurrency(currencyIdA)
   const currencyB = useCurrency(currencyIdB)
-  
+
   const herodotusContract = useHerodotusContract()
   const herodotusAddress = HERODOTUS_ADDRESS[chainId || '']
 
@@ -189,7 +192,7 @@ export default function AddLiquidity({
     setAttemptingTxn(true)
     // const aa = await estimate(...args, value ? { value } : {})
 
-    console.log("value ",value)
+
     if (isKlipConnector(connector)) {
       // klipProvider.genQRcodeContactInteract(router.address,JSON.stringify(method))
       setShowModal(true)
@@ -199,11 +202,27 @@ export default function AddLiquidity({
         JSON.stringify(args),
         value ? `${(+value._hex).toString()}` : "0"
       )
-      setTxHash(await klipProvider.checkResponse())
-      
+
+      const tx = await klipProvider.checkResponse()
+      setAttemptingTxn(false)
+
+
+      addTransaction(undefined, {
+        type: 'addLiquidity',
+        klipTx: tx,
+        data: {
+          firstToken: currencies[Field.CURRENCY_A]?.symbol,
+          firstTokenAmount: parsedAmounts[Field.CURRENCY_A]?.toSignificant(3),
+          secondToken: currencies[Field.CURRENCY_B]?.symbol,
+          secondTokenAmount: parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)
+        },
+        summary: `Add ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${currencies[Field.CURRENCY_A]?.symbol
+          } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencies[Field.CURRENCY_B]?.symbol}`
+      })
       setShowModal(false)
+      setTxHash(tx)
       // console.log("add lp method", JSON.stringify(args), "getAbiByName(methodName)", getAbiByName(methodName))
-      
+
     } else {
       await estimate(...args, value ? { value } : {})
         .then(estimatedGasLimit =>
