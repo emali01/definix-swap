@@ -17,15 +17,15 @@ export function useActiveWeb3React(): CaverJsReactContextInterface<CaverProvider
 export function useEagerConnect() {
   const { activate, active } = useCaverJsReactCore() // specifically using useCaverJsReactCore because of what this hook does
   const [tried, setTried] = useState(false)
-
+  const isInjectConnect = () => window.localStorage.getItem("connector") === "injected"
   useEffect(() => {
     injected.isAuthorized().then((isAuthorized) => {
       const hasSignedIn = window.localStorage.getItem('accountStatus')
-      if (isAuthorized && hasSignedIn) {
+      if (isAuthorized && hasSignedIn && isInjectConnect()) {
         activate(injected, undefined, true).catch(() => {
           setTried(true)
         })
-      } else if (isMobile && window.klaytn && hasSignedIn) {
+      } else if (isMobile && window.klaytn && hasSignedIn && isInjectConnect()) {
         activate(injected, undefined, true).catch(() => {
           setTried(true)
         })

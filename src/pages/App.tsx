@@ -79,11 +79,11 @@ export default function App() {
   const { account, activate } = useCaverJsReact()
 
   useEffect(() => {
-    if (!account && window.localStorage.getItem('accountStatus')) {
+    if (!account && window.localStorage.getItem('accountStatus') && checkConnector("injected")) {
       activate(injected)
     }
   }, [account, activate])
-
+  const checkConnector = (connector: string) => window.localStorage.getItem('connector') === connector
   useEffect(() => {
     if (selectedLanguage) {
       fetchTranslationsForSelectedLanguage()

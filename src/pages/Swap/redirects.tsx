@@ -10,6 +10,7 @@ export function RedirectPathToSwapOnly({ location }: RouteComponentProps) {
 }
 
 export function RedirectToSwap(props: RouteComponentProps<{ currencyIdA: string; currencyIdB: string }>) {
+  const isInjectConnect = () => window.localStorage.getItem("connector") === "injected"
   const { activate } = useCaverJsReact()
   const {
     match: {
@@ -17,22 +18,26 @@ export function RedirectToSwap(props: RouteComponentProps<{ currencyIdA: string;
     },
   } = props
   if (currencyIdA && currencyIdB && currencyIdA.toLowerCase() === currencyIdB.toLowerCase()) {
-    activate(injected)
+    if(isInjectConnect())
+      activate(injected)
     const translateToken = currencyIdA === "0x0000000000000000000000000000000000000000" ? "KLAY" : currencyIdA
     return <Redirect to={`/swap?inputCurrency=${translateToken}`} />
   }
   if (currencyIdA && !currencyIdB) {
-    activate(injected)
+    if(isInjectConnect())
+      activate(injected)
     const translateToken = currencyIdA === "0x0000000000000000000000000000000000000000" ? "KLAY" : currencyIdA
     return <Redirect to={`/swap?inputCurrency=${translateToken}`} />
   }
   if (currencyIdA && currencyIdB) {
-    activate(injected)
+    if(isInjectConnect())
+      activate(injected)
     const translateToken = currencyIdA === "0x0000000000000000000000000000000000000000" ? "KLAY" : currencyIdA
     const translateTokenB = currencyIdB === "0x0000000000000000000000000000000000000000" ? "KLAY" : currencyIdB
     return <Redirect to={`/swap?inputCurrency=${translateToken}&outputCurrency=${translateTokenB}`} />
   }
-  activate(injected)
+  if(isInjectConnect())
+    activate(injected)
   return <Swap {...props} />
 }
 

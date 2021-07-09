@@ -16,11 +16,14 @@ const UnlockButton: React.FC<ButtonProps> = props => {
     setShowModal(false)
   }
   const handleLogin = (connectorId: ConnectorId) => {
-    if (connectorId === "klip") {   
+    if (connectorId === "klip") {
+      window.localStorage.setItem("connector","klip")
       return activate(klip(showModalKlip, closeModalKlip))
-    } 
-      return activate(injected)
-    
+    }
+    window.localStorage.setItem("connector", "injected")
+    return activate(injected)
+
+
   }
 
   const { onPresentConnectModal } = useWalletModal(handleLogin, deactivate, account as string)

@@ -33,8 +33,10 @@ const Menu: React.FC = (props) => {
       account={account as string}
       login={(connectorId: ConnectorId) => {
         if (connectorId === "klip") {   
+          window.localStorage.setItem("connector","klip")
           return activate(klip(showModalKlip, closeModalKlip))
         } 
+        window.localStorage.setItem("connector","injected")
         return activate(injected)
       }}
       logout={deactivate}
