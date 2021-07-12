@@ -2,7 +2,7 @@ import { Contract } from '@ethersproject/contracts'
 import { ChainId, WETH } from 'definixswap-sdk'
 import { abi as IUniswapV2PairABI } from '@uniswap/v2-core/build/IUniswapV2Pair.json'
 import { useMemo } from 'react'
-import { HERODOTUS_ADDRESS } from '../constants'
+import { HERODOTUS_ADDRESS, DEPARAM_ADDRESS } from '../constants'
 import ENS_ABI from '../constants/abis/ens-registrar.json'
 import ENS_PUBLIC_RESOLVER_ABI from '../constants/abis/ens-public-resolver.json'
 import { ERC20_BYTES32_ABI } from '../constants/abis/erc20'
@@ -11,7 +11,6 @@ import WETH_ABI from '../constants/abis/weth.json'
 import HERODOTUS_ABI from '../constants/abis/herodotus.json'
 import { MULTICALL_ABI, MULTICALL_NETWORKS } from '../constants/multicall'
 import { getContract } from '../utils'
-import { getCaverContract } from '../utils/caver'
 import { useActiveWeb3React } from './index'
 
 // returns null on errors
@@ -21,7 +20,6 @@ function useContract(address: string | undefined, ABI: any, withSignerIfPossible
   return useMemo(() => {
     if (!address || !ABI || !library) return null
     try {
-      // return getCaverContract(address, ABI)
       return getContract(address, ABI, library, withSignerIfPossible && account ? account : undefined)
     } catch (error) {
       console.error('Failed to get contract', error)

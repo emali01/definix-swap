@@ -1,7 +1,9 @@
+import Caver from 'caver-js'
+import { ethers } from 'ethers'
 import { BigNumber } from '@ethersproject/bignumber'
 import { splitSignature } from '@ethersproject/bytes'
 import { Contract } from '@ethersproject/contracts'
-import { TransactionResponse } from '@ethersproject/providers'
+import { abi as IUniswapV2Router02ABI } from '@uniswap/v2-periphery/build/IUniswapV2Router02.json'
 import { BorderCard } from 'components/Card'
 import ConnectWalletButton from 'components/ConnectWalletButton'
 import TransactionConfirmationModal, {
@@ -18,6 +20,7 @@ import { ArrowDown, Plus } from 'react-feather'
 import { RouteComponentProps } from 'react-router'
 import { ThemeContext } from 'styled-components'
 import { Button, CardBody, Flex, Text } from 'uikit-dev'
+import UseDeParam from 'hooks/useDeParam'
 import { LeftPanel, MaxWidthLeft } from 'uikit-dev/components/TwoPanelLayout'
 import { AutoColumn, ColumnCenter } from '../../components/Column'
 import CurrencyInputPanel from '../../components/CurrencyInputPanel'
@@ -37,6 +40,7 @@ import { usePairContract } from '../../hooks/useContract'
 import { Field } from '../../state/burn/actions'
 import { useBurnActionHandlers, useBurnState, useDerivedBurnInfo } from '../../state/burn/hooks'
 import { useTransactionAdder } from '../../state/transactions/hooks'
+import { KlaytnTransactionResponse } from '../../state/transactions/actions'
 import { useUserDeadline, useUserSlippageTolerance } from '../../state/user/hooks'
 import { calculateGasMargin, calculateSlippageAmount, getRouterContract } from '../../utils'
 import { currencyId } from '../../utils/currencyId'
@@ -298,7 +302,6 @@ export default function RemoveLiquidity({
 
       setAttemptingTxn(true)
 
-
       if (isKlipConnector(connector)) {
         setShowModal(true)
         klipProvider.genQRcodeContactInteract(
@@ -314,7 +317,7 @@ export default function RemoveLiquidity({
 
         addTransaction(undefined, {
           type: 'removeLiquidity',
-          klipTx:tx,
+          klipTx: tx,
           data: {
             firstToken: currencyA?.symbol,
             firstTokenAmount: parsedAmounts[Field.CURRENCY_A]?.toSignificant(3),
@@ -324,37 +327,98 @@ export default function RemoveLiquidity({
           summary: `Remove ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${currencyA?.symbol
             } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencyB?.symbol}`
         })
-        
+
       } else {
-        await router[methodName](...args, {
-          gasLimit: safeGasEstimate
-        })
-          .then((response: TransactionResponse) => {
-            setAttemptingTxn(false)
+        const iface = new ethers.utils.Interface(IUniswapV2Router02ABI)
 
-            addTransaction(response, {
-              type: 'removeLiquidity',
-              data: {
-                firstToken: currencyA?.symbol,
-                firstTokenAmount: parsedAmounts[Field.CURRENCY_A]?.toSignificant(3),
-                secondToken: currencyB?.symbol,
-                secondTokenAmount: parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)
-              },
-              summary: `Remove ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${currencyA?.symbol
-                } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencyB?.symbol}`
+        const flagFeeDelegate = await UseDeParam('KLAYTN_FEE_DELEGATE', 'N')
+
+        if (flagFeeDelegate === "Y") {
+          const caverFeeDelegate = new Caver(process.env.REACT_APP_SIX_KLAYTN_EN_URL)
+          const feePayerAddress = process.env.REACT_APP_FEE_PAYER_ADDRESS
+
+          // @ts-ignore
+          const caver = new Caver(window.caver)
+
+          await caver.klay.signTransaction({
+            type: 'FEE_DELEGATED_SMART_CONTRACT_EXECUTION',
+            from: account,
+            to: ROUTER_ADDRESS,
+            gas: safeGasEstimate,
+            data: iface.encodeFunctionData(methodName, [...args]),
+          })
+            .then(function (userSignTx) {
+              // console.log('userSignTx tx = ', userSignTx)
+              const userSigned = caver.transaction.decode(userSignTx.rawTransaction)
+              // console.log('userSigned tx = ', userSigned)
+              userSigned.feePayer = feePayerAddress
+              // console.log('userSigned After add feePayer tx = ', userSigned)
+
+              caverFeeDelegate.rpc.klay.signTransactionAsFeePayer(userSigned).then(function (feePayerSigningResult) {
+                // console.log('feePayerSigningResult tx = ', feePayerSigningResult)
+                caver.rpc.klay.sendRawTransaction(feePayerSigningResult.raw).then((response: KlaytnTransactionResponse) => {
+                  console.log(methodName, ' tx = ', response)
+                  setAttemptingTxn(false)
+
+                  addTransaction(response, {
+                    type: 'removeLiquidity',
+                    data: {
+                      firstToken: currencyA?.symbol,
+                      firstTokenAmount: parsedAmounts[Field.CURRENCY_A]?.toSignificant(3),
+                      secondToken: currencyB?.symbol,
+                      secondTokenAmount: parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)
+                    },
+                    summary: `Remove ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${currencyA?.symbol
+                      } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencyB?.symbol}`
+                  })
+
+                  setTxHash(response.transactionHash)
+                }).catch(e => {
+                  setAttemptingTxn(false)
+                  setErrorMsg(e.message)
+                  // we only care if the error is something _other_ than the user rejected the tx
+                  console.error(e)
+                })
+              })
             })
+            .catch(e => {
+              setAttemptingTxn(false)
+              setErrorMsg(e.message)
+              // we only care if the error is something _other_ than the user rejected the tx
+              console.error(e)
+            })
+        } else {
+          await router[methodName](...args, {
+            gasLimit: safeGasEstimate
+          })
+            .then((response: KlaytnTransactionResponse) => {
+              setAttemptingTxn(false)
 
-            setTxHash(response.hash)
-          })
-          .catch((e: Error) => {
-            setAttemptingTxn(false)
-            setErrorMsg(e.message)
-            // we only care if the error is something _other_ than the user rejected the tx
-            console.error(e)
-          })
+              addTransaction(response, {
+                type: 'removeLiquidity',
+                data: {
+                  firstToken: currencyA?.symbol,
+                  firstTokenAmount: parsedAmounts[Field.CURRENCY_A]?.toSignificant(3),
+                  secondToken: currencyB?.symbol,
+                  secondTokenAmount: parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)
+                },
+                summary: `Remove ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${currencyA?.symbol
+                  } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencyB?.symbol}`
+              })
+
+              setTxHash(response.hash)
+            })
+            .catch((e: Error) => {
+              setAttemptingTxn(false)
+              setErrorMsg(e.message)
+              // we only care if the error is something _other_ than the user rejected the tx
+              console.error(e)
+            })
+        }
       }
     }
   }
+
 
   const modalHeader = useCallback(() => {
     return (

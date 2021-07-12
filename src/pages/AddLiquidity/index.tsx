@@ -1,7 +1,9 @@
 import numeral from 'numeral'
+import Caver from 'caver-js'
+import { ethers } from 'ethers'
 import { BigNumber } from '@ethersproject/bignumber'
+import { abi as IUniswapV2Router02ABI } from '@uniswap/v2-periphery/build/IUniswapV2Router02.json'
 import BigNumberJs from 'bignumber.js'
-import { TransactionResponse } from '@ethersproject/providers'
 import { BorderCard } from 'components/Card'
 import { AutoColumn, ColumnCenter } from 'components/Column'
 import ConnectWalletButton from 'components/ConnectWalletButton'
@@ -20,7 +22,6 @@ import TransactionConfirmationModal, {
   TransactionErrorContent,
   TransactionSubmittedContent
 } from 'components/TransactionConfirmationModal'
-import { ExternalLink } from 'components/Shared'
 import { PairState } from 'data/Reserves'
 import { Currency, currencyEquals, ETHER, TokenAmount, WETH } from 'definixswap-sdk'
 import { useActiveWeb3React } from 'hooks'
@@ -32,6 +33,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Field } from 'state/mint/actions'
 import { useDerivedMintInfo, useMintActionHandlers, useMintState } from 'state/mint/hooks'
 import { useTransactionAdder } from 'state/transactions/hooks'
+import { KlaytnTransactionResponse } from 'state/transactions/actions'
 import { useIsExpertMode, useUserDeadline, useUserSlippageTolerance } from 'state/user/hooks'
 import { AddIcon, Button, CardBody, Text, Text as UIKitText } from 'uikit-dev'
 import liquidity from 'uikit-dev/animation/liquidity.json'
@@ -40,6 +42,7 @@ import { calculateGasMargin, calculateSlippageAmount, getRouterContract } from '
 import { currencyId } from 'utils/currencyId'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { wrappedCurrency } from 'utils/wrappedCurrency'
+import UseDeParam from 'hooks/useDeParam'
 import { ROUTER_ADDRESS, HERODOTUS_ADDRESS } from '../../constants'
 import AppBody from '../AppBody'
 import { Wrapper } from '../Pool/styleds'
@@ -51,6 +54,7 @@ import * as klipProvider from '../../hooks/KlipProvider'
 import { getAbiByName } from '../../hooks/HookHelper'
 // import { AppDispatch, AppState } from '../../state/index'
 // import { addTransaction as addTxn } from '../../state/transactions/actions'
+import HERODOTUS_ABI from '../../constants/abis/herodotus.json'
 
 export default function AddLiquidity({
   match: {
@@ -136,12 +140,7 @@ export default function AddLiquidity({
   const [approvalLP, approveLPCallback] = useApproveCallback(liquidityMinted, herodotusAddress)
 
   const addTransaction = useTransactionAdder()
-  const klipCalValue = (value: string) => {
-    const floorDigit = 10 ** 13
-    const val = (+value - (+value % floorDigit))
-    const plusDigit = 10 ** 14
-    return (val + plusDigit).toString()
-  }
+
   async function onAdd() {
     if (!chainId || !library || !account) return
     const router = getRouterContract(chainId, library, account)
@@ -159,10 +158,10 @@ export default function AddLiquidity({
     const deadlineFromNow = Math.ceil(Date.now() / 1000) + deadline
 
     let estimate
-    let method: (...args: any) => Promise<TransactionResponse>
+    let method: (...args: any) => Promise<KlaytnTransactionResponse>
     let args: Array<string | string[] | number>
     let value: BigNumber | null
-    let methodName: string
+    let methodName
     if (currencyA === ETHER || currencyB === ETHER) {
       const tokenBIsETH = currencyB === ETHER
       estimate = router.estimateGas.addLiquidityETH
@@ -196,79 +195,123 @@ export default function AddLiquidity({
 
     setAttemptingTxn(true)
     // const aa = await estimate(...args, value ? { value } : {})
-
-
     if (isKlipConnector(connector)) {
-      const tokenBIsETH = currencyB === ETHER
-    
       setShowModal(true)
-     
-      // const klipValue = BigNumber.from((tokenBIsETH ? parsedAmountB : parsedAmountA).raw.toString())
-      let valueFixDigit = value ? Number((+value._hex).toString()) : 0 
-      valueFixDigit *= 10**(-18)
-      valueFixDigit = Number.parseFloat(valueFixDigit.toFixed(6))
-      
-      valueFixDigit *= 10**18
-      
-      const status = await klipProvider.genQRcodeContactInteract(
+      klipProvider.genQRcodeContactInteract(
         router.address,
         JSON.stringify(getAbiByName(methodName)),
         JSON.stringify(args),
-        valueFixDigit.toString()
+        "0"
       )
-      if (status === "error") {
-        setAttemptingTxn(false)
-        setShowModal(false)
-        // we only care if the error is something _other_ than the user rejected the tx
-        setErrorMsg("error")
-      } else {
-        const tx = await klipProvider.checkResponse()
-        setAttemptingTxn(false)
+      const tx = await klipProvider.checkResponse()
+      setTxHash(tx)
+      setAttemptingTxn(false)
+      setShowModal(false)
 
-
-        addTransaction(undefined, {
-          type: 'addLiquidity',
-          klipTx: tx,
-          data: {
-            firstToken: currencies[Field.CURRENCY_A]?.symbol,
-            firstTokenAmount: parsedAmounts[Field.CURRENCY_A]?.toSignificant(3),
-            secondToken: currencies[Field.CURRENCY_B]?.symbol,
-            secondTokenAmount: parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)
-          },
-          summary: `Add ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${currencies[Field.CURRENCY_A]?.symbol
-            } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencies[Field.CURRENCY_B]?.symbol}`
-        })
-        setShowModal(false)
-        setTxHash(tx)
-      }
-
-
-      // console.log("add lp method", JSON.stringify(args), "getAbiByName(methodName)", getAbiByName(methodName))
+      addTransaction(undefined, {
+        type: 'removeLiquidity',
+        klipTx: tx,
+        data: {
+          firstToken: currencyA?.symbol,
+          firstTokenAmount: parsedAmounts[Field.CURRENCY_A]?.toSignificant(3),
+          secondToken: currencyB?.symbol,
+          secondTokenAmount: parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)
+        },
+        summary: `Remove ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${currencyA?.symbol
+          } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencyB?.symbol}`
+      })
 
     } else {
+      const iface = new ethers.utils.Interface(IUniswapV2Router02ABI)
+
+      const flagFeeDelegate = await UseDeParam('KLAYTN_FEE_DELEGATE', 'N')
+
       await estimate(...args, value ? { value } : {})
-        .then(estimatedGasLimit =>
-          method(...args, {
-            ...(value ? { value } : {}),
-            gasLimit: calculateGasMargin(estimatedGasLimit)
-          }).then(response => {
-            setAttemptingTxn(false)
+        .then(estimatedGasLimit => {
+          if (flagFeeDelegate === "Y") {
+            const caverFeeDelegate = new Caver(process.env.REACT_APP_SIX_KLAYTN_EN_URL)
+            const feePayerAddress = process.env.REACT_APP_FEE_PAYER_ADDRESS
 
-            addTransaction(response, {
-              type: 'addLiquidity',
-              data: {
-                firstToken: currencies[Field.CURRENCY_A]?.symbol,
-                firstTokenAmount: parsedAmounts[Field.CURRENCY_A]?.toSignificant(3),
-                secondToken: currencies[Field.CURRENCY_B]?.symbol,
-                secondTokenAmount: parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)
-              },
-              summary: `Add ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${currencies[Field.CURRENCY_A]?.symbol
-                } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencies[Field.CURRENCY_B]?.symbol}`
+            // @ts-ignore
+            const caver = new Caver(window.caver)
+
+            caver.klay.signTransaction({
+              type: 'FEE_DELEGATED_SMART_CONTRACT_EXECUTION',
+              from: account,
+              to: ROUTER_ADDRESS,
+              gas: calculateGasMargin(estimatedGasLimit),
+              value,
+              data: iface.encodeFunctionData(methodName, [...args]),
             })
+              .then(function (userSignTx) {
+                // console.log('userSignTx tx = ', userSignTx)
+                const userSigned = caver.transaction.decode(userSignTx.rawTransaction)
+                // console.log('userSigned tx = ', userSigned)
+                userSigned.feePayer = feePayerAddress
+                // console.log('userSigned After add feePayer tx = ', userSigned)
 
-            setTxHash(response.hash)
-          })
-        )
+                caverFeeDelegate.rpc.klay.signTransactionAsFeePayer(userSigned).then(function (feePayerSigningResult) {
+                  // console.log('feePayerSigningResult tx = ', feePayerSigningResult)
+                  caver.rpc.klay.sendRawTransaction(feePayerSigningResult.raw).then((response: KlaytnTransactionResponse) => {
+                    console.log(methodName, ' tx = ', response)
+                    setAttemptingTxn(false)
+
+                    addTransaction(response, {
+                      type: 'addLiquidity',
+                      data: {
+                        firstToken: currencies[Field.CURRENCY_A]?.symbol,
+                        firstTokenAmount: parsedAmounts[Field.CURRENCY_A]?.toSignificant(3),
+                        secondToken: currencies[Field.CURRENCY_B]?.symbol,
+                        secondTokenAmount: parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)
+                      },
+                      summary: `Add ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${currencies[Field.CURRENCY_A]?.symbol
+                        } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencies[Field.CURRENCY_B]?.symbol}`
+                    })
+
+                    setTxHash(response.transactionHash)
+                  }).catch(e => {
+                    setAttemptingTxn(false)
+
+                    // we only care if the error is something _other_ than the user rejected the tx
+                    if (e?.code !== 4001) {
+                      console.error(e)
+                      setErrorMsg(e)
+                    }
+                  })
+                })
+              })
+              .catch(e => {
+                setAttemptingTxn(false)
+
+                // we only care if the error is something _other_ than the user rejected the tx
+                if (e?.code !== 4001) {
+                  console.error(e)
+                  setErrorMsg(e)
+                }
+              })
+          } else {
+            method(...args, {
+              ...(value ? { value } : {}),
+              gasLimit: calculateGasMargin(estimatedGasLimit)
+            }).then(response => {
+              setAttemptingTxn(false)
+
+              addTransaction(response, {
+                type: 'addLiquidity',
+                data: {
+                  firstToken: currencies[Field.CURRENCY_A]?.symbol,
+                  firstTokenAmount: parsedAmounts[Field.CURRENCY_A]?.toSignificant(3),
+                  secondToken: currencies[Field.CURRENCY_B]?.symbol,
+                  secondTokenAmount: parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)
+                },
+                summary: `Add ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${currencies[Field.CURRENCY_A]?.symbol
+                  } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencies[Field.CURRENCY_B]?.symbol}`
+              })
+
+              setTxHash(response.hash)
+            })
+          }
+        })
         .catch(e => {
           setAttemptingTxn(false)
 
@@ -278,7 +321,7 @@ export default function AddLiquidity({
             setErrorMsg(e)
           }
         })
-    }// else 
+    }
   }
 
   const modalHeader = useCallback(() => {
@@ -414,13 +457,57 @@ export default function AddLiquidity({
                         farm.pid,
                         new BigNumberJs(liquidityMinted.toExact()).times(new BigNumberJs(10).pow(18)).toString()
                       ]
+
+                      const iface = new ethers.utils.Interface(HERODOTUS_ABI)
+
+                      const flagFeeDelegate = UseDeParam('KLAYTN_FEE_DELEGATE', 'N').then(function (result) {
+                        return result
+                      })
+
+                      if (flagFeeDelegate) {
+                        const caverFeeDelegate = new Caver(process.env.REACT_APP_SIX_KLAYTN_EN_URL)
+                        const feePayerAddress = process.env.REACT_APP_FEE_PAYER_ADDRESS
+
+                        // @ts-ignore
+                        const caver = new Caver(window.caver)
+
+                        return caver.klay
+                          .signTransaction({
+                            type: 'FEE_DELEGATED_SMART_CONTRACT_EXECUTION',
+                            from: account,
+                            to: herodotusAddress,
+                            gas: calculateGasMargin(estimatedGasLimit),
+                            data: iface.encodeFunctionData("deposit", [...args]),
+                          })
+                          .then(function (userSignTx) {
+                            // console.log('userSignTx tx = ', userSignTx)
+                            const userSigned = caver.transaction.decode(userSignTx.rawTransaction)
+                            // console.log('userSigned tx = ', userSigned)
+                            userSigned.feePayer = feePayerAddress
+                            // console.log('userSigned After add feePayer tx = ', userSigned)
+
+                            return caverFeeDelegate.rpc.klay.signTransactionAsFeePayer(userSigned).then(function (feePayerSigningResult) {
+                              // console.log('feePayerSigningResult tx = ', feePayerSigningResult)
+                              return caverFeeDelegate.rpc.klay
+                                .sendRawTransaction(feePayerSigningResult.raw)
+                                .on('transactionHash', (depositTx) => {
+                                  console.log('deposit tx = ', depositTx)
+                                  return depositTx.transactionHash
+                                })
+                            })
+                          })
+                          .catch(function (tx) {
+                            console.log('deposit error tx = ', tx)
+                            return tx.transactionHash
+                          })
+                      }
+
                       return herodotusContract?.deposit(...args, {
                         gasLimit: calculateGasMargin(estimatedGasLimit)
                       })
                     }
                     return true
                   })
-
                   .then(function (tx) {
                     window.location.href = `${process.env.REACT_APP_FRONTEND_URL}/farm`
                     return true
@@ -441,7 +528,7 @@ export default function AddLiquidity({
         }
       />
     ),
-    [chainId, modalHeader, txHash, currencies, herodotusContract, liquidityMinted, approvalLP, approveLPCallback]
+    [chainId, modalHeader, txHash, currencies, herodotusContract, herodotusAddress, liquidityMinted, approvalLP, approveLPCallback, account]
   )
 
   const errorContent = useCallback(

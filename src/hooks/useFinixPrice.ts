@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import { useActiveWeb3React } from './index'
 import multicall from '../utils/multicall'
 import {
-  multicallAdress,
+  MULTICALL_ADDRESS,
   FINIX_SIX_LP,
   FINIX_KUSDT_LP,
   FINIX_KLAY_LP,
@@ -65,7 +65,7 @@ const getTotalBalanceLp = async input => {
 export default function useFinixPrice(): number {
   const [currentPrice, setCurrentPrice] = useState(0)
   const { account, chainId = process.env.REACT_APP_CHAIN_ID || '' } = useActiveWeb3React()
-  const multicallContractAddress = multicallAdress[chainId || process.env.REACT_APP_CHAIN_ID || '56']
+  const multicallContractAddress = MULTICALL_ADDRESS[chainId || process.env.REACT_APP_CHAIN_ID || '56']
   useEffect(() => {
     // console.log(account)
     const fetchPromise = [

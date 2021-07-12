@@ -88,7 +88,7 @@ export default {
       address: process.env.REACT_APP_FINIX_ADDRESS_MAINNET,
       chainId: 8217,
       decimals: 18,
-      logoURI: '/images/coins/finix.png'
+      logoURI: '/images/coins/FINIX.png'
     },
     {
       name: 'SIX',
@@ -96,7 +96,7 @@ export default {
       address: process.env.REACT_APP_SIX_ADDRESS_MAINNET,
       chainId: 8217,
       decimals: 18,
-      logoURI: '/images/coins/six.png'
+      logoURI: '/images/coins/SIX.png'
     },
     {
       name: 'KUSDT',

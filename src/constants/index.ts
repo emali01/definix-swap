@@ -7,7 +7,12 @@ type ChainTokenList = {
   readonly [chainId in ChainId]: Token[]
 }
 
-export const multicallAdress = {
+export const DEPARAM_ADDRESS = {
+  [ChainId.MAINNET]: process.env.REACT_APP_DEPARAM_ADDRESS_MAINNET || "",
+  [ChainId.BAOBABTESTNET]: process.env.REACT_APP_DEPARAM_ADDRESS_TESTNET || "",
+}
+
+export const MULTICALL_ADDRESS = {
   [ChainId.MAINNET]: process.env.REACT_APP_MULTICALL_ADDRESS_MAINNET || "",
   [ChainId.BAOBABTESTNET]: process.env.REACT_APP_MULTICALL_ADDRESS_TESTNET || "",
 }
