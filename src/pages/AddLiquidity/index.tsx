@@ -200,23 +200,21 @@ export default function AddLiquidity({
 
     if (isKlipConnector(connector)) {
       const tokenBIsETH = currencyB === ETHER
-      console.log(
-        (tokenBIsETH ? parsedAmountA : parsedAmountB).raw.toString(), "a", // token desired
-        amountsMin[tokenBIsETH ? Field.CURRENCY_A : Field.CURRENCY_B].toString(), "xx", // token min
-        amountsMin[tokenBIsETH ? Field.CURRENCY_B : Field.CURRENCY_A].toString(), " 2",
-        tokenBIsETH)
-      // klipProvider.genQRcodeContactInteract(router.address,JSON.stringify(method))
+    
       setShowModal(true)
-      // const numberValueToken = value ? `${(+value._hex).toString()}` : "0"
-      // const valuEth = (tokenBIsETH ? parsedAmountA : parsedAmountB).raw.toString()
-      // const valueKlip = (methodName === "addLiquidityETH") ? valuEth : numberValueToken
-      const klipValue = BigNumber.from((tokenBIsETH ? parsedAmountB : parsedAmountA).raw.toString())
-      console.log("tokenBIsETH ",tokenBIsETH)
+     
+      // const klipValue = BigNumber.from((tokenBIsETH ? parsedAmountB : parsedAmountA).raw.toString())
+      let valueFixDigit = value ? Number((+value._hex).toString()) : 0 
+      valueFixDigit *= 10**(-18)
+      valueFixDigit = Number.parseFloat(valueFixDigit.toFixed(6))
+      
+      valueFixDigit *= 10**18
+      
       const status = await klipProvider.genQRcodeContactInteract(
         router.address,
         JSON.stringify(getAbiByName(methodName)),
         JSON.stringify(args),
-        value ? `${(+klipValue._hex).toString()}` : "0"
+        valueFixDigit.toString()
       )
       if (status === "error") {
         setAttemptingTxn(false)
