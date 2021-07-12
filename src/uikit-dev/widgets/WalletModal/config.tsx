@@ -1,5 +1,6 @@
 import Kaikas from './icons/Kaikas'
 import Dcent from './icons/Dcent'
+import TokenPocket from './icons/TokenPocket'
 import { Config } from './types'
 
 const connectors: Config[] = [
@@ -11,6 +12,11 @@ const connectors: Config[] = [
   {
     title: 'D`CENT',
     icon: Dcent,
+    connectorId: 'injected',
+  },
+  {
+    title: 'TokenPocket',
+    icon: TokenPocket,
     connectorId: 'injected',
   },
 ]
