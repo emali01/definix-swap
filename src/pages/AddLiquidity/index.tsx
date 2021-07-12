@@ -136,7 +136,12 @@ export default function AddLiquidity({
   const [approvalLP, approveLPCallback] = useApproveCallback(liquidityMinted, herodotusAddress)
 
   const addTransaction = useTransactionAdder()
-
+  const klipCalValue = (value: string) => {
+    const floorDigit = 10 ** 13
+    const val = (+value - (+value % floorDigit))
+    const plusDigit = 10 ** 14
+    return (val + plusDigit).toString()
+  }
   async function onAdd() {
     if (!chainId || !library || !account) return
     const router = getRouterContract(chainId, library, account)
@@ -194,33 +199,52 @@ export default function AddLiquidity({
 
 
     if (isKlipConnector(connector)) {
+      const tokenBIsETH = currencyB === ETHER
+      console.log(
+        (tokenBIsETH ? parsedAmountA : parsedAmountB).raw.toString(), "a", // token desired
+        amountsMin[tokenBIsETH ? Field.CURRENCY_A : Field.CURRENCY_B].toString(), "xx", // token min
+        amountsMin[tokenBIsETH ? Field.CURRENCY_B : Field.CURRENCY_A].toString(), " 2",
+        tokenBIsETH)
       // klipProvider.genQRcodeContactInteract(router.address,JSON.stringify(method))
       setShowModal(true)
-      klipProvider.genQRcodeContactInteract(
+      // const numberValueToken = value ? `${(+value._hex).toString()}` : "0"
+      // const valuEth = (tokenBIsETH ? parsedAmountA : parsedAmountB).raw.toString()
+      // const valueKlip = (methodName === "addLiquidityETH") ? valuEth : numberValueToken
+      const klipValue = BigNumber.from((tokenBIsETH ? parsedAmountB : parsedAmountA).raw.toString())
+      console.log("tokenBIsETH ",tokenBIsETH)
+      const status = await klipProvider.genQRcodeContactInteract(
         router.address,
         JSON.stringify(getAbiByName(methodName)),
         JSON.stringify(args),
-        value ? `${(+value._hex).toString()}` : "0"
+        value ? `${(+klipValue._hex).toString()}` : "0"
       )
+      if (status === "error") {
+        setAttemptingTxn(false)
+        setShowModal(false)
+        // we only care if the error is something _other_ than the user rejected the tx
+        setErrorMsg("error")
+      } else {
+        const tx = await klipProvider.checkResponse()
+        setAttemptingTxn(false)
 
-      const tx = await klipProvider.checkResponse()
-      setAttemptingTxn(false)
+
+        addTransaction(undefined, {
+          type: 'addLiquidity',
+          klipTx: tx,
+          data: {
+            firstToken: currencies[Field.CURRENCY_A]?.symbol,
+            firstTokenAmount: parsedAmounts[Field.CURRENCY_A]?.toSignificant(3),
+            secondToken: currencies[Field.CURRENCY_B]?.symbol,
+            secondTokenAmount: parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)
+          },
+          summary: `Add ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${currencies[Field.CURRENCY_A]?.symbol
+            } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencies[Field.CURRENCY_B]?.symbol}`
+        })
+        setShowModal(false)
+        setTxHash(tx)
+      }
 
 
-      addTransaction(undefined, {
-        type: 'addLiquidity',
-        klipTx: tx,
-        data: {
-          firstToken: currencies[Field.CURRENCY_A]?.symbol,
-          firstTokenAmount: parsedAmounts[Field.CURRENCY_A]?.toSignificant(3),
-          secondToken: currencies[Field.CURRENCY_B]?.symbol,
-          secondTokenAmount: parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)
-        },
-        summary: `Add ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${currencies[Field.CURRENCY_A]?.symbol
-          } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencies[Field.CURRENCY_B]?.symbol}`
-      })
-      setShowModal(false)
-      setTxHash(tx)
       // console.log("add lp method", JSON.stringify(args), "getAbiByName(methodName)", getAbiByName(methodName))
 
     } else {

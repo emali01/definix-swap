@@ -185,21 +185,21 @@ export function useSwapCallback(
           gasEstimate,
         } = successfulEstimation
         if (isKlipConnector(connector)) {
-          // return "string"
-          // methodName
-          // console.log(methodName, " call:", contract[methodName])
-
+          // console.log("swapCalls", successfulEstimation)
           const abi = JSON.stringify(getAbiByName(methodName))
           const input = JSON.stringify(convertArgKlip(args, abi))
           if (ROUTER_ADDRESS) {
             setShowModal(true)
-            klipProvider.genQRcodeContactInteract(ROUTER_ADDRESS, abi, input, (+value).toString())
-
-            const klipTx = await klipProvider.checkResponse()
+            const statusCallKlip = await klipProvider.genQRcodeContactInteract(ROUTER_ADDRESS, abi, input, (+value).toString())
+            // console.log("status ss", statusCallKlip)
+            if (statusCallKlip === "success") {
+              const klipTx = await klipProvider.checkResponse()
+              setShowModal(false)
+              return klipTx
+            }
             setShowModal(false)
+            throw new Error('error dont have gas')
 
-
-            return klipTx
           }
         }
         return contract[methodName](...args, {

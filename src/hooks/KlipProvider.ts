@@ -69,7 +69,7 @@ export const checkResponse = async (): Promise<string> => {
 
 export const getResultContract = async () => {
   const url = `https://a2a-api.klipwallet.com/v2/a2a/result?request_key=${requestKey}`
-  // const url = `http://localhost:8080`
+  // const url = `http://localhost:8080/con`
   const res = await axios.get(url)
   console.log("request status : ", res.data.status)
   if (res.data.status == "completed") {
@@ -83,7 +83,7 @@ export const getResultContract = async () => {
   }
 
 }
-export const genQRcodeContactInteract = (contractAddress: string, abi: string, input: string, value: string) => {
+export const genQRcodeContactInteract = async (contractAddress: string, abi: string, input: string, value: string) => {
   initData()
   const mockData = {
     "bapp": {
@@ -97,7 +97,7 @@ export const genQRcodeContactInteract = (contractAddress: string, abi: string, i
       "params": input
     }
   }
-  axios.post('https://a2a-api.klipwallet.com/v2/a2a/prepare', mockData).then((response) => {
+  return axios.post('https://a2a-api.klipwallet.com/v2/a2a/prepare', mockData).then((response) => {
     requestKey = response.data.request_key
     console.log("response.data.request_key", response.data.request_key)
     QRcode.toCanvas(
@@ -107,6 +107,9 @@ export const genQRcodeContactInteract = (contractAddress: string, abi: string, i
         intervalCheckResult = setInterval(getResultContract, 1000)
       }
     )
+    return "success"
+  }).catch( e =>{
+    return "error"
   })
 }
 
