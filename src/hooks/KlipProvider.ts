@@ -32,8 +32,8 @@ export const genQRcode = () => {
   })
 }
 const getResult = async () => {
-  // const url =`https://a2a-api.klipwallet.com/v2/a2a/result?request_key=${request_key}`
-  const url = `http://localhost:8080`
+  const url =`https://a2a-api.klipwallet.com/v2/a2a/result?request_key=${requestKey}`
+  // const url = `http://localhost:8080`
   const res = await axios.get(url)
   console.log("request status : ", res.data.status)
   if (res.data.status == "completed") {
