@@ -161,7 +161,34 @@ const WETH_ONLY: ChainTokenList = {
 // used to construct intermediary pairs for trading
 export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
   ...WETH_ONLY,
-  [ChainId.MAINNET]: [...WETH_ONLY[ChainId.MAINNET], DAI, USDT],
+  [ChainId.BAOBABTESTNET]: [
+      new Token(ChainId.BAOBABTESTNET, SIX_ADDRESS[ChainId.BAOBABTESTNET], 18, 'SIX', 'SIX Token'),
+      new Token(ChainId.BAOBABTESTNET, FINIX_ADDRESS[ChainId.BAOBABTESTNET], 18, 'FINIX', 'FINIX Token'),
+      new Token(ChainId.BAOBABTESTNET, KUSDT_ADDRESS[ChainId.BAOBABTESTNET], 18, 'KUSDT', 'KUSDT Token'),
+      new Token(ChainId.BAOBABTESTNET, WKLAY_ADDRESS[ChainId.BAOBABTESTNET], 18, 'WKLAY', 'Wrapped KLAY'),
+      new Token(ChainId.BAOBABTESTNET, KUSDT_ADDRESS[ChainId.BAOBABTESTNET], 18, 'KUSDT', 'KUSDT Token'),
+      new Token(ChainId.BAOBABTESTNET, KSP_ADDRESS[ChainId.BAOBABTESTNET], 18, 'KSP', 'KLAY Swap Protocol'),
+      new Token(ChainId.BAOBABTESTNET, KDAI_ADDRESS[ChainId.BAOBABTESTNET], 18, 'KDAI', 'KDAI Token'),
+      new Token(ChainId.BAOBABTESTNET, KETH_ADDRESS[ChainId.BAOBABTESTNET], 18, 'KETH', 'KETH Token'),
+      new Token(ChainId.BAOBABTESTNET, KWBTC_ADDRESS[ChainId.BAOBABTESTNET], 18, 'KBTC', 'KBTC Token'),
+      new Token(ChainId.BAOBABTESTNET, KXRP_ADDRESS[ChainId.BAOBABTESTNET], 18, 'KXRP', 'KXRP Token'),
+      new Token(ChainId.BAOBABTESTNET, KBNB_ADDRESS[ChainId.BAOBABTESTNET], 18, 'KBNB', 'KBNB Token'),
+
+  ],
+  [ChainId.MAINNET]: [...WETH_ONLY[ChainId.MAINNET], DAI, USDT,
+      new Token(ChainId.BAOBABTESTNET, SIX_ADDRESS[ChainId.MAINNET], 18, 'SIX', 'SIX Token'),
+      new Token(ChainId.BAOBABTESTNET, FINIX_ADDRESS[ChainId.MAINNET], 18, 'FINIX', 'FINIX Token'),
+      new Token(ChainId.BAOBABTESTNET, KUSDT_ADDRESS[ChainId.MAINNET], 18, 'KUSDT', 'KUSDT Token'),
+      new Token(ChainId.BAOBABTESTNET, WKLAY_ADDRESS[ChainId.MAINNET], 18, 'WKLAY', 'Wrapped KLAY'),
+      new Token(ChainId.BAOBABTESTNET, KUSDT_ADDRESS[ChainId.MAINNET], 18, 'KUSDT', 'KUSDT Token'),
+      new Token(ChainId.BAOBABTESTNET, KSP_ADDRESS[ChainId.MAINNET], 18, 'KSP', 'KLAY Swap Protocol'),
+      new Token(ChainId.BAOBABTESTNET, KDAI_ADDRESS[ChainId.MAINNET], 18, 'KDAI', 'KDAI Token'),
+      new Token(ChainId.BAOBABTESTNET, KWBTC_ADDRESS[ChainId.MAINNET], 18, 'KBTC', 'KBTC Token'),
+      new Token(ChainId.BAOBABTESTNET, KETH_ADDRESS[ChainId.MAINNET], 18, 'KETH', 'KETH Token'),
+      new Token(ChainId.BAOBABTESTNET, KXRP_ADDRESS[ChainId.MAINNET], 18, 'KXRP', 'KXRP Token'),
+      new Token(ChainId.BAOBABTESTNET, KBNB_ADDRESS[ChainId.MAINNET], 18, 'KBNB', 'KBNB Token'),
+
+  ],
 }
 
 /**
