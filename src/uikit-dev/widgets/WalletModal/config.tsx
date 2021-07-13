@@ -16,11 +16,11 @@ const connectors: Config[] = [
     icon: Dcent,
     connectorId: 'injected',
   },
-  {
-    title: 'Klip',
-    icon: KlipConnect,
-    connectorId: "klip"
-  },
+  // {
+  //   title: 'Klip',
+  //   icon: KlipConnect,
+  //   connectorId: "klip"
+  // },
   {
     title: 'TokenPocket',
     icon: TokenPocket,
