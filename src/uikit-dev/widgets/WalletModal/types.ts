@@ -12,6 +12,7 @@ export type ConnectorId =
   | 'walletconnect'
   | 'walletlink'
   | 'bsc'
+  | 'klip'
 
 export type Login = (connectorId: ConnectorId) => void
 

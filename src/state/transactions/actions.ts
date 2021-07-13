@@ -1,5 +1,10 @@
 import { createAction } from '@reduxjs/toolkit'
+import { TransactionResponse } from '@ethersproject/providers'
 import { ChainId } from 'definixswap-sdk'
+
+export interface KlaytnTransactionResponse extends TransactionResponse {
+  transactionHash: string;
+}
 
 export interface SerializableTransactionReceipt {
   to: string

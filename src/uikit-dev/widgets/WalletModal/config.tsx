@@ -1,11 +1,9 @@
-import Metamask from './icons/Metamask'
-import MathWallet from './icons/MathWallet'
-import TokenPocket from './icons/TokenPocket'
-import TrustWallet from './icons/TrustWallet'
-import WalletConnect from './icons/WalletConnect'
-import BinanceChain from './icons/BinanceChain'
 import Kaikas from './icons/Kaikas'
+import Dcent from './icons/Dcent'
+import KlipConnect from './icons/KlipConnect'
+import TokenPocket from './icons/TokenPocket'
 import { Config } from './types'
+
 
 const connectors: Config[] = [
   {
@@ -13,6 +11,21 @@ const connectors: Config[] = [
     icon: Kaikas,
     connectorId: 'injected',
   },
+  {
+    title: 'D`CENT',
+    icon: Dcent,
+    connectorId: 'injected',
+  },
+  {
+    title: 'Klip',
+    icon: KlipConnect,
+    connectorId: "klip"
+  },
+  {
+    title: 'TokenPocket',
+    icon: TokenPocket,
+    connectorId: 'injected',
+  }
 ]
 
 export default connectors

@@ -89,6 +89,7 @@ const UserBlock: React.FC<Props> = ({ account, login, logout, className = '', po
               onClick={() => {
                 logout()
                 window.localStorage.removeItem(localStorageKey)
+                window.localStorage.removeItem("connector")
                 window.location.reload()
               }}
             >
@@ -103,7 +104,9 @@ const UserBlock: React.FC<Props> = ({ account, login, logout, className = '', po
           variant="text"
           className="connect-btn"
           onClick={() => {
+            
             onPresentConnectModal()
+            
           }}
           disabled={!!account}
         >

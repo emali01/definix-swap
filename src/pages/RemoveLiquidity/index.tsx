@@ -1,7 +1,9 @@
+import Caver from 'caver-js'
+import { ethers } from 'ethers'
 import { BigNumber } from '@ethersproject/bignumber'
 import { splitSignature } from '@ethersproject/bytes'
 import { Contract } from '@ethersproject/contracts'
-import { TransactionResponse } from '@ethersproject/providers'
+import { abi as IUniswapV2Router02ABI } from '@uniswap/v2-periphery/build/IUniswapV2Router02.json'
 import { BorderCard } from 'components/Card'
 import ConnectWalletButton from 'components/ConnectWalletButton'
 import TransactionConfirmationModal, {
@@ -9,12 +11,16 @@ import TransactionConfirmationModal, {
   TransactionErrorContent,
   TransactionSubmittedContent
 } from 'components/TransactionConfirmationModal'
+import { KlipModalContext } from '@kanthakarn-test/klaytn-use-wallet'
+import { useCaverJsReact } from '@kanthakarn-test/caverjs-react-core'
+import { KlipConnector } from "@kanthakarn-test/klip-connector"
 import { Currency, currencyEquals, ETHER, Percent, WETH } from 'definixswap-sdk'
 import React, { useCallback, useContext, useMemo, useState } from 'react'
 import { ArrowDown, Plus } from 'react-feather'
 import { RouteComponentProps } from 'react-router'
 import { ThemeContext } from 'styled-components'
 import { Button, CardBody, Flex, Text } from 'uikit-dev'
+import UseDeParam from 'hooks/useDeParam'
 import { LeftPanel, MaxWidthLeft } from 'uikit-dev/components/TwoPanelLayout'
 import { AutoColumn, ColumnCenter } from '../../components/Column'
 import CurrencyInputPanel from '../../components/CurrencyInputPanel'
@@ -34,6 +40,7 @@ import { usePairContract } from '../../hooks/useContract'
 import { Field } from '../../state/burn/actions'
 import { useBurnActionHandlers, useBurnState, useDerivedBurnInfo } from '../../state/burn/hooks'
 import { useTransactionAdder } from '../../state/transactions/hooks'
+import { KlaytnTransactionResponse } from '../../state/transactions/actions'
 import { useUserDeadline, useUserSlippageTolerance } from '../../state/user/hooks'
 import { calculateGasMargin, calculateSlippageAmount, getRouterContract } from '../../utils'
 import { currencyId } from '../../utils/currencyId'
@@ -41,6 +48,8 @@ import useDebouncedChangeHandler from '../../utils/useDebouncedChangeHandler'
 import { wrappedCurrency } from '../../utils/wrappedCurrency'
 import AppBody from '../AppBody'
 import { ClickableText, Wrapper } from '../Pool/styleds'
+import * as klipProvider from '../../hooks/KlipProvider'
+import { getAbiByName } from '../../hooks/HookHelper'
 
 export default function RemoveLiquidity({
   history,
@@ -57,6 +66,8 @@ export default function RemoveLiquidity({
   ])
 
   const theme = useContext(ThemeContext)
+  const { connector } = useCaverJsReact()
+  const { setShowModal } = useContext(KlipModalContext())
 
   // burn state
   const { independentField, typedValue } = useBurnState()
@@ -79,8 +90,8 @@ export default function RemoveLiquidity({
     [Field.LIQUIDITY_PERCENT]: parsedAmounts[Field.LIQUIDITY_PERCENT].equalTo('0')
       ? '0'
       : parsedAmounts[Field.LIQUIDITY_PERCENT].lessThan(new Percent('1', '100'))
-      ? '<1'
-      : parsedAmounts[Field.LIQUIDITY_PERCENT].toFixed(0),
+        ? '<1'
+        : parsedAmounts[Field.LIQUIDITY_PERCENT].toFixed(0),
     [Field.LIQUIDITY]:
       independentField === Field.LIQUIDITY ? typedValue : parsedAmounts[Field.LIQUIDITY]?.toSignificant(6) ?? '',
     [Field.CURRENCY_A]:
@@ -290,35 +301,124 @@ export default function RemoveLiquidity({
       const safeGasEstimate = safeGasEstimates[indexOfSuccessfulEstimation]
 
       setAttemptingTxn(true)
-      await router[methodName](...args, {
-        gasLimit: safeGasEstimate
-      })
-        .then((response: TransactionResponse) => {
-          setAttemptingTxn(false)
 
-          addTransaction(response, {
-            type: 'removeLiquidity',
-            data: {
-              firstToken: currencyA?.symbol,
-              firstTokenAmount: parsedAmounts[Field.CURRENCY_A]?.toSignificant(3),
-              secondToken: currencyB?.symbol,
-              secondTokenAmount: parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)
-            },
-            summary: `Remove ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${
-              currencyA?.symbol
+      if (isKlipConnector(connector)) {
+        setShowModal(true)
+        klipProvider.genQRcodeContactInteract(
+          router.address,
+          JSON.stringify(getAbiByName(methodName)),
+          JSON.stringify(args),
+          "0"
+        )
+        const tx = await klipProvider.checkResponse()
+        setTxHash(tx)
+        setAttemptingTxn(false)
+        setShowModal(false)
+
+        addTransaction(undefined, {
+          type: 'removeLiquidity',
+          klipTx: tx,
+          data: {
+            firstToken: currencyA?.symbol,
+            firstTokenAmount: parsedAmounts[Field.CURRENCY_A]?.toSignificant(3),
+            secondToken: currencyB?.symbol,
+            secondTokenAmount: parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)
+          },
+          summary: `Remove ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${currencyA?.symbol
             } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencyB?.symbol}`
-          })
+        })
 
-          setTxHash(response.hash)
-        })
-        .catch((e: Error) => {
-          setAttemptingTxn(false)
-          setErrorMsg(e.message)
-          // we only care if the error is something _other_ than the user rejected the tx
-          console.error(e)
-        })
+      } else {
+        const iface = new ethers.utils.Interface(IUniswapV2Router02ABI)
+
+        const flagFeeDelegate = await UseDeParam('KLAYTN_FEE_DELEGATE', 'N')
+
+        if (flagFeeDelegate === "Y") {
+          const caverFeeDelegate = new Caver(process.env.REACT_APP_SIX_KLAYTN_EN_URL)
+          const feePayerAddress = process.env.REACT_APP_FEE_PAYER_ADDRESS
+
+          // @ts-ignore
+          const caver = new Caver(window.caver)
+
+          await caver.klay.signTransaction({
+            type: 'FEE_DELEGATED_SMART_CONTRACT_EXECUTION',
+            from: account,
+            to: ROUTER_ADDRESS,
+            gas: safeGasEstimate,
+            data: iface.encodeFunctionData(methodName, [...args]),
+          })
+            .then(function (userSignTx) {
+              // console.log('userSignTx tx = ', userSignTx)
+              const userSigned = caver.transaction.decode(userSignTx.rawTransaction)
+              // console.log('userSigned tx = ', userSigned)
+              userSigned.feePayer = feePayerAddress
+              // console.log('userSigned After add feePayer tx = ', userSigned)
+
+              caverFeeDelegate.rpc.klay.signTransactionAsFeePayer(userSigned).then(function (feePayerSigningResult) {
+                // console.log('feePayerSigningResult tx = ', feePayerSigningResult)
+                caver.rpc.klay.sendRawTransaction(feePayerSigningResult.raw).then((response: KlaytnTransactionResponse) => {
+                  console.log(methodName, ' tx = ', response)
+                  setAttemptingTxn(false)
+
+                  addTransaction(response, {
+                    type: 'removeLiquidity',
+                    data: {
+                      firstToken: currencyA?.symbol,
+                      firstTokenAmount: parsedAmounts[Field.CURRENCY_A]?.toSignificant(3),
+                      secondToken: currencyB?.symbol,
+                      secondTokenAmount: parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)
+                    },
+                    summary: `Remove ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${currencyA?.symbol
+                      } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencyB?.symbol}`
+                  })
+
+                  setTxHash(response.transactionHash)
+                }).catch(e => {
+                  setAttemptingTxn(false)
+                  setErrorMsg(e.message)
+                  // we only care if the error is something _other_ than the user rejected the tx
+                  console.error(e)
+                })
+              })
+            })
+            .catch(e => {
+              setAttemptingTxn(false)
+              setErrorMsg(e.message)
+              // we only care if the error is something _other_ than the user rejected the tx
+              console.error(e)
+            })
+        } else {
+          await router[methodName](...args, {
+            gasLimit: safeGasEstimate
+          })
+            .then((response: KlaytnTransactionResponse) => {
+              setAttemptingTxn(false)
+
+              addTransaction(response, {
+                type: 'removeLiquidity',
+                data: {
+                  firstToken: currencyA?.symbol,
+                  firstTokenAmount: parsedAmounts[Field.CURRENCY_A]?.toSignificant(3),
+                  secondToken: currencyB?.symbol,
+                  secondTokenAmount: parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)
+                },
+                summary: `Remove ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${currencyA?.symbol
+                  } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencyB?.symbol}`
+              })
+
+              setTxHash(response.hash)
+            })
+            .catch((e: Error) => {
+              setAttemptingTxn(false)
+              setErrorMsg(e.message)
+              // we only care if the error is something _other_ than the user rejected the tx
+              console.error(e)
+            })
+        }
+      }
     }
   }
+
 
   const modalHeader = useCallback(() => {
     return (
@@ -349,9 +449,8 @@ export default function RemoveLiquidity({
           </AutoColumn>
 
           <Text small color="textSubtle" textAlign="left" padding="12px 0 0 0" style={{ fontStyle: 'italic' }}>
-            {`Output is estimated. If the price changes by more than ${
-              allowedSlippage / 100
-            }% your transaction will revert.`}
+            {`Output is estimated. If the price changes by more than ${allowedSlippage / 100
+              }% your transaction will revert.`}
           </Text>
         </AutoColumn>
       </div>
@@ -406,8 +505,8 @@ export default function RemoveLiquidity({
   const oneCurrencyIsETH = currencyA === ETHER || currencyB === ETHER
   const oneCurrencyIsWETH = Boolean(
     chainId &&
-      ((currencyA && currencyEquals(WETH[chainId], currencyA)) ||
-        (currencyB && currencyEquals(WETH[chainId], currencyB)))
+    ((currencyA && currencyEquals(WETH[chainId], currencyA)) ||
+      (currencyB && currencyEquals(WETH[chainId], currencyB)))
   )
 
   const handleSelectCurrencyA = useCallback(
@@ -590,17 +689,15 @@ export default function RemoveLiquidity({
                             <RowBetween style={{ justifyContent: 'flex-end' }}>
                               {oneCurrencyIsETH ? (
                                 <StyledInternalLink
-                                  to={`/remove/${currencyA === ETHER ? WETH[chainId].address : currencyIdA}/${
-                                    currencyB === ETHER ? WETH[chainId].address : currencyIdB
-                                  }`}
+                                  to={`/remove/${currencyA === ETHER ? WETH[chainId].address : currencyIdA}/${currencyB === ETHER ? WETH[chainId].address : currencyIdB
+                                    }`}
                                 >
                                   Receive WBNB
                                 </StyledInternalLink>
                               ) : oneCurrencyIsWETH ? (
                                 <StyledInternalLink
-                                  to={`/remove/${
-                                    currencyA && currencyEquals(currencyA, WETH[chainId]) ? 'KLAY' : currencyIdA
-                                  }/${currencyB && currencyEquals(currencyB, WETH[chainId]) ? 'KLAY' : currencyIdB}`}
+                                  to={`/remove/${currencyA && currencyEquals(currencyA, WETH[chainId]) ? 'KLAY' : currencyIdA
+                                    }/${currencyB && currencyEquals(currencyB, WETH[chainId]) ? 'KLAY' : currencyIdB}`}
                                 >
                                   Receive BNB
                                 </StyledInternalLink>
@@ -758,3 +855,4 @@ export default function RemoveLiquidity({
     </>
   )
 }
+const isKlipConnector = (connector) => connector instanceof KlipConnector

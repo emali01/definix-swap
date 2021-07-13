@@ -6,6 +6,7 @@ import { Dots } from 'components/swap/styleds'
 import TransactionHistoryBox from 'components/TransactionHistoryBox'
 import TranslatedText from 'components/TranslatedText'
 import { injected } from 'connectors'
+
 import { usePairs } from 'data/Reserves'
 import { ETHER, Pair, Token } from 'definixswap-sdk'
 import { useActiveWeb3React } from 'hooks'
@@ -182,6 +183,7 @@ export default function Pool() {
                     <UserBlock
                       account={account as string}
                       login={(connectorId: ConnectorId) => {
+                        
                         return activate(injected)
                       }}
                       logout={deactivate}
@@ -262,12 +264,12 @@ export default function Pool() {
                       date={
                         tx.confirmedTime
                           ? new Date(tx.confirmedTime || 0).toLocaleString('en-US', {
-                              day: 'numeric',
-                              month: 'short',
-                              year: 'numeric',
-                              hour: 'numeric',
-                              minute: 'numeric',
-                            })
+                            day: 'numeric',
+                            month: 'short',
+                            year: 'numeric',
+                            hour: 'numeric',
+                            minute: 'numeric',
+                          })
                           : ''
                       }
                     />

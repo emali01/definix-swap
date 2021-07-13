@@ -1,15 +1,25 @@
+import Caver from 'caver-js'
+import { ethers } from 'ethers'
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
+import { abi as IUniswapV2Router02ABI } from '@uniswap/v2-periphery/build/IUniswapV2Router02.json'
 import { JSBI, Percent, Router, SwapParameters, Trade, TradeType } from 'definixswap-sdk'
-import { useMemo } from 'react'
-import { BIPS_BASE, DEFAULT_DEADLINE_FROM_NOW, INITIAL_ALLOWED_SLIPPAGE } from '../constants'
+import { useMemo, useContext } from 'react'
+import UseDeParam from 'hooks/useDeParam'
+import { KlipModalContext } from "@kanthakarn-test/klaytn-use-wallet"
+import { KlipConnector } from "@kanthakarn-test/klip-connector"
+import { useCaverJsReact } from '@kanthakarn-test/caverjs-react-core'
+import { BIPS_BASE, DEFAULT_DEADLINE_FROM_NOW, INITIAL_ALLOWED_SLIPPAGE, ROUTER_ADDRESS } from '../constants'
 import { useTransactionAdder } from '../state/transactions/hooks'
+import { KlaytnTransactionResponse } from '../state/transactions/actions'
 import { calculateGasMargin, getRouterContract, isAddress, shortenAddress } from '../utils'
 import isZero from '../utils/isZero'
 import { useActiveWeb3React } from './index'
 import useENS from './useENS'
+import { getAbiByName } from './HookHelper'
+import * as klipProvider from './KlipProvider'
 
- enum SwapCallbackState {
+enum SwapCallbackState {
   INVALID,
   LOADING,
   VALID,
@@ -95,9 +105,9 @@ export function useSwapCallback(
   recipientAddressOrName: string | null // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
 ): { state: SwapCallbackState; callback: null | (() => Promise<string>); error: string | null } {
   const { account, chainId, library } = useActiveWeb3React()
-
+  const { connector } = useCaverJsReact()
   const swapCalls = useSwapCallArguments(trade, allowedSlippage, deadline, recipientAddressOrName)
-
+  const { setShowModal } = useContext(KlipModalContext())
   const addTransaction = useTransactionAdder()
 
   const { address: recipientAddress } = useENS(recipientAddressOrName)
@@ -117,8 +127,9 @@ export function useSwapCallback(
     return {
       state: SwapCallbackState.VALID,
       callback: async function onSwap(): Promise<string> {
+
         const estimatedCalls: EstimatedSwapCall[] = await Promise.all(
-          swapCalls.map((call) => {
+          await swapCalls.map(async (call) => {
             const {
               parameters: { methodName, args, value },
               contract,
@@ -155,6 +166,7 @@ export function useSwapCallback(
                     return { call, error: new Error(errorMessage) }
                   })
               })
+
           })
         )
 
@@ -177,11 +189,99 @@ export function useSwapCallback(
           },
           gasEstimate,
         } = successfulEstimation
+        if (isKlipConnector(connector)) {
+          // console.log("swapCalls", successfulEstimation)
+          const abi = JSON.stringify(getAbiByName(methodName))
+          const input = JSON.stringify(convertArgKlip(args, abi))
+          if (ROUTER_ADDRESS) {
+            setShowModal(true)
+            const statusCallKlip = await klipProvider.genQRcodeContactInteract(ROUTER_ADDRESS, abi, input, (+value).toString())
+            // console.log("status ss", statusCallKlip)
+            if (statusCallKlip === "success") {
+              const klipTx = await klipProvider.checkResponse()
+              setShowModal(false)
+              return klipTx
+            }
+            setShowModal(false)
+            throw new Error('error dont have gas')
+          }
+        }
+        const iface = new ethers.utils.Interface(IUniswapV2Router02ABI)
 
-        return contract[methodName](...args, {
-          gasLimit: calculateGasMargin(gasEstimate),
-          ...(value && !isZero(value) ? { value, from: account } : { from: account }),
-        })
+        const flagFeeDelegate = await UseDeParam('KLAYTN_FEE_DELEGATE', 'N')
+
+        if (flagFeeDelegate === "Y") {
+          const caverFeeDelegate = new Caver(process.env.REACT_APP_SIX_KLAYTN_EN_URL)
+          const feePayerAddress = process.env.REACT_APP_FEE_PAYER_ADDRESS
+
+          // @ts-ignore
+          const caver = new Caver(window.caver)
+
+          // eslint-disable-next-line consistent-return
+          return caver.klay
+            .signTransaction({
+              type: 'FEE_DELEGATED_SMART_CONTRACT_EXECUTION',
+              from: account,
+              to: ROUTER_ADDRESS,
+              gas: calculateGasMargin(gasEstimate),
+              value: value && !isZero(value) ? value : null,
+              data: iface.encodeFunctionData(methodName, [...args]),
+            })
+            .then(function (userSignTx) {
+              // console.log('userSignTx tx = ', userSignTx)
+              const userSigned = caver.transaction.decode(userSignTx.rawTransaction)
+              // console.log('userSigned tx = ', userSigned)
+              userSigned.feePayer = feePayerAddress
+              // console.log('userSigned After add feePayer tx = ', userSigned)
+
+              return caverFeeDelegate.rpc.klay.signTransactionAsFeePayer(userSigned).then(function (feePayerSigningResult) {
+                // console.log('feePayerSigningResult tx = ', feePayerSigningResult)
+                return caver.rpc.klay.sendRawTransaction(feePayerSigningResult.raw).then((response: KlaytnTransactionResponse) => {
+                  console.log('swap tx = ', response)
+                  const inputSymbol = trade.inputAmount.currency.symbol
+                  const outputSymbol = trade.outputAmount.currency.symbol
+                  const inputAmount = trade.inputAmount.toSignificant(3)
+                  const outputAmount = trade.outputAmount.toSignificant(3)
+      
+                  const base = `Swap ${inputAmount} ${inputSymbol} for ${outputAmount} ${outputSymbol}`
+                  const withRecipient =
+                    recipient === account
+                      ? base
+                      : `${base} to ${
+                          recipientAddressOrName && isAddress(recipientAddressOrName)
+                            ? shortenAddress(recipientAddressOrName)
+                            : recipientAddressOrName
+                        }`
+      
+                  addTransaction(response, {
+                    type: 'swap',
+                    data: {
+                      firstToken: inputSymbol,
+                      firstTokenAmount: inputAmount,
+                      secondToken: outputSymbol,
+                      secondTokenAmount: outputAmount,
+                    },
+                    summary: withRecipient,
+                  })
+      
+                  return response.transactionHash
+                })
+                .catch((error: any) => {
+                  // if the user rejected the tx, pass this along
+                  if (error?.code === 4001) {
+                    throw new Error('Transaction rejected.')
+                  } else {
+                    // otherwise, the error was unexpected and we need to convey that
+                    console.error(`Swap failed`, error, methodName, args, value)
+                    throw new Error(`Swap failed: ${error.message}`)
+                  }
+                })
+              })
+            })
+        }
+
+        // eslint-disable-next-line consistent-return
+        return contract[methodName](...args, {gasLimit: calculateGasMargin(gasEstimate), ...(value && !isZero(value) ? { value, from: account } : { from: account }),})
           .then((response: any) => {
             const inputSymbol = trade.inputAmount.currency.symbol
             const outputSymbol = trade.outputAmount.currency.symbol
@@ -192,11 +292,10 @@ export function useSwapCallback(
             const withRecipient =
               recipient === account
                 ? base
-                : `${base} to ${
-                    recipientAddressOrName && isAddress(recipientAddressOrName)
-                      ? shortenAddress(recipientAddressOrName)
-                      : recipientAddressOrName
-                  }`
+                : `${base} to ${recipientAddressOrName && isAddress(recipientAddressOrName)
+                  ? shortenAddress(recipientAddressOrName)
+                  : recipientAddressOrName
+                }`
 
             addTransaction(response, {
               type: 'swap',
@@ -221,10 +320,39 @@ export function useSwapCallback(
               throw new Error(`Swap failed: ${error.message}`)
             }
           })
-      },
+      }
+      ,
       error: null,
     }
-  }, [trade, library, account, chainId, recipient, recipientAddressOrName, swapCalls, addTransaction])
+  }, [trade, library, account, connector, chainId, recipient, recipientAddressOrName, swapCalls, addTransaction, setShowModal])
 }
 
 export default useSwapCallback
+
+const isKlipConnector = (connector) => connector instanceof KlipConnector
+const convertArgKlip = (args: (string[] | string)[], abi) => {
+
+  const argToString: (string[] | string)[] = []
+  const abiArr = JSON.parse(abi)
+  try {
+    for (let i = 0; i < args.length; i++) {
+      const element = args[i]
+      const abiType = abiArr.inputs[i].type
+
+      if (abiType === "uint256") {
+
+        argToString.push((+element).toString())
+      }
+      else {
+        argToString.push(element)
+      }
+
+    }
+
+    return argToString
+  } catch (error) {
+    console.log("ee,", error)
+    throw new Error(error)
+  }
+
+}

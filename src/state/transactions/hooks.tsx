@@ -1,48 +1,56 @@
-import { TransactionResponse } from '@ethersproject/providers'
 import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { useActiveWeb3React } from '../../hooks'
 import { AppDispatch, AppState } from '../index'
-import { addTransaction } from './actions'
+import { addTransaction, KlaytnTransactionResponse } from './actions'
 import { TransactionDetails } from './reducer'
 
 // helper that can take a ethers library transaction response and add it to the list of transactions
 export function useTransactionAdder(): (
-  response: TransactionResponse,
+  response?: KlaytnTransactionResponse,
   customData?: {
     type?: string
     data?: { firstToken?: string; firstTokenAmount?: string; secondToken?: string; secondTokenAmount?: string }
     summary?: string
     approval?: { tokenAddress: string; spender: string }
-  }
+    klipTx?: string
+  },
+
 ) => void {
   const { chainId, account } = useActiveWeb3React()
   const dispatch = useDispatch<AppDispatch>()
 
   return useCallback(
     (
-      response: TransactionResponse,
+      response?: KlaytnTransactionResponse,
       {
         type,
         data,
         summary,
-        approval
+        approval,
+        klipTx
       }: {
         type?: string
         data?: { firstToken?: string; firstTokenAmount?: string; secondToken?: string; secondTokenAmount?: string }
         summary?: string
         approval?: { tokenAddress: string; spender: string }
-      } = {}
+        klipTx?: string
+      } = {},
     ) => {
       if (!account) return
       if (!chainId) return
+      if (klipTx) {
 
-      const { hash } = response
-      if (!hash) {
-        throw Error('No transaction hash found.')
+        dispatch(addTransaction({ type, data, hash: klipTx, from: account, chainId, approval, summary }))
       }
-      dispatch(addTransaction({ type, data, hash, from: account, chainId, approval, summary }))
+      else if (response) {
+        const { hash, transactionHash } = response
+        if (!hash && !transactionHash) {
+          throw Error('No transaction hash found.')
+        }
+        dispatch(addTransaction({ type, data, hash: transactionHash, from: account, chainId, approval, summary }))
+      }
     },
     [dispatch, chainId, account]
   )
