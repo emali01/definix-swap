@@ -194,14 +194,19 @@ export default function AddLiquidity({
     }
 
     setAttemptingTxn(true)
-    // const aa = await estimate(...args, value ? { value } : {})
+    const valueNumber =  (Number(value ? (+value).toString() : "0")/(10**18)).toString()
+    const valueklip = Number.parseFloat(valueNumber).toFixed(6)
+    const expectValue =  (Number(valueklip) + 0.000001)
+    // valueklip*(10**18)
+    // Number(klipValue)
+    console.log()
     if (isKlipConnector(connector)) {
       setShowModal(true)
       klipProvider.genQRcodeContactInteract(
         router.address,
         JSON.stringify(getAbiByName(methodName)),
         JSON.stringify(args),
-        "0"
+        value ? `${expectValue*(10**18)}` : "0"
       )
       const tx = await klipProvider.checkResponse()
       setTxHash(tx)

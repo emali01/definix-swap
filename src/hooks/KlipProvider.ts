@@ -71,7 +71,7 @@ export const getResultContract = async () => {
   const url = `https://a2a-api.klipwallet.com/v2/a2a/result?request_key=${requestKey}`
   // const url = `http://localhost:8080/con`
   const res = await axios.get(url)
-  console.log("request status : ", res.data.status)
+  
   if (res.data.status == "completed") {
     // account = res.data.result.klaytn_address
     responseData = res.data.result.tx_hash

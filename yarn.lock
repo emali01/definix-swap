@@ -2640,27 +2640,28 @@
   resolved "https://registry.npmjs.org/@kanthakarn-test/caverjs-react-types/-/caverjs-react-types-1.0.0.tgz"
   integrity sha512-CTYngKJO5iqq/E1QkLDUwpw+JMriot8uc2yIzo1RXhnImLJ7w8UL+b0DjQEN1VotN5KEFpaSXaV19TOoKoPphw==
 
-"@kanthakarn-test/klaytn-use-wallet@^1.0.8":
-  version "1.0.8"
-  resolved "https://registry.yarnpkg.com/@kanthakarn-test/klaytn-use-wallet/-/klaytn-use-wallet-1.0.8.tgz#29b1336d97075af71a1e6ec0e5da72d6c64bdb0e"
-  integrity sha512-V3B+m5dI7MuASH9QZxVd4nWisTfaY7ScS0x3Sum5psJ8tBW6Iex990R065kOnF53q7nNirwpkI0NYtBG0QAV0w==
+"@kanthakarn-test/klaytn-use-wallet@^1.0.10":
+  version "1.0.10"
+  resolved "https://registry.yarnpkg.com/@kanthakarn-test/klaytn-use-wallet/-/klaytn-use-wallet-1.0.10.tgz#41040e0f574ffea68338c77bf3811da67475701a"
+  integrity sha512-0e9Zvl7XbPFL93zq5BM1FfxVdnAcLXsQOApHIhLxlgqpbB4djL8+uNBpZDL+p+JKNyTOAgnLnsZpg7fNTAp2vg==
   dependencies:
     "@kanthakarn-test/caverjs-react-core" "^1.0.3"
     "@kanthakarn-test/caverjs-react-injected-connector" "^1.0.0"
-    "@kanthakarn-test/klip-connector" "^1.0.0"
+    "@kanthakarn-test/klip-connector" "^1.0.4"
     "@rollup/plugin-image" "^2.0.6"
     jsbi "^3.1.1"
     qrcode "^1.4.4"
 
-"@kanthakarn-test/klip-connector@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.npmjs.org/@kanthakarn-test/klip-connector/-/klip-connector-1.0.0.tgz"
-  integrity sha512-teHmFRyG7ITkgIjEE3aJKsgg/9BtADu0XGZYiX/EjjPAly7zlmNA4aH8jbD89gkdvhesrL4LvypfT9c7v5BjyA==
+"@kanthakarn-test/klip-connector@^1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@kanthakarn-test/klip-connector/-/klip-connector-1.0.4.tgz#2db4e4c3d77651d27e84950a4f5c469a55141d13"
+  integrity sha512-LS70v5UpvnvKUAue4PQJqlDX6qR6Op8dDQxUCLj1rStugrW7BfL4QQeatlmWRifIz7yEeV9BVkmquFJieA6KyA==
   dependencies:
     "@kanthakarn-test/caverjs-react-abstract-connector" "^1.0.0"
     "@kanthakarn-test/caverjs-react-types" "^1.0.0"
     "@types/qrcode" "^1.4.0"
     axios "^0.21.1"
+    caver-js "^1.6.3"
     lit-html "^1.4.1"
     qrcode "^1.4.4"
     tiny-warning "^1.0.3"
@@ -7239,46 +7240,43 @@ caver-js@1.6.3-rc.4:
     websocket "1.0.31"
     xhr2-cookies "1.1.0"
 
-caverjs-react-abstract-connector@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.npmjs.org/caverjs-react-abstract-connector/-/caverjs-react-abstract-connector-1.0.0.tgz"
-  integrity sha512-Eq6Lh7rFiXWWuG07KbBRYH++yhaO0RHwm4LGWVZV3qBHbLURm1ZWDrz/cGft6xFAF+blkPIR5VGM9Yy3ndnqlg==
+caver-js@^1.6.3:
+  version "1.6.3"
+  resolved "https://registry.yarnpkg.com/caver-js/-/caver-js-1.6.3.tgz#10de697d6cc251ff253de1ab983072b1be731b3a"
+  integrity sha512-xSPnawdVFregH6eTO+1TF1rDAueiyFkgphKOAgSaPSw8DGz9jcRliTU2OH0jCghyTt0k9yntAR0NzlIKTc/76A==
   dependencies:
-    caverjs-react-types "^1.0.0"
-
-caverjs-react-core@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.npmjs.org/caverjs-react-core/-/caverjs-react-core-1.0.0.tgz"
-  integrity sha512-HkblYJ/jmjNfUsmzbrZyPIQ8w4/WcUvNLo1wkPEqx29oKwfYTNXmbsqFcGUcBnAOd5dXzRBMZzzopFBxnHU/rg==
-  dependencies:
-    "@ethersproject/keccak256" "^5.1.0"
-    caverjs-react-abstract-connector "^1.0.0"
-    caverjs-react-types "^1.0.0"
-    tiny-invariant "^1.0.6"
-    tiny-warning "^1.0.3"
-
-caverjs-react-injected-connector@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.npmjs.org/caverjs-react-injected-connector/-/caverjs-react-injected-connector-1.0.1.tgz"
-  integrity sha512-TsW1ekrhUOJ1PvVTWR9z6xZncbGiHUv0ktpZ7LYv7WFMzhvZkwEhPm3ifyuifCdH1MjT4vjF5aaRleKwAh1Qwg==
-  dependencies:
-    caverjs-react-abstract-connector "^1.0.0"
-    caverjs-react-types "^1.0.0"
-    tiny-warning "^1.0.3"
-
-caverjs-react-network-connector@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.npmjs.org/caverjs-react-network-connector/-/caverjs-react-network-connector-1.0.0.tgz"
-  integrity sha512-zBzHeaWjVY+5ku2H6j6CpAN3en0CQou4HEtwVGONaZzJi70/WNn1JCK06VfnYzRc+0h2LAI5vA5dAJZTygovZA==
-  dependencies:
-    caverjs-react-abstract-connector "^1.0.0"
-    caverjs-react-types "^1.0.0"
-    tiny-invariant "^1.0.6"
-
-caverjs-react-types@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.npmjs.org/caverjs-react-types/-/caverjs-react-types-1.0.0.tgz"
-  integrity sha512-6K3KU5xeubLjS9XnexAmSSDe7b2wlgTBJexQ2HRFcatcEzlet6u0kmGaV56uQTe8GC6olB95kM79JsMwSahQIw==
+    "@babel/runtime" "7.3.1"
+    "@ethersproject/abi" "5.0.7"
+    "@web3-js/scrypt-shim" "0.1.0"
+    any-promise "1.3.0"
+    bignumber.js "8.0.2"
+    bn.js "4.11.6"
+    chai "4.1.2"
+    crypto-browserify "3.12.0"
+    dotenv "8.2.0"
+    elliptic "6.5.4"
+    eth-lib "0.2.8"
+    ethers "5.0.32"
+    ethjs-unit "0.1.6"
+    eventemitter3 "4.0.0"
+    ipfs-http-client-lite "0.3.0"
+    it-each "0.4.0"
+    lodash "4.17.21"
+    mocha "8.3.2"
+    multihashes "4.0.2"
+    node-fetch "2.6.1"
+    number-to-bn "1.7.0"
+    oboe "2.1.3"
+    request "2.87.0"
+    requestretry "2.0.2"
+    scrypt-js "3.0.1"
+    semver "6.2.0"
+    utf8 "2.1.1"
+    uuid "3.0.0"
+    webpack "4.44.2"
+    webpack-cli "3.3.12"
+    websocket "1.0.31"
+    xhr2-cookies "1.1.0"
 
 cbor@^5.1.0:
   version "5.2.0"
