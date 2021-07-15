@@ -1,5 +1,6 @@
-import { ChainId, JSBI, Pair, Route, Token, TokenAmount, Trade, TradeType } from 'definixswap-sdk'
+import { JSBI, Pair, Route, Token, TokenAmount, Trade, TradeType } from 'definixswap-sdk'
 import { computeTradePriceBreakdown } from './prices'
+import { ChainId } from '../constants'
 
 describe('prices', () => {
   const token1 = new Token(ChainId.MAINNET, '0x0000000000000000000000000000000000000001', 18)

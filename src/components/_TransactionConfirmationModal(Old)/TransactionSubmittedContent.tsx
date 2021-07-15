@@ -1,8 +1,8 @@
-import { ChainId } from 'definixswap-sdk'
 import React, { useContext } from 'react'
 import { ThemeContext } from 'styled-components'
 import { Button, LinkExternal } from 'uikit-dev'
 import { ArrowUpCircle } from 'react-feather'
+import { ChainId } from '../../constants'
 import { AutoColumn } from '../Column'
 import { getBscScanLink } from '../../utils'
 import { Wrapper, Section, ConfirmedIcon, ContentHeader } from './helpers'
@@ -10,7 +10,7 @@ import { Wrapper, Section, ConfirmedIcon, ContentHeader } from './helpers'
 type TransactionSubmittedContentProps = {
   onDismiss: () => void
   hash: string | undefined
-  chainId: ChainId
+  chainId: number
 }
 
 const TransactionSubmittedContent = ({ onDismiss, chainId, hash }: TransactionSubmittedContentProps) => {

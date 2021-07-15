@@ -1,5 +1,4 @@
 import { CaverProvider } from 'finix-caver-providers'
-import { ChainId } from 'definixswap-sdk'
 import { useCaverJsReact as useCaverJsReactCore } from '@kanthakarn-test/caverjs-react-core'
 // eslint-disable-next-line import/no-unresolved
 import { CaverJsReactContextInterface } from '@kanthakarn-test/caverjs-react-core/dist/types'
@@ -8,7 +7,7 @@ import { isMobile } from 'react-device-detect'
 import { injected } from '../connectors'
 import { NetworkContextName } from '../constants'
 
-export function useActiveWeb3React(): CaverJsReactContextInterface<CaverProvider> & { chainId?: ChainId } {
+export function useActiveWeb3React(): CaverJsReactContextInterface<CaverProvider> & { chainId?: number } {
   const context = useCaverJsReactCore<CaverProvider>()
   const contextNetwork = useCaverJsReactCore<CaverProvider>(NetworkContextName)
   return context.active ? context : contextNetwork

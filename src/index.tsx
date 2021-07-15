@@ -2,6 +2,7 @@ import React, { StrictMode } from 'react'
 import ReactDOM from 'react-dom'
 import ReactGA from 'react-ga';
 import TagManager from 'react-gtm-module';
+import { Config } from 'definixswap-sdk'
 import { ResetCSS } from 'uikit-dev'
 import { KlipModalProvider } from "@kanthakarn-test/klaytn-use-wallet"
 import GlobalStyle from './style/Global'
@@ -13,7 +14,9 @@ import TransactionUpdater from './state/transactions/updater'
 import Providers from './Providers'
 import 'inter-ui'
 import './i18n'
+import sdkConfig from './config'
 
+Config.configure(sdkConfig)
 ReactGA.initialize('G-L997LXLF8F');
 
 const tagManagerArgs = {

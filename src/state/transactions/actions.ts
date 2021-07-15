@@ -1,6 +1,5 @@
 import { createAction } from '@reduxjs/toolkit'
 import { TransactionResponse } from '@ethersproject/providers'
-import { ChainId } from 'definixswap-sdk'
 
 export interface KlaytnTransactionResponse extends TransactionResponse {
   transactionHash: string;
@@ -18,7 +17,7 @@ export interface SerializableTransactionReceipt {
 }
 
 export const addTransaction = createAction<{
-  chainId: ChainId
+  chainId: number
   hash: string
   from: string
   approval?: { tokenAddress: string; spender: string }
@@ -26,14 +25,14 @@ export const addTransaction = createAction<{
   data?: { firstToken?: string; firstTokenAmount?: string; secondToken?: string; secondTokenAmount?: string }
   summary?: string
 }>('transactions/addTransaction')
-export const clearAllTransactions = createAction<{ chainId: ChainId }>('transactions/clearAllTransactions')
+export const clearAllTransactions = createAction<{ chainId: number }>('transactions/clearAllTransactions')
 export const finalizeTransaction = createAction<{
-  chainId: ChainId
+  chainId: number
   hash: string
   receipt: SerializableTransactionReceipt
 }>('transactions/finalizeTransaction')
 export const checkedTransaction = createAction<{
-  chainId: ChainId
+  chainId: number
   hash: string
   blockNumber: number
 }>('transactions/checkedTransaction')

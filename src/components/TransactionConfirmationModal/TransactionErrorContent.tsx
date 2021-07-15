@@ -1,5 +1,4 @@
 import { RowBetween } from 'components/Row'
-import { ChainId } from 'definixswap-sdk'
 import React from 'react'
 import { ArrowDownIcon, Button, ChevronRightIcon, ErrorIcon, Heading, Link, Text } from 'uikit-dev'
 import CopyToClipboard from 'uikit-dev/widgets/WalletModal/CopyToClipboard'
@@ -9,7 +8,7 @@ type TransactionSubmittedContentProps = {
   title: string
   date?: string
   hash: string | undefined
-  chainId: ChainId | undefined
+  chainId: number | undefined
   content?: any
   button?: any
 }

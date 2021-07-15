@@ -73,8 +73,8 @@ export default function AddLiquidity({
 
   const oneCurrencyIsWETH = Boolean(
     chainId &&
-    ((currencyA && currencyEquals(currencyA, WETH[chainId])) ||
-      (currencyB && currencyEquals(currencyB, WETH[chainId])))
+    ((currencyA && currencyEquals(currencyA, WETH(chainId))) ||
+      (currencyB && currencyEquals(currencyB, WETH(chainId))))
   )
   const expertMode = useIsExpertMode()
 

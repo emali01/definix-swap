@@ -47,7 +47,7 @@
     "caverjs-react-types": "^1.0.0",
     "cids": "^1.0.0",
     "copy-to-clipboard": "^3.2.0",
-    "definixswap-sdk": "0.0.21-klaytn",
+    "definixswap-sdk": "file:../definixswap-sdk",
     "definixswap-uikit": "0.0.1",
     "ethers": "^5.0.7",
     "finix-caver-providers": "^1.0.3",

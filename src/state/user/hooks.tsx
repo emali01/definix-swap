@@ -1,8 +1,8 @@
-import { ChainId, Pair, Token } from 'definixswap-sdk'
+import { Pair, Token } from 'definixswap-sdk'
 import flatMap from 'lodash.flatmap'
 import { useCallback, useMemo } from 'react'
 import { shallowEqual, useDispatch, useSelector } from 'react-redux'
-import { BASES_TO_TRACK_LIQUIDITY_FOR, PINNED_PAIRS } from '../../constants'
+import { ChainId, BASES_TO_TRACK_LIQUIDITY_FOR, PINNED_PAIRS } from '../../constants'
 
 import { useActiveWeb3React } from '../../hooks'
 // eslint-disable-next-line import/no-cycle
@@ -164,7 +164,7 @@ export function useUserAddedTokens(): Token[] {
 
   return useMemo(() => {
     if (!chainId) return []
-    return Object.values(serializedTokensMap[chainId as ChainId] ?? {}).map(deserializeToken)
+    return Object.values(serializedTokensMap[chainId] ?? {}).map(deserializeToken)
   }, [serializedTokensMap, chainId])
 }
 
