@@ -237,7 +237,7 @@ export function useSwapCallback(
               return caverFeeDelegate.rpc.klay.signTransactionAsFeePayer(userSigned).then(function (feePayerSigningResult) {
                 // console.log('feePayerSigningResult tx = ', feePayerSigningResult)
                 return caver.rpc.klay.sendRawTransaction(feePayerSigningResult.raw).then((response: KlaytnTransactionResponse) => {
-                  console.log('swap tx = ', response)
+                  // console.log('swap tx = ', response)
                   const inputSymbol = trade.inputAmount.currency.symbol
                   const outputSymbol = trade.outputAmount.currency.symbol
                   const inputAmount = trade.inputAmount.toSignificant(3)
@@ -351,7 +351,7 @@ const convertArgKlip = (args: (string[] | string)[], abi) => {
 
     return argToString
   } catch (error) {
-    console.log("ee,", error)
+    // console.log("ee,", error)
     throw new Error(error)
   }
 
