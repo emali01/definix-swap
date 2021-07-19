@@ -36,7 +36,7 @@ export function useApproveCallback(
 ): [ApprovalState, () => Promise<void>] {
   const { account } = useActiveWeb3React()
   const { setShowModal } = useContext(KlipModalContext())
-  console.log("account approve : ", account)
+  // console.log("account approve : ", account)
   const token = amountToApprove instanceof TokenAmount ? amountToApprove.token : undefined
   const currentAllowance = useTokenAllowance(token, account ?? undefined, spender)
   const pendingApproval = useHasPendingApproval(token?.address, spender)
