@@ -1,6 +1,6 @@
 import React from 'react'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
-import { useCaverJsReact } from '@kanthakarn-test/caverjs-react-core'
+import { useCaverJsReact } from '@sixnetwork/caverjs-react-core'
 import { injected } from 'connectors'
 import Swap from './index'
 

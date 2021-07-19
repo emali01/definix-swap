@@ -11,10 +11,10 @@ import CurrencyInputPanel from 'components/CurrencyInputPanel'
 import DoubleCurrencyLogo from 'components/DoubleLogo'
 import { AddRemoveTabs } from 'components/NavigationTabs'
 import { MinimalPositionCard } from 'components/PositionCard'
-import { KlipModalContext } from '@kanthakarn-test/klaytn-use-wallet'
-import { useCaverJsReact } from '@kanthakarn-test/caverjs-react-core'
+import { KlipModalContext } from '@sixnetwork/klaytn-use-wallet'
+import { useCaverJsReact } from '@sixnetwork/caverjs-react-core'
 import { RowBetween, RowFixed } from 'components/Row'
-import { KlipConnector } from "@kanthakarn-test/klip-connector"
+import { KlipConnector } from "@sixnetwork/klip-connector"
 import { Dots } from 'components/swap/styleds'
 import { Transaction } from "@ethersproject/transactions";
 import TransactionConfirmationModal, {
@@ -196,17 +196,18 @@ export default function AddLiquidity({
     setAttemptingTxn(true)
     const valueNumber =  (Number(value ? (+value).toString() : "0")/(10**18)).toString()
     const valueklip = Number.parseFloat(valueNumber).toFixed(6)
-    const expectValue =  (Number(valueklip) + 0.000001)
-    // valueklip*(10**18)
+    let expectValue =  (`${(Number(valueklip) + 0.00001)*(10**18)}`)
+    expectValue = expectValue.slice(0, -13)
+    // valueklip*(10**18).slice(0, -13)+"0000000000000"
     // Number(klipValue)
-    console.log()
+
     if (isKlipConnector(connector)) {
       setShowModal(true)
       klipProvider.genQRcodeContactInteract(
         router.address,
         JSON.stringify(getAbiByName(methodName)),
         JSON.stringify(args),
-        value ? `${expectValue*(10**18)}` : "0"
+        value ? `${expectValue}0000000000000` : "0"
       )
       const tx = await klipProvider.checkResponse()
       setTxHash(tx)

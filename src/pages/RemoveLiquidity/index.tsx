@@ -11,9 +11,9 @@ import TransactionConfirmationModal, {
   TransactionErrorContent,
   TransactionSubmittedContent
 } from 'components/TransactionConfirmationModal'
-import { KlipModalContext } from '@kanthakarn-test/klaytn-use-wallet'
-import { useCaverJsReact } from '@kanthakarn-test/caverjs-react-core'
-import { KlipConnector } from "@kanthakarn-test/klip-connector"
+import { KlipModalContext } from '@sixnetwork/klaytn-use-wallet'
+import { useCaverJsReact } from '@sixnetwork/caverjs-react-core'
+import { KlipConnector } from "@sixnetwork/klip-connector"
 import { Currency, currencyEquals, ETHER, Percent, WETH } from 'definixswap-sdk'
 import React, { useCallback, useContext, useMemo, useState } from 'react'
 import { ArrowDown, Plus } from 'react-feather'

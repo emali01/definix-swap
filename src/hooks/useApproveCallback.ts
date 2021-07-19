@@ -2,11 +2,11 @@ import Caver from 'caver-js'
 import { ethers } from 'ethers'
 import { MaxUint256 } from '@ethersproject/constants'
 import { Trade, TokenAmount, CurrencyAmount, ETHER } from 'definixswap-sdk'
-import { KlipConnector } from "@kanthakarn-test/klip-connector"
-import { KlipModalContext } from "@kanthakarn-test/klaytn-use-wallet"
+import { KlipConnector } from "@sixnetwork/klip-connector"
+import { KlipModalContext } from "@sixnetwork/klaytn-use-wallet"
 import { useCallback, useMemo, useContext } from 'react'
 import UseDeParam from 'hooks/useDeParam'
-import { useCaverJsReact } from '@kanthakarn-test/caverjs-react-core'
+import { useCaverJsReact } from '@sixnetwork/caverjs-react-core'
 import { ROUTER_ADDRESS } from '../constants'
 import { useTokenAllowance } from '../data/Allowances'
 import { Field } from '../state/swap/actions'

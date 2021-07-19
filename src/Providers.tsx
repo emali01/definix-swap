@@ -1,6 +1,6 @@
 import React from 'react'
-import { createCaverJsReactRoot, CaverJsReactProvider } from '@kanthakarn-test/caverjs-react-core'
-import { KlipModalContext } from '@kanthakarn-test/klaytn-use-wallet'
+import { createCaverJsReactRoot, CaverJsReactProvider } from '@sixnetwork/caverjs-react-core'
+import { KlipModalContext } from '@sixnetwork/klaytn-use-wallet'
 import { Provider } from 'react-redux'
 import { ModalProvider } from 'uikit-dev'
 import { NetworkContextName } from './constants'
