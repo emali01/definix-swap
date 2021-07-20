@@ -67,6 +67,14 @@ export default {
       logoURI: '/images/coins/XRP.png'
     },
     {
+      name: 'ADA Token',
+      symbol: 'ADA',
+      address: process.env.REACT_APP_ADA_ADDRESS_TESTNET,
+      chainId: 97,
+      decimals: 18,
+      logoURI: '/images/coins/ada.png'
+    },
+    {
       name: 'FINIX Token',
       symbol: 'FINIX',
       address: process.env.REACT_APP_FINIX_ADDRESS_MAINNET,
@@ -121,6 +129,14 @@ export default {
       chainId: 56,
       decimals: 18,
       logoURI: '/images/coins/XRP.png'
+    },
+    {
+      name: 'ADA Token',
+      symbol: 'ADA',
+      address: process.env.REACT_APP_ADA_ADDRESS_MAINNET,
+      chainId: 56,
+      decimals: 18,
+      logoURI: '/images/coins/ada.png'
     },
   ]
 }
