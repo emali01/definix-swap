@@ -1,21 +1,15 @@
 import React from 'react'
-import { useCaverJsReact } from '@kanthakarn-test/caverjs-react-core'
+import { useCaverJsReact,  } from '@sixnetwork/caverjs-react-core'
 import { Button, ButtonProps, ConnectorId, useWalletModal } from 'uikit-dev'
-<<<<<<< HEAD
-import { injected, klip } from 'connectors'
-import { KlipModalContext } from "@kanthakarn-test/klaytn-use-wallet"
-import useI18n from 'hooks/useI18n'
+import { injected } from 'connectors'
+import { useTranslation } from 'contexts/Localization'
+import { KlipModalContext } from "@sixnetwork/klaytn-use-wallet"
 
 const UnlockButton: React.FC<ButtonProps> = props => {
   const { setShowModal, showModal } = React.useContext(KlipModalContext())
-  const TranslateString = useI18n()
-=======
-import { injected } from 'connectors'
-import { useTranslation } from 'contexts/Localization'
 
 const UnlockButton: React.FC<ButtonProps> = props => {
   const { t: translate } = useTranslation()
->>>>>>> 057db958c4d5d38dc4dfb2720023d5a6cad60278
   const { account, activate, deactivate } = useCaverJsReact()
   const showModalKlip = () => {
     setShowModal(true)

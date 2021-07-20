@@ -1,6 +1,6 @@
 import { CaverProvider } from 'finix-caver-providers'
-import { InjectedConnector } from '@kanthakarn-test/caverjs-react-injected-connector'
-import { KlipConnector } from '@kanthakarn-test/klip-connector'
+import { InjectedConnector } from '@sixnetwork/caverjs-react-injected-connector'
+import { KlipConnector } from '@sixnetwork/klip-connector'
 // import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 // import { WalletLinkConnector } from '@web3-react/walletlink-connector'
 // import { PortisConnector } from '@web3-react/portis-connector'

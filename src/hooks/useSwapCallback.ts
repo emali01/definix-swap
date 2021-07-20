@@ -6,9 +6,9 @@ import { abi as IUniswapV2Router02ABI } from '@uniswap/v2-periphery/build/IUnisw
 import { JSBI, Percent, Router, SwapParameters, Trade, TradeType } from 'definixswap-sdk'
 import { useMemo, useContext } from 'react'
 import UseDeParam from 'hooks/useDeParam'
-import { KlipModalContext } from "@kanthakarn-test/klaytn-use-wallet"
-import { KlipConnector } from "@kanthakarn-test/klip-connector"
-import { useCaverJsReact } from '@kanthakarn-test/caverjs-react-core'
+import { KlipModalContext } from "@sixnetwork/klaytn-use-wallet"
+import { KlipConnector } from "@sixnetwork/klip-connector"
+import { useCaverJsReact } from '@sixnetwork/caverjs-react-core'
 import { BIPS_BASE, DEFAULT_DEADLINE_FROM_NOW, INITIAL_ALLOWED_SLIPPAGE, ROUTER_ADDRESS } from '../constants'
 import { useTransactionAdder } from '../state/transactions/hooks'
 import { KlaytnTransactionResponse } from '../state/transactions/actions'
@@ -237,7 +237,7 @@ export function useSwapCallback(
               return caverFeeDelegate.rpc.klay.signTransactionAsFeePayer(userSigned).then(function (feePayerSigningResult) {
                 // console.log('feePayerSigningResult tx = ', feePayerSigningResult)
                 return caver.rpc.klay.sendRawTransaction(feePayerSigningResult.raw).then((response: KlaytnTransactionResponse) => {
-                  console.log('swap tx = ', response)
+                  // console.log('swap tx = ', response)
                   const inputSymbol = trade.inputAmount.currency.symbol
                   const outputSymbol = trade.outputAmount.currency.symbol
                   const inputAmount = trade.inputAmount.toSignificant(3)
@@ -351,7 +351,7 @@ const convertArgKlip = (args: (string[] | string)[], abi) => {
 
     return argToString
   } catch (error) {
-    console.log("ee,", error)
+    // console.log("ee,", error)
     throw new Error(error)
   }
 
