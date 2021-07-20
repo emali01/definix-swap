@@ -7,8 +7,6 @@ import { KlipModalContext } from "@sixnetwork/klaytn-use-wallet"
 
 const UnlockButton: React.FC<ButtonProps> = props => {
   const { setShowModal, showModal } = React.useContext(KlipModalContext())
-
-const UnlockButton: React.FC<ButtonProps> = props => {
   const { t: translate } = useTranslation()
   const { account, activate, deactivate } = useCaverJsReact()
   const showModalKlip = () => {
