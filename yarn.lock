@@ -3043,10 +3043,34 @@
     jsbi "^3.1.1"
     qrcode "^1.4.4"
 
+"@sixnetwork/klip-connector@/Users/kanthakran-six/Documents/six-network/caverjs-react/packages/klip-conn":
+  version "1.0.6"
+  dependencies:
+    "@sixnetwork/caverjs-react-abstract-connector" "^1.0.4"
+    "@sixnetwork/caverjs-react-types" "^1.0.3"
+    "@types/qrcode" "^1.4.0"
+    axios "^0.21.1"
+    caver-js "^1.6.3"
+    lit-html "^1.4.1"
+    qrcode "^1.4.4"
+    tiny-warning "^1.0.3"
+
 "@sixnetwork/klip-connector@^1.0.6":
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/@sixnetwork/klip-connector/-/klip-connector-1.0.6.tgz#c2966a0fcbc4d746c9f54344541768b20640f2b1"
   integrity sha512-HdUBxdH0llnTtIpwqp9Dxq+8IEENgAt1iVhb2QYyqNMpvb6aEJVBEWfuxRc4Umm1ixUZB+jOfO1wb3z7ORh6fQ==
+  dependencies:
+    "@sixnetwork/caverjs-react-abstract-connector" "^1.0.4"
+    "@sixnetwork/caverjs-react-types" "^1.0.3"
+    "@types/qrcode" "^1.4.0"
+    axios "^0.21.1"
+    caver-js "^1.6.3"
+    lit-html "^1.4.1"
+    qrcode "^1.4.4"
+    tiny-warning "^1.0.3"
+
+"@sixnetwork/klip-connector@file:../../caverjs-react/packages/klip-conn":
+  version "1.0.6"
   dependencies:
     "@sixnetwork/caverjs-react-abstract-connector" "^1.0.4"
     "@sixnetwork/caverjs-react-types" "^1.0.3"
