@@ -1,7 +1,7 @@
 import React from 'react'
 import { useCaverJsReact,  } from '@sixnetwork/caverjs-react-core'
 import { Button, ButtonProps, ConnectorId, useWalletModal } from 'uikit-dev'
-import { injected } from 'connectors'
+import { injected, klip } from 'connectors'
 import { useTranslation } from 'contexts/Localization'
 import { KlipModalContext } from "@sixnetwork/klaytn-use-wallet"
 

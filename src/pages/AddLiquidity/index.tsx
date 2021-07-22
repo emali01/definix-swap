@@ -413,7 +413,7 @@ export default function AddLiquidity({
     [currencyIdA, history, currencyIdB]
   )
 
-  const submittedContent = useCallback(
+  const submittedContent = useCallback( 
     () => (
       <TransactionSubmittedContent
         title="Add Liquidity Complete"
@@ -466,50 +466,52 @@ export default function AddLiquidity({
 
                       const iface = new ethers.utils.Interface(HERODOTUS_ABI)
 
-                      const flagFeeDelegate = UseDeParam('KLAYTN_FEE_DELEGATE', 'N').then(function (result) {
-                        return result
-                      })
+                      // const flagFeeDelegate = UseDeParam('KLAYTN_FEE_DELEGATE', 'N').then( (result) => {
+                      //   return result
+                      // })
 
-                      if (flagFeeDelegate) {
-                        const caverFeeDelegate = new Caver(process.env.REACT_APP_SIX_KLAYTN_EN_URL)
-                        const feePayerAddress = process.env.REACT_APP_FEE_PAYER_ADDRESS
-
-                        // @ts-ignore
-                        const caver = new Caver(window.caver)
-
-                        return caver.klay
-                          .signTransaction({
-                            type: 'FEE_DELEGATED_SMART_CONTRACT_EXECUTION',
-                            from: account,
-                            to: herodotusAddress,
-                            gas: calculateGasMargin(estimatedGasLimit),
-                            data: iface.encodeFunctionData("deposit", [...args]),
-                          })
-                          .then(function (userSignTx) {
-                            // console.log('userSignTx tx = ', userSignTx)
-                            const userSigned = caver.transaction.decode(userSignTx.rawTransaction)
-                            // console.log('userSigned tx = ', userSigned)
-                            userSigned.feePayer = feePayerAddress
-                            // console.log('userSigned After add feePayer tx = ', userSigned)
-
-                            return caverFeeDelegate.rpc.klay.signTransactionAsFeePayer(userSigned).then(function (feePayerSigningResult) {
-                              // console.log('feePayerSigningResult tx = ', feePayerSigningResult)
-                              return caverFeeDelegate.rpc.klay
-                                .sendRawTransaction(feePayerSigningResult.raw)
-                                .on('transactionHash', (depositTx) => {
-                                  console.log('deposit tx = ', depositTx)
-                                  return depositTx.transactionHash
-                                })
+                      return UseDeParam('KLAYTN_FEE_DELEGATE', 'N').then(flagFeeDelegate => {
+                        if (flagFeeDelegate === "Y") {
+                          const caverFeeDelegate = new Caver(process.env.REACT_APP_SIX_KLAYTN_EN_URL)
+                          const feePayerAddress = process.env.REACT_APP_FEE_PAYER_ADDRESS
+  
+                          // @ts-ignore
+                          const caver = new Caver(window.caver)
+  
+                          return caver.klay
+                            .signTransaction({
+                              type: 'FEE_DELEGATED_SMART_CONTRACT_EXECUTION',
+                              from: account,
+                              to: herodotusAddress,
+                              gas: calculateGasMargin(estimatedGasLimit),
+                              data: iface.encodeFunctionData("deposit", [...args]),
                             })
-                          })
-                          .catch(function (tx) {
-                            console.log('deposit error tx = ', tx)
-                            return tx.transactionHash
-                          })
-                      }
-
-                      return herodotusContract?.deposit(...args, {
-                        gasLimit: calculateGasMargin(estimatedGasLimit)
+                            .then(function (userSignTx) {
+                              // console.log('userSignTx tx = ', userSignTx)
+                              const userSigned = caver.transaction.decode(userSignTx.rawTransaction)
+                              // console.log('userSigned tx = ', userSigned)
+                              userSigned.feePayer = feePayerAddress
+                              // console.log('userSigned After add feePayer tx = ', userSigned)
+  
+                              return caverFeeDelegate.rpc.klay.signTransactionAsFeePayer(userSigned).then(function (feePayerSigningResult) {
+                                // console.log('feePayerSigningResult tx = ', feePayerSigningResult)
+                                return caverFeeDelegate.rpc.klay
+                                  .sendRawTransaction(feePayerSigningResult.raw)
+                                  .on('transactionHash', (depositTx) => {
+                                    console.log('deposit tx = ', depositTx)
+                                    return depositTx.transactionHash
+                                  })
+                              })
+                            })
+                            .catch(function (tx) {
+                              console.log('deposit error tx = ', tx)
+                              return tx.transactionHash
+                            })
+                        }
+  
+                        return herodotusContract?.deposit(...args, {
+                          gasLimit: calculateGasMargin(estimatedGasLimit)
+                        })
                       })
                     }
                     return true
