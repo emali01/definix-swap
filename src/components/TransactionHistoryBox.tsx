@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTranslation } from 'contexts/Localization'
 import styled from 'styled-components'
 import { CheckmarkCircleIcon, ChevronRightIcon, ErrorIcon, Link, Text } from 'uikit-dev'
 import CurrencyLogo from './CurrencyLogo'
@@ -17,7 +18,18 @@ const Box = styled.div`
   }
 `
 
-const TransactionHistoryBox = ({ href = "/", title, firstCoin, secondCoin, firstCoinAmount, secondCoinAmount, withText, date, isFailed = false }) => {
+const TransactionHistoryBox = ({
+  href = '/',
+  title,
+  firstCoin,
+  secondCoin,
+  firstCoinAmount,
+  secondCoinAmount,
+  withText,
+  date,
+  isFailed = false,
+}) => {
+  const { t } = useTranslation()
   return (
     <Box>
       <div className="flex justify-space-between">
@@ -27,11 +39,11 @@ const TransactionHistoryBox = ({ href = "/", title, firstCoin, secondCoin, first
         <Text fontSize="12px" color={isFailed ? 'failure' : 'success'} className="flex align-center" bold>
           {isFailed ? (
             <>
-              <ErrorIcon className="mr-2" /> Failed
+              <ErrorIcon className="mr-2" /> {t('Failed')}
             </>
           ) : (
             <>
-              <CheckmarkCircleIcon className="mr-2" /> Complete
+              <CheckmarkCircleIcon className="mr-2" /> {t('Complete')}
             </>
           )}
         </Text>
@@ -41,17 +53,21 @@ const TransactionHistoryBox = ({ href = "/", title, firstCoin, secondCoin, first
         <Text>{title}</Text>
         <Currency>
           <CurrencyLogo currency={firstCoin} size="24px" style={{ marginRight: '8px' }} />
-          <Text bold>{firstCoinAmount} {firstCoin.name}</Text>
+          <Text bold>
+            {firstCoinAmount} {firstCoin.name}
+          </Text>
         </Currency>
         <Text color="textSubtle">{withText}</Text>
         <Currency>
           <CurrencyLogo currency={secondCoin} size="24px" style={{ marginRight: '8px' }} />
-          <Text bold>{secondCoinAmount} {secondCoin.name}</Text>
+          <Text bold>
+            {secondCoinAmount} {secondCoin.name}
+          </Text>
         </Currency>
       </div>
 
       <Link external href={href} bold={false} color="textSubtle" fontSize="12px" style={{ display: 'inline-flex' }}>
-        View on BscScan
+        {t('View on BscScan')}
         <ChevronRightIcon color="textSubtle" />
       </Link>
     </Box>

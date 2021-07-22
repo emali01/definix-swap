@@ -1,4 +1,5 @@
 import { BorderCard } from 'components/Card'
+import { useTranslation } from 'contexts/Localization'
 import { AutoColumn, ColumnCenter } from 'components/Column'
 import CurrencyLogo from 'components/CurrencyLogo'
 import { FindPoolTabs } from 'components/NavigationTabs'
@@ -24,6 +25,7 @@ enum Fields {
 }
 
 export default function PoolFinder() {
+  const { t: translate } = useTranslation()
   const { account } = useActiveWeb3React()
 
   const [showSearch, setShowSearch] = useState<boolean>(false)
@@ -85,7 +87,7 @@ export default function PoolFinder() {
                 radii="card"
                 className="mb-4"
               >
-                {currency0 ? currency0.symbol : <TranslatedText translationId={82}>Select a Token</TranslatedText>}
+                {currency0 ? currency0.symbol : translate('Select a token')}
               </Button>
 
               <ColumnCenter>
@@ -103,7 +105,7 @@ export default function PoolFinder() {
                 fullWidth
                 radii="card"
               >
-                {currency1 ? currency1.symbol : <TranslatedText translationId={82}>Select a Token</TranslatedText>}
+                {currency1 ? currency1.symbol : translate('Select a token')}
               </Button>
             </div>
 
@@ -111,7 +113,7 @@ export default function PoolFinder() {
               <ColumnCenter
                 style={{ justifyItems: 'center', backgroundColor: '', padding: '12px 0px', borderRadius: '12px' }}
               >
-                <Text textAlign="center">Pool Found!</Text>
+                <Text textAlign="center">{translate('Pool Found!')}</Text>
               </ColumnCenter>
             )}
 
@@ -123,11 +125,11 @@ export default function PoolFinder() {
                   <BorderCard padding="32px">
                     <AutoColumn gap="sm" justify="center">
                       <Text color="textSubtle" textAlign="center" fontSize="16px" className="mb-1">
-                        You don’t have liquidity in this pool yet.
+                        {translate('You don’t have liquidity in this pool yet.')}
                       </Text>
 
                       <StyledInternalLink to={`/add/${currencyId(currency0)}/${currencyId(currency1)}`}>
-                        <TranslatedText translationId={100}>Add Liquidity</TranslatedText>
+                        {translate('Add Liquidity')}
                       </StyledInternalLink>
                     </AutoColumn>
                   </BorderCard>
@@ -136,24 +138,24 @@ export default function PoolFinder() {
                 <BorderCard padding="32px">
                   <AutoColumn gap="sm" justify="center">
                     <Text color="textSubtle" textAlign="center" fontSize="16px" className="mb-1">
-                      No pool found.
+                      {translate('No pool found.')}
                     </Text>
                     <StyledInternalLink to={`/add/${currencyId(currency0)}/${currencyId(currency1)}`}>
-                      Create pool.
+                      {translate('Create pool.')}
                     </StyledInternalLink>
                   </AutoColumn>
                 </BorderCard>
               ) : pairState === PairState.INVALID ? (
                 <BorderCard padding="32px">
                   <Text color="textSubtle" textAlign="center" fontSize="16px">
-                    <TranslatedText translationId={136}>Invalid pair.</TranslatedText>
+                    {translate('Invalid pair.')}
                   </Text>
                 </BorderCard>
               ) : pairState === PairState.LOADING ? (
                 <BorderCard padding="32px">
                   <AutoColumn gap="sm" justify="center">
                     <Text color="textSubtle" textAlign="center" fontSize="16px">
-                      <Dots>Loading</Dots>
+                      <Dots>{translate('Loading')}</Dots>
                     </Text>
                   </AutoColumn>
                 </BorderCard>
@@ -161,7 +163,9 @@ export default function PoolFinder() {
             ) : (
               <BorderCard padding="32px">
                 <Text textAlign="center" color="textSubtle" fontSize="16px">
-                  {!account ? 'Connect to a wallet to find pools' : 'Select a token to find your liquidity.'}
+                  {!account
+                    ? translate('Connect to a wallet to find pools')
+                    : translate('Select a token to find your liquidity.')}
                 </Text>
               </BorderCard>
             )}

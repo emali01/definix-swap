@@ -1,4 +1,5 @@
 import { currencyEquals, Trade } from 'definixswap-sdk'
+import { useTranslation } from 'contexts/Localization'
 import { useActiveWeb3React } from 'hooks'
 import React, { useCallback, useMemo } from 'react'
 import { Button } from 'uikit-dev'
@@ -52,7 +53,7 @@ export default function ConfirmSwapModal({
   onDismiss: () => void
 }) {
   const { chainId } = useActiveWeb3React()
-
+  const { t: translate } = useTranslation()
   const showAcceptChanges = useMemo(
     () => Boolean(trade && originalTrade && tradeMeaningfullyDiffers(trade, originalTrade)),
     [originalTrade, trade]
@@ -89,49 +90,49 @@ export default function ConfirmSwapModal({
   const confirmContent = useCallback(
     () => (
       <ConfirmationModalContent
-        mainTitle="Confirm Swap"
+        mainTitle={translate('Confirm Swap')}
         title=""
         topContent={modalHeader}
         bottomContent={modalBottom}
       />
     ),
-    [modalBottom, modalHeader]
+    [modalBottom, modalHeader, translate]
   )
 
   const submittedContent = useCallback(
     () => (
       <TransactionSubmittedContent
-        title="Swap Complete"
-        date={`${new Date().toDateString()}, ${new Date().toTimeString().split(" ")[0]}`}
+        title={translate('Swap Complete')}
+        date={`${new Date().toDateString()}, ${new Date().toTimeString().split(' ')[0]}`}
         chainId={chainId}
         hash={txHash}
         content={modalHeaderWithoutAction}
         button={
           <Button onClick={onDismiss} radii="card" fullWidth>
-            Back to Swap
+            {translate('Back to Swap')}
           </Button>
         }
       />
     ),
-    [chainId, modalHeaderWithoutAction, onDismiss, txHash]
+    [chainId, modalHeaderWithoutAction, onDismiss, txHash, translate]
   )
 
   const errorContent = useCallback(
     () => (
       <TransactionErrorContent
-        title="Swap Failed"
-        date={`${new Date().toDateString()}, ${new Date().toTimeString().split(" ")[0]}`}
+        title={translate('Swap Failed')}
+        date={`${new Date().toDateString()}, ${new Date().toTimeString().split(' ')[0]}`}
         chainId={chainId}
         hash={txHash}
         content={modalHeaderWithoutAction}
         button={
           <Button onClick={onDismiss} radii="card" fullWidth>
-            Back to Swap
+            {translate('Back to Swap')}
           </Button>
         }
       />
     ),
-    [chainId, modalHeaderWithoutAction, onDismiss, txHash]
+    [chainId, modalHeaderWithoutAction, onDismiss, txHash, translate]
   )
 
   return (

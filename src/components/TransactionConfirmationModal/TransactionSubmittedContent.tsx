@@ -1,4 +1,5 @@
 import { RowBetween } from 'components/Row'
+import { useTranslation } from 'contexts/Localization'
 import { ChainId } from 'definixswap-sdk'
 import React from 'react'
 import Lottie from 'react-lottie'
@@ -30,6 +31,7 @@ const TransactionSubmittedContent = ({
   content,
   button,
 }: TransactionSubmittedContentProps) => {
+  const { t } = useTranslation()
   return (
     <div className="pa-6 pt-4" style={{ position: 'relative' }}>
       <div className="flex flex-column align-center justify-center mb-6">
@@ -49,7 +51,7 @@ const TransactionSubmittedContent = ({
           <RowBetween className="mt-6">
             <div className="flex">
               <Text className="mr-2" fontSize="12px">
-                Transaction Hash
+                {t('Transaction Hash')}
               </Text>
               <Text className="mr-2" bold>
                 {`${hash.substring(0, 6)}...${hash.substring(hash.length - 4)}`}
@@ -65,7 +67,7 @@ const TransactionSubmittedContent = ({
               color="textSubtle"
               fontSize="12px"
             >
-              View on BscScan
+              {t('View on BscScan')}
               <ChevronRightIcon color="textSubtle" />
             </Link>
           </RowBetween>
@@ -80,7 +82,7 @@ const TransactionSubmittedContent = ({
                 variant="secondary"
                 size="sm"
               >
-                Download IMG Transaction
+                {t('Download IMG Transaction')}
               </Button>
             </div>
           )}

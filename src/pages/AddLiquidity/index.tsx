@@ -1,4 +1,5 @@
 import numeral from 'numeral'
+import { useTranslation } from 'contexts/Localization'
 import { BigNumber } from '@ethersproject/bignumber'
 import { TransactionResponse } from '@ethersproject/providers'
 import { BorderCard } from 'components/Card'
@@ -45,6 +46,7 @@ export default function AddLiquidity({
   },
   history,
 }: RouteComponentProps<{ currencyIdA?: string; currencyIdB?: string }>) {
+  const { t: translate } = useTranslation()
   const { account, chainId, library } = useActiveWeb3React()
   const currencyA = useCurrency(currencyIdA)
   const currencyB = useCurrency(currencyIdB)
@@ -183,7 +185,7 @@ export default function AddLiquidity({
               firstToken: currencies[Field.CURRENCY_A]?.symbol,
               firstTokenAmount: parsedAmounts[Field.CURRENCY_A]?.toSignificant(3),
               secondToken: currencies[Field.CURRENCY_B]?.symbol,
-              secondTokenAmount: parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)
+              secondTokenAmount: parsedAmounts[Field.CURRENCY_B]?.toSignificant(3),
             },
             summary: `Add ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${
               currencies[Field.CURRENCY_A]?.symbol
@@ -238,14 +240,15 @@ export default function AddLiquidity({
             </RowBetween>
 
             <UIKitText>
-              Output is estimated. If the price changes by more than
-              <strong className="mx-1">{allowedSlippage / 100}%</strong>your transaction will revert.
+              {translate('Output is estimated. If the price changes by more than')}
+              <strong className="mx-1">{allowedSlippage / 100}%</strong>
+              {translate('your transaction will revert.')}
             </UIKitText>
           </AutoColumn>
         )}
       </div>
     )
-  }, [allowedSlippage, currencies, liquidityMinted, noLiquidity])
+  }, [allowedSlippage, currencies, liquidityMinted, noLiquidity, translate])
 
   const modalBottom = () => {
     return (
@@ -291,7 +294,7 @@ export default function AddLiquidity({
     () => (
       <TransactionSubmittedContent
         title="Add Liquidity Complete"
-        date={`${new Date().toDateString()}, ${new Date().toTimeString().split(" ")[0]}`}
+        date={`${new Date().toDateString()}, ${new Date().toTimeString().split(' ')[0]}`}
         chainId={chainId}
         hash={txHash}
         content={modalHeader}
@@ -303,19 +306,19 @@ export default function AddLiquidity({
             radii="card"
             fullWidth
           >
-            Add this Liquidity to Farm
+            {translate('Add this Liquidity to Farm')}
           </Button>
         }
       />
     ),
-    [chainId, modalHeader, txHash]
+    [chainId, modalHeader, txHash, translate]
   )
 
   const errorContent = useCallback(
     () => (
       <TransactionErrorContent
         title="Add Liquidity Failed"
-        date={`${new Date().toDateString()}, ${new Date().toTimeString().split(" ")[0]}`}
+        date={`${new Date().toDateString()}, ${new Date().toTimeString().split(' ')[0]}`}
         chainId={chainId}
         hash={txHash}
         content={modalHeader}
@@ -327,12 +330,12 @@ export default function AddLiquidity({
             radii="card"
             fullWidth
           >
-            Add Liquidity Again
+            {translate('Add Liquidity Again')}
           </Button>
         }
       />
     ),
-    [chainId, modalHeader, txHash]
+    [chainId, modalHeader, txHash, translate]
   )
 
   const handleDismissConfirmation = useCallback(() => {
@@ -359,9 +362,9 @@ export default function AddLiquidity({
                     {noLiquidity && (
                       <BorderCard className="mb-4">
                         <AutoColumn gap="12px">
-                          <Text>You are the first liquidity provider.</Text>
-                          <Text>The ratio of tokens you add will set the price of this pool.</Text>
-                          <Text>Once you are happy with the rate click supply to review.</Text>
+                          <Text>{translate('You are the first liquidity provider.')}</Text>
+                          <Text>{translate('The ratio of tokens you add will set the price of this pool.')}</Text>
+                          <Text>{translate('Once you are happy with the rate click supply to review.')}</Text>
                         </AutoColumn>
                       </BorderCard>
                     )}
@@ -373,10 +376,14 @@ export default function AddLiquidity({
                         onFieldAInput(maxAmounts[Field.CURRENCY_A]?.toExact() ?? '')
                       }}
                       onQuarter={() => {
-                        onFieldAInput(numeral(parseFloat(maxAmounts[Field.CURRENCY_A]?.toExact() || "") / 4).format("0.00") ?? '')
+                        onFieldAInput(
+                          numeral(parseFloat(maxAmounts[Field.CURRENCY_A]?.toExact() || '') / 4).format('0.00') ?? ''
+                        )
                       }}
                       onHalf={() => {
-                        onFieldAInput(numeral(parseFloat(maxAmounts[Field.CURRENCY_A]?.toExact() || "") / 2).format("0.00") ?? '')
+                        onFieldAInput(
+                          numeral(parseFloat(maxAmounts[Field.CURRENCY_A]?.toExact() || '') / 2).format('0.00') ?? ''
+                        )
                       }}
                       onCurrencySelect={handleCurrencyASelect}
                       showMaxButton={!atMaxAmounts[Field.CURRENCY_A]}
@@ -398,10 +405,14 @@ export default function AddLiquidity({
                         onFieldBInput(maxAmounts[Field.CURRENCY_B]?.toExact() ?? '')
                       }}
                       onQuarter={() => {
-                        onFieldBInput(numeral(parseFloat(maxAmounts[Field.CURRENCY_B]?.toExact() || "") / 4).format("0.00") ?? '')
+                        onFieldBInput(
+                          numeral(parseFloat(maxAmounts[Field.CURRENCY_B]?.toExact() || '') / 4).format('0.00') ?? ''
+                        )
                       }}
                       onHalf={() => {
-                        onFieldBInput(numeral(parseFloat(maxAmounts[Field.CURRENCY_B]?.toExact() || "") / 2).format("0.00") ?? '')
+                        onFieldBInput(
+                          numeral(parseFloat(maxAmounts[Field.CURRENCY_B]?.toExact() || '') / 2).format('0.00') ?? ''
+                        )
                       }}
                       showMaxButton={!atMaxAmounts[Field.CURRENCY_B]}
                       currency={currencies[Field.CURRENCY_B]}
@@ -415,7 +426,7 @@ export default function AddLiquidity({
                   {currencies[Field.CURRENCY_A] && currencies[Field.CURRENCY_B] && pairState !== PairState.INVALID && (
                     <div className="mb-5">
                       <Text color="textSubtle" fontSize="14px" className="mb-1">
-                        {noLiquidity ? 'Initial Prices and Pool Share' : 'Prices and Pool Share'}
+                        {noLiquidity ? translate('Initial Prices and Pool Share') : translate('Prices and Pool Share')}
                       </Text>
                       <BorderCard>
                         <PoolPriceBar
@@ -448,7 +459,7 @@ export default function AddLiquidity({
                                 {approvalA === ApprovalState.PENDING ? (
                                   <Dots>Approving {currencies[Field.CURRENCY_A]?.symbol}</Dots>
                                 ) : (
-                                  `Approve ${currencies[Field.CURRENCY_A]?.symbol}`
+                                  `${translate('Approve')} ${currencies[Field.CURRENCY_A]?.symbol}`
                                 )}
                               </Button>
                             )}
@@ -460,9 +471,11 @@ export default function AddLiquidity({
                                 radii="card"
                               >
                                 {approvalB === ApprovalState.PENDING ? (
-                                  <Dots>Approving {currencies[Field.CURRENCY_B]?.symbol}</Dots>
+                                  <Dots>
+                                    {translate('Approving')} {currencies[Field.CURRENCY_B]?.symbol}
+                                  </Dots>
                                 ) : (
-                                  `Approve ${currencies[Field.CURRENCY_B]?.symbol}`
+                                  `${translate('Approve')} ${currencies[Field.CURRENCY_B]?.symbol}`
                                 )}
                               </Button>
                             )}
@@ -487,7 +500,7 @@ export default function AddLiquidity({
                         fullWidth
                         radii="card"
                       >
-                        {error ?? 'Supply'}
+                        {error ?? translate('Supply')}
                       </Button>
                     </AutoColumn>
                   )}

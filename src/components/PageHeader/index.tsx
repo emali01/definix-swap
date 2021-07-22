@@ -1,4 +1,5 @@
 import React, { ReactNode } from 'react'
+import { useTranslation } from 'contexts/Localization'
 import styled from 'styled-components'
 import { CogIcon, Flex, Heading, HistoryIcon, IconButton, Text, useModal } from 'uikit-dev'
 import RecentTransactionsModal from './RecentTransactionsModal'
@@ -21,7 +22,7 @@ const Details = styled.div`
 const PageHeader = ({ title, description, children }: PageHeaderProps) => {
   const [onPresentSettings] = useModal(<SettingsModal />)
   const [onPresentRecentTransactions] = useModal(<RecentTransactionsModal />)
-
+  const { t } = useTranslation()
   return (
     <StyledPageHeader>
       <Flex alignItems="center">
@@ -33,10 +34,10 @@ const PageHeader = ({ title, description, children }: PageHeaderProps) => {
             </Text>
           )}
         </Details>
-        <IconButton variant="text" onClick={onPresentSettings} title="Settings">
+        <IconButton variant="text" onClick={onPresentSettings} title={t('Settings')}>
           <CogIcon width={20} />
         </IconButton>
-        <IconButton variant="text" onClick={onPresentRecentTransactions} title="Recent transactions">
+        <IconButton variant="text" onClick={onPresentRecentTransactions} title={t('Recent transactions')}>
           <HistoryIcon width={20} />
         </IconButton>
       </Flex>

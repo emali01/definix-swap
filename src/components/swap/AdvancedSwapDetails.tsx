@@ -1,5 +1,6 @@
 import { Trade, TradeType } from 'definixswap-sdk'
 import React from 'react'
+import { useTranslation } from 'contexts/Localization'
 import { Text } from 'uikit-dev'
 import { Field } from '../../state/swap/actions'
 import { useUserSlippageTolerance } from '../../state/user/hooks'
@@ -23,14 +24,19 @@ function TradeSummary({
   const isExactIn = trade.tradeType === TradeType.EXACT_INPUT
   const slippageAdjustedAmounts = computeSlippageAdjustedAmounts(trade, allowedSlippage)
 
+  const { t } = useTranslation()
   return (
     <div className={className}>
       <RowBetween align="baseline">
         <RowFixed>
           <Text fontSize="12px" color="textSubtle">
-            {isExactIn ? 'Minimum received' : 'Maximum sold'}
+            {isExactIn ? t('Minimum received') : t('Maximum sold')}
           </Text>
-          <QuestionHelper text="Your transaction will revert if there is a large, unfavorable price movement before it is confirmed." />
+          <QuestionHelper
+            text={t(
+              'Your transaction will revert if there is a large, unfavorable price movement before it is confirmed.'
+            )}
+          />
         </RowFixed>
         <RowFixed>
           <Text fontSize="14px" fontWeight="600" textAlign="right">
@@ -45,9 +51,9 @@ function TradeSummary({
       <RowBetween align="baseline">
         <RowFixed margin="0">
           <Text fontSize="12px" color="textSubtle">
-            Price Impact
+            {t('Price Impact')}
           </Text>
-          <QuestionHelper text="The difference between the market price and estimated price due to trade size." />
+          <QuestionHelper text={t('The difference between the market price and estimated price due to trade size.')} />
         </RowFixed>
         <FormattedPriceImpact priceImpact={priceImpactWithoutFee} />
       </RowBetween>
@@ -55,11 +61,12 @@ function TradeSummary({
       <RowBetween>
         <RowFixed marginBottom="0 !important">
           <Text fontSize="12px" color="textSubtle">
-            Liquidity Provider Fee
+            {t('Liquidity Provider Fee')}
           </Text>
           <QuestionHelper
-            text="For each trade a 0.2% fee is paid.
-0.15% goes to liquidity providers and 0.05% goes to the Definix Swap treasury"
+            text={t(
+              'For each trade a 0.2% fee is paid. 0.15% goes to liquidity providers and 0.05% goes to the Definix Swap treasury'
+            )}
           />
         </RowFixed>
         <Text fontSize="14px" fontWeight="600" textAlign="right">
@@ -76,18 +83,18 @@ export interface AdvancedSwapDetailsProps {
 
 export function AdvancedSwapDetails({ trade }: AdvancedSwapDetailsProps) {
   const [allowedSlippage] = useUserSlippageTolerance()
-
   const showRoute = Boolean(trade && trade.route.path.length > 2)
 
+  const { t } = useTranslation()
   return trade ? (
     <div className={`flex ${trade ? 'mb-5' : ''}`}>
       {showRoute && (
         <AutoColumn className="col-6">
           <RowFixed className="mb-3">
             <Text fontSize="14px" bold>
-              Routing
+              {t('Routing')}
             </Text>
-            <QuestionHelper text="Routing through these tokens resulted in the best price for your trade." />
+            <QuestionHelper text={t('Routing through these tokens resulted in the best price for your trade.')} />
           </RowFixed>
           <SwapRoute trade={trade} />
         </AutoColumn>

@@ -5,7 +5,6 @@ import Question from 'components/QuestionHelper'
 import { StyledInternalLink } from 'components/Shared'
 import { Dots } from 'components/swap/styleds'
 import TransactionHistoryBox from 'components/TransactionHistoryBox'
-import TranslatedText from 'components/TranslatedText'
 import { bsc, injected, walletconnect } from 'connectors'
 import { usePairs } from 'data/Reserves'
 import { Pair } from 'definixswap-sdk'
@@ -145,7 +144,7 @@ export default function Pool() {
           <AppBody
             title={
               <Heading as="h1" fontSize="32px !important" className="mb-5" textAlign="left">
-                EXCHANGE
+                {translate('EXCHANGE')}
               </Heading>
             }
           >
@@ -153,19 +152,17 @@ export default function Pool() {
 
             <div className="pa-6 bd-b">
               <div className="flex align-center mb-5">
-                <Heading>Add liquidity to receive LP tokens</Heading>
+                <Heading>{translate('Add liquidity to receive LP tokens')}</Heading>
                 {/* <Question text="" /> */}
               </div>
               <Button id="join-pool-button" as={Link} to="/add/ETH" fullWidth radii="card">
-                <TranslatedText translationId={100}>Add Liquidity</TranslatedText>
+                {translate('Add Liquidity')}
               </Button>
             </div>
 
             <div className="pa-6">
               <div className="flex align-center mb-5">
-                <Heading fontSize="24px !important">
-                  <TranslatedText translationId={102}>Your Liquidity</TranslatedText>
-                </Heading>
+                <Heading fontSize="24px !important">{translate('Your Liquidity')}</Heading>
                 <Question
                   text={translate(
                     'When you add liquidity, you are given pool tokens that represent your share. If you don’t see a pool you joined in this list, try importing a pool below.'
@@ -194,13 +191,13 @@ export default function Pool() {
                   )}
 
                   <Text color="textSubtle" textAlign="center" fontSize="16px" className="mt-2">
-                    Connect to a wallet to view your liquidity.
+                    {translate('Connect to a wallet to view your liquidity.')}
                   </Text>
                 </div>
               ) : v2IsLoading ? (
                 <div className="pa-6">
                   <Text color="textSubtle" textAlign="center" fontSize="16px">
-                    <Dots>Loading</Dots>
+                    <Dots>{translate('Loading')}</Dots>
                   </Text>
                 </div>
               ) : allV2PairsWithLiquidity?.length > 0 ? (
@@ -212,7 +209,7 @@ export default function Pool() {
               ) : (
                 <div className="pa-6">
                   <Text color="textSubtle" textAlign="center" fontSize="16px">
-                    <TranslatedText translationId={104}>No liquidity found.</TranslatedText>
+                    {translate('No liquidity found.')}
                   </Text>
                 </div>
               )}
@@ -224,7 +221,7 @@ export default function Pool() {
                     {translate('Import it.')}
                   </StyledInternalLink>
                 </Text>
-                <Text>Or, if you staked your LP tokens in a farm, unstake them to see them here</Text>
+                <Text>{translate('Or, if you staked your LP tokens in a farm, unstake them to see them here')}</Text>
               </div>
             </div>
           </AppBody>
@@ -241,45 +238,47 @@ export default function Pool() {
         {isShowRightPanel && (
           <MaxWidthRight>
             <Heading fontSize="20px !important" className="mb-3">
-              LIQUIDITY HISTORY
+              {translate('LIQUIDITY HISTORY')}
             </Heading>
             <Card style={{ overflow: 'auto', flexGrow: 1 }}>
               {sortedRecentTransactions.length > 0 ? (
-                sortedRecentTransactions.filter((tx) => {
-                  const firstToken = Object.values(allTokens).find((t) => t.symbol === tx.data?.firstToken)
-                  const secondToken = Object.values(allTokens).find((t) => t.symbol === tx.data?.secondToken)
-                  return !!firstToken && !!secondToken
-                }).map((tx) => {
-                  const firstToken = Object.values(allTokens).find((t) => t.symbol === tx.data?.firstToken)
-                  const secondToken = Object.values(allTokens).find((t) => t.symbol === tx.data?.secondToken)
-                  return (
-                    <TransactionHistoryBox
-                      href={chainId ? getBscScanLink(chainId, tx.hash, 'transaction') : '/'}
-                      firstCoin={firstToken}
-                      firstCoinAmount={tx.data?.firstTokenAmount}
-                      secondCoin={secondToken}
-                      secondCoinAmount={tx.data?.secondTokenAmount}
-                      title={tx.type === 'addLiquidity' ? 'Add Liquidity' : 'Remove Liquidity'}
-                      withText="and"
-                      isFailed={!tx.confirmedTime}
-                      date={
-                        tx.confirmedTime
-                          ? new Date(tx.confirmedTime || 0).toLocaleString('en-US', {
-                              day: 'numeric',
-                              month: 'short',
-                              year: 'numeric',
-                              hour: 'numeric',
-                              minute: 'numeric',
-                            })
-                          : ''
-                      }
-                    />
-                  )
-                })
+                sortedRecentTransactions
+                  .filter((tx) => {
+                    const firstToken = Object.values(allTokens).find((t) => t.symbol === tx.data?.firstToken)
+                    const secondToken = Object.values(allTokens).find((t) => t.symbol === tx.data?.secondToken)
+                    return !!firstToken && !!secondToken
+                  })
+                  .map((tx) => {
+                    const firstToken = Object.values(allTokens).find((t) => t.symbol === tx.data?.firstToken)
+                    const secondToken = Object.values(allTokens).find((t) => t.symbol === tx.data?.secondToken)
+                    return (
+                      <TransactionHistoryBox
+                        href={chainId ? getBscScanLink(chainId, tx.hash, 'transaction') : '/'}
+                        firstCoin={firstToken}
+                        firstCoinAmount={tx.data?.firstTokenAmount}
+                        secondCoin={secondToken}
+                        secondCoinAmount={tx.data?.secondTokenAmount}
+                        title={tx.type === 'addLiquidity' ? translate('Add Liquidity') : translate('Remove Liquidity')}
+                        withText="and"
+                        isFailed={!tx.confirmedTime}
+                        date={
+                          tx.confirmedTime
+                            ? new Date(tx.confirmedTime || 0).toLocaleString('en-US', {
+                                day: 'numeric',
+                                month: 'short',
+                                year: 'numeric',
+                                hour: 'numeric',
+                                minute: 'numeric',
+                              })
+                            : ''
+                        }
+                      />
+                    )
+                  })
               ) : (
                 <div className="flex align-center justify-center" style={{ height: '100%' }}>
                   <Text color="textSubtle" fontSize="14px" textAlign="center">
-                    No Liquidity History
+                    {translate('No Liquidity History')}
                   </Text>
                 </div>
               )}

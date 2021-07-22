@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTranslation } from 'contexts/Localization'
 import { Currency, Percent, Price } from 'definixswap-sdk'
 import { Text } from 'uikit-dev'
 import { AutoColumn } from '../../components/Column'
@@ -17,6 +18,7 @@ export function PoolPriceBar({
   poolTokenPercentage?: Percent
   price?: Price
 }) {
+  const { t } = useTranslation()
   return (
     <AutoColumn gap="md">
       <AutoRow justify="space-around" gap="4px">
@@ -40,7 +42,7 @@ export function PoolPriceBar({
             %
           </Text>
           <Text fontSize="14px" color="textSubtle" pt={1}>
-            Share of Pool
+            {t('Share of Pool')}
           </Text>
         </AutoColumn>
       </AutoRow>

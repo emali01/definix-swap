@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo } from 'react'
+import { useTranslation } from 'contexts/Localization'
 import { diffTokenLists, TokenList } from '@uniswap/token-lists'
 import { Button, Text } from 'uikit-dev'
 import { useDispatch } from 'react-redux'
@@ -40,20 +41,20 @@ export default function ListUpdatePopup({
       Object.keys(tokensChanged).reduce((memo, chainId: any) => memo + Object.keys(tokensChanged[chainId]).length, 0),
     [tokensChanged]
   )
-
+  const { t } = useTranslation()
   return (
     <AutoRow>
       <AutoColumn style={{ flex: '1' }} gap="8px">
         {auto ? (
           <Text>
-            The token list &quot;{oldList.name}&quot; has been updated to{' '}
+            {t('The token list')} &quot;{oldList.name}&quot; {t('has been updated to')}{' '}
             <strong>{listVersionLabel(newList.version)}</strong>.
           </Text>
         ) : (
           <>
             <div>
               <Text fontSize="14px">
-                An update is available for the token list &quot;{oldList.name}&quot; (
+                {t('An update is available for the token list')} &quot;{oldList.name}&quot; (
                 {listVersionLabel(oldList.version)} to {listVersionLabel(newList.version)}).
               </Text>
               <ul>
@@ -65,7 +66,7 @@ export default function ListUpdatePopup({
                         {i === tokensAdded.length - 1 ? null : ', '}
                       </React.Fragment>
                     ))}{' '}
-                    added
+                    {t('added')}
                   </li>
                 ) : null}
                 {tokensRemoved.length > 0 ? (
@@ -76,18 +77,22 @@ export default function ListUpdatePopup({
                         {i === tokensRemoved.length - 1 ? null : ', '}
                       </React.Fragment>
                     ))}{' '}
-                    removed
+                    {t('removed')}
                   </li>
                 ) : null}
-                {numTokensChanged > 0 ? <li>{numTokensChanged} tokens updated</li> : null}
+                {numTokensChanged > 0 ? (
+                  <li>
+                    {numTokensChanged} {t('tokens updated')}
+                  </li>
+                ) : null}
               </ul>
             </div>
             <AutoRow>
               <div style={{ flexGrow: 1, marginRight: 12 }}>
-                <Button onClick={handleAcceptUpdate}>Accept update</Button>
+                <Button onClick={handleAcceptUpdate}>{t('Accept update')}</Button>
               </div>
               <div style={{ flexGrow: 1 }}>
-                <Button onClick={removeThisPopup}>Dismiss</Button>
+                <Button onClick={removeThisPopup}>{t('Dismiss')}</Button>
               </div>
             </AutoRow>
           </>

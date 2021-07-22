@@ -4,8 +4,8 @@ import { Button, ButtonProps, ConnectorId, useWalletModal } from 'uikit-dev'
 import { injected, walletconnect } from 'connectors'
 import { useTranslation } from 'contexts/Localization'
 
-const UnlockButton: React.FC<ButtonProps> = props => {
-  const { t: translate } = useTranslation()
+const UnlockButton: React.FC<ButtonProps> = (props) => {
+  const { t } = useTranslation()
   const { account, activate, deactivate } = useWeb3React()
 
   const handleLogin = (connectorId: ConnectorId) => {
@@ -19,7 +19,7 @@ const UnlockButton: React.FC<ButtonProps> = props => {
 
   return (
     <Button onClick={onPresentConnectModal} {...props}>
-      {translate('Unlock Wallet')}
+      {t('Unlock Wallet')}
     </Button>
   )
 }

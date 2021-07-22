@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTranslation } from 'contexts/Localization'
 import { Modal } from 'uikit-dev'
 import SlippageToleranceSetting from './SlippageToleranceSetting'
 import TransactionDeadlineSetting from './TransactionDeadlineSetting'
@@ -11,8 +12,9 @@ type SettingsModalProps = {
 const defaultOnDismiss = () => null
 
 const SettingsModal = ({ onDismiss = defaultOnDismiss }: SettingsModalProps) => {
+  const { t } = useTranslation()
   return (
-    <Modal title="Settings" onDismiss={onDismiss} isRainbow={false}>
+    <Modal title={t('Settings')} onDismiss={onDismiss} isRainbow={false}>
       <SlippageToleranceSetting />
       <TransactionDeadlineSetting />
     </Modal>

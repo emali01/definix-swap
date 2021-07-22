@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTranslation } from 'contexts/Localization'
 import styled from 'styled-components'
 import { escapeRegExp } from '../../utils'
 
@@ -56,7 +57,7 @@ export const Input = React.memo(function InnerInput({
       onUserInput(nextUserInput)
     }
   }
-
+  const { t } = useTranslation()
   return (
     <StyledInput
       {...rest}
@@ -67,7 +68,7 @@ export const Input = React.memo(function InnerInput({
       }}
       // universal input options
       inputMode="decimal"
-      title="Token Amount"
+      title={t('Token Amount')}
       autoComplete="off"
       autoCorrect="off"
       // text-specific options

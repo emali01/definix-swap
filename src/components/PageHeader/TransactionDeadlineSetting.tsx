@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
+import { useTranslation } from 'contexts/Localization'
 import styled from 'styled-components'
 import { Input, Text } from 'uikit-dev'
 import { useUserDeadline } from 'state/user/hooks'
 import QuestionHelper from '../QuestionHelper'
-import TranslatedText from '../TranslatedText'
 
 const StyledTransactionDeadlineSetting = styled.div`
   margin-bottom: 16px;
@@ -30,6 +30,7 @@ const Field = styled.div`
 `
 
 const TransactionDeadlineSetting = () => {
+  const { t } = useTranslation()
   const [deadline, setDeadline] = useUserDeadline()
   const [value, setValue] = useState(deadline / 60) // deadline in minutes
   const [error, setError] = useState<string | null>(null)
@@ -58,13 +59,13 @@ const TransactionDeadlineSetting = () => {
     <StyledTransactionDeadlineSetting>
       <Label>
         <Text small style={{ fontWeight: 600 }}>
-          <TranslatedText translationId={90}>Transaction deadline</TranslatedText>
+          {t('Transaction deadline')}
         </Text>
-        <QuestionHelper text="Your transaction will revert if it is pending for more than this long." />
+        <QuestionHelper text={t('Your transaction will revert if it is pending for more than this long.')} />
       </Label>
       <Field>
         <Input type="number" scale="lg" step="1" min="1" value={value} onChange={handleChange} />
-        <Text>Minutes</Text>
+        <Text> {t('Minutes')}</Text>
       </Field>
       {error && (
         <Text small mt="8px" color="failure">

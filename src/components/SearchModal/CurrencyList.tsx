@@ -1,6 +1,7 @@
 import { Currency, CurrencyAmount, currencyEquals, ETHER, Token } from 'definixswap-sdk'
 import React, { CSSProperties, MutableRefObject, useCallback, useMemo } from 'react'
 import { FixedSizeList } from 'react-window'
+import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import { Text } from 'uikit-dev'
 import { useActiveWeb3React } from '../../hooks'
@@ -103,6 +104,7 @@ function CurrencyRow({
   const removeToken = useRemoveUserAddedToken()
   const addToken = useAddUserToken()
 
+  const { t } = useTranslation()
   // only show add or remove buttons if not on selected list
   return (
     <MenuItem
@@ -118,14 +120,14 @@ function CurrencyRow({
         <FadedSpan>
           {!isOnSelectedList && customAdded && !(currency instanceof WrappedTokenInfo) ? (
             <Text>
-              Added by user
+              {t('Added by user')}
               <LinkStyledButton
                 onClick={(event) => {
                   event.stopPropagation()
                   if (chainId && currency instanceof Token) removeToken(chainId, currency.address)
                 }}
               >
-                (Remove)
+                ({t('Remove')})
               </LinkStyledButton>
             </Text>
           ) : null}
@@ -138,7 +140,7 @@ function CurrencyRow({
                   if (currency instanceof Token) addToken(currency)
                 }}
               >
-                (Add)
+                ({t('Add')})
               </LinkStyledButton>
             </Text>
           ) : null}

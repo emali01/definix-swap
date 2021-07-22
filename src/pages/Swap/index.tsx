@@ -370,7 +370,7 @@ export default function Swap({
             <AppBody
               title={
                 <Heading as="h1" fontSize="32px !important" className="mb-5" textAlign="left">
-                  EXCHANGE
+                  {translate('EXCHANGE')}
                 </Heading>
               }
             >
@@ -379,7 +379,7 @@ export default function Swap({
               <Wrapper id="swap-page">
                 <CardBody p={isMobileOrTablet ? '24px !important' : '32px !important'}>
                   <Heading textAlign="center" className="mb-4">
-                    Trade tokens in an instant
+                    {translate('Trade tokens in an instant')}
                   </Heading>
 
                   <div>
@@ -387,7 +387,7 @@ export default function Swap({
                       className="mb-4"
                       label={
                         independentField === Field.OUTPUT && !showWrap && trade
-                          ? 'From (estimated)'
+                          ? translate('From (estimated)')
                           : translate('From')
                       }
                       value={formattedAmounts[Field.INPUT]}
@@ -418,7 +418,7 @@ export default function Swap({
                         </ArrowWrapper>
                         {recipient === null && !showWrap && isExpertMode ? (
                           <LinkStyledButton id="add-recipient-button" onClick={() => onChangeRecipient('')}>
-                            + Add a send (optional)
+                            {translate('Add a send (optional)')}
                           </LinkStyledButton>
                         ) : null}
                       </AutoRow>
@@ -429,7 +429,7 @@ export default function Swap({
                       onUserInput={handleTypeOutput}
                       label={
                         independentField === Field.INPUT && !showWrap && trade
-                          ? 'To (estimated)'
+                          ? translate('To (estimated)')
                           : translate('To')
                       }
                       showMaxButton={false}
@@ -446,7 +446,7 @@ export default function Swap({
                             <ArrowDown size="16" color={theme.colors.textSubtle} />
                           </ArrowWrapper>
                           <LinkStyledButton id="remove-recipient-button" onClick={() => onChangeRecipient(null)}>
-                            - Remove send
+                            {translate('Remove send')}
                           </LinkStyledButton>
                         </AutoRow>
                         <AddressInputPanel id="recipient" value={recipient} onChange={onChangeRecipient} />
@@ -460,7 +460,7 @@ export default function Swap({
                             {Boolean(trade) && (
                               <div className="flex flex-wrap align-baseline justify-space-between col-6">
                                 <Text fontSize="14px" color="textSubtle">
-                                  Price Rate
+                                  {translate('Price Rate')}
                                 </Text>
                                 <TradePrice
                                   price={trade?.executionPrice}
@@ -476,7 +476,7 @@ export default function Swap({
                                 }`}
                               >
                                 <Text fontSize="14px" color="textSubtle">
-                                  Slippage Tolerance
+                                  {translate('Slippage tolerance')}
                                 </Text>
                                 <Text fontSize="14px" textAlign="right" bold>
                                   {allowedSlippage / 100}%
@@ -501,7 +501,7 @@ export default function Swap({
                       </Button>
                     ) : noRoute && userHasSpecifiedInputOutput ? (
                       <GreyCard style={{ textAlign: 'center' }}>
-                        <Text>Insufficient liquidity for this trade.</Text>
+                        <Text> {translate('Insufficient liquidity for this trade.')}</Text>
                       </GreyCard>
                     ) : showApproveFlow ? (
                       <RowBetween className="mb-3">
@@ -513,12 +513,12 @@ export default function Swap({
                         >
                           {approval === ApprovalState.PENDING ? (
                             <AutoRow gap="6px" justify="center">
-                              Approving <Loader stroke="white" />
+                              {translate('Approving')} <Loader stroke="white" />
                             </AutoRow>
                           ) : approvalSubmitted && approval === ApprovalState.APPROVED ? (
-                            'Approved'
+                            translate('Approved')
                           ) : (
-                            `Approve ${currencies[Field.INPUT]?.symbol}`
+                            `${translate('Approve')} ${currencies[Field.INPUT]?.symbol}`
                           )}
                         </Button>
                         <Button
@@ -546,8 +546,8 @@ export default function Swap({
                           variant={isValid && priceImpactSeverity > 2 ? 'danger' : 'primary'}
                         >
                           {priceImpactSeverity > 3 && !isExpertMode
-                            ? `Price Impact High`
-                            : `Swap${priceImpactSeverity > 2 ? ' Anyway' : ''}`}
+                            ? `${translate('Price Impact High')}`
+                            : `${translate('Swap')}${priceImpactSeverity > 2 ? translate('Anyway') : ''}`}
                         </Button>
                       </RowBetween>
                     ) : (
@@ -573,8 +573,8 @@ export default function Swap({
                       >
                         {swapInputError ||
                           (priceImpactSeverity > 3 && !isExpertMode
-                            ? `Price Impact Too High`
-                            : `Swap${priceImpactSeverity > 2 ? ' Anyway' : ''}`)}
+                            ? `${translate('Price Impact Too High')}`
+                            : `${translate('Swap')}${priceImpactSeverity > 2 ? translate('Anyway') : ''}`)}
                       </Button>
                     )}
                     {showApproveFlow && <ProgressSteps steps={[approval === ApprovalState.APPROVED]} />}
@@ -613,45 +613,47 @@ export default function Swap({
         {isShowRightPanel && (
           <MaxWidthRight>
             <Heading fontSize="20px !important" className="mb-3">
-              SWAP HISTORY
+              {translate('SWAP HISTORY')}
             </Heading>
             <Card style={{ overflow: 'auto', flexGrow: 1 }}>
               {sortedRecentTransactions.length > 0 ? (
-                sortedRecentTransactions.filter((tx) => {
-                  const firstToken = Object.values(allTokens).find((t) => t.symbol === tx.data?.firstToken)
-                  const secondToken = Object.values(allTokens).find((t) => t.symbol === tx.data?.secondToken)
-                  return !!firstToken && !!secondToken
-                }).map((tx) => {
-                  const firstToken = Object.values(allTokens).find((t) => t.symbol === tx.data?.firstToken)
-                  const secondToken = Object.values(allTokens).find((t) => t.symbol === tx.data?.secondToken)
-                  return (
-                    <TransactionHistoryBox
-                      href={chainId ? getBscScanLink(chainId, tx.hash, 'transaction') : '/'}
-                      firstCoin={firstToken}
-                      firstCoinAmount={tx.data?.firstTokenAmount}
-                      secondCoin={secondToken}
-                      secondCoinAmount={tx.data?.secondTokenAmount}
-                      title="Swap"
-                      withText="to"
-                      isFailed={!tx.confirmedTime}
-                      date={
-                        tx.confirmedTime
-                          ? new Date(tx.confirmedTime || 0).toLocaleString('en-US', {
-                              day: 'numeric',
-                              month: 'short',
-                              year: 'numeric',
-                              hour: 'numeric',
-                              minute: 'numeric',
-                            })
-                          : ''
-                      }
-                    />
-                  )
-                })
+                sortedRecentTransactions
+                  .filter((tx) => {
+                    const firstToken = Object.values(allTokens).find((t) => t.symbol === tx.data?.firstToken)
+                    const secondToken = Object.values(allTokens).find((t) => t.symbol === tx.data?.secondToken)
+                    return !!firstToken && !!secondToken
+                  })
+                  .map((tx) => {
+                    const firstToken = Object.values(allTokens).find((t) => t.symbol === tx.data?.firstToken)
+                    const secondToken = Object.values(allTokens).find((t) => t.symbol === tx.data?.secondToken)
+                    return (
+                      <TransactionHistoryBox
+                        href={chainId ? getBscScanLink(chainId, tx.hash, 'transaction') : '/'}
+                        firstCoin={firstToken}
+                        firstCoinAmount={tx.data?.firstTokenAmount}
+                        secondCoin={secondToken}
+                        secondCoinAmount={tx.data?.secondTokenAmount}
+                        title={translate('Swap')}
+                        withText="to"
+                        isFailed={!tx.confirmedTime}
+                        date={
+                          tx.confirmedTime
+                            ? new Date(tx.confirmedTime || 0).toLocaleString('en-US', {
+                                day: 'numeric',
+                                month: 'short',
+                                year: 'numeric',
+                                hour: 'numeric',
+                                minute: 'numeric',
+                              })
+                            : ''
+                        }
+                      />
+                    )
+                  })
               ) : (
                 <div className="flex align-center justify-center" style={{ height: '100%' }}>
                   <Text color="textSubtle" fontSize="14px" textAlign="center">
-                    No Swap History
+                    {translate('No Swap History')}
                   </Text>
                 </div>
               )}

@@ -1,5 +1,6 @@
 import { Trade, TradeType } from 'definixswap-sdk'
 import React, { useContext, useMemo } from 'react'
+import { useTranslation } from 'contexts/Localization'
 import { ArrowDown } from 'react-feather'
 import styled, { ThemeContext } from 'styled-components'
 import { Button, ErrorIcon, Text } from 'uikit-dev'
@@ -39,7 +40,7 @@ export default function SwapModalHeader({
   const priceImpactSeverity = warningSeverity(priceImpactWithoutFee)
 
   const theme = useContext(ThemeContext)
-
+  const { t } = useTranslation()
   return (
     <AutoColumn gap="24px">
       <AutoColumn gap="16px">
@@ -86,35 +87,37 @@ export default function SwapModalHeader({
             <RowBetween>
               <div className="flex align-center">
                 <ErrorIcon className="mr-2" />
-                <Text>Price Updated</Text>
+                <Text>{t('Price Updated')}</Text>
               </div>
               <Button onClick={onAcceptChanges} size="sm" className="flex-shrink">
-                Accept Price
+                {t('Accept Price')}
               </Button>
             </RowBetween>
           ) : null}
 
           {trade.tradeType === TradeType.EXACT_INPUT ? (
             <PriceInfoText>
-              {`Output is estimated. You will receive at least `}
+              {`${t('Output is estimated. You will receive at least')} `}
               <span>
                 {slippageAdjustedAmounts[Field.OUTPUT]?.toSignificant(6)} {trade.outputAmount.currency.symbol}
               </span>
-              {' or the transaction will revert.'}
+              {t('or the transaction will revert.')}
+              {/* {' or the transaction will revert.'} */}
             </PriceInfoText>
           ) : (
             <PriceInfoText>
-              {`Input is estimated. You will sell at most `}
+              {`${t('Input is estimated. You will sell at most')} `}
               <span>
                 {slippageAdjustedAmounts[Field.INPUT]?.toSignificant(6)} {trade.inputAmount.currency.symbol}
               </span>
-              {' or the transaction will revert.'}
+              {t('or the transaction will revert.')}
+              {/* {' or the transaction will revert.'} */}
             </PriceInfoText>
           )}
 
           {recipient !== null ? (
             <Text>
-              Output will be sent to{' '}
+              {t('Output will be sent to')}{' '}
               <b title={recipient}>{isAddress(recipient) ? shortenAddress(recipient) : recipient}</b>
             </Text>
           ) : null}
