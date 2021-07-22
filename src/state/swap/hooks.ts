@@ -1,4 +1,5 @@
 import { parseUnits } from '@ethersproject/units'
+import { useTranslation } from 'contexts/Localization'
 import { Currency, CurrencyAmount, ETHER, JSBI, Token, TokenAmount, Trade } from 'definixswap-sdk'
 import { ParsedQs } from 'qs'
 import { useCallback, useEffect, useState } from 'react'
@@ -113,6 +114,7 @@ export function useDerivedSwapInfo(): {
   v2Trade: Trade | undefined
   inputError?: string
 } {
+  const { t: translate } = useTranslation()
   const { account } = useActiveWeb3React()
 
   const {
@@ -153,11 +155,11 @@ export function useDerivedSwapInfo(): {
 
   let inputError: string | undefined
   if (!account) {
-    inputError = 'Connect Wallet'
+    inputError = translate('Connect Wallet')
   }
 
   if (!parsedAmount) {
-    inputError = inputError ?? 'Enter an amount'
+    inputError = inputError ?? translate('Enter an amount')
   }
 
   if (!currencies[Field.INPUT] || !currencies[Field.OUTPUT]) {
