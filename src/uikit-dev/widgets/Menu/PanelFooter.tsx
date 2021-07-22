@@ -212,18 +212,18 @@ const PanelFooter: React.FC<Props> = ({
         <Dropdown
           position="top"
           target={
-          <ChangeLanguage
+            <ChangeLanguage
               variant="text"
               radii="card"
               endIcon={<ChevronDownIcon color="textDisabled" width="24px" />}
               padding="0 16px"
-              disabled
+              // disabled
             >
               <Text color="textSubtle" bold>
                 {currentLang?.toUpperCase()}
               </Text>
-          </ChangeLanguage>
-        }
+            </ChangeLanguage>
+          }
         >
           {languageList.map((lang) => (
             <MenuButton

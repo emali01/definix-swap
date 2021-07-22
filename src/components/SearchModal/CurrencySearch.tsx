@@ -159,11 +159,9 @@ export function CurrencySearch({
         <RowBetween>
           <Text>
             <Heading>
-              <TranslatedText translationId={82}>Select a token</TranslatedText>
+              {t('Select a token')}
               <QuestionHelper
-                text={t(
-                  'Find a token by searching for its name or symbol or by pasting its address below.'
-                )}
+                text={t('Find a token by searching for its name or symbol or by pasting its address below.')}
               />
             </Heading>
           </Text>
@@ -175,7 +173,7 @@ export function CurrencySearch({
           <SearchInput
             type="text"
             id="token-search-input"
-            placeholder={t('tokenSearchPlaceholder')}
+            placeholder={t('Search name or paste address')}
             value={searchQuery}
             ref={inputRef as RefObject<HTMLInputElement>}
             onChange={handleInput}
@@ -187,9 +185,7 @@ export function CurrencySearch({
           <CommonBases chainId={chainId} onSelect={handleCurrencySelect} selectedCurrency={selectedCurrency} />
         )}
         <RowBetween className="pb-2">
-          <Heading>
-            <TranslatedText translationId={126}>Token name</TranslatedText>
-          </Heading>
+          <Heading>{t('Token name')}</Heading>
           <SortButton ascending={invertSearchOrder} toggleSortOrder={() => setInvertSearchOrder((iso) => !iso)} />
         </RowBetween>
       </PaddedColumn>

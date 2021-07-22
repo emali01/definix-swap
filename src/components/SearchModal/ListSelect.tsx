@@ -1,4 +1,5 @@
 import React, { memo, useCallback, useMemo, useRef, useState } from 'react'
+import { useTranslation } from 'contexts/Localization'
 import { ArrowLeft } from 'react-feather'
 import { usePopper } from 'react-popper'
 import { useDispatch, useSelector } from 'react-redux'
@@ -124,7 +125,7 @@ const ListRow = memo(function ListRow({ listUrl, onBack }: { listUrl: string; on
   }, [dispatch, listUrl])
 
   if (!list) return null
-
+  const { t } = useTranslation()
   return (
     <Row key={listUrl} align="center" padding="16px" id={listUrlRowHTMLId(listUrl)}>
       {list.logoURI ? (
@@ -166,19 +167,19 @@ const ListRow = memo(function ListRow({ listUrl, onBack }: { listUrl: string; on
           <PopoverContainer show ref={setPopperElement as any} style={styles.popper} {...attributes.popper}>
             <div>{list && listVersionLabel(list.version)}</div>
             <SeparatorDark />
-            <ExternalLink href={`https://tokenlists.org/token-list?url=${listUrl}`}>View list</ExternalLink>
+            <ExternalLink href={`https://tokenlists.org/token-list?url=${listUrl}`}>{t('View list')}</ExternalLink>
             <UnpaddedLinkStyledButton onClick={handleRemoveList} disabled={Object.keys(listsByUrl).length === 1}>
-              Remove list
+              {t('Remove list')}
             </UnpaddedLinkStyledButton>
             {pending && (
-              <UnpaddedLinkStyledButton onClick={handleAcceptListUpdate}>Update list</UnpaddedLinkStyledButton>
+              <UnpaddedLinkStyledButton onClick={handleAcceptListUpdate}>{t('Update list')}</UnpaddedLinkStyledButton>
             )}
           </PopoverContainer>
         )}
       </StyledMenu>
       {isSelected ? (
         <Button disabled style={{ width: '5rem', minWidth: '5rem' }}>
-          Selected
+          {t('Selected')}
         </Button>
       ) : (
         <>
@@ -190,7 +191,7 @@ const ListRow = memo(function ListRow({ listUrl, onBack }: { listUrl: string; on
             }}
             onClick={selectThisList}
           >
-            Select
+            {t('Select')}
           </Button>
         </>
       )}
@@ -264,7 +265,7 @@ export function ListSelect({ onDismiss, onBack }: { onDismiss: () => void; onBac
         return 0
       })
   }, [lists])
-
+  const { t } = useTranslation()
   return (
     <Column style={{ width: '100%', flex: '1 1' }}>
       <PaddedColumn>
@@ -272,7 +273,7 @@ export function ListSelect({ onDismiss, onBack }: { onDismiss: () => void; onBac
           <div>
             <ArrowLeft style={{ cursor: 'pointer' }} onClick={onBack} />
           </div>
-          <Text fontSize="20px">Manage Lists</Text>
+          <Text fontSize="20px">{t('Manage Lists')}</Text>
           <CloseIcon onClick={onDismiss} />
         </RowBetween>
       </PaddedColumn>
@@ -281,7 +282,7 @@ export function ListSelect({ onDismiss, onBack }: { onDismiss: () => void; onBac
 
       <PaddedColumn gap="14px">
         <Text bold>
-          Add a list{' '}
+          {t('Add a list')}{' '}
           <QuestionHelper text="Token lists are an open specification for lists of BEP20 tokens. You can use any token list by entering its URL below. Beware that third party token lists can contain fake or malicious BEP20 tokens." />
         </Text>
         <Row>
@@ -295,7 +296,7 @@ export function ListSelect({ onDismiss, onBack }: { onDismiss: () => void; onBac
             style={{ height: '2.75rem', borderRadius: 12, padding: '12px' }}
           />
           <Button onClick={handleAddList} style={{ maxWidth: '4em', marginLeft: '1em' }} disabled={!validUrl}>
-            Add
+            {t('Add')}
           </Button>
         </Row>
         {addError ? (
@@ -315,7 +316,7 @@ export function ListSelect({ onDismiss, onBack }: { onDismiss: () => void; onBac
       <Separator />
 
       <div style={{ padding: '16px', textAlign: 'center' }}>
-        <ExternalLink href="https://tokenlists.org">Browse lists</ExternalLink>
+        <ExternalLink href="https://tokenlists.org">{t('Browse lists')}</ExternalLink>
       </div>
     </Column>
   )

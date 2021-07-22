@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTranslation } from 'contexts/Localization'
 import { NavLink } from 'react-router-dom'
 import styled from 'styled-components'
 import { CogIcon, IconButton, useModal } from 'uikit-dev'
@@ -70,17 +71,17 @@ const StyleButton = styled(IconButton)`
 
 const ExchangeTab = ({ current }) => {
   const [onPresentSettings] = useModal(<SettingsModal />)
-
+  const { t } = useTranslation()
   return (
     <Tabs>
       <Tab to="/swap" active={current === '/swap'}>
-        SWAP TOKEN
+        {t('SWAP TOKEN')}
       </Tab>
       <Tab to="/liquidity" active={current === '/liquidity'}>
-        LIQUIDITY
+        {t('LIQUIDITY')}
       </Tab>
       <Tab as="a" href="https://bridge.six.network" target="_blank" active={current === '/bridge'}>
-        BRIDGE
+        {t('BRIDGE')}
       </Tab>
       <StyleButton variant="text" onClick={onPresentSettings} title="Settings">
         <CogIcon />

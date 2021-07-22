@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react'
+import { useTranslation } from 'contexts/Localization'
 import { CheckmarkCircleIcon, ErrorIcon, Flex, LinkExternal, Text, Modal, Button } from 'uikit-dev'
 import { useActiveWeb3React } from 'hooks'
 import { getBscScanLink } from 'utils'
@@ -38,20 +39,20 @@ const RecentTransactionsModal = ({ onDismiss = defaultOnDismiss }: RecentTransac
     const txs = Object.values(allTransactions)
     return txs.filter(isTransactionRecent).sort(newTransactionsFirst)
   }, [allTransactions])
-
+  const { t } = useTranslation()
   return (
     <Modal title="Recent Transactions" onDismiss={onDismiss}>
       {!account && (
         <Flex justifyContent="center" flexDirection="column" alignItems="center">
           <Text small mb="16px">
-            Please connect your wallet to view your recent transactions
+            {t('Please connect your wallet to view your recent transactions')}
           </Text>
         </Flex>
       )}
       {account && chainId && sortedRecentTransactions.length === 0 && (
         <Flex justifyContent="center" flexDirection="column" alignItems="center">
           <Text small mb="16px">
-            No recent transactions
+            {t('No recent transactions')}
           </Text>
         </Flex>
       )}

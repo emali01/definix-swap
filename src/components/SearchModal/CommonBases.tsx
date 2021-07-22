@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTranslation } from 'contexts/Localization'
 import { Text } from 'uikit-dev'
 import { ChainId, Currency, currencyEquals, ETHER, Token } from 'definixswap-sdk'
 import styled from 'styled-components'
@@ -34,11 +35,12 @@ export default function CommonBases({
   selectedCurrency?: Currency | null
   onSelect: (currency: Currency) => void
 }) {
+  const { t } = useTranslation()
   return (
     <AutoColumn gap="md">
       <AutoRow>
-        <Text fontSize="14px">Common bases</Text>
-        <QuestionHelper text="These tokens are commonly paired with other tokens." />
+        <Text fontSize="14px">{t('Common bases')}</Text>
+        <QuestionHelper text={t('These tokens are commonly paired with other tokens.')} />
       </AutoRow>
       <AutoRow gap="4px">
         <BaseWrapper

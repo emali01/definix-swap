@@ -1,4 +1,5 @@
 import { Currency, Pair } from 'definixswap-sdk'
+import { useTranslation } from 'contexts/Localization'
 import React, { useCallback, useState } from 'react'
 import styled from 'styled-components'
 import { ChevronDownIcon, Text, useMatchBreakpoints } from 'uikit-dev'
@@ -10,7 +11,6 @@ import CurrencyLogo from '../CurrencyLogo'
 import DoubleCurrencyLogo from '../DoubleLogo'
 import { Input as NumericalInput } from '../NumericalInput'
 import CurrencySearchModal from '../SearchModal/CurrencySearchModal'
-import TranslatedText from '../TranslatedText'
 
 const Container = styled.div<{ hideInput: boolean }>``
 
@@ -88,6 +88,7 @@ export default function CurrencyInputPanel({
   onUserInput,
   onCurrencySelect,
 }: CurrencyInputPanelProps) {
+  const { t } = useTranslation()
   const [modalOpen, setModalOpen] = useState(false)
   const { account } = useActiveWeb3React()
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
@@ -163,7 +164,7 @@ export default function CurrencyInputPanel({
                         currency.symbol.length - 5,
                         currency.symbol.length
                       )}`
-                    : currency?.symbol) || <TranslatedText translationId={82}>Select Token</TranslatedText>}
+                    : currency?.symbol) || t('Select Token')}
                 </Text>
               )}
               {!disableCurrencySelect && <ChevronDownIcon />}

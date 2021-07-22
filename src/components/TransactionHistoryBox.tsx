@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTranslation } from 'contexts/Localization'
 import styled from 'styled-components'
 import { CheckmarkCircleIcon, ChevronRightIcon, ErrorIcon, Link, Text } from 'uikit-dev'
 import CurrencyLogo from './CurrencyLogo'
@@ -26,8 +27,10 @@ const TransactionHistoryBox = ({
   secondCoinAmount,
   withText,
   date,
-  isFailed = false
+  isFailed = false,
 }) => {
+  const { t } = useTranslation()
+
   return (
     <Box>
       <div className="flex justify-space-between">
@@ -37,11 +40,11 @@ const TransactionHistoryBox = ({
         <Text fontSize="12px" color={isFailed ? 'failure' : 'success'} className="flex align-center" bold>
           {isFailed ? (
             <>
-              <ErrorIcon className="mr-2" /> Failed
+              <ErrorIcon className="mr-2" /> {t('Failed')}
             </>
           ) : (
             <>
-              <CheckmarkCircleIcon className="mr-2" /> Complete
+              <CheckmarkCircleIcon className="mr-2" /> {t('Complete')}
             </>
           )}
         </Text>
@@ -65,7 +68,7 @@ const TransactionHistoryBox = ({
       </div>
 
       <Link external href={href} bold={false} color="textSubtle" fontSize="12px" style={{ display: 'inline-flex' }}>
-        View on Klaytn Scope
+        {t('View on Klaytn Scope')}
         <ChevronRightIcon color="textSubtle" />
       </Link>
     </Box>

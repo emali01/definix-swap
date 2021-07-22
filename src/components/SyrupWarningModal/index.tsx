@@ -1,4 +1,5 @@
 import React, { useCallback, useState } from 'react'
+import { useTranslation } from 'contexts/Localization'
 import styled from 'styled-components'
 import { Button, Text } from 'uikit-dev'
 import { AlertTriangle } from 'react-feather'
@@ -33,6 +34,7 @@ export default function SyrupWarningModal({
   const toggleUnderstand = useCallback(() => setUnderstandChecked((uc) => !uc), [])
 
   const handleDismiss = useCallback(() => null, [])
+  const { t } = useTranslation()
   return (
     <Modal isOpen={isOpen} onDismiss={handleDismiss} maxHeight={90}>
       <WarningContainer className="token-warning-container">
@@ -40,18 +42,18 @@ export default function SyrupWarningModal({
           <AutoRow gap="6px">
             <StyledWarningIcon />
             <Text small color="failure">
-              Syrup Warning
+              {t('Syrup Warning')}
             </Text>
           </AutoRow>
           {transactionType !== '' && (
             <>
               <Text color="failure">
-                Please be careful when <strong>{transactionType}</strong> SYRUP.
+                {t('Please be careful when')} <strong>{transactionType}</strong> SYRUP.
               </Text>
               <Text color="failure">
                 {transactionType === 'Buying'
-                  ? 'You will not receive FINIX rewards for holding purchased SYRUP.'
-                  : 'You will need to buy back the same amount of SYRUP to be able to convert back to FINIX.'}
+                  ? t('You will not receive FINIX rewards for holding purchased SYRUP.')
+                  : t('You will need to buy back the same amount of SYRUP to be able to convert back to FINIX.')}
               </Text>
             </>
           )}
@@ -65,7 +67,7 @@ export default function SyrupWarningModal({
                   checked={understandChecked}
                   onChange={toggleUnderstand}
                 />{' '}
-                <Text as="span">I understand</Text>
+                <Text as="span">{t('I understand')}</Text>
               </label>
             </div>
             <Button
@@ -77,7 +79,7 @@ export default function SyrupWarningModal({
                 onConfirm()
               }}
             >
-              Continue
+              {t('Continue')}
             </Button>
           </RowBetween>
         </AutoColumn>

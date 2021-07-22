@@ -1,5 +1,6 @@
 import { Currency, CurrencyAmount, currencyEquals, ETHER, Token } from 'definixswap-sdk'
 import React, { CSSProperties, MutableRefObject, useCallback, useMemo } from 'react'
+import { useTranslation } from 'contexts/Localization'
 import { FixedSizeList } from 'react-window'
 import styled from 'styled-components'
 import { Text } from 'uikit-dev'
@@ -93,6 +94,7 @@ function CurrencyRow({
   otherSelected: boolean
   style: CSSProperties
 }) {
+  const { t } = useTranslation()
   const { account, chainId } = useActiveWeb3React()
   const key = currencyKey(currency)
   const selectedTokenList = useSelectedTokenList()
@@ -118,14 +120,14 @@ function CurrencyRow({
         <FadedSpan>
           {!isOnSelectedList && customAdded && !(currency instanceof WrappedTokenInfo) ? (
             <Text>
-              Added by user
+              {t('Added by user')}
               <LinkStyledButton
                 onClick={(event) => {
                   event.stopPropagation()
                   if (chainId && currency instanceof Token) removeToken(chainId, currency.address)
                 }}
               >
-                (Remove)
+                ({t('Remove')})
               </LinkStyledButton>
             </Text>
           ) : null}
@@ -138,7 +140,7 @@ function CurrencyRow({
                   if (currency instanceof Token) addToken(currency)
                 }}
               >
-                (Add)
+                ({t('Add')})
               </LinkStyledButton>
             </Text>
           ) : null}

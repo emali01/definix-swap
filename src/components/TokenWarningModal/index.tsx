@@ -1,5 +1,6 @@
 import { Token } from 'definixswap-sdk'
 import { transparentize } from 'polished'
+import { useTranslation } from 'contexts/Localization'
 import { Button, Text } from 'uikit-dev'
 import React, { useCallback, useMemo, useState } from 'react'
 import styled from 'styled-components'
@@ -58,7 +59,7 @@ function TokenWarningCard({ token }: TokenWarningCardProps) {
   }, [token, chainId, allTokens, tokenSymbol, tokenName])
 
   if (!token) return null
-
+  const { t } = useTranslation()
   return (
     <Wrapper error={duplicateNameOrSymbol}>
       <AutoRow gap="6px">
@@ -74,7 +75,9 @@ function TokenWarningCard({ token }: TokenWarningCardProps) {
           </Text>
           {chainId && (
             <ExternalLink style={{ fontWeight: 400 }} href={getBscScanLink(chainId, token.address, 'token')}>
-              <Text title={token.address}>{shortenAddress(token.address)} (View on Klaytn Scope)</Text>
+              <Text title={token.address}>
+                {shortenAddress(token.address)} ({t('View on Klaytn Scope')})
+              </Text>
             </ExternalLink>
           )}
         </AutoColumn>
@@ -96,6 +99,7 @@ export default function TokenWarningModal({
   const toggleUnderstand = useCallback(() => setUnderstandChecked((uc) => !uc), [])
 
   const handleDismiss = useCallback(() => null, [])
+  const { t } = useTranslation()
   return (
     <Modal isOpen={isOpen} onDismiss={handleDismiss} maxHeight={90}>
       <WarningContainer className="token-warning-container">
@@ -105,15 +109,19 @@ export default function TokenWarningModal({
             <Text color="failure">Token imported</Text>
           </AutoRow>
           <Text small>
-            Anyone can create an BEP20 token on BSC with <em>any</em> name, including creating fake versions of existing
-            tokens and tokens that claim to represent projects that do not have a token.
+            {t('Anyone can create an BEP20 token on BSC with')}
+            <em>{t('any')}</em>{' '}
+            {t(
+              'name, including creating fake versions of existing tokens and tokens that claim to represent projects that do not have a token.'
+            )}
           </Text>
           <Text small>
-            This interface can load arbitrary tokens by token addresses. Please take extra caution and do your research
-            when interacting with arbitrary BEP20 tokens.
+            {t(
+              'This interface can load arbitrary tokens by token addresses. Please take extra caution and do your research when interacting with arbitrary BEP20 tokens.'
+            )}
           </Text>
           <Text small>
-            If you purchase an arbitrary token, <strong>you may be unable to sell it back.</strong>
+            {t('If you purchase an arbitrary token,')} <strong> {t('you may be unable to sell it back.')}</strong>
           </Text>
           {tokens.map((token) => {
             return <TokenWarningCard key={token.address} token={token} />
@@ -129,7 +137,7 @@ export default function TokenWarningModal({
                   onChange={toggleUnderstand}
                 />{' '}
                 <Text as="span" ml="4px">
-                  I understand
+                  {t('I understand')}
                 </Text>
               </label>
             </div>
@@ -142,7 +150,7 @@ export default function TokenWarningModal({
                 onConfirm()
               }}
             >
-              Continue
+              {t('Continue')}
             </Button>
           </RowBetween>
         </AutoColumn>

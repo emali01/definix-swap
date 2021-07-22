@@ -1,3 +1,4 @@
+import { useTranslation } from 'contexts/Localization'
 import React from 'react'
 import Lottie from 'react-lottie'
 import styled from 'styled-components'
@@ -17,11 +18,11 @@ const ConfirmationPendingContent = ({ pendingIcon }) => {
     autoplay: true,
     animationData: pendingIcon || loading,
   }
-
+  const { t } = useTranslation()
   return (
     <div className="flex align-center justify-center pa-6" style={{ position: 'relative', height: '400px' }}>
       <Lottie options={options} height={120} width={120} />
-      {pendingIcon && <TextCenter color="textSubtle">Progressing…</TextCenter>}
+      {pendingIcon && <TextCenter color="textSubtle">{t('Progrssing')}...</TextCenter>}
     </div>
   )
 }

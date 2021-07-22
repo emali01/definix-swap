@@ -1,5 +1,6 @@
 import { JSBI, Pair, Percent } from 'definixswap-sdk'
 import React, { useState } from 'react'
+import { useTranslation } from 'contexts/Localization'
 import { ChevronDown, ChevronUp } from 'react-feather'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
@@ -48,13 +49,13 @@ export function MinimalPositionCard({ pair, showUnwrapped = false }: PositionCar
           pair.getLiquidityValue(pair.token1, totalPoolTokens, userPoolBalance, false),
         ]
       : [undefined, undefined]
-
+  const { t } = useTranslation()
   return (
     <>
       {userPoolBalance && (
         <>
           <Text fontSize="14px" color="textSubtle" className="mb-1">
-            LP tokens in your wallet
+            {t('LP tokens in your wallet')}
           </Text>
           <BorderCard>
             <AutoColumn gap="12px">
@@ -134,7 +135,7 @@ export default function FullPositionCard({ pair }: PositionCardProps) {
           pair.getLiquidityValue(pair.token1, totalPoolTokens, userPoolBalance, false),
         ]
       : [undefined, undefined]
-
+  const { t } = useTranslation()
   return (
     <HoverCard>
       <AutoColumn gap="12px">
@@ -154,7 +155,9 @@ export default function FullPositionCard({ pair }: PositionCardProps) {
           <AutoColumn gap="8px">
             <FixedHeightRow>
               <RowFixed>
-                <Text>Pooled {currency0.symbol}:</Text>
+                <Text>
+                  {t('Pooled')} {currency0.symbol}:
+                </Text>
               </RowFixed>
               {token0Deposited ? (
                 <RowFixed>
@@ -168,7 +171,9 @@ export default function FullPositionCard({ pair }: PositionCardProps) {
 
             <FixedHeightRow>
               <RowFixed>
-                <Text>Pooled {currency1.symbol}:</Text>
+                <Text>
+                  {t('Pooled')} {currency1.symbol}:
+                </Text>
               </RowFixed>
               {token1Deposited ? (
                 <RowFixed>
@@ -180,24 +185,24 @@ export default function FullPositionCard({ pair }: PositionCardProps) {
               )}
             </FixedHeightRow>
             <FixedHeightRow>
-              <Text>Your pool tokens:</Text>
+              <Text>{t('Your pool tokens:')}</Text>
               <Text>{userPoolBalance ? userPoolBalance.toSignificant(4) : '-'}</Text>
             </FixedHeightRow>
             <FixedHeightRow>
-              <Text>Your pool share:</Text>
+              <Text>{t('Your pool share:')}</Text>
               <Text>{poolTokenPercentage ? `${poolTokenPercentage.toFixed(2)}%` : '-'}</Text>
             </FixedHeightRow>
 
             <RowBetween marginTop="10px">
               <Button as={Link} to={`/add/${currencyId(currency0)}/${currencyId(currency1)}`} style={{ width: '48%' }}>
-                Add
+                {t('Add')}
               </Button>
               <Button
                 as={Link}
                 style={{ width: '48%' }}
                 to={`/remove/${currencyId(currency0)}/${currencyId(currency1)}`}
               >
-                Remove
+                {t('Remove')}
               </Button>
             </RowBetween>
           </AutoColumn>

@@ -1,4 +1,5 @@
 import { RowBetween } from 'components/Row'
+import { useTranslation } from 'contexts/Localization'
 import { ChainId } from 'definixswap-sdk'
 import React from 'react'
 import { ArrowDownIcon, Button, ChevronRightIcon, ErrorIcon, Heading, Link, Text } from 'uikit-dev'
@@ -15,6 +16,7 @@ type TransactionSubmittedContentProps = {
 }
 
 const TransactionErrorContent = ({ title, date, chainId, hash, content, button }: TransactionSubmittedContentProps) => {
+  const { t } = useTranslation()
   return (
     <div className="pa-6 pt-4" style={{ position: 'relative' }}>
       <div className="flex flex-column align-center justify-center mb-6">
@@ -33,7 +35,7 @@ const TransactionErrorContent = ({ title, date, chainId, hash, content, button }
         <div>
           <RowBetween className="mt-6">
             <div className="flex">
-              <Text className="mr-2">Transaction Hash</Text>
+              <Text className="mr-2">{t('Transaction Hash')}</Text>
               <Text className="mr-2" bold>
                 {`${hash.substring(0, 8)}...${hash.substring(hash.length - 8)}`}
               </Text>
@@ -48,23 +50,25 @@ const TransactionErrorContent = ({ title, date, chainId, hash, content, button }
               color="textSubtle"
               fontSize="12px"
             >
-              View on Klaytn Scope
+              {t('View on Klaytn Scope')}
               <ChevronRightIcon color="textSubtle" />
             </Link>
           </RowBetween>
 
-          {false && <div className="flex justify-center mt-6">
-            <Button
-              startIcon={<ArrowDownIcon />}
-              onClick={() => {
-                console.log('Download IMG')
-              }}
-              variant="secondary"
-              size="sm"
-            >
-              Download IMG Transaction
-            </Button>
-          </div>}
+          {false && (
+            <div className="flex justify-center mt-6">
+              <Button
+                startIcon={<ArrowDownIcon />}
+                onClick={() => {
+                  console.log('Download IMG')
+                }}
+                variant="secondary"
+                size="sm"
+              >
+                {t('Download IMG Transaction')}
+              </Button>
+            </div>
+          )}
         </div>
       )}
 

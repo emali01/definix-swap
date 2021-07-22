@@ -1,4 +1,5 @@
 import { AutoColumn } from 'components/Column'
+import { useTranslation } from 'contexts/Localization'
 import { Currency, CurrencyAmount, Fraction, Percent } from 'definixswap-sdk'
 import React from 'react'
 import { Button, Text } from 'uikit-dev'
@@ -21,6 +22,7 @@ export function ConfirmAddModalBottom({
   poolTokenPercentage?: Percent
   onAdd: () => void
 }) {
+  const { t } = useTranslation()
   return (
     <>
       <AutoColumn gap="16px">
@@ -31,7 +33,7 @@ export function ConfirmAddModalBottom({
               <Text className="mr-1" bold>
                 {currencies[Field.CURRENCY_A]?.symbol}
               </Text>
-              <Text color="textSubtle">Deposited</Text>
+              <Text color="textSubtle">{t('Deposited')}</Text>
             </div>
           </div>
           <div className="flex justify-end">
@@ -49,7 +51,7 @@ export function ConfirmAddModalBottom({
               <Text className="mr-1" bold>
                 {currencies[Field.CURRENCY_B]?.symbol}
               </Text>
-              <Text color="textSubtle">Deposited</Text>
+              <Text color="textSubtle">{t('Deposited')}</Text>
             </div>
           </div>
           <div className="flex justify-end">
@@ -61,7 +63,7 @@ export function ConfirmAddModalBottom({
         </RowBetween>
 
         <RowBetween align="baseline">
-          <Text color="textSubtle">Price Rate</Text>
+          <Text color="textSubtle">{t('Price Rate')}</Text>
 
           <div className="flex flex-column align-end">
             <Text bold>
@@ -78,12 +80,12 @@ export function ConfirmAddModalBottom({
         </RowBetween>
 
         <RowBetween>
-          <Text color="textSubtle">Share of Pool</Text>
+          <Text color="textSubtle">{t('Share of Pool')}</Text>
           <Text bold>{noLiquidity ? '100' : poolTokenPercentage?.toSignificant(4)}%</Text>
         </RowBetween>
       </AutoColumn>
       <Button className="mt-6" onClick={onAdd} fullWidth radii="card">
-        {noLiquidity ? 'Create Pool & Supply' : 'Confirm Supply'}
+        {noLiquidity ? t('Create Pool & Supply') : t('Confirm Supply')}
       </Button>
     </>
   )
