@@ -524,7 +524,7 @@ export default function AddLiquidity({
           confirmContent={() => (
             <ConfirmationModalContent
               mainTitle="Confirm Liquidity"
-              title={noLiquidity ? t('You are creating a pool') : t('You will receive')}
+              title={noLiquidity ? translate('You are creating a pool') : translate('You will receive')}
               topContent={modalHeader}
               bottomContent={modalBottom}
             />
