@@ -1,4 +1,5 @@
 import { parseUnits } from '@ethersproject/units'
+import { useTranslation } from 'contexts/Localization'
 import { Currency, CurrencyAmount, ETHER, JSBI, Token, TokenAmount, Trade } from 'definixswap-sdk'
 import { ParsedQs } from 'qs'
 import { useCallback, useEffect, useState } from 'react'
@@ -114,7 +115,7 @@ export function useDerivedSwapInfo(): {
   inputError?: string
 } {
   const { account } = useActiveWeb3React()
-
+  const { t: translate } = useTranslation()
   const {
     independentField,
     typedValue,
@@ -153,26 +154,26 @@ export function useDerivedSwapInfo(): {
 
   let inputError: string | undefined
   if (!account) {
-    inputError = 'Connect Wallet'
+    inputError = translate('Connect Wallet')
   }
 
   if (!parsedAmount) {
-    inputError = inputError ?? 'Enter an amount'
+    inputError = inputError ?? translate('Enter an amount')
   }
 
   if (!currencies[Field.INPUT] || !currencies[Field.OUTPUT]) {
-    inputError = inputError ?? 'Select a token'
+    inputError = inputError ?? translate('Select a token')
   }
 
   const formattedTo = isAddress(to)
   if (!to || !formattedTo) {
-    inputError = inputError ?? 'Enter a recipient'
+    inputError = inputError ?? translate('Enter a recipient')
   } else if (
     BAD_RECIPIENT_ADDRESSES.indexOf(formattedTo) !== -1 ||
     (bestTradeExactIn && involvesAddress(bestTradeExactIn, formattedTo)) ||
     (bestTradeExactOut && involvesAddress(bestTradeExactOut, formattedTo))
   ) {
-    inputError = inputError ?? 'Invalid recipient'
+    inputError = inputError ?? translate('Invalid recipient')
   }
 
   const [allowedSlippage] = useUserSlippageTolerance()
