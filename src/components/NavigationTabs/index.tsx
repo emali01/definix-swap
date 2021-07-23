@@ -24,8 +24,8 @@ export function FindPoolTabs() {
         </Text>
       </Button>
       <div className="flex align-center mt-5">
-        <Heading fontSize="24px !important">Import Pool</Heading>
-        <QuestionHelper text={"Use this tool to find pairs that don't automatically appear in the interface."} />
+        <Heading fontSize="24px !important">{t('Import Pool')}</Heading>
+        <QuestionHelper text={t("Use this tool to find pairs that don't automatically appear in the interface.")} />
       </div>
     </Tabs>
   )

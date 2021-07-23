@@ -1,7 +1,7 @@
 import { Currency, CurrencyAmount, currencyEquals, ETHER, Token } from 'definixswap-sdk'
 import React, { CSSProperties, MutableRefObject, useCallback, useMemo } from 'react'
 import { FixedSizeList } from 'react-window'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'contexts/Localization'
 import styled from 'styled-components'
 import { Text } from 'uikit-dev'
 import { useActiveWeb3React } from '../../hooks'
