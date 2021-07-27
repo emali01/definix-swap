@@ -676,7 +676,7 @@ export default function RemoveLiquidity({
                   {pair && (
                     <div className="mt-4">
                       <Flex justifyContent="space-between" mb="8px">
-                        {translate('Price:')}
+                        {translate('Price')}
                         <div>
                           1 {currencyA?.symbol} = {tokenA ? pair.priceOf(tokenA).toSignificant(6) : '-'}{' '}
                           {currencyB?.symbol}

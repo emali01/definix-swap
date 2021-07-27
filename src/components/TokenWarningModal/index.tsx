@@ -122,7 +122,7 @@ export default function TokenWarningModal({
             )}
           </Text>
           <Text small>
-            {t('If you purchase an arbitrary token,')} <strong> {t('you may be unable to sell it back.')}</strong>
+            {t('If you purchase an arbitrary token')} <strong> {t('you may be unable to sell it back.')}</strong>
           </Text>
           {tokens.map((token) => {
             return <TokenWarningCard key={token.address} token={token} />
