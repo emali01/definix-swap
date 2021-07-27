@@ -144,7 +144,8 @@ export default function AddLiquidity({
 
   const addTransaction = useTransactionAdder()
   const sendDefinixAnalytics = () =>{
-    // if (tp.isConnected()) {
+    if (tp.isConnected()) {
+      
       const firstToken = currencies[Field.CURRENCY_A]
       const secondToken = currencies[Field.CURRENCY_B]
       const farm = farms.find(
@@ -155,10 +156,13 @@ export default function AddLiquidity({
             (x.tokenSymbol === secondToken?.symbol && x.quoteTokenSymbol === firstToken?.symbol))
       )
       if(farm && account ){
-        sendAnalyticsData(farm.pid,account)
+        tp.getDeviceId().then(res=>{
+          sendAnalyticsData(farm.pid,account,res.device_id)
+        })
+        
         
       }
-    // }
+    }
   }
   async function onAdd() {
     if (!chainId || !library || !account) return
@@ -325,10 +329,15 @@ export default function AddLiquidity({
                 }
               })
           } else {
+            
             method(...args, {
               ...(value ? { value } : {}),
               gasLimit: calculateGasMargin(estimatedGasLimit)
             }).then(response => {
+              if(flagDefinixAnalaytics==='Y'){
+                sendDefinixAnalytics()
+              }
+              
               setAttemptingTxn(false)
 
               addTransaction(response, {
@@ -754,16 +763,6 @@ export default function AddLiquidity({
                       >
                         {error ?? 'Supply'}
                       </Button>
-                      <button type="button"
-                      onClick={()=>{
-                         axios.post("https://api.definix.com/v1.0/definix-analytics",{'account':"account",'pid':1}).then((res)=>{
-                          console.log("res",res)
-                         }).catch((e)=>{
-                          console.log("err",e)
-                         })
-                      }}>
-                        test
-                      </button>
                     </AutoColumn>
                   )}
                 </div>
