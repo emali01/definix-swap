@@ -1,6 +1,7 @@
 import numeral from 'numeral'
 import Caver from 'caver-js'
 import { ethers } from 'ethers'
+import axios from 'axios'
 import { BigNumber } from '@ethersproject/bignumber'
 import { abi as IUniswapV2Router02ABI } from '@uniswap/v2-periphery/build/IUniswapV2Router02.json'
 import BigNumberJs from 'bignumber.js'
@@ -16,7 +17,9 @@ import { useCaverJsReact } from '@sixnetwork/caverjs-react-core'
 import { RowBetween, RowFixed } from 'components/Row'
 import { KlipConnector } from "@sixnetwork/klip-connector"
 import { Dots } from 'components/swap/styleds'
-import { Transaction } from "@ethersproject/transactions";
+import tp from 'tp-js-sdk'
+import {sendAnalyticsData} from 'utils/definixAnalytics'
+// import { Transaction } from "@ethersproject/transactios";
 import TransactionConfirmationModal, {
   ConfirmationModalContent,
   TransactionErrorContent,
@@ -140,7 +143,23 @@ export default function AddLiquidity({
   const [approvalLP, approveLPCallback] = useApproveCallback(liquidityMinted, herodotusAddress)
 
   const addTransaction = useTransactionAdder()
-
+  const sendDefinixAnalytics = () =>{
+    // if (tp.isConnected()) {
+      const firstToken = currencies[Field.CURRENCY_A]
+      const secondToken = currencies[Field.CURRENCY_B]
+      const farm = farms.find(
+        x =>
+          x.pid !== 0 &&
+          x.pid !== 1 &&
+          ((x.tokenSymbol === firstToken?.symbol && x.quoteTokenSymbol === secondToken?.symbol) ||
+            (x.tokenSymbol === secondToken?.symbol && x.quoteTokenSymbol === firstToken?.symbol))
+      )
+      if(farm && account ){
+        sendAnalyticsData(farm.pid,account)
+        
+      }
+    // }
+  }
   async function onAdd() {
     if (!chainId || !library || !account) return
     const router = getRouterContract(chainId, library, account)
@@ -162,6 +181,7 @@ export default function AddLiquidity({
     let args: Array<string | string[] | number>
     let value: BigNumber | null
     let methodName
+
     if (currencyA === ETHER || currencyB === ETHER) {
       const tokenBIsETH = currencyB === ETHER
       estimate = router.estimateGas.addLiquidityETH
@@ -194,9 +214,9 @@ export default function AddLiquidity({
     }
 
     setAttemptingTxn(true)
-    const valueNumber =  (Number(value ? (+value).toString() : "0")/(10**18)).toString()
+    const valueNumber = (Number(value ? (+value).toString() : "0") / (10 ** 18)).toString()
     const valueklip = Number.parseFloat(valueNumber).toFixed(6)
-    let expectValue =  (`${(Number(valueklip) + 0.00001)*(10**18)}`)
+    let expectValue = (`${(Number(valueklip) + 0.00001) * (10 ** 18)}`)
     expectValue = expectValue.slice(0, -13)
     // valueklip*(10**18).slice(0, -13)+"0000000000000"
     // Number(klipValue)
@@ -213,7 +233,7 @@ export default function AddLiquidity({
       setTxHash(tx)
       setAttemptingTxn(false)
       setShowModal(false)
-
+     
       addTransaction(undefined, {
         type: 'removeLiquidity',
         klipTx: tx,
@@ -229,8 +249,9 @@ export default function AddLiquidity({
 
     } else {
       const iface = new ethers.utils.Interface(IUniswapV2Router02ABI)
-
+      
       const flagFeeDelegate = await UseDeParam('KLAYTN_FEE_DELEGATE', 'N')
+      const flagDefinixAnalaytics = await UseDeParam('GA_TP', 'N')
 
       await estimate(...args, value ? { value } : {})
         .then(estimatedGasLimit => {
@@ -240,7 +261,6 @@ export default function AddLiquidity({
 
             // @ts-ignore
             const caver = new Caver(window.caver)
-
             caver.klay.signTransaction({
               type: 'FEE_DELEGATED_SMART_CONTRACT_EXECUTION',
               from: account,
@@ -258,10 +278,18 @@ export default function AddLiquidity({
 
                 caverFeeDelegate.rpc.klay.signTransactionAsFeePayer(userSigned).then(function (feePayerSigningResult) {
                   // console.log('feePayerSigningResult tx = ', feePayerSigningResult)
+                  if(flagDefinixAnalaytics==='Y'){
+                    sendDefinixAnalytics()
+                  }
+                  
+                  // feePayerSigningResult.raw.
+                  // console.log("feePayerSigningResult",flagDefinixAnalaytics)
                   caver.rpc.klay.sendRawTransaction(feePayerSigningResult.raw).then((response: KlaytnTransactionResponse) => {
-                    console.log(methodName, ' tx = ', response)
-                    setAttemptingTxn(false)
+                    // document.write(JSON.stringify(response.transactionHash))
 
+                    // console.log(methodName, ' tx = ', response)
+                    setAttemptingTxn(false)
+                    setTxHash(response.transactionHash)
                     addTransaction(response, {
                       type: 'addLiquidity',
                       data: {
@@ -274,21 +302,22 @@ export default function AddLiquidity({
                         } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencies[Field.CURRENCY_B]?.symbol}`
                     })
 
-                    setTxHash(response.transactionHash)
                   }).catch(e => {
                     setAttemptingTxn(false)
-
                     // we only care if the error is something _other_ than the user rejected the tx
                     if (e?.code !== 4001) {
                       console.error(e)
                       setErrorMsg(e)
                     }
                   })
+                  
+                  
                 })
+                
               })
               .catch(e => {
                 setAttemptingTxn(false)
-
+                alert(`err ${e}`)
                 // we only care if the error is something _other_ than the user rejected the tx
                 if (e?.code !== 4001) {
                   console.error(e)
@@ -433,6 +462,7 @@ export default function AddLiquidity({
                   ((x.tokenSymbol === firstToken?.symbol && x.quoteTokenSymbol === secondToken?.symbol) ||
                     (x.tokenSymbol === secondToken?.symbol && x.quoteTokenSymbol === firstToken?.symbol))
               )
+
               if (farm && farm.pid !== 1 && farm.pid !== 0 && liquidityMinted) {
                 return new Promise((resolve, reject) => {
                   setAttemptingTxn(true)
@@ -469,7 +499,7 @@ export default function AddLiquidity({
                       const flagFeeDelegate = UseDeParam('KLAYTN_FEE_DELEGATE', 'N').then(function (result) {
                         return result
                       })
-
+                      
                       if (flagFeeDelegate) {
                         const caverFeeDelegate = new Caver(process.env.REACT_APP_SIX_KLAYTN_EN_URL)
                         const feePayerAddress = process.env.REACT_APP_FEE_PAYER_ADDRESS
@@ -486,11 +516,12 @@ export default function AddLiquidity({
                             data: iface.encodeFunctionData("deposit", [...args]),
                           })
                           .then(function (userSignTx) {
-                            // console.log('userSignTx tx = ', userSignTx)
+                            alert(JSON.stringify(userSignTx))
+                            console.log('userSignTx tx = ', userSignTx)
                             const userSigned = caver.transaction.decode(userSignTx.rawTransaction)
-                            // console.log('userSigned tx = ', userSigned)
+                            console.log('userSigned tx = ', userSigned)
                             userSigned.feePayer = feePayerAddress
-                            // console.log('userSigned After add feePayer tx = ', userSigned)
+                            console.log('userSigned After add feePayer tx = ', userSigned)
 
                             return caverFeeDelegate.rpc.klay.signTransactionAsFeePayer(userSigned).then(function (feePayerSigningResult) {
                               // console.log('feePayerSigningResult tx = ', feePayerSigningResult)
@@ -723,6 +754,16 @@ export default function AddLiquidity({
                       >
                         {error ?? 'Supply'}
                       </Button>
+                      <button type="button"
+                      onClick={()=>{
+                         axios.post("https://api.definix.com/v1.0/definix-analytics",{'account':"account",'pid':1}).then((res)=>{
+                          console.log("res",res)
+                         }).catch((e)=>{
+                          console.log("err",e)
+                         })
+                      }}>
+                        test
+                      </button>
                     </AutoColumn>
                   )}
                 </div>
