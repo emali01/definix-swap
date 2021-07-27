@@ -212,9 +212,9 @@ export default function Pool() {
 
               <div className="mt-4">
                 <Text className="mb-2">
-                  {translate("Don't see a pool you joined?")}{' '}
+                  {translate("Don't see a pool you joined")}{' '}
                   <StyledInternalLink id="import-pool-link" to="/find">
-                    {translate('Import it.')}
+                    {translate('Import it')}
                   </StyledInternalLink>
                 </Text>
                 <Text>{translate('Or, if you staked your LP tokens in a farm, unstake them to see them here')}</Text>
