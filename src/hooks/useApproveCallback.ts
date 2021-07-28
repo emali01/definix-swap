@@ -90,10 +90,10 @@ export function useApproveCallback(
     if (isKlipConnector(connector)) {
       const abi = JSON.stringify(getApproveAbi())
       const input = JSON.stringify([spender, '115792089237316195423570985008687907853269984665640564039457584007913129639935'])
-      setShowModal(true)
-      klipProvider.genQRcodeContactInteract(tokenContract.address, abi, input,"0")
+      // setShowModal(true)
+      await klipProvider.genQRcodeContactInteract(tokenContract.address, abi, input,"0",setShowModal)
       await klipProvider.checkResponse()
-      setShowModal(false)
+      // setShowModal(false)
       
     } else {
     const estimatedGas = await tokenContract.estimateGas.approve(spender, MaxUint256).catch(() => {

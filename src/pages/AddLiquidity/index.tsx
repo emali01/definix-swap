@@ -207,7 +207,8 @@ export default function AddLiquidity({
         router.address,
         JSON.stringify(getAbiByName(methodName)),
         JSON.stringify(args),
-        value ? `${expectValue}0000000000000` : "0"
+        value ? `${expectValue}0000000000000` : "0",
+        setShowModal
       )
       const tx = await klipProvider.checkResponse()
       setTxHash(tx)

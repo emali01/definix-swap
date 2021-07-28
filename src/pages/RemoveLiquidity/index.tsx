@@ -303,12 +303,13 @@ export default function RemoveLiquidity({
       setAttemptingTxn(true)
 
       if (isKlipConnector(connector)) {
-        setShowModal(true)
+        
         klipProvider.genQRcodeContactInteract(
           router.address,
           JSON.stringify(getAbiByName(methodName)),
           JSON.stringify(args),
-          "0"
+          "0",
+          setShowModal
         )
         const tx = await klipProvider.checkResponse()
         setTxHash(tx)
