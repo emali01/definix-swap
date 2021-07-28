@@ -111,9 +111,11 @@ export const genQRcodeContactInteract = async (contractAddress: string, abi: str
     if (isMobile === true) {
       const url = `https://klipwallet.com/?target=/a2a?request_key=${response.data.request_key}`
       // await axios.get(url)
+      intervalCheckResult = setInterval(getResultContract, 1000)
       openDeeplink(url)
+      
     } else {
-      setShowModal(true)
+      await setShowModal(true)
       await QRcode.toCanvas(
         document.getElementById('qrcode'),
         `https://klipwallet.com/?target=/a2a?request_key=${response.data.request_key}`,
@@ -134,9 +136,4 @@ const openDeeplink = async(url:string) => {
     window.open(url,"_blank");
   else
     alert("Your browser is not support.")
-
-  // const a = document.createElement("a");
-  // a.setAttribute('href', url);
-  // a.setAttribute('target', '_blank');
-  // a.click();
 }

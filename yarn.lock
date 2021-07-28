@@ -3057,6 +3057,21 @@
     qrcode "^1.4.4"
     tiny-warning "^1.0.3"
 
+"@sixnetwork/klip-connector@^1.0.8-klip-mobile-support":
+  version "1.0.8-klip-mobile-support"
+  resolved "https://registry.yarnpkg.com/@sixnetwork/klip-connector/-/klip-connector-1.0.8-klip-mobile-support.tgz#7201a2b13bcbb317175e0954a996f3c5a4c3eb3f"
+  integrity sha512-RtAf2VLhP6F2oSWCbEINzd7GQlNvSTWBIJ98aDTNadTgzTy/Te5J0C3pY8UHQCxRWFBYKi/fQH4EDWZXk017dA==
+  dependencies:
+    "@sixnetwork/caverjs-react-abstract-connector" "^1.0.4"
+    "@sixnetwork/caverjs-react-types" "^1.0.3"
+    "@types/qrcode" "^1.4.0"
+    axios "^0.21.1"
+    caver-js "^1.6.3"
+    lit-html "^1.4.1"
+    qrcode "^1.4.4"
+    react-device-detect "^1.17.0"
+    tiny-warning "^1.0.3"
+
 "@solidity-parser/parser@^0.8.0":
   version "0.8.2"
   resolved "https://registry.npmjs.org/@solidity-parser/parser/-/parser-0.8.2.tgz"
