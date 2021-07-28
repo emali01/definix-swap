@@ -7,7 +7,6 @@ import { KlipModalContext } from "@sixnetwork/klaytn-use-wallet"
 import { useCallback, useMemo, useContext } from 'react'
 import UseDeParam from 'hooks/useDeParam'
 import { useCaverJsReact } from '@sixnetwork/caverjs-react-core'
-import getRPCHalper from 'utils/getRPCHalper'
 import { ROUTER_ADDRESS } from '../constants'
 import { useTokenAllowance } from '../data/Allowances'
 import { Field } from '../state/swap/actions'
@@ -109,7 +108,7 @@ export function useApproveCallback(
     const flagFeeDelegate = await UseDeParam('KLAYTN_FEE_DELEGATE', 'N')
 
     if (flagFeeDelegate === "Y") {
-      const caverFeeDelegate = new Caver(await getRPCHalper())
+      const caverFeeDelegate = new Caver(process.env.REACT_APP_SIX_KLAYTN_EN_URL)
       const feePayerAddress = process.env.REACT_APP_FEE_PAYER_ADDRESS
 
       // @ts-ignore
