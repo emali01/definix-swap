@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import ReactGA from 'react-ga';
 import TagManager from 'react-gtm-module';
 import { ResetCSS } from 'uikit-dev'
-import { KlipModalProvider } from "@kanthakarn-test/klaytn-use-wallet"
+import { KlipModalProvider } from "@sixnetwork/klaytn-use-wallet"
 import GlobalStyle from './style/Global'
 import App from './pages/App'
 import ApplicationUpdater from './state/application/updater'

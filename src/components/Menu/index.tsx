@@ -1,4 +1,4 @@
-import { useCaverJsReact } from '@kanthakarn-test/caverjs-react-core'
+import { useCaverJsReact } from '@sixnetwork/caverjs-react-core'
 import { injected,klip } from 'connectors'
 import { allLanguages } from 'constants/localisation/languageCodes'
 import { LanguageContext } from 'hooks/LanguageContext'
@@ -6,7 +6,7 @@ import useGetLocalProfile from 'hooks/useGetLocalProfile'
 import useGetPriceData from 'hooks/useGetPriceData'
 import useTheme from 'hooks/useTheme'
 import React, { useContext } from 'react'
-import { KlipModalContext } from "@kanthakarn-test/klaytn-use-wallet"
+import { KlipModalContext } from "@sixnetwork/klaytn-use-wallet"
 import { ConnectorId, Menu as UikitMenu } from 'uikit-dev'
 import numeral from 'numeral'
 import links from './config'

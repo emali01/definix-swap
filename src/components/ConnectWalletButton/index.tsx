@@ -1,8 +1,8 @@
 import React from 'react'
-import { useCaverJsReact } from '@kanthakarn-test/caverjs-react-core'
+import { useCaverJsReact } from '@sixnetwork/caverjs-react-core'
 import { Button, ButtonProps, ConnectorId, useWalletModal } from 'uikit-dev'
 import { injected, klip } from 'connectors'
-import { KlipModalContext } from "@kanthakarn-test/klaytn-use-wallet"
+import { KlipModalContext } from "@sixnetwork/klaytn-use-wallet"
 import useI18n from 'hooks/useI18n'
 
 const UnlockButton: React.FC<ButtonProps> = props => {
