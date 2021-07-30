@@ -24,7 +24,7 @@ const ConnectButton = styled(Button)`
   background: ${({ theme }) => theme.colors.connectBtnBorder} !important;
 
   > div {
-    background: ${({ theme }) => theme.colors.primary};
+    background: #8b0000;
     border-radius: ${({ theme }) => theme.radii.large};
     padding: 0 16px;
     display: block;
@@ -89,7 +89,7 @@ const UserBlock: React.FC<Props> = ({ account, login, logout, className = '', po
               onClick={() => {
                 logout()
                 window.localStorage.removeItem(localStorageKey)
-                window.localStorage.removeItem("connector")
+                window.localStorage.removeItem('connector')
                 window.location.reload()
               }}
             >
@@ -104,9 +104,7 @@ const UserBlock: React.FC<Props> = ({ account, login, logout, className = '', po
           variant="text"
           className="connect-btn"
           onClick={() => {
-            
             onPresentConnectModal()
-            
           }}
           disabled={!!account}
         >
