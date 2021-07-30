@@ -3043,6 +3043,21 @@
     jsbi "^3.1.1"
     qrcode "^1.4.4"
 
+"@sixnetwork/klip-connector@1.0.8-klip-mobile-support-v6":
+  version "1.0.8-klip-mobile-support-v6"
+  resolved "https://registry.yarnpkg.com/@sixnetwork/klip-connector/-/klip-connector-1.0.8-klip-mobile-support-v6.tgz#13b8420198a8a47315e59c76a066a926dd2cd76d"
+  integrity sha512-M+0oRBk/gBx6zW5v48zwOTnQ/CrsRqQv0tYpk4KNGTEr+at3DzvDdYtFH1/69o9Q7s64vlx8u3wELtAF9fN+Uw==
+  dependencies:
+    "@sixnetwork/caverjs-react-abstract-connector" "^1.0.4"
+    "@sixnetwork/caverjs-react-types" "^1.0.3"
+    "@types/qrcode" "^1.4.0"
+    axios "^0.21.1"
+    caver-js "^1.6.3"
+    lit-html "^1.4.1"
+    qrcode "^1.4.4"
+    react-device-detect "^1.17.0"
+    tiny-warning "^1.0.3"
+
 "@sixnetwork/klip-connector@^1.0.6":
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/@sixnetwork/klip-connector/-/klip-connector-1.0.6.tgz#c2966a0fcbc4d746c9f54344541768b20640f2b1"
@@ -3055,21 +3070,6 @@
     caver-js "^1.6.3"
     lit-html "^1.4.1"
     qrcode "^1.4.4"
-    tiny-warning "^1.0.3"
-
-"@sixnetwork/klip-connector@^1.0.8-klip-mobile-support":
-  version "1.0.8-klip-mobile-support"
-  resolved "https://registry.yarnpkg.com/@sixnetwork/klip-connector/-/klip-connector-1.0.8-klip-mobile-support.tgz#7201a2b13bcbb317175e0954a996f3c5a4c3eb3f"
-  integrity sha512-RtAf2VLhP6F2oSWCbEINzd7GQlNvSTWBIJ98aDTNadTgzTy/Te5J0C3pY8UHQCxRWFBYKi/fQH4EDWZXk017dA==
-  dependencies:
-    "@sixnetwork/caverjs-react-abstract-connector" "^1.0.4"
-    "@sixnetwork/caverjs-react-types" "^1.0.3"
-    "@types/qrcode" "^1.4.0"
-    axios "^0.21.1"
-    caver-js "^1.6.3"
-    lit-html "^1.4.1"
-    qrcode "^1.4.4"
-    react-device-detect "^1.17.0"
     tiny-warning "^1.0.3"
 
 "@solidity-parser/parser@^0.8.0":
