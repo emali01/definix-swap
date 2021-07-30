@@ -145,7 +145,6 @@ export default function AddLiquidity({
   const addTransaction = useTransactionAdder()
   const sendDefinixAnalytics = () =>{
     if (tp.isConnected()) {
-      
       const firstToken = currencies[Field.CURRENCY_A]
       const secondToken = currencies[Field.CURRENCY_B]
       const farm = farms.find(
@@ -159,7 +158,6 @@ export default function AddLiquidity({
         tp.getDeviceId().then(res=>{
           sendAnalyticsData(farm.pid,account,res.device_id)
         })
-        
         
       }
     }

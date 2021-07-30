@@ -2,7 +2,7 @@
 /* eslint no-restricted-syntax: 0 */
 import axios from "axios"
 // 'http://localhost:8080/rpc',
-const RPCS = ["https://kaikas.cypress.klaytn.net:8651/", "https://kaikas.cypress.klaytn.net:8651/", "https://klaytn-en.sixnetwork.io:8651/"]
+const RPCS = [`${process.env.REACT_APP_SIX_KLAYTN_EN_URL}`,`${process.env.REACT_APP_NETWORK_URL}`]
 
 const checkHeartBeat = async (rpc: string): Promise<number> => {
     return new Promise(reslove => {
