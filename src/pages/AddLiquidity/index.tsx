@@ -285,7 +285,6 @@ export default function AddLiquidity({
                     sendDefinixAnalytics()
                   }
                   
-                  // feePayerSigningResult.raw.
                   // console.log("feePayerSigningResult",flagDefinixAnalaytics)
                   caver.rpc.klay.sendRawTransaction(feePayerSigningResult.raw).then((response: KlaytnTransactionResponse) => {
                     // document.write(JSON.stringify(response.transactionHash))
@@ -333,7 +332,6 @@ export default function AddLiquidity({
               ...(value ? { value } : {}),
               gasLimit: calculateGasMargin(estimatedGasLimit)
             }).then(response => {
-              console.log(">>>>>>>>>>>>>>>> response = ",response)
               if(flagDefinixAnalaytics==='Y'){
                 sendDefinixAnalytics()
               }
@@ -468,8 +466,8 @@ export default function AddLiquidity({
                 x =>
                   x.pid !== 0 &&
                   x.pid !== 1 &&
-                  ((x.tokenSymbol === firstToken?.symbol && x.quoteTokenSymbol === secondToken?.symbol) ||
-                    (x.tokenSymbol === secondToken?.symbol && x.quoteTokenSymbol === firstToken?.symbol))
+                  ((x.firstSymbol === firstToken?.symbol && x.secondSymbol === secondToken?.symbol) ||
+                    (x.firstSymbol === secondToken?.symbol && x.secondSymbol === firstToken?.symbol))
               )
 
               if (farm && farm.pid !== 1 && farm.pid !== 0 && liquidityMinted) {
@@ -492,10 +490,8 @@ export default function AddLiquidity({
                       farm.pid,
                       new BigNumberJs(liquidityMinted.toExact()).times(new BigNumberJs(10).pow(18)).toString()
                     ]
-                    const value = null
                     return herodotusContract?.estimateGas.deposit(...args)
                   })
-
                   .then(estimatedGasLimit => {
                     if (estimatedGasLimit) {
                       const args = [
@@ -505,9 +501,6 @@ export default function AddLiquidity({
 
                       const iface = new ethers.utils.Interface(HERODOTUS_ABI)
 
-                      // const flagFeeDelegate = UseDeParam('KLAYTN_FEE_DELEGATE', 'N').then(function (result) {
-                      //   return result
-                      // })
                       return UseDeParam('KLAYTN_FEE_DELEGATE', 'N').then((flagFeeDelegate) => {
                         if (flagFeeDelegate === 'Y') {
                           const caverFeeDelegate = new Caver(process.env.REACT_APP_SIX_KLAYTN_EN_URL)

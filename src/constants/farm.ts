@@ -45,7 +45,9 @@ const farms: FarmConfig[] = [
       8217: process.env.REACT_APP_SIX_ADDRESS_MAINNET
     },
     quoteTokenSymbol: QuoteToken.FINIX,
-    quoteTokenAdresses: contracts.finix
+    quoteTokenAdresses: contracts.finix,
+    firstSymbol: QuoteToken.FINIX,
+    secondSymbol: QuoteToken.SIX,
   },
   {
     pid: 3,
@@ -60,7 +62,9 @@ const farms: FarmConfig[] = [
       8217: process.env.REACT_APP_WKLAY_ADDRESS_MAINNET
     },
     quoteTokenSymbol: QuoteToken.FINIX,
-    quoteTokenAdresses: contracts.finix
+    quoteTokenAdresses: contracts.finix,
+    firstSymbol: QuoteToken.FINIX,
+    secondSymbol: QuoteToken.KLAY,
   },
   {
     pid: 4,
@@ -75,7 +79,9 @@ const farms: FarmConfig[] = [
       8217: process.env.REACT_APP_KSP_ADDRESS_TESTNET
     },
     quoteTokenSymbol: QuoteToken.FINIX,
-    quoteTokenAdresses: contracts.finix
+    quoteTokenAdresses: contracts.finix,
+    firstSymbol: QuoteToken.FINIX,
+    secondSymbol: QuoteToken.KSP,
   },
   {
     pid: 5,
@@ -90,7 +96,9 @@ const farms: FarmConfig[] = [
       8217: process.env.REACT_APP_KUSDT_ADDRESS_MAINNET
     },
     quoteTokenSymbol: QuoteToken.FINIX,
-    quoteTokenAdresses: contracts.finix
+    quoteTokenAdresses: contracts.finix,
+    firstSymbol: QuoteToken.FINIX,
+    secondSymbol: QuoteToken.KUSDT,
   },
   {
     pid: 6,
@@ -105,7 +113,9 @@ const farms: FarmConfig[] = [
       8217: process.env.REACT_APP_SIX_ADDRESS_MAINNET
     },
     quoteTokenSymbol: QuoteToken.KUSDT,
-    quoteTokenAdresses: contracts.kusdt
+    quoteTokenAdresses: contracts.kusdt,
+    firstSymbol: QuoteToken.SIX,
+    secondSymbol: QuoteToken.KUSDT,
   },
   {
     pid: 7,
@@ -120,7 +130,9 @@ const farms: FarmConfig[] = [
       8217: process.env.REACT_APP_SIX_ADDRESS_MAINNET
     },
     quoteTokenSymbol: QuoteToken.SIX,
-    quoteTokenAdresses: contracts.six
+    quoteTokenAdresses: contracts.six,
+    firstSymbol: QuoteToken.SIX,
+    secondSymbol: QuoteToken.KLAY,
   },
   {
     pid: 8,
@@ -135,22 +147,26 @@ const farms: FarmConfig[] = [
       8217: process.env.REACT_APP_KETH_ADDRESS_MAINNET
     },
     quoteTokenSymbol: QuoteToken.KLAY,
-    quoteTokenAdresses: contracts.wklay
+    quoteTokenAdresses: contracts.wklay,
+    firstSymbol: QuoteToken.KLAY,
+    secondSymbol: QuoteToken.KETH,
   },
   {
     pid: 9,
-    lpSymbol: 'KLAY-KBTC LP',
+    lpSymbol: 'KLAY-KWBTC LP',
     lpAddresses: {
-      1001: process.env.REACT_APP_KLAY_KBTC_LP_TESTNET,
-      8217: process.env.REACT_APP_KLAY_KBTC_LP_MAINNET
+      1001: process.env.REACT_APP_KLAY_KWBTC_LP_TESTNET,
+      8217: process.env.REACT_APP_KLAY_KWBTC_LP_MAINNET
     },
-    tokenSymbol: 'KBTC',
+    tokenSymbol: 'KWBTC',
     tokenAddresses: {
       1001: process.env.REACT_APP_KWBTC_ADDRESS_TESTNET,
       8217: process.env.REACT_APP_KWBTC_ADDRESS_MAINNET
     },
     quoteTokenSymbol: QuoteToken.KLAY,
-    quoteTokenAdresses: contracts.wklay
+    quoteTokenAdresses: contracts.wklay,
+    firstSymbol: QuoteToken.KLAY,
+    secondSymbol: QuoteToken.KWBTC,
   },
   {
     pid: 10,
@@ -165,7 +181,9 @@ const farms: FarmConfig[] = [
       8217: process.env.REACT_APP_KXRP_ADDRESS_MAINNET
     },
     quoteTokenSymbol: QuoteToken.KLAY,
-    quoteTokenAdresses: contracts.wklay
+    quoteTokenAdresses: contracts.wklay,
+    firstSymbol: QuoteToken.KLAY,
+    secondSymbol: QuoteToken.KXRP,
   },
   {
     pid: 11,
@@ -180,22 +198,26 @@ const farms: FarmConfig[] = [
       8217: process.env.REACT_APP_KETH_ADDRESS_MAINNET
     },
     quoteTokenSymbol: QuoteToken.KUSDT,
-    quoteTokenAdresses: contracts.kusdt
+    quoteTokenAdresses: contracts.kusdt,
+    firstSymbol: QuoteToken.KETH,
+    secondSymbol: QuoteToken.KUSDT,
   },
   {
     pid: 12,
-    lpSymbol: 'KBTC-KUSDT LP',
+    lpSymbol: 'KWBTC-KUSDT LP',
     lpAddresses: {
-      1001: process.env.REACT_APP_KBTC_KUSDT_LP_TESTNET,
-      8217: process.env.REACT_APP_KBTC_KUSDT_LP_MAINNET
+      1001: process.env.REACT_APP_KWBTC_KUSDT_LP_TESTNET,
+      8217: process.env.REACT_APP_KWBTC_KUSDT_LP_MAINNET
     },
-    tokenSymbol: 'KBTC',
+    tokenSymbol: 'KWBTC',
     tokenAddresses: {
       1001: process.env.REACT_APP_KWBTC_ADDRESS_TESTNET,
       8217: process.env.REACT_APP_KWBTC_ADDRESS_MAINNET
     },
     quoteTokenSymbol: QuoteToken.KUSDT,
-    quoteTokenAdresses: contracts.kusdt
+    quoteTokenAdresses: contracts.kusdt,
+    firstSymbol: QuoteToken.KWBTC,
+    secondSymbol: QuoteToken.KUSDT,
   },
   {
     pid: 13,
@@ -210,7 +232,9 @@ const farms: FarmConfig[] = [
       8217: process.env.REACT_APP_KXRP_ADDRESS_MAINNET
     },
     quoteTokenSymbol: QuoteToken.KUSDT,
-    quoteTokenAdresses: contracts.kusdt
+    quoteTokenAdresses: contracts.kusdt,
+    firstSymbol: QuoteToken.KXRP,
+    secondSymbol: QuoteToken.KUSDT,
   },
   {
     pid: 14,
@@ -225,7 +249,9 @@ const farms: FarmConfig[] = [
       8217: process.env.REACT_APP_WKLAY_ADDRESS_MAINNET
     },
     quoteTokenSymbol: QuoteToken.KUSDT,
-    quoteTokenAdresses: contracts.kusdt
+    quoteTokenAdresses: contracts.kusdt,
+    firstSymbol: QuoteToken.KLAY,
+    secondSymbol: QuoteToken.KUSDT,
   },
   {
     pid: 15,
@@ -240,7 +266,9 @@ const farms: FarmConfig[] = [
       8217: process.env.REACT_APP_KDAI_ADDRESS_MAINNET
     },
     quoteTokenSymbol: QuoteToken.KUSDT,
-    quoteTokenAdresses: contracts.kusdt
+    quoteTokenAdresses: contracts.kusdt,
+    firstSymbol: QuoteToken.KDAI,
+    secondSymbol: QuoteToken.KUSDT,
   },
   {
     pid: 16,
@@ -255,7 +283,9 @@ const farms: FarmConfig[] = [
       8217: process.env.REACT_APP_KBNB_ADDRESS_MAINNET
     },
     quoteTokenSymbol: QuoteToken.KUSDT,
-    quoteTokenAdresses: contracts.kusdt
+    quoteTokenAdresses: contracts.kusdt,
+    firstSymbol: QuoteToken.KBNB,
+    secondSymbol: QuoteToken.KUSDT,
   },
   {
     pid: 17,
@@ -270,7 +300,9 @@ const farms: FarmConfig[] = [
       8217: process.env.REACT_APP_KBNB_ADDRESS_MAINNET
     },
     quoteTokenSymbol: QuoteToken.FINIX,
-    quoteTokenAdresses: contracts.finix
+    quoteTokenAdresses: contracts.finix,
+    firstSymbol: QuoteToken.KBNB,
+    secondSymbol: QuoteToken.FINIX,
   }
 ]
 

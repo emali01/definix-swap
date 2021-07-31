@@ -693,14 +693,14 @@ export default function RemoveLiquidity({
                                   to={`/remove/${currencyA === ETHER ? WETH[chainId].address : currencyIdA}/${currencyB === ETHER ? WETH[chainId].address : currencyIdB
                                     }`}
                                 >
-                                  Receive WBNB
+                                  Receive WKLAY
                                 </StyledInternalLink>
                               ) : oneCurrencyIsWETH ? (
                                 <StyledInternalLink
                                   to={`/remove/${currencyA && currencyEquals(currencyA, WETH[chainId]) ? 'KLAY' : currencyIdA
                                     }/${currencyB && currencyEquals(currencyB, WETH[chainId]) ? 'KLAY' : currencyIdB}`}
                                 >
-                                  Receive BNB
+                                  Receive KLAY
                                 </StyledInternalLink>
                               ) : null}
                             </RowBetween>
