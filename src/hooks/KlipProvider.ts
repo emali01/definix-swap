@@ -107,15 +107,14 @@ export const genQRcodeContactInteract = async (contractAddress: string, abi: str
   }
   return axios.post('https://a2a-api.klipwallet.com/v2/a2a/prepare', mockData).then(async (response) => {
     requestKey = response.data.request_key
-
     if (isMobile === true) {
       const url = `https://klipwallet.com/?target=/a2a?request_key=${response.data.request_key}`
       // await axios.get(url)
       intervalCheckResult = setInterval(getResultContract, 1000)
       openDeeplink(url)
-      
+
     } else {
-      await setShowModal(true)
+      setShowModal(true)
       await QRcode.toCanvas(
         document.getElementById('qrcode'),
         `https://klipwallet.com/?target=/a2a?request_key=${response.data.request_key}`,
@@ -123,7 +122,6 @@ export const genQRcodeContactInteract = async (contractAddress: string, abi: str
           intervalCheckResult = setInterval(getResultContract, 1000)
         }
       )
-      setShowModal(false)
     }
     return "success"
   }).catch(e => {
@@ -133,12 +131,12 @@ export const genQRcodeContactInteract = async (contractAddress: string, abi: str
 const openDeeplink = (url: string) => {
   const checkRedirect = window.open(url, "_blank")
   if (checkRedirect === null) {
-      window.location.href = `kakaotalk://klipwallet/open?url=${url}`
-      setTimeout(function () {
-          if (document.hasFocus()) {
-              window.location.replace("https://apps.apple.com/kr/app/%EC%B9%B4%EC%B9%B4%EC%98%A4%ED%86%A1-kakaotalk/id362057947")
-          }
-      }, 4500);
+    window.location.href = `kakaotalk://klipwallet/open?url=${url}`
+    setTimeout(function () {
+      if (document.hasFocus()) {
+        window.location.replace("https://apps.apple.com/kr/app/%EC%B9%B4%EC%B9%B4%EC%98%A4%ED%86%A1-kakaotalk/id362057947")
+      }
+    }, 4500);
   }
 
 }
