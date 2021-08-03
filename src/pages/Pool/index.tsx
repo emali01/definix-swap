@@ -5,7 +5,8 @@ import { StyledInternalLink } from 'components/Shared'
 import { Dots } from 'components/swap/styleds'
 import TransactionHistoryBox from 'components/TransactionHistoryBox'
 import TranslatedText from 'components/TranslatedText'
-import { injected } from 'connectors'
+import { injected ,klip} from 'connectors'
+import { KlipModalContext } from "@sixnetwork/klaytn-use-wallet"
 
 import { usePairs } from 'data/Reserves'
 import { ETHER, Pair, Token } from 'definixswap-sdk'
@@ -121,7 +122,13 @@ export default function Pool() {
     fetchingV2PairBalances || v2Pairs?.length < liquidityTokensWithBalances.length || v2Pairs?.some((V2Pair) => !V2Pair)
 
   const allV2PairsWithLiquidity = v2Pairs.map(([, pair]) => pair).filter((v2Pair): v2Pair is Pair => Boolean(v2Pair))
-
+  const { setShowModal, showModal } = React.useContext(KlipModalContext())
+  const showModalKlip = () => {
+    setShowModal(true)
+  }
+  const closeModalKlip = () => {
+    setShowModal(false)
+  }
   useEffect(() => {
     if (isMobileOrTablet) {
       setIsShowRightPanel(false)
@@ -180,14 +187,14 @@ export default function Pool() {
               {!account ? (
                 <div className="py-6 flex flex-column align-center">
                   {isMobileOrTablet && (
-                    <UserBlock
-                      account={account as string}
-                      login={(connectorId: ConnectorId) => {
-                        
-                        return activate(injected)
-                      }}
-                      logout={deactivate}
-                    />
+                  <UserBlock account={account as string} login={(connectorId: ConnectorId) => {
+                    if (connectorId === "klip") {
+                      window.localStorage.setItem("connector", "klip")
+                      return activate(klip(showModalKlip, closeModalKlip))
+                    }
+                    window.localStorage.setItem("connector", "injected")
+                    return activate(injected)
+                  }} logout={deactivate} className="ml-3" />
                   )}
 
                   <Text color="textSubtle" textAlign="center" fontSize="16px" className="mt-2">
