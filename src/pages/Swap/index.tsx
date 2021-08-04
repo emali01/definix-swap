@@ -169,13 +169,13 @@ export default function Swap({
 
   const parsedAmounts = showWrap
     ? {
-        [Field.INPUT]: parsedAmount,
-        [Field.OUTPUT]: parsedAmount,
-      }
+      [Field.INPUT]: parsedAmount,
+      [Field.OUTPUT]: parsedAmount,
+    }
     : {
-        [Field.INPUT]: independentField === Field.INPUT ? parsedAmount : trade?.inputAmount,
-        [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : trade?.outputAmount,
-      }
+      [Field.INPUT]: independentField === Field.INPUT ? parsedAmount : trade?.inputAmount,
+      [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : trade?.outputAmount,
+    }
 
   const { onSwitchTokens, onCurrencySelection, onUserInput, onChangeRecipient } = useSwapActionHandlers()
   const isValid = !swapInputError
@@ -328,7 +328,15 @@ export default function Swap({
 
   const handleMaxInput = useCallback(() => {
     if (maxAmountInput) {
-      onUserInput(Field.INPUT, maxAmountInput.toExact())
+      if (window.localStorage.getItem('connector') === "klip"){
+        const floorDigit = 1000000
+        const valueMax = (+maxAmountInput.toExact())
+        const max = Math.floor( valueMax*floorDigit)/floorDigit
+        onUserInput(Field.INPUT, max.toString())
+      }else{
+        onUserInput(Field.INPUT, maxAmountInput.toExact())
+      }
+        
     }
   }, [maxAmountInput, onUserInput])
 
@@ -655,12 +663,12 @@ export default function Swap({
                       date={
                         tx.confirmedTime
                           ? new Date(tx.confirmedTime || 0).toLocaleString('en-US', {
-                              day: 'numeric',
-                              month: 'short',
-                              year: 'numeric',
-                              hour: 'numeric',
-                              minute: 'numeric',
-                            })
+                            day: 'numeric',
+                            month: 'short',
+                            year: 'numeric',
+                            hour: 'numeric',
+                            minute: 'numeric',
+                          })
                           : ''
                       }
                     />
