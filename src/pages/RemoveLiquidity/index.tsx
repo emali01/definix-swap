@@ -456,12 +456,8 @@ export default function RemoveLiquidity({
           </AutoColumn>
 
           <Text small color="textSubtle" textAlign="left" padding="12px 0 0 0" style={{ fontStyle: 'italic' }}>
-            {`${translate('Output is estimated. If the price changes by more than')} ${
-              allowedSlippage / 100
-            }% ${translate('your transaction will revert.')}`}
-            {/* {`Output is estimated. If the price changes by more than ${
-              allowedSlippage / 100
-            }% your transaction will revert.`} */}
+            {translate('Output is estimated. If the price changes by more than')} ${allowedSlippage / 100}%{' '}
+            {translate('your transaction will revert.')}
           </Text>
         </AutoColumn>
       </div>
@@ -662,7 +658,7 @@ export default function RemoveLiquidity({
                               size="sm"
                               onClick={() => onUserInput(Field.LIQUIDITY_PERCENT, '100')}
                             >
-                              {translate('Max')}
+                              {translate('MAX')}
                             </Button>
                           </Flex>
                         </>

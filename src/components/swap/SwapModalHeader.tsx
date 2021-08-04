@@ -97,16 +97,12 @@ export default function SwapModalHeader({
 
           {trade.tradeType === TradeType.EXACT_INPUT ? (
             <PriceInfoText>
-              {`${t('Output is estimated. You will receive at least')} `}
+              {`${t('Output is estimated')} `}
               <span>
                 {slippageAdjustedAmounts[Field.OUTPUT]?.toSignificant(6)} {trade.outputAmount.currency.symbol}
               </span>
+              {`${t('You will receive at least')} `}
               {t('or the transaction will revert.')}
-              {/* {`Output is estimated. You will receive at least `}
-              <span>
-                {slippageAdjustedAmounts[Field.OUTPUT]?.toSignificant(6)} {trade.outputAmount.currency.symbol}
-              </span>
-              {' or the transaction will revert.'} */}
             </PriceInfoText>
           ) : (
             <PriceInfoText>
@@ -115,11 +111,6 @@ export default function SwapModalHeader({
                 {slippageAdjustedAmounts[Field.INPUT]?.toSignificant(6)} {trade.inputAmount.currency.symbol}
               </span>
               {t('or the transaction will revert.')}
-              {/* {`Input is estimated. You will sell at most `}
-              <span>
-                {slippageAdjustedAmounts[Field.INPUT]?.toSignificant(6)} {trade.inputAmount.currency.symbol}
-              </span>
-              {' or the transaction will revert.'} */}
             </PriceInfoText>
           )}
 

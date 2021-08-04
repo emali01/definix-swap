@@ -33,7 +33,7 @@ export function ConfirmAddModalBottom({
               <Text className="mr-1" bold>
                 {currencies[Field.CURRENCY_A]?.symbol}
               </Text>
-              <Text color="textSubtle">{t('Deposited')}</Text>
+              {/* <Text color="textSubtle">{t('Deposited')}</Text> */}
             </div>
           </div>
           <div className="flex justify-end">
@@ -51,7 +51,7 @@ export function ConfirmAddModalBottom({
               <Text className="mr-1" bold>
                 {currencies[Field.CURRENCY_B]?.symbol}
               </Text>
-              <Text color="textSubtle">{t('Deposited')}</Text>
+              {/* <Text color="textSubtle">{t('Deposited')}</Text> */}
             </div>
           </div>
           <div className="flex justify-end">

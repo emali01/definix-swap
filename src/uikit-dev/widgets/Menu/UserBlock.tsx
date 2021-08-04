@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTranslation } from 'contexts/Localization'
 import styled from 'styled-components'
 import Button from '../../components/Button/Button'
 import Dropdown from '../../components/Dropdown/Dropdown'
@@ -42,7 +43,7 @@ const AccountButton = styled(ConnectButton)`
 const UserBlock: React.FC<Props> = ({ account, login, logout, className = '', position = 'bottom-right' }) => {
   const { onPresentConnectModal } = useWalletModal(login, logout, account)
   const accountEllipsis = account ? `${account.substring(0, 6)}...${account.substring(account.length - 4)}` : null
-
+  const { t } = useTranslation()
   return (
     <div className={className}>
       {account ? (
@@ -76,10 +77,10 @@ const UserBlock: React.FC<Props> = ({ account, login, logout, className = '', po
               className="mb-2"
               fontSize="13px"
             >
-              View on Klaytn Scope
+              {t('View on Klaytn Scope')}
             </LinkExternal>
             <CopyToClipboard noPadding toCopy={account}>
-              Copy Address
+              {t('Copy Address')}
             </CopyToClipboard>
             <Button
               size="sm"
@@ -89,11 +90,11 @@ const UserBlock: React.FC<Props> = ({ account, login, logout, className = '', po
               onClick={() => {
                 logout()
                 window.localStorage.removeItem(localStorageKey)
-                window.localStorage.removeItem("connector")
+                window.localStorage.removeItem('connector')
                 window.location.reload()
               }}
             >
-              Disconnect
+              {t('Disconnect')}
             </Button>
           </div>
         </Dropdown>
@@ -104,14 +105,12 @@ const UserBlock: React.FC<Props> = ({ account, login, logout, className = '', po
           variant="text"
           className="connect-btn"
           onClick={() => {
-            
             onPresentConnectModal()
-            
           }}
           disabled={!!account}
         >
           <Text fontSize="12px" color="white" fontWeight="600">
-            Connect wallet
+            {t('Connect wallet')}
           </Text>
         </ConnectButton>
       )}
