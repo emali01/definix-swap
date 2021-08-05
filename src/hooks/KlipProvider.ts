@@ -1,6 +1,9 @@
 /* eslint eqeqeq: 0 */
 import QRcode from 'qrcode'
 import axios from 'axios'
+import {
+  isMobile
+} from "react-device-detect";
 
 
 let requestKey = ""
@@ -22,17 +25,22 @@ export const genQRcode = () => {
   }
   axios.post('https://a2a-api.klipwallet.com/v2/a2a/prepare', mockData).then((response) => {
     requestKey = response.data.request_key
-    QRcode.toCanvas(
-      document.getElementById('qrcode'),
-      `https://klipwallet.com/?target=/a2a?request_key=${response.data.request_key}`,
-      () => {
-        intervalCheckResult = setInterval(getResult, 1000)
-      }
-    )
+    alert(`ismobile ${isMobile}`)
+    if (isMobile === true) {
+      window.location.href = `https://klipwallet.com/?target=/a2a?request_key=${response.data.request_key}`
+    } else {
+      QRcode.toCanvas(
+        document.getElementById('qrcode'),
+        `https://klipwallet.com/?target=/a2a?request_key=${response.data.request_key}`,
+        () => {
+          intervalCheckResult = setInterval(getResult, 1000)
+        }
+      )
+    }
   })
 }
 const getResult = async () => {
-  const url =`https://a2a-api.klipwallet.com/v2/a2a/result?request_key=${requestKey}`
+  const url = `https://a2a-api.klipwallet.com/v2/a2a/result?request_key=${requestKey}`
   // const url = `http://localhost:8080`
   const res = await axios.get(url)
   // console.log("request status : ", res.data.status)
@@ -71,7 +79,7 @@ export const getResultContract = async () => {
   const url = `https://a2a-api.klipwallet.com/v2/a2a/result?request_key=${requestKey}`
   // const url = `http://localhost:8080/con`
   const res = await axios.get(url)
-  
+
   if (res.data.status == "completed") {
     // account = res.data.result.klaytn_address
     responseData = res.data.result.tx_hash
@@ -83,7 +91,7 @@ export const getResultContract = async () => {
   }
 
 }
-export const genQRcodeContactInteract = async (contractAddress: string, abi: string, input: string, value: string) => {
+export const genQRcodeContactInteract = async (contractAddress: string, abi: string, input: string, value: string, setShowModal: (bool: boolean) => void) => {
   initData()
   const mockData = {
     "bapp": {
@@ -97,30 +105,38 @@ export const genQRcodeContactInteract = async (contractAddress: string, abi: str
       "params": input
     }
   }
-  return axios.post('https://a2a-api.klipwallet.com/v2/a2a/prepare', mockData).then((response) => {
+  return axios.post('https://a2a-api.klipwallet.com/v2/a2a/prepare', mockData).then(async (response) => {
     requestKey = response.data.request_key
-    // console.log("response.data.request_key", response.data.request_key)
-    QRcode.toCanvas(
-      document.getElementById('qrcode'),
-      `https://klipwallet.com/?target=/a2a?request_key=${response.data.request_key}`,
-      () => {
-        intervalCheckResult = setInterval(getResultContract, 1000)
-      }
-    )
+    if (isMobile === true) {
+      const url = `https://klipwallet.com/?target=/a2a?request_key=${response.data.request_key}`
+      // await axios.get(url)
+      intervalCheckResult = setInterval(getResultContract, 1000)
+      openDeeplink(url)
+
+    } else {
+      setShowModal(true)
+      await QRcode.toCanvas(
+        document.getElementById('qrcode'),
+        `https://klipwallet.com/?target=/a2a?request_key=${response.data.request_key}`,
+        () => {
+          intervalCheckResult = setInterval(getResultContract, 1000)
+        }
+      )
+    }
     return "success"
-  }).catch( e =>{
+  }).catch(e => {
     return "error"
   })
 }
+const openDeeplink = (url: string) => {
+  const checkRedirect = window.open(url, "_blank")
+  if (checkRedirect === null) {
+    window.location.href = `kakaotalk://klipwallet/open?url=${url}`
+    setTimeout(function () {
+      if (document.hasFocus()) {
+        window.location.replace("https://apps.apple.com/kr/app/%EC%B9%B4%EC%B9%B4%EC%98%A4%ED%86%A1-kakaotalk/id362057947")
+      }
+    }, 4500);
+  }
 
-// interface Props {
-
-// }
-
-// export const ExampleComponent = ({ }: Props) => {
-//   return <div >Example Component</div>
-// }
-
-// const rootElement = document.getElementById("root");
-
-// ReactDOM.render((<ExampleComponent />), rootElement);
+}

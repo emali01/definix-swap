@@ -112,9 +112,9 @@ export const KLAY_KETH_LP = {
   [ChainId.BAOBABTESTNET]: process.env.REACT_APP_KLAY_KETH_LP_TESTNET || "",
 }
 
-export const KLAY_KBTC_LP = {
-  [ChainId.MAINNET]: process.env.REACT_APP_KLAY_KBTC_LP_MAINNET || "",
-  [ChainId.BAOBABTESTNET]: process.env.REACT_APP_KLAY_KBTC_LP_TESTNET || "",
+export const KLAY_KWBTC_LP = {
+  [ChainId.MAINNET]: process.env.REACT_APP_KLAY_KWBTC_LP_MAINNET || "",
+  [ChainId.BAOBABTESTNET]: process.env.REACT_APP_KLAY_KWBTC_LP_TESTNET || "",
 }
 
 export const KLAY_KXRP_LP = {
@@ -127,9 +127,9 @@ export const KETH_KUSDT_LP = {
   [ChainId.BAOBABTESTNET]: process.env.REACT_APP_KETH_KUSDT_LP_TESTNET || "",
 }
 
-export const KBTC_KUSDT_LP = {
-  [ChainId.MAINNET]: process.env.REACT_APP_KBTC_KUSDT_LP_MAINNET || "",
-  [ChainId.BAOBABTESTNET]: process.env.REACT_APP_KBTC_KUSDT_LP_TESTNET || "",
+export const KWBTC_KUSDT_LP = {
+  [ChainId.MAINNET]: process.env.REACT_APP_KWBTC_KUSDT_LP_MAINNET || "",
+  [ChainId.BAOBABTESTNET]: process.env.REACT_APP_KWBTC_KUSDT_LP_TESTNET || "",
 }
 
 export const KXRP_KUSDT_LP = {
@@ -175,7 +175,7 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
       new Token(ChainId.BAOBABTESTNET, KSP_ADDRESS[ChainId.BAOBABTESTNET], 18, 'KSP', 'KLAY Swap Protocol'),
       new Token(ChainId.BAOBABTESTNET, KDAI_ADDRESS[ChainId.BAOBABTESTNET], 18, 'KDAI', 'KDAI Token'),
       new Token(ChainId.BAOBABTESTNET, KETH_ADDRESS[ChainId.BAOBABTESTNET], 18, 'KETH', 'KETH Token'),
-      new Token(ChainId.BAOBABTESTNET, KWBTC_ADDRESS[ChainId.BAOBABTESTNET], 18, 'KBTC', 'KBTC Token'),
+      new Token(ChainId.BAOBABTESTNET, KWBTC_ADDRESS[ChainId.BAOBABTESTNET], 18, 'KWBTC', 'KWBTC Token'),
       new Token(ChainId.BAOBABTESTNET, KXRP_ADDRESS[ChainId.BAOBABTESTNET], 18, 'KXRP', 'KXRP Token'),
       new Token(ChainId.BAOBABTESTNET, KBNB_ADDRESS[ChainId.BAOBABTESTNET], 18, 'KBNB', 'KBNB Token'),
 
@@ -188,7 +188,7 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
       new Token(ChainId.MAINNET, KUSDT_ADDRESS[ChainId.MAINNET], 18, 'KUSDT', 'KUSDT Token'),
       new Token(ChainId.MAINNET, KSP_ADDRESS[ChainId.MAINNET], 18, 'KSP', 'KLAY Swap Protocol'),
       new Token(ChainId.MAINNET, KDAI_ADDRESS[ChainId.MAINNET], 18, 'KDAI', 'KDAI Token'),
-      new Token(ChainId.MAINNET, KWBTC_ADDRESS[ChainId.MAINNET], 18, 'KBTC', 'KBTC Token'),
+      new Token(ChainId.MAINNET, KWBTC_ADDRESS[ChainId.MAINNET], 18, 'KWBTC', 'KWBTC Token'),
       new Token(ChainId.MAINNET, KETH_ADDRESS[ChainId.MAINNET], 18, 'KETH', 'KETH Token'),
       new Token(ChainId.MAINNET, KXRP_ADDRESS[ChainId.MAINNET], 18, 'KXRP', 'KXRP Token'),
       new Token(ChainId.MAINNET, KBNB_ADDRESS[ChainId.MAINNET], 18, 'KBNB', 'KBNB Token'),
@@ -255,7 +255,7 @@ export const PINNED_PAIRS: { readonly [chainId in ChainId]?: [Token, Token][] } 
       new Token(ChainId.BAOBABTESTNET, WKLAY_ADDRESS[ChainId.MAINNET], 18, 'WKLAY', 'Wrapped KLAY'),
     ],
     [
-      new Token(ChainId.BAOBABTESTNET, KWBTC_ADDRESS[ChainId.MAINNET], 18, 'KBTC', 'KBTC Token'),
+      new Token(ChainId.BAOBABTESTNET, KWBTC_ADDRESS[ChainId.MAINNET], 18, 'KWBTC', 'KWBTC Token'),
       new Token(ChainId.BAOBABTESTNET, WKLAY_ADDRESS[ChainId.MAINNET], 18, 'WKLAY', 'Wrapped KLAY'),
     ],
     [
@@ -267,7 +267,7 @@ export const PINNED_PAIRS: { readonly [chainId in ChainId]?: [Token, Token][] } 
       new Token(ChainId.BAOBABTESTNET, KUSDT_ADDRESS[ChainId.MAINNET], 18, 'KUSDT', 'KUSDT Token'),
     ],
     [
-      new Token(ChainId.BAOBABTESTNET, KWBTC_ADDRESS[ChainId.MAINNET], 18, 'KBTC', 'KBTC Token'),
+      new Token(ChainId.BAOBABTESTNET, KWBTC_ADDRESS[ChainId.MAINNET], 18, 'KWBTC', 'KWBTC Token'),
       new Token(ChainId.BAOBABTESTNET, KUSDT_ADDRESS[ChainId.MAINNET], 18, 'KUSDT', 'KUSDT Token'),
     ],
     [
@@ -321,7 +321,7 @@ export const PINNED_PAIRS: { readonly [chainId in ChainId]?: [Token, Token][] } 
       new Token(ChainId.BAOBABTESTNET, WKLAY_ADDRESS[ChainId.BAOBABTESTNET], 18, 'WKLAY', 'Wrapped KLAY'),
     ],
     [
-      new Token(ChainId.BAOBABTESTNET, KWBTC_ADDRESS[ChainId.BAOBABTESTNET], 18, 'KBTC', 'KBTC Token'),
+      new Token(ChainId.BAOBABTESTNET, KWBTC_ADDRESS[ChainId.BAOBABTESTNET], 18, 'KWBTC', 'KWBTC Token'),
       new Token(ChainId.BAOBABTESTNET, WKLAY_ADDRESS[ChainId.BAOBABTESTNET], 18, 'WKLAY', 'Wrapped KLAY'),
     ],
     [
@@ -333,7 +333,7 @@ export const PINNED_PAIRS: { readonly [chainId in ChainId]?: [Token, Token][] } 
       new Token(ChainId.BAOBABTESTNET, KUSDT_ADDRESS[ChainId.BAOBABTESTNET], 18, 'KUSDT', 'KUSDT Token'),
     ],
     [
-      new Token(ChainId.BAOBABTESTNET, KWBTC_ADDRESS[ChainId.BAOBABTESTNET], 18, 'KBTC', 'KBTC Token'),
+      new Token(ChainId.BAOBABTESTNET, KWBTC_ADDRESS[ChainId.BAOBABTESTNET], 18, 'KWBTC', 'KWBTC Token'),
       new Token(ChainId.BAOBABTESTNET, KUSDT_ADDRESS[ChainId.BAOBABTESTNET], 18, 'KUSDT', 'KUSDT Token'),
     ],
     [

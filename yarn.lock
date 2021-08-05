@@ -3031,22 +3031,37 @@
   integrity sha512-0A09AIhxypZ4qvsSE9EGsQPgzpuLRtf644xV/JDkpA7j1HhAcH3lZ/Lb0SOxiipHi9T6U/phAZLdRrL9euH/1w==
 
 "@sixnetwork/klaytn-use-wallet@^1.1.4":
-  version "1.1.4"
-  resolved "https://registry.yarnpkg.com/@sixnetwork/klaytn-use-wallet/-/klaytn-use-wallet-1.1.4.tgz#b231746b923e7b8fda337b38d99f6727b3436d68"
-  integrity sha512-C+RwnNuN0eO2pSoI0Sr9dufWvryoBSDBLBLCy2XxjbF/7FNxBrnByjzz/62DTBtSG5sSf5Tn9QIs/HrXW90eEg==
+  version "1.1.8"
+  resolved "https://registry.yarnpkg.com/@sixnetwork/klaytn-use-wallet/-/klaytn-use-wallet-1.1.8.tgz#df10e72f552cb2fe16d876cedd32ad36a8365357"
+  integrity sha512-JTWMsDmbusVcq3wXdZvg2NZHghbPqBc/d6aJvziM9Np0Ms/w29qUPLHh/5ZxdWbWViQIn3NCwDwj002DsYnvSQ==
   dependencies:
     "@rollup/plugin-image" "^2.0.6"
     "@sixnetwork/caverjs-react-core" "^1.1.3"
     "@sixnetwork/caverjs-react-injected-connector" "^1.0.5"
-    "@sixnetwork/klip-connector" "^1.0.6"
+    "@sixnetwork/klip-connector" "^1.0.8"
     axios "^0.21.1"
     jsbi "^3.1.1"
     qrcode "^1.4.4"
 
-"@sixnetwork/klip-connector@^1.0.6":
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/@sixnetwork/klip-connector/-/klip-connector-1.0.6.tgz#c2966a0fcbc4d746c9f54344541768b20640f2b1"
-  integrity sha512-HdUBxdH0llnTtIpwqp9Dxq+8IEENgAt1iVhb2QYyqNMpvb6aEJVBEWfuxRc4Umm1ixUZB+jOfO1wb3z7ORh6fQ==
+"@sixnetwork/klip-connector@1.0.8-klip-mobile-support-v6":
+  version "1.0.8-klip-mobile-support-v6"
+  resolved "https://registry.yarnpkg.com/@sixnetwork/klip-connector/-/klip-connector-1.0.8-klip-mobile-support-v6.tgz#13b8420198a8a47315e59c76a066a926dd2cd76d"
+  integrity sha512-M+0oRBk/gBx6zW5v48zwOTnQ/CrsRqQv0tYpk4KNGTEr+at3DzvDdYtFH1/69o9Q7s64vlx8u3wELtAF9fN+Uw==
+  dependencies:
+    "@sixnetwork/caverjs-react-abstract-connector" "^1.0.4"
+    "@sixnetwork/caverjs-react-types" "^1.0.3"
+    "@types/qrcode" "^1.4.0"
+    axios "^0.21.1"
+    caver-js "^1.6.3"
+    lit-html "^1.4.1"
+    qrcode "^1.4.4"
+    react-device-detect "^1.17.0"
+    tiny-warning "^1.0.3"
+
+"@sixnetwork/klip-connector@^1.0.8":
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/@sixnetwork/klip-connector/-/klip-connector-1.0.8.tgz#d513df08d191a5d119f86c50ac8ca63b876e2ff3"
+  integrity sha512-Dpfndpuqe4nuJq+M4/gIHoZwqO0botxhOg8iMNd+NRUQW4Txh8azSw55JVSyUDOp7JAthWcq5gbLzP7ZknSrAQ==
   dependencies:
     "@sixnetwork/caverjs-react-abstract-connector" "^1.0.4"
     "@sixnetwork/caverjs-react-types" "^1.0.3"
@@ -6988,6 +7003,14 @@ buffer@^5.0.5, buffer@^5.2.1, buffer@^5.4.3, buffer@^5.5.0, buffer@^5.6.0:
   dependencies:
     base64-js "^1.3.1"
     ieee754 "^1.1.13"
+
+buffer@^6.0.3:
+  version "6.0.3"
+  resolved "https://registry.yarnpkg.com/buffer/-/buffer-6.0.3.tgz#2ace578459cc8fbe2a70aaa8f52ee63b6a74c6c6"
+  integrity sha512-FTiCpNxtwiZZHEZbcbTIcZjERVICn9yq/pDFkTl95/AxzD1naBctN7YO68riM/gLSDY7sdrMby8hofADYuuqOA==
+  dependencies:
+    base64-js "^1.3.1"
+    ieee754 "^1.2.1"
 
 bufferutil@^4.0.1:
   version "4.0.3"
@@ -12362,7 +12385,7 @@ idna-uts46-hx@^2.3.1:
   dependencies:
     punycode "2.1.0"
 
-ieee754@^1.1.13, ieee754@^1.1.4:
+ieee754@^1.1.13, ieee754@^1.1.4, ieee754@^1.2.1:
   version "1.2.1"
   resolved "https://registry.npmjs.org/ieee754/-/ieee754-1.2.1.tgz"
   integrity sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA==
@@ -17136,7 +17159,7 @@ promise.prototype.finally@^3.1.0:
     es-abstract "^1.17.0-next.0"
     function-bind "^1.1.1"
 
-promise@^8.1.0:
+promise@^8.0.1, promise@^8.1.0:
   version "8.1.0"
   resolved "https://registry.npmjs.org/promise/-/promise-8.1.0.tgz"
   integrity sha512-W04AqnILOL/sPRXziNicCjSNRruLAuIHEOVBazepu0545DDNGYHz7ar9ZgZ1fMU8/MA4mVxp5rkBWRi6OXIy3Q==
@@ -17529,12 +17552,12 @@ react-dev-utils@^11.0.2:
     strip-ansi "6.0.0"
     text-table "0.2.0"
 
-react-device-detect@^1.6.2:
-  version "1.15.0"
-  resolved "https://registry.npmjs.org/react-device-detect/-/react-device-detect-1.15.0.tgz"
-  integrity sha512-ywjtWW04U7vaJK87IAFHhKozZhTPeDVWsfYx5CxQSQCjU5+fnMMxWZt9HnVWaNTqBEn6g8wCNWyqav7sXJrURg==
+react-device-detect@^1.17.0:
+  version "1.17.0"
+  resolved "https://registry.yarnpkg.com/react-device-detect/-/react-device-detect-1.17.0.tgz#a00b4fd6880cebfab3fd8a42a79dc0290cdddca9"
+  integrity sha512-bBblIStwpHmoS281JFIVqeimcN3LhpoP5YKDWzxQdBIUP8S2xPvHDgizLDhUq2ScguLfVPmwfF5y268EEQR60w==
   dependencies:
-    ua-parser-js "^0.7.23"
+    ua-parser-js "^0.7.24"
 
 react-docgen-typescript-plugin@^0.6.2:
   version "0.6.3"
@@ -20498,6 +20521,14 @@ tough-cookie@~2.3.3:
   dependencies:
     punycode "^1.4.1"
 
+tp-js-sdk@^3.6.1:
+  version "3.6.1"
+  resolved "https://registry.yarnpkg.com/tp-js-sdk/-/tp-js-sdk-3.6.1.tgz#b1bc9004ce2eb7bdafb276a65605547111c24130"
+  integrity sha512-78xt4LKtG+TLP9COkm6txVVa0RoMlXE/ec3lBEn8pGMQ3BDACiD1eWw5Qs3+2SYqQQq7XdaRURj9vd/fXe/JcA==
+  dependencies:
+    buffer "^6.0.3"
+    promise "^8.0.1"
+
 tr46@^2.0.2:
   version "2.0.2"
   resolved "https://registry.npmjs.org/tr46/-/tr46-2.0.2.tgz"
@@ -20733,10 +20764,10 @@ typescript@^4.1.3:
   resolved "https://registry.npmjs.org/typescript/-/typescript-4.1.5.tgz"
   integrity sha512-6OSu9PTIzmn9TCDiovULTnET6BgXtDYL4Gg4szY+cGsc3JP1dQL8qvE8kShTRx1NIw4Q9IBHlwODjkjWEtMUyA==
 
-ua-parser-js@^0.7.23:
-  version "0.7.24"
-  resolved "https://registry.npmjs.org/ua-parser-js/-/ua-parser-js-0.7.24.tgz"
-  integrity sha512-yo+miGzQx5gakzVK3QFfN0/L9uVhosXBBO7qmnk7c2iw1IhL212wfA3zbnI54B0obGwC/5NWub/iT9sReMx+Fw==
+ua-parser-js@^0.7.24:
+  version "0.7.28"
+  resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-0.7.28.tgz#8ba04e653f35ce210239c64661685bf9121dec31"
+  integrity sha512-6Gurc1n//gjp9eQNXjD9O3M/sMwVtN5S8Lv9bvOYBfKfDNiIIhqiyi01vMBO45u4zkDE420w/e0se7Vs+sIg+g==
 
 uint8arrays@1.1.0:
   version "1.1.0"

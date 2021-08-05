@@ -194,8 +194,8 @@ export function useSwapCallback(
           const abi = JSON.stringify(getAbiByName(methodName))
           const input = JSON.stringify(convertArgKlip(args, abi))
           if (ROUTER_ADDRESS) {
-            setShowModal(true)
-            const statusCallKlip = await klipProvider.genQRcodeContactInteract(ROUTER_ADDRESS, abi, input, (+value).toString())
+            // setShowModal(true)
+            const statusCallKlip = await klipProvider.genQRcodeContactInteract(ROUTER_ADDRESS, abi, input, (+value).toString(),setShowModal)
             // console.log("status ss", statusCallKlip)
             if (statusCallKlip === "success") {
               const klipTx = await klipProvider.checkResponse()

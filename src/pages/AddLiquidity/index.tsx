@@ -2,6 +2,7 @@ import numeral from 'numeral'
 import { useTranslation } from 'contexts/Localization'
 import Caver from 'caver-js'
 import { ethers } from 'ethers'
+import axios from 'axios'
 import { BigNumber } from '@ethersproject/bignumber'
 import { abi as IUniswapV2Router02ABI } from '@uniswap/v2-periphery/build/IUniswapV2Router02.json'
 import BigNumberJs from 'bignumber.js'
@@ -17,7 +18,9 @@ import { useCaverJsReact } from '@sixnetwork/caverjs-react-core'
 import { RowBetween, RowFixed } from 'components/Row'
 import { KlipConnector } from '@sixnetwork/klip-connector'
 import { Dots } from 'components/swap/styleds'
-import { Transaction } from '@ethersproject/transactions'
+import tp from 'tp-js-sdk'
+import {sendAnalyticsData} from 'utils/definixAnalytics'
+// import { Transaction } from "@ethersproject/transactios";
 import TransactionConfirmationModal, {
   ConfirmationModalContent,
   TransactionErrorContent,
@@ -142,7 +145,25 @@ export default function AddLiquidity({
   const [approvalLP, approveLPCallback] = useApproveCallback(liquidityMinted, herodotusAddress)
 
   const addTransaction = useTransactionAdder()
-
+  const sendDefinixAnalytics = () =>{
+    if (tp.isConnected()) {
+      const firstToken = currencies[Field.CURRENCY_A]
+      const secondToken = currencies[Field.CURRENCY_B]
+      const farm = farms.find(
+        x =>
+          x.pid !== 0 &&
+          x.pid !== 1 &&
+          ((x.tokenSymbol === firstToken?.symbol && x.quoteTokenSymbol === secondToken?.symbol) ||
+            (x.tokenSymbol === secondToken?.symbol && x.quoteTokenSymbol === firstToken?.symbol))
+      )
+      if(farm && account ){
+        tp.getDeviceId().then(res=>{
+          sendAnalyticsData(farm.pid,account,res.device_id)
+        })
+        
+      }
+    }
+  }
   async function onAdd() {
     if (!chainId || !library || !account) return
     const router = getRouterContract(chainId, library, account)
@@ -164,6 +185,7 @@ export default function AddLiquidity({
     let args: Array<string | string[] | number>
     let value: BigNumber | null
     let methodName
+
     if (currencyA === ETHER || currencyB === ETHER) {
       const tokenBIsETH = currencyB === ETHER
       estimate = router.estimateGas.addLiquidityETH
@@ -196,9 +218,9 @@ export default function AddLiquidity({
     }
 
     setAttemptingTxn(true)
-    const valueNumber = (Number(value ? (+value).toString() : '0') / 10 ** 18).toString()
+    const valueNumber = (Number(value ? (+value).toString() : "0") / (10 ** 18)).toString()
     const valueklip = Number.parseFloat(valueNumber).toFixed(6)
-    let expectValue = `${(Number(valueklip) + 0.00001) * 10 ** 18}`
+    let expectValue = (`${(Number(valueklip) + 0.00001) * (10 ** 18)}`)
     expectValue = expectValue.slice(0, -13)
     // valueklip*(10**18).slice(0, -13)+"0000000000000"
     // Number(klipValue)
@@ -209,13 +231,14 @@ export default function AddLiquidity({
         router.address,
         JSON.stringify(getAbiByName(methodName)),
         JSON.stringify(args),
-        value ? `${expectValue}0000000000000` : '0'
+        value ? `${expectValue}0000000000000` : "0",
+        setShowModal
       )
       const tx = await klipProvider.checkResponse()
       setTxHash(tx)
       setAttemptingTxn(false)
       setShowModal(false)
-
+     
       addTransaction(undefined, {
         type: 'removeLiquidity',
         klipTx: tx,
@@ -231,8 +254,9 @@ export default function AddLiquidity({
       })
     } else {
       const iface = new ethers.utils.Interface(IUniswapV2Router02ABI)
-
+      
       const flagFeeDelegate = await UseDeParam('KLAYTN_FEE_DELEGATE', 'N')
+      const flagDefinixAnalaytics = await UseDeParam('GA_TP', 'N')
 
       await estimate(...args, value ? { value } : {})
         .then((estimatedGasLimit) => {
@@ -242,16 +266,14 @@ export default function AddLiquidity({
 
             // @ts-ignore
             const caver = new Caver(window.caver)
-
-            caver.klay
-              .signTransaction({
-                type: 'FEE_DELEGATED_SMART_CONTRACT_EXECUTION',
-                from: account,
-                to: ROUTER_ADDRESS,
-                gas: calculateGasMargin(estimatedGasLimit),
-                value,
-                data: iface.encodeFunctionData(methodName, [...args]),
-              })
+            caver.klay.signTransaction({
+              type: 'FEE_DELEGATED_SMART_CONTRACT_EXECUTION',
+              from: account,
+              to: ROUTER_ADDRESS,
+              gas: calculateGasMargin(estimatedGasLimit),
+              value,
+              data: iface.encodeFunctionData(methodName, [...args]),
+            })
               .then(function (userSignTx) {
                 // console.log('userSignTx tx = ', userSignTx)
                 const userSigned = caver.transaction.decode(userSignTx.rawTransaction)
@@ -261,43 +283,45 @@ export default function AddLiquidity({
 
                 caverFeeDelegate.rpc.klay.signTransactionAsFeePayer(userSigned).then(function (feePayerSigningResult) {
                   // console.log('feePayerSigningResult tx = ', feePayerSigningResult)
-                  caver.rpc.klay
-                    .sendRawTransaction(feePayerSigningResult.raw)
-                    .then((response: KlaytnTransactionResponse) => {
-                      console.log(methodName, ' tx = ', response)
-                      setAttemptingTxn(false)
+                  if(flagDefinixAnalaytics==='Y'){
+                    sendDefinixAnalytics()
+                  }
+                  
+                  // console.log("feePayerSigningResult",flagDefinixAnalaytics)
+                  caver.rpc.klay.sendRawTransaction(feePayerSigningResult.raw).then((response: KlaytnTransactionResponse) => {
+                    // document.write(JSON.stringify(response.transactionHash))
 
-                      addTransaction(response, {
-                        type: 'addLiquidity',
-                        data: {
-                          firstToken: currencies[Field.CURRENCY_A]?.symbol,
-                          firstTokenAmount: parsedAmounts[Field.CURRENCY_A]?.toSignificant(3),
-                          secondToken: currencies[Field.CURRENCY_B]?.symbol,
-                          secondTokenAmount: parsedAmounts[Field.CURRENCY_B]?.toSignificant(3),
-                        },
-                        summary: `Add ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${
-                          currencies[Field.CURRENCY_A]?.symbol
-                        } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${
-                          currencies[Field.CURRENCY_B]?.symbol
-                        }`,
-                      })
-
-                      setTxHash(response.transactionHash)
+                    // console.log(methodName, ' tx = ', response)
+                    setAttemptingTxn(false)
+                    setTxHash(response.transactionHash)
+                    addTransaction(response, {
+                      type: 'addLiquidity',
+                      data: {
+                        firstToken: currencies[Field.CURRENCY_A]?.symbol,
+                        firstTokenAmount: parsedAmounts[Field.CURRENCY_A]?.toSignificant(3),
+                        secondToken: currencies[Field.CURRENCY_B]?.symbol,
+                        secondTokenAmount: parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)
+                      },
+                      summary: `Add ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${currencies[Field.CURRENCY_A]?.symbol
+                        } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencies[Field.CURRENCY_B]?.symbol}`
                     })
-                    .catch((e) => {
-                      setAttemptingTxn(false)
 
-                      // we only care if the error is something _other_ than the user rejected the tx
-                      if (e?.code !== 4001) {
-                        console.error(e)
-                        setErrorMsg(e)
-                      }
-                    })
+                  }).catch(e => {
+                    setAttemptingTxn(false)
+                    // we only care if the error is something _other_ than the user rejected the tx
+                    if (e?.code !== 4001) {
+                      console.error(e)
+                      setErrorMsg(e)
+                    }
+                  })
+                  
+                  
                 })
+                
               })
               .catch((e) => {
                 setAttemptingTxn(false)
-
+                alert(`err ${e}`)
                 // we only care if the error is something _other_ than the user rejected the tx
                 if (e?.code !== 4001) {
                   console.error(e)
@@ -305,10 +329,15 @@ export default function AddLiquidity({
                 }
               })
           } else {
+            
             method(...args, {
               ...(value ? { value } : {}),
-              gasLimit: calculateGasMargin(estimatedGasLimit),
-            }).then((response) => {
+              gasLimit: calculateGasMargin(estimatedGasLimit)
+            }).then(response => {
+              if(flagDefinixAnalaytics==='Y'){
+                sendDefinixAnalytics()
+              }
+              
               setAttemptingTxn(false)
 
               addTransaction(response, {
@@ -441,9 +470,10 @@ export default function AddLiquidity({
                 (x) =>
                   x.pid !== 0 &&
                   x.pid !== 1 &&
-                  ((x.tokenSymbol === firstToken?.symbol && x.quoteTokenSymbol === secondToken?.symbol) ||
-                    (x.tokenSymbol === secondToken?.symbol && x.quoteTokenSymbol === firstToken?.symbol))
+                  ((x.firstSymbol === firstToken?.symbol && x.secondSymbol === secondToken?.symbol) ||
+                    (x.firstSymbol === secondToken?.symbol && x.secondSymbol === firstToken?.symbol))
               )
+
               if (farm && farm.pid !== 1 && farm.pid !== 0 && liquidityMinted) {
                 return new Promise((resolve, reject) => {
                   setAttemptingTxn(true)
@@ -464,11 +494,9 @@ export default function AddLiquidity({
                       farm.pid,
                       new BigNumberJs(liquidityMinted.toExact()).times(new BigNumberJs(10).pow(18)).toString(),
                     ]
-                    const value = null
                     return herodotusContract?.estimateGas.deposit(...args)
                   })
-
-                  .then((estimatedGasLimit) => {
+                  .then(estimatedGasLimit => {
                     if (estimatedGasLimit) {
                       const args = [
                         farm.pid,
@@ -476,10 +504,6 @@ export default function AddLiquidity({
                       ]
 
                       const iface = new ethers.utils.Interface(HERODOTUS_ABI)
-
-                      // const flagFeeDelegate = UseDeParam('KLAYTN_FEE_DELEGATE', 'N').then( (result) => {
-                      //   return result
-                      // })
 
                       return UseDeParam('KLAYTN_FEE_DELEGATE', 'N').then((flagFeeDelegate) => {
                         if (flagFeeDelegate === 'Y') {
@@ -523,7 +547,7 @@ export default function AddLiquidity({
                         }
 
                         return herodotusContract?.deposit(...args, {
-                          gasLimit: calculateGasMargin(estimatedGasLimit),
+                          gasLimit: calculateGasMargin(estimatedGasLimit)
                         })
                       })
                     }
