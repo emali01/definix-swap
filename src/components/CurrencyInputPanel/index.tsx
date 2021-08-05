@@ -72,7 +72,7 @@ interface CurrencyInputPanelProps {
 export default function CurrencyInputPanel({
   value,
   showMaxButton,
-  label = TranslateString(132, 'Input'),
+  label = 'Input',
   currency,
   disableCurrencySelect = false,
   hideBalance = false,
@@ -105,11 +105,11 @@ export default function CurrencyInputPanel({
         {!hideInput && (
           <div className="flex justify-space-between mb-1">
             <Text fontSize="14px" color="textSubtle">
-              {label}
+              {t(`${label}`)}
             </Text>
             {account && (
               <Text fontSize="14px" color="textSubtle">
-                Balance:{' '}
+                {t('Balance')}{' '}
                 {!hideBalance && !!currency && selectedCurrencyBalance
                   ? selectedCurrencyBalance?.toSignificant(6)
                   : ' -'}
@@ -133,7 +133,7 @@ export default function CurrencyInputPanel({
                 <div className="flex align-center justify-end" style={{ width: isMobile ? '100%' : 'auto' }}>
                   <AnountButton title="25%" onClick={onQuarter} />
                   <AnountButton title="50%" onClick={onHalf} />
-                  <AnountButton title="MAX" onClick={onMax} />
+                  <AnountButton title={t('MAX')} onClick={onMax} />
                 </div>
               )}
             </>

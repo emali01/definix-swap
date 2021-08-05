@@ -148,7 +148,7 @@ export default function PoolFinder() {
               ) : pairState === PairState.INVALID ? (
                 <BorderCard padding="32px">
                   <Text color="textSubtle" textAlign="center" fontSize="16px">
-                    {translate('Invalid pair.')}
+                    {translate('Invalid pair')}
                   </Text>
                 </BorderCard>
               ) : pairState === PairState.LOADING ? (

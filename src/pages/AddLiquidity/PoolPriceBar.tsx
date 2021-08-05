@@ -25,13 +25,13 @@ export function PoolPriceBar({
         <AutoColumn justify="center">
           <Text fontWeight="bold">{price?.toSignificant(6) ?? '-'}</Text>
           <Text fontSize="14px" color="textSubtle" pt={1}>
-            {currencies[Field.CURRENCY_B]?.symbol} per {currencies[Field.CURRENCY_A]?.symbol}
+            {currencies[Field.CURRENCY_B]?.symbol} {t('per')} {currencies[Field.CURRENCY_A]?.symbol}
           </Text>
         </AutoColumn>
         <AutoColumn justify="center">
           <Text fontWeight="bold">{price?.invert()?.toSignificant(6) ?? '-'}</Text>
           <Text fontSize="14px" color="textSubtle" pt={1}>
-            {currencies[Field.CURRENCY_A]?.symbol} per {currencies[Field.CURRENCY_B]?.symbol}
+            {currencies[Field.CURRENCY_A]?.symbol} {t('per')} {currencies[Field.CURRENCY_B]?.symbol}
           </Text>
         </AutoColumn>
         <AutoColumn justify="center">
