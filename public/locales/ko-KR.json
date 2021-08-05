@@ -176,5 +176,6 @@
   "MAX": "최대",
   "Failed": "실패",
   "Complete": "완료",
-  "Copy Address": "Copy Address"
+  "Copy Address": "Copy Address",
+  "Insufficient %symbol% balance": "Insufficient %symbol% balance"
 }

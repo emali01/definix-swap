@@ -176,5 +176,6 @@
   "MAX": "MAX",
   "Failed": "Failed",
   "Complete": "Complete",
-  "Copy Address": "Copy Address"
+  "Copy Address": "Copy Address",
+  "Insufficient %symbol% balance": "Insufficient %symbol% balance"
 }

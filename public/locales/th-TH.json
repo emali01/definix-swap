@@ -21,7 +21,7 @@
   "When you add liquidity, you are given pool tokens representing your position. These tokens automatically earn fees proportional to your share of the pool, and can be redeemed at any time.": "เมื่อคุณเพิ่ม liquidity คุณจะได้รับ Pool token ที่แสดงตำแหน่งของคุณ โทเค็นเหล่านี้จะได้รับค่าธรรมเนียมโดยอัตโนมัติตามสัดส่วนของส่วนแบ่งใน Pool ของคุณ และสามารถแลกได้ทุกเมื่อ",
   "Removing pool tokens converts your position back into underlying tokens at the current rate, proportional to your share of the pool. Accrued fees are included in the amounts you receive.": "การลบ Pool token จะแปลงตำแหน่งของคุณกลับเป็นโทเค็นพื้นฐานที่อัตราปัจจุบัน โดยเป็นสัดส่วนกับส่วนแบ่งของ Pool ของคุณ ค่าธรรมเนียมค้างจ่ายรวมอยู่ในจำนวนเงินที่คุณจะได้รับ",
   "Deposited": "ฝาก",
-  "From": "จาก",
+  "From": "ขาย",
   "Create Pool & Supply": "สร้าง Pool & Supply",
   "Confirm Supply": "ยืนยัน",
   "Output is estimated. If the price changes by more than": "หากอัตราแลกเปลี่ยนมีการเปลี่ยนแปลงมากกว่า",
@@ -62,7 +62,7 @@
   "No pool found.": "ไม่พบ Pool.",
   "Create pool.": "สร้าง Pool",
   "Pool Found!": "Pool Found!",
-  "Invalid pair": "คู่ไม่ถูกต้อง.",
+  "Invalid pair": "คู่ไม่ถูกต้อง",
   "Connect to a wallet to find pools": "เชื่อมต่อ wallet เพื่อหา Pool",
   "Select a token to find your liquidity.": "เลือกโทเค็นเพื่อหา liquidity ของคุณ",
   "Remove Liquidity Complete": "Remove Liquidity สำเร็จ",
@@ -99,7 +99,7 @@
   "Trade tokens in an instant": "แลกเปลี่ยนโทเค็นในทันที",
   "From (estimated)": "ขาย (estimated)",
   "Add a send (optional)": "+ Add a send (optional)",
-  "To (estimated)": "ซื้อ (estimated)",
+  "To (estimated)": "ซื้อ (โดยประมาณ)",
   "Remove send": "+ Remove send",
   "Price Rate": "อัตราแลกเปลี่ยน",
   "Settings": "ตั้งค่า",
@@ -176,5 +176,6 @@
   "MAX": "ทั้งหมด",
   "Failed": "ล้มเหลว",
   "Complete": "เสร็จสมบูรณ์",
-  "Copy Address": "คัดลอก Address"
+  "Copy Address": "คัดลอก Address",
+  "Insufficient %symbol% balance": "Insufficient %symbol% balance"
 }
