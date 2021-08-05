@@ -701,7 +701,7 @@ export default function RemoveLiquidity({
                                     currencyB === ETHER ? WETH[chainId].address : currencyIdB
                                   }`}
                                 >
-                                  {translate('Receive WKLAY)}
+                                  {translate('Receive WKLAY')}
                                 </StyledInternalLink>
                               ) : oneCurrencyIsWETH ? (
                                 <StyledInternalLink
