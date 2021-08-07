@@ -83,18 +83,17 @@ export interface AdvancedSwapDetailsProps {
 
 export function AdvancedSwapDetails({ trade }: AdvancedSwapDetailsProps) {
   const [allowedSlippage] = useUserSlippageTolerance()
-
   const showRoute = Boolean(trade && trade.route.path.length > 2)
-
+  const { t } = useTranslation()
   return trade ? (
     <div className={`flex ${trade ? 'mb-5' : ''}`}>
       {showRoute && (
         <AutoColumn className="col-6">
           <RowFixed className="mb-3">
             <Text fontSize="14px" bold>
-              Routing
+              {t('Routing')}
             </Text>
-            <QuestionHelper text="Routing through these tokens resulted in the best price for your trade." />
+            <QuestionHelper text={t('Routing through these tokens resulted in the best price for your trade.')} />
           </RowFixed>
           <SwapRoute trade={trade} />
         </AutoColumn>

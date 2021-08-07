@@ -108,7 +108,7 @@ export default function CurrencyInputPanel({
             </Text>
             {account && (
               <Text fontSize="14px" color="textSubtle">
-                {t('Balance')}{' '}
+                {t('Balance:')}{' '}
                 {!hideBalance && !!currency && selectedCurrencyBalance
                   ? selectedCurrencyBalance?.toSignificant(6)
                   : ' -'}

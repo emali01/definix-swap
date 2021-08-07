@@ -18,7 +18,7 @@ export default function TradePrice({ price, showInverted, setShowInverted }: Tra
         {price?.quoteCurrency?.symbol}
       </Text>
       <Text fontSize="14px" color="textSubtle" className="mx-1">
-        per
+        /
       </Text>
       <Text fontSize="14px" bold>
         {price?.baseCurrency?.symbol}
@@ -30,7 +30,7 @@ export default function TradePrice({ price, showInverted, setShowInverted }: Tra
         {price?.baseCurrency?.symbol}
       </Text>
       <Text fontSize="14px" color="textSubtle" className="mx-1">
-        per
+        /
       </Text>
       <Text fontSize="14px" bold>
         {price?.quoteCurrency?.symbol}

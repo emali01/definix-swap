@@ -31,7 +31,18 @@ import { Field } from 'state/swap/actions'
 import { useDefaultsFromURLSearch, useDerivedSwapInfo, useSwapActionHandlers, useSwapState } from 'state/swap/hooks'
 import { useExpertModeManager, useUserDeadline, useUserSlippageTolerance } from 'state/user/hooks'
 import { ThemeContext } from 'styled-components'
-import { ArrowDownIcon, Button, Card, CardBody, Heading, IconButton, Text, useMatchBreakpoints,useModal ,Modal} from 'uikit-dev'
+import {
+  ArrowDownIcon,
+  Button,
+  Card,
+  CardBody,
+  Heading,
+  IconButton,
+  Text,
+  useMatchBreakpoints,
+  useModal,
+  Modal,
+} from 'uikit-dev'
 import { Overlay } from 'uikit-dev/components/Overlay'
 import { LeftPanel, MaxWidthLeft, MaxWidthRight, RightPanel, ShowHideButton } from 'uikit-dev/components/TwoPanelLayout'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
@@ -54,7 +65,6 @@ import {
 } from '../../constants'
 import Flip from '../../uikit-dev/components/Flip'
 import AppBody from '../AppBody'
-
 
 const TimerWrapper = ({ isPhrase2, date, children }) => {
   return isPhrase2 ? (
@@ -170,13 +180,13 @@ export default function Swap({
 
   const parsedAmounts = showWrap
     ? {
-      [Field.INPUT]: parsedAmount,
-      [Field.OUTPUT]: parsedAmount,
-    }
+        [Field.INPUT]: parsedAmount,
+        [Field.OUTPUT]: parsedAmount,
+      }
     : {
-      [Field.INPUT]: independentField === Field.INPUT ? parsedAmount : trade?.inputAmount,
-      [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : trade?.outputAmount,
-    }
+        [Field.INPUT]: independentField === Field.INPUT ? parsedAmount : trade?.inputAmount,
+        [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : trade?.outputAmount,
+      }
 
   const { onSwitchTokens, onCurrencySelection, onUserInput, onChangeRecipient } = useSwapActionHandlers()
   const isValid = !swapInputError
@@ -222,9 +232,13 @@ export default function Swap({
     currencies[Field.INPUT] && currencies[Field.OUTPUT] && parsedAmounts[independentField]?.greaterThan(JSBI.BigInt(0))
   )
   const noRoute = !route
-const [onPresentSettings] = useModal(<Modal title="Settings" isRainbow={false}>
-  <a href="https://google.com" rel="noreferrer" target="_blank"><button type="button">klip login</button></a>
-</Modal>)
+  const [onPresentSettings] = useModal(
+    <Modal title="Settings" isRainbow={false}>
+      <a href="https://google.com" rel="noreferrer" target="_blank">
+        <button type="button">klip login</button>
+      </a>
+    </Modal>
+  )
   // check whether the user has approved the router on the input token
   const [approval, approveCallback] = useApproveCallbackFromTrade(trade, allowedSlippage)
 
@@ -331,15 +345,14 @@ const [onPresentSettings] = useModal(<Modal title="Settings" isRainbow={false}>
 
   const handleMaxInput = useCallback(() => {
     if (maxAmountInput) {
-      if (window.localStorage.getItem('connector') === "klip"){
+      if (window.localStorage.getItem('connector') === 'klip') {
         const floorDigit = 1000000
-        const valueMax = (+maxAmountInput.toExact())
-        const max = Math.floor( valueMax*floorDigit)/floorDigit
+        const valueMax = +maxAmountInput.toExact()
+        const max = Math.floor(valueMax * floorDigit) / floorDigit
         onUserInput(Field.INPUT, max.toString())
-      }else{
+      } else {
         onUserInput(Field.INPUT, maxAmountInput.toExact())
       }
-        
     }
   }, [maxAmountInput, onUserInput])
 
@@ -441,7 +454,7 @@ const [onPresentSettings] = useModal(<Modal title="Settings" isRainbow={false}>
                         </ArrowWrapper>
                         {recipient === null && !showWrap && isExpertMode ? (
                           <LinkStyledButton id="add-recipient-button" onClick={() => onChangeRecipient('')}>
-                            + {translate('Add a send (optional)')}
+                            {translate('+ Add a send (optional)')}
                           </LinkStyledButton>
                         ) : null}
                       </AutoRow>
@@ -469,7 +482,7 @@ const [onPresentSettings] = useModal(<Modal title="Settings" isRainbow={false}>
                             <ArrowDown size="16" color={theme.colors.textSubtle} />
                           </ArrowWrapper>
                           <LinkStyledButton id="remove-recipient-button" onClick={() => onChangeRecipient(null)}>
-                            - {translate('Remove send')}
+                            {translate('- Remove send')}
                           </LinkStyledButton>
                         </AutoRow>
                         <AddressInputPanel id="recipient" value={recipient} onChange={onChangeRecipient} />
@@ -666,12 +679,12 @@ const [onPresentSettings] = useModal(<Modal title="Settings" isRainbow={false}>
                       date={
                         tx.confirmedTime
                           ? new Date(tx.confirmedTime || 0).toLocaleString('en-US', {
-                            day: 'numeric',
-                            month: 'short',
-                            year: 'numeric',
-                            hour: 'numeric',
-                            minute: 'numeric',
-                          })
+                              day: 'numeric',
+                              month: 'short',
+                              year: 'numeric',
+                              hour: 'numeric',
+                              minute: 'numeric',
+                            })
                           : ''
                       }
                     />

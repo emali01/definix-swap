@@ -63,7 +63,7 @@ export function MinimalPositionCard({ pair, showUnwrapped = false }: PositionCar
                 <RowFixed margin="0 !important">
                   <DoubleCurrencyLogo currency0={currency0} currency1={currency1} margin size={20} />
                   <Text fontSize="14px" bold>
-                    {currency0.symbol}/{currency1.symbol}
+                    {currency0.symbol} / {currency1.symbol}
                   </Text>
                 </RowFixed>
                 <RowFixed margin="0 !important">
