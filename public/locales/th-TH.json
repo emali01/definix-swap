@@ -7,6 +7,7 @@
   "Unlock Wallet": "ปลดล็อคกระเป๋า",
   "Connect Wallet": "เชื่อมต่อกระเป๋า",
   "Disconnect": "ยกเลิกการเชื่อมต่อกระเป๋า",
+  "Copy Address": "คัดลอก Address กระเป๋า",
   "Enter an amount": "ใส่ปริมาณ",
   "Enter a recipient": "ใส่ผู้รับ",
   "Invalid recipient": "ผู้รับไม่ถูกต้อง",
@@ -39,7 +40,6 @@
   "Approve": "Approve",
   "Approved": "Approved",
   "Supply": "เพิ่ม liquidity",
-
   "Share of Pool": "สัดส่วนของทรัพย์สินใน Pool",
   "EXCHANGE": "EXCHANGE",
   "Add liquidity to receive LP tokens": "เพิ่ม liquidity เพื่อรับ LP โทเค็น",
@@ -176,7 +176,5 @@
   "and": "และ",
   "MAX": "ทั้งหมด",
   "Failed": "ล้มเหลว",
-  "Complete": "เสร็จสมบูรณ์",
-  "Copy Address": "คัดลอกที่อยู่กระเป๋า",
-  "Insufficient %symbol% balance": "Insufficient %symbol% balance"
+  "Complete": "เสร็จสมบูรณ์"
 }

@@ -7,6 +7,7 @@
   "Unlock Wallet": "Unlock Wallet",
   "Connect Wallet": "Connect Wallet",
   "Disconnect": "Disconnect",
+  "Copy Address": "Copy Address",
   "Enter an amount": "Enter an amount",
   "Enter a recipient": "Enter a recipient",
   "Invalid recipient": "Invalid recipient",
@@ -175,7 +176,5 @@
   "and": "and",
   "MAX": "MAX",
   "Failed": "Failed",
-  "Complete": "Complete",
-  "Copy Address": "Copy Address",
-  "Insufficient %symbol% balance": "Insufficient %symbol% balance"
+  "Complete": "Complete"
 }

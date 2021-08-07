@@ -7,6 +7,7 @@
   "Unlock Wallet": "지갑 해제하기",
   "Connect Wallet": "지갑 연동하기",
   "Disconnect": "Disconnect",
+  "Copy Address": "Copy Address",
   "Enter an amount": "수량 입력",
   "Enter a recipient": "수령인 입력",
   "Invalid recipient": "유효하지 않은 수령인",
@@ -39,7 +40,6 @@
   "Approve": "승인하기",
   "Approved": "승인됨",
   "Supply": "공급",
-
   "Share of Pool": "풀 점유율",
   "EXCHANGE": "거래소",
   "Add liquidity to receive LP tokens": "LP토큰 수령하려면 유동성을 추가하세요.",
@@ -176,7 +176,5 @@
   "and": "그리고",
   "MAX": "최대",
   "Failed": "실패",
-  "Complete": "완료",
-  "Copy Address": "Copy Address",
-  "Insufficient %symbol% balance": "Insufficient %symbol% balance"
+  "Complete": "완료"
 }
