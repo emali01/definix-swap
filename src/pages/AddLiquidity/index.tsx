@@ -317,7 +317,7 @@ export default function AddLiquidity({
   const errorContent = useCallback(
     () => (
       <TransactionErrorContent
-        title="Add Liquidity Failed"
+        title={translate('Add Liquidity Failed')}
         date={`${new Date().toDateString()}, ${new Date().toTimeString().split(' ')[0]}`}
         chainId={chainId}
         hash={txHash}

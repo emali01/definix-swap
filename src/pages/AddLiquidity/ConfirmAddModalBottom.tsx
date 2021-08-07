@@ -80,7 +80,7 @@ export function ConfirmAddModalBottom({
         </RowBetween>
 
         <RowBetween>
-          <Text color="textSubtle">Share of Pool</Text>
+          <Text color="textSubtle">{t('Share of Pool')}</Text>
           <Text bold>{noLiquidity ? '100' : poolTokenPercentage?.toSignificant(4)}%</Text>
         </RowBetween>
       </AutoColumn>

@@ -418,7 +418,7 @@ export default function Swap({
                         </ArrowWrapper>
                         {recipient === null && !showWrap && isExpertMode ? (
                           <LinkStyledButton id="add-recipient-button" onClick={() => onChangeRecipient('')}>
-                            {translate('Add a send (optional)')}
+                            {translate('+ Add a send (optional)')}
                           </LinkStyledButton>
                         ) : null}
                       </AutoRow>
@@ -446,7 +446,7 @@ export default function Swap({
                             <ArrowDown size="16" color={theme.colors.textSubtle} />
                           </ArrowWrapper>
                           <LinkStyledButton id="remove-recipient-button" onClick={() => onChangeRecipient(null)}>
-                            {translate('Remove send')}
+                            {translate('- Remove send')}
                           </LinkStyledButton>
                         </AutoRow>
                         <AddressInputPanel id="recipient" value={recipient} onChange={onChangeRecipient} />
