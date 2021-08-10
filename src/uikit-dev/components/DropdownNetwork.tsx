@@ -1,5 +1,4 @@
 import React, { memo } from 'react'
-import styled from 'styled-components'
 import Button from './Button/Button'
 import bsc from '../images/Logo-BinanceSmartChain.png'
 import klaytn from '../images/Logo-Klaytn.png'
@@ -7,15 +6,6 @@ import MenuButton from '../widgets/Menu/MenuButton'
 import Dropdown from './Dropdown/Dropdown'
 import ChevronDownIcon from './Svg/Icons/ChevronDown'
 import Text from './Text/Text'
-
-const CustomButton = styled(Button)`
-  box-shadow: ${({ theme }) => theme.shadows.elevation1};
-  background: ${({ theme }) => theme.colors.networkBtnInner} !important;
-  border: 1px solid ${({ theme }) => theme.colors.networkBtnBorder} !important;
-  max-width: 100%;
-  overflow: hidden;
-  min-width: max-content;
-`
 
 const DropdownNetwork = () => {
   return (
@@ -39,7 +29,7 @@ const DropdownNetwork = () => {
       <MenuButton
         href="https://klaytn.definix.com"
         variant="text"
-        startIcon={<img src={klaytn} alt="" width="20px" className="mr-2" />}
+        startIcon={<img src={klaytn} alt="" width="24" className="mr-2" />}
         className="color-primary text-bold mb-2"
       >
         Klaytn Chain
@@ -47,7 +37,7 @@ const DropdownNetwork = () => {
       <MenuButton
         href="https://bsc.definix.com"
         variant="text"
-        startIcon={<img src={bsc} alt="" width="20px" className="mr-2" />}
+        startIcon={<img src={bsc} alt="" width="24" className="mr-2" />}
         className="color-primary mb-2"
       >
         Binance Smart Chain
