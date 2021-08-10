@@ -49,7 +49,8 @@ export function useTransactionAdder(): (
         if (!hash && !transactionHash) {
           throw Error('No transaction hash found.')
         }
-        dispatch(addTransaction({ type, data, hash: transactionHash, from: account, chainId, approval, summary }))
+        const txHash = hash || transactionHash
+        dispatch(addTransaction({ type, data, hash: txHash, from: account, chainId, approval, summary }))
       }
     },
     [dispatch, chainId, account]

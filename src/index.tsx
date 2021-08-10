@@ -14,6 +14,7 @@ import Providers from './Providers'
 import 'inter-ui'
 import './i18n'
 
+
 ReactGA.initialize('G-L997LXLF8F');
 
 const tagManagerArgs = {

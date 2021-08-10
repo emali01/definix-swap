@@ -303,12 +303,13 @@ export default function RemoveLiquidity({
       setAttemptingTxn(true)
 
       if (isKlipConnector(connector)) {
-        setShowModal(true)
+        
         klipProvider.genQRcodeContactInteract(
           router.address,
           JSON.stringify(getAbiByName(methodName)),
           JSON.stringify(args),
-          "0"
+          "0",
+          setShowModal
         )
         const tx = await klipProvider.checkResponse()
         setTxHash(tx)
@@ -692,14 +693,14 @@ export default function RemoveLiquidity({
                                   to={`/remove/${currencyA === ETHER ? WETH[chainId].address : currencyIdA}/${currencyB === ETHER ? WETH[chainId].address : currencyIdB
                                     }`}
                                 >
-                                  Receive WBNB
+                                  Receive WKLAY
                                 </StyledInternalLink>
                               ) : oneCurrencyIsWETH ? (
                                 <StyledInternalLink
                                   to={`/remove/${currencyA && currencyEquals(currencyA, WETH[chainId]) ? 'KLAY' : currencyIdA
                                     }/${currencyB && currencyEquals(currencyB, WETH[chainId]) ? 'KLAY' : currencyIdB}`}
                                 >
-                                  Receive BNB
+                                  Receive KLAY
                                 </StyledInternalLink>
                               ) : null}
                             </RowBetween>

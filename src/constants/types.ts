@@ -5,7 +5,7 @@ export enum QuoteToken {
   'KDAI' = 'KDAI',
   'KETH' = 'KETH',
   'KXRP' = 'KXRP',
-  'KBTC' = 'KBTC',
+  'KWBTC' = 'KWBTC',
   'KSP' = 'KSP',
   'KBNB' = 'KBNB',
   'SIX' = 'SIX',
@@ -37,4 +37,6 @@ export interface FarmConfig {
     earnLabel: string
     endBlock: number
   }
+  firstSymbol?: string
+  secondSymbol?: string
 }
