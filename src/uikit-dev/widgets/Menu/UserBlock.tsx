@@ -80,7 +80,7 @@ const UserBlock: React.FC<Props> = ({ account, login, logout, className = '', po
               {t('View on BscScan')}
             </LinkExternal>
             <CopyToClipboard noPadding toCopy={account}>
-              Copy Address
+              {t('Copy Address')}
             </CopyToClipboard>
             <Button
               size="sm"
