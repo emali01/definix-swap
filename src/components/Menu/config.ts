@@ -87,13 +87,13 @@ const config: MenuEntry[] = [
     label: 'Vault',
     icon: mutualBlack,
     iconActive: mutualWhite,
-    href: '/explore',
+    href: `${process.env.REACT_APP_FRONTEND_URL}/explore`,
     notHighlight: false,
     newTab: false,
     items: [
       {
         label: 'Explore',
-        href: '/explore',
+        href: `${process.env.REACT_APP_FRONTEND_URL}/explore`,
         notHighlight: false,
         newTab: false,
       },
