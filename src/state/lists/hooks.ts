@@ -4,6 +4,9 @@ import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { AppState } from '../index'
 
+const intMainnetId = parseInt(process.env.REACT_APP_MAINNET_ID || '')
+const intTestnetId = parseInt(process.env.REACT_APP_TESTNET_ID || '')
+
 type TagDetails = Tags[keyof Tags]
 export interface TagInfo extends TagDetails {
   id: string
@@ -34,8 +37,8 @@ export type TokenAddressMap = Readonly<{ [chainId in ChainId]: Readonly<{ [token
  * An empty result, useful as a default.
  */
 const EMPTY_LIST: TokenAddressMap = {
-  [ChainId.MAINNET]: {},
-  [ChainId.BAOBABTESTNET]: {}
+  [intMainnetId]: {},
+  [intTestnetId]: {}
 }
 
 const listCache: WeakMap<TokenList, TokenAddressMap> | null =

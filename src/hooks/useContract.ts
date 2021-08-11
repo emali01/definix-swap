@@ -13,6 +13,9 @@ import { MULTICALL_ABI, MULTICALL_NETWORKS } from '../constants/multicall'
 import { getContract } from '../utils'
 import { useActiveWeb3React } from './index'
 
+const intMainnetId = parseInt(process.env.REACT_APP_MAINNET_ID || '')
+const intTestnetId = parseInt(process.env.REACT_APP_TESTNET_ID || '')
+
 // returns null on errors
 function useContract(address: string | undefined, ABI: any, withSignerIfPossible = true): Contract | null {
   const { library, account } = useActiveWeb3React()
@@ -42,8 +45,8 @@ export function useENSRegistrarContract(withSignerIfPossible?: boolean): Contrac
   let address: string | undefined
   if (chainId) {
     switch (chainId) {
-      case ChainId.MAINNET:
-      case ChainId.BAOBABTESTNET:
+      case intMainnetId:
+      case intTestnetId:
     }
   }
   return useContract(address, ENS_ABI, withSignerIfPossible)
