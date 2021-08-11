@@ -1,5 +1,5 @@
 import { Contract } from '@ethersproject/contracts'
-import { ChainId, WETH } from 'definixswap-sdk'
+import { WETH } from 'definixswap-sdk'
 import { abi as IUniswapV2PairABI } from '@uniswap/v2-core/build/IUniswapV2Pair.json'
 import { useMemo } from 'react'
 import { HERODOTUS_ADDRESS, DEPARAM_ADDRESS } from '../constants'

@@ -1,10 +1,11 @@
 import { Contract } from '@ethersproject/contracts'
 import { getAddress } from '@ethersproject/address'
+import { ChainId } from 'constants'
 import { AddressZero } from '@ethersproject/constants'
 import { JsonRpcSigner, CaverProvider } from 'finix-caver-providers'
 import { BigNumber } from '@ethersproject/bignumber'
 import { abi as IUniswapV2Router02ABI } from '@uniswap/v2-periphery/build/IUniswapV2Router02.json'
-import { ChainId, JSBI, Percent, Token, CurrencyAmount, Currency, ETHER } from 'definixswap-sdk'
+import { JSBI, Percent, Token, CurrencyAmount, Currency, ETHER } from 'definixswap-sdk'
 import { ROUTER_ADDRESS } from '../constants'
 import { TokenAddressMap } from '../state/lists/hooks'
 
@@ -17,7 +18,7 @@ export function isAddress(value: any): string | false {
   }
 }
 
-const BSCSCAN_PREFIXES: { [chainId in ChainId]: string } = {
+const BSCSCAN_PREFIXES: { [chainId: number]: string } = {
   1001: 'baobab.',
   8217: ''
 }

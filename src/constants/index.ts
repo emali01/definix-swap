@@ -1,16 +1,21 @@
-import { Config, ChainId, JSBI, Percent, Token, WETH } from 'definixswap-sdk'
+import { Config, JSBI, Percent, Token, WETH } from 'definixswap-sdk'
 import sdkconfig from '../sdkConfig'
 
 Config.configure(sdkconfig)
 
-const intMainnetId = parseInt(process.env.REACT_APP_MAINNET_ID || '')
-const intTestnetId = parseInt(process.env.REACT_APP_TESTNET_ID || '')
+const intMainnetId = parseInt(process.env.REACT_APP_MAINNET_ID || '') || 0
+const intTestnetId = parseInt(process.env.REACT_APP_TESTNET_ID || '') || 0
+
+export const ChainId = {
+  MAINNET: intMainnetId,
+  TESTNET: intTestnetId
+}
 
 export const ROUTER_ADDRESS = process.env.REACT_APP_ROUTER_ADDRESS
 
 // a list of tokens by chain
 type ChainTokenList = {
-  readonly [chainId in ChainId]: Token[]
+  readonly [chainId: number]: Token[]
 }
 
 export const DEPARAM_ADDRESS = {
@@ -206,7 +211,7 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
  * Some tokens can only be swapped via certain pairs, so we override the list of bases that are considered for these
  * tokens.
  */
-export const CUSTOM_BASES: { [chainId in ChainId]?: { [tokenAddress: string]: Token[] } } = {
+export const CUSTOM_BASES: { [chainId: number]?: { [tokenAddress: string]: Token[] } } = {
   [intMainnetId]: {},
 }
 
@@ -222,7 +227,7 @@ export const BASES_TO_TRACK_LIQUIDITY_FOR: ChainTokenList = {
   [intMainnetId]: [...WETH_ONLY[intMainnetId], DAI, USDT],
 }
 
-export const PINNED_PAIRS: { readonly [chainId in ChainId]?: [Token, Token][] } = {
+export const PINNED_PAIRS: { readonly [chainId: number]?: [Token, Token][] } = {
   [intMainnetId]: [
     [
       new Token(intTestnetId, SIX_ADDRESS[intMainnetId], 18, 'SIX', 'SIX Token'),
