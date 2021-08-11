@@ -1,4 +1,4 @@
-import { Config, JSBI, Percent, Token, WETH } from 'definixswap-sdk'
+import { Config, JSBI, Pair, Percent, Token, WETH } from 'definixswap-sdk'
 import sdkconfig from '../sdkConfig'
 
 Config.configure(sdkconfig)
@@ -89,78 +89,18 @@ export const allTokens = {
   KSP: KSP_ADDRESS,
 }
 
-
-
-
-
-export const FINIX_SIX_LP = {
-  [intMainnetId]: process.env.REACT_APP_FINIX_SIX_LP_MAINNET || '',
-  [intTestnetId]: process.env.REACT_APP_FINIX_SIX_LP_TESTNET || ''
+export const getLpAddress = (firstAddress: string, secondAddress: string, chainId: number) => {
+  return Pair.getAddress(
+    new Token(chainId, firstAddress, 18, 'DUMMY', 'DUMMY'),
+    new Token(chainId, secondAddress, 18, 'DUMMY', 'DUMMY'),
+  )
 }
 
-export const FINIX_KUSDT_LP = {
-  [intMainnetId]: process.env.REACT_APP_FINIX_KUSDT_LP_MAINNET || '',
-  [intTestnetId]: process.env.REACT_APP_FINIX_KUSDT_LP_TESTNET || ''
-}
-
-export const FINIX_KLAY_LP = {
-  [intMainnetId]: process.env.REACT_APP_FINIX_KLAY_LP_MAINNET || '',
-  [intTestnetId]: process.env.REACT_APP_FINIX_KLAY_LP_TESTNET || ''
-}
-
-export const FINIX_KSP_LP = {
-  [intMainnetId]: process.env.REACT_APP_FINIX_KSP_LP_MAINNET || '',
-  [intTestnetId]: process.env.REACT_APP_FINIX_KSP_LP_TESTNET || ''
-}
-
-export const SIX_KUSDT_LP = {
-  [intMainnetId]: process.env.REACT_APP_SIX_KUSDT_LP_MAINNET || '',
-  [intTestnetId]: process.env.REACT_APP_SIX_KUSDT_LP_TESTNET || ''
-}
-
-export const SIX_KLAY_LP = {
-  [intMainnetId]: process.env.REACT_APP_SIX_KLAY_LP_MAINNET || '',
-  [intTestnetId]: process.env.REACT_APP_SIX_KLAY_LP_TESTNET || ''
-}
-
-export const KUSDT_KDAI_LP = {
-  [intMainnetId]: process.env.REACT_APP_KUSDT_KDAI_LP_MAINNET || '',
-  [intTestnetId]: process.env.REACT_APP_KUSDT_KDAI_LP_TESTNET || ''
-}
-
-export const KLAY_KUSDT_LP = {
-  [intMainnetId]: process.env.REACT_APP_KLAY_KUSDT_LP_MAINNET || '',
-  [intTestnetId]: process.env.REACT_APP_KLAY_KUSDT_LP_TESTNET || ''
-}
-
-export const KLAY_KETH_LP = {
-  [intMainnetId]: process.env.REACT_APP_KLAY_KETH_LP_MAINNET || '',
-  [intTestnetId]: process.env.REACT_APP_KLAY_KETH_LP_TESTNET || ''
-}
-
-export const KLAY_KWBTC_LP = {
-  [intMainnetId]: process.env.REACT_APP_KLAY_KWBTC_LP_MAINNET || '',
-  [intTestnetId]: process.env.REACT_APP_KLAY_KWBTC_LP_TESTNET || ''
-}
-
-export const KLAY_KXRP_LP = {
-  [intMainnetId]: process.env.REACT_APP_KLAY_KXRP_LP_MAINNET || '',
-  [intTestnetId]: process.env.REACT_APP_KLAY_KXRP_LP_TESTNET || ''
-}
-
-export const KETH_KUSDT_LP = {
-  [intMainnetId]: process.env.REACT_APP_KETH_KUSDT_LP_MAINNET || '',
-  [intTestnetId]: process.env.REACT_APP_KETH_KUSDT_LP_TESTNET || ''
-}
-
-export const KWBTC_KUSDT_LP = {
-  [intMainnetId]: process.env.REACT_APP_KWBTC_KUSDT_LP_MAINNET || '',
-  [intTestnetId]: process.env.REACT_APP_KWBTC_KUSDT_LP_TESTNET || ''
-}
-
-export const KXRP_KUSDT_LP = {
-  [intMainnetId]: process.env.REACT_APP_KXRP_KUSDT_LP_MAINNET || '',
-  [intTestnetId]: process.env.REACT_APP_KXRP_KUSDT_LP_TESTNET || ''
+export const getLpNetwork = (firstToken, secondToken) => {
+  return {
+    [intMainnetId]: getLpAddress(firstToken[intMainnetId], secondToken[intMainnetId], intMainnetId),
+    [intTestnetId]: getLpAddress(firstToken[intTestnetId], secondToken[intTestnetId], intTestnetId),
+  }
 }
 
 export const HERODOTUS_ADDRESS = {

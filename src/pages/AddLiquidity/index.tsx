@@ -254,7 +254,7 @@ export default function AddLiquidity({
       const iface = new ethers.utils.Interface(IUniswapV2Router02ABI)
       
       const flagFeeDelegate = await UseDeParam(chainId, 'KLAYTN_FEE_DELEGATE', 'N')
-      const flagDefinixAnalaytics = await UseDeParam('GA_TP', 'N')
+      const flagDefinixAnalaytics = await UseDeParam(chainId, 'GA_TP', 'N')
 
       await estimate(...args, value ? { value } : {})
         .then(estimatedGasLimit => {
@@ -501,7 +501,7 @@ export default function AddLiquidity({
 
                       const iface = new ethers.utils.Interface(HERODOTUS_ABI)
 
-                      return UseDeParam('KLAYTN_FEE_DELEGATE', 'N').then((flagFeeDelegate) => {
+                      return UseDeParam(chainId, 'KLAYTN_FEE_DELEGATE', 'N').then((flagFeeDelegate) => {
                         if (flagFeeDelegate === 'Y') {
                           const caverFeeDelegate = new Caver(process.env.REACT_APP_SIX_KLAYTN_EN_URL)
                           const feePayerAddress = process.env.REACT_APP_FEE_PAYER_ADDRESS
