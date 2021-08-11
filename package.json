@@ -42,7 +42,7 @@
     "caver-js": "1.6.3-rc.4",
     "cids": "^1.0.0",
     "copy-to-clipboard": "^3.2.0",
-    "definixswap-sdk": "0.0.21-klaytn",
+    "definixswap-sdk": "0.0.1-klaytn-testnet",
     "definixswap-uikit": "0.0.1",
     "ethers": "^5.0.7",
     "finix-caver-providers": "^1.0.3",
