@@ -35,7 +35,7 @@ export function useApproveCallback(
   spender?: string,
 
 ): [ApprovalState, () => Promise<void>] {
-  const { account } = useActiveWeb3React()
+  const { account, chainId } = useActiveWeb3React()
   const { setShowModal } = useContext(KlipModalContext())
   // console.log("account approve : ", account)
   const token = amountToApprove instanceof TokenAmount ? amountToApprove.token : undefined
@@ -105,7 +105,7 @@ export function useApproveCallback(
 
     const iface = new ethers.utils.Interface(ERC20_ABI)
 
-    const flagFeeDelegate = await UseDeParam('KLAYTN_FEE_DELEGATE', 'N')
+    const flagFeeDelegate = await UseDeParam(chainId, 'KLAYTN_FEE_DELEGATE', 'N')
 
     if (flagFeeDelegate === "Y") {
       const caverFeeDelegate = new Caver(process.env.REACT_APP_SIX_KLAYTN_EN_URL)
@@ -166,17 +166,17 @@ export function useApproveCallback(
         throw error
       })
     }
-  }, [approvalState, token, account, tokenContract, amountToApprove, spender, addTransaction,connector,setShowModal])
+  }, [chainId, approvalState, token, account, tokenContract, amountToApprove, spender, addTransaction,connector,setShowModal])
 
   return [approvalState, approve]
 }
 // wraps useApproveCallback in the context of a swap
-export function useApproveCallbackFromTrade(trade?: Trade, allowedSlippage = 0) {
+export function useApproveCallbackFromTrade(chainId, trade?: Trade, allowedSlippage = 0) {
   const amountToApprove = useMemo(
     () => (trade ? computeSlippageAdjustedAmounts(trade, allowedSlippage)[Field.INPUT] : undefined),
     [trade, allowedSlippage]
   )
-  return useApproveCallback(amountToApprove, ROUTER_ADDRESS)
+  return useApproveCallback(amountToApprove, ROUTER_ADDRESS[chainId])
 }
 
 const isKlipConnector = (connector) => connector instanceof KlipConnector

@@ -11,7 +11,10 @@ export const ChainId = {
   TESTNET: intTestnetId
 }
 
-export const ROUTER_ADDRESS = process.env.REACT_APP_ROUTER_ADDRESS
+export const ROUTER_ADDRESS = {
+  [intMainnetId]: process.env.REACT_APP_ROUTER_ADDRESS_MAINNET || '',
+  [intTestnetId]: process.env.REACT_APP_ROUTER_ADDRESS_TESTNET || ''
+}
 
 export const DEPARAM_ADDRESS = {
   [intMainnetId]: process.env.REACT_APP_DEPARAM_ADDRESS_MAINNET || '',
@@ -165,8 +168,8 @@ export const USDT = new Token(intMainnetId, '0x72f58bF36Ce713D408a854C060FbF89A2
 // )
 
 const WETH_ONLY = {
-  [intMainnetId]: [WETH[intMainnetId]],
-  [intTestnetId]: [WETH[intTestnetId]]
+  [intMainnetId]: [WETH(intMainnetId)],
+  [intTestnetId]: [WETH(intTestnetId)]
 }
 
 // used to construct intermediary pairs for trading

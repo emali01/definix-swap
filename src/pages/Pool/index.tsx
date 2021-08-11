@@ -67,7 +67,7 @@ export default function Pool() {
 
   const allTransactions = useAllTransactions()
   const allTokens = useAllTokens()
-  const wklay = new Token(chainId || 0, WKLAY_ADDRESS[chainId || 0], 18, 'WKLAY', 'Wrapped KLAY')
+  const wklay = new Token(chainId || parseInt(process.env.REACT_APP_CHAIN_ID || '0'), WKLAY_ADDRESS[chainId || parseInt(process.env.REACT_APP_CHAIN_ID || '0')], 18, 'WKLAY', 'Wrapped KLAY')
 
 
   // Logic taken from Web3Status/index.tsx line 175

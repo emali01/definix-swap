@@ -88,8 +88,8 @@ export function getContract(address: string, ABI: any, library: CaverProvider, a
 }
 
 // account is optional
-export function getRouterContract(_: number, library: CaverProvider, account?: string): Contract {
-  return getContract(ROUTER_ADDRESS || '', IUniswapV2Router02ABI, library, account)
+export function getRouterContract(chainId: number, library: CaverProvider, account?: string): Contract {
+  return getContract(ROUTER_ADDRESS[chainId] || '', IUniswapV2Router02ABI, library, account)
 }
 
 export function escapeRegExp(string: string): string {

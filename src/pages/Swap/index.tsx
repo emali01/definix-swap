@@ -147,10 +147,7 @@ export default function Swap({
   }, [currentTime, phrase2TimeStamp])
 
   const { account, chainId = '' } = useActiveWeb3React()
-const gas = WKLAY_ADDRESS
-// eslint-disable-next-line
-debugger
-  const wklay = new Token(chainId || 0, WKLAY_ADDRESS[chainId || 0], 18, 'WKLAY', 'Wrapped KLAY')
+  const wklay = new Token(chainId || parseInt(process.env.REACT_APP_CHAIN_ID || '0'), WKLAY_ADDRESS[chainId || parseInt(process.env.REACT_APP_CHAIN_ID || '0')], 18, 'WKLAY', 'Wrapped KLAY')
   const theme = useContext(ThemeContext)
 
   const [isExpertMode] = useExpertModeManager()
@@ -228,7 +225,7 @@ const [onPresentSettings] = useModal(<Modal title="Settings" isRainbow={false}>
   <a href="https://google.com" rel="noreferrer" target="_blank"><button type="button">klip login</button></a>
 </Modal>)
   // check whether the user has approved the router on the input token
-  const [approval, approveCallback] = useApproveCallbackFromTrade(trade, allowedSlippage)
+  const [approval, approveCallback] = useApproveCallbackFromTrade(chainId, trade, allowedSlippage)
 
   // check if user has gone through approval process, used to show two step buttons, reset on token change
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
