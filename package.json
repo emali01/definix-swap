@@ -102,7 +102,7 @@
     "@walletconnect/web3-provider": "1.1.1-alpha.0"
   },
   "scripts": {
-    "start": "NODE_ENV=development react-scripts start",
+    "start": "NODE_ENV=development CI=false dotenv -e .env.development react-scripts start",
     "start:prod": "NODE_ENV=production CI=false dotenv -e .env.production react-scripts start",
     "build": "react-scripts build",
     "build:development": "NODE_ENV=development CI=false dotenv -e .env.development react-scripts build",
