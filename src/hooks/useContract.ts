@@ -17,7 +17,7 @@ const intMainnetId = parseInt(process.env.REACT_APP_MAINNET_ID || '')
 const intTestnetId = parseInt(process.env.REACT_APP_TESTNET_ID || '')
 
 // returns null on errors
-function useContract(address: string | undefined, ABI: any, withSignerIfPossible = true): Contract | null {
+function useContract(address: string | 0 | undefined, ABI: any, withSignerIfPossible = true): Contract | null {
   const { library, account } = useActiveWeb3React()
 
   return useMemo(() => {

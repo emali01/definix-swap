@@ -147,6 +147,9 @@ export default function Swap({
   }, [currentTime, phrase2TimeStamp])
 
   const { account, chainId = '' } = useActiveWeb3React()
+const gas = WKLAY_ADDRESS
+// eslint-disable-next-line
+debugger
   const wklay = new Token(chainId || 0, WKLAY_ADDRESS[chainId || 0], 18, 'WKLAY', 'Wrapped KLAY')
   const theme = useContext(ThemeContext)
 

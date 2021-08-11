@@ -1,12 +1,11 @@
 import { Contract } from '@ethersproject/contracts'
 import { getAddress } from '@ethersproject/address'
-import { ChainId } from 'constants'
 import { AddressZero } from '@ethersproject/constants'
 import { JsonRpcSigner, CaverProvider } from 'finix-caver-providers'
 import { BigNumber } from '@ethersproject/bignumber'
 import { abi as IUniswapV2Router02ABI } from '@uniswap/v2-periphery/build/IUniswapV2Router02.json'
 import { JSBI, Percent, Token, CurrencyAmount, Currency, ETHER } from 'definixswap-sdk'
-import { ROUTER_ADDRESS } from '../constants'
+import { ChainId, ROUTER_ADDRESS } from '../constants'
 import { TokenAddressMap } from '../state/lists/hooks'
 
 // returns the checksummed address if the address is valid, otherwise returns false
@@ -23,7 +22,7 @@ const BSCSCAN_PREFIXES: { [chainId: number]: string } = {
   8217: ''
 }
 
-export function getBscScanLink(chainId: ChainId, data: string, type: 'transaction' | 'token' | 'address'): string {
+export function getBscScanLink(chainId: number, data: string, type: 'transaction' | 'token' | 'address'): string {
   const prefix = `https://${BSCSCAN_PREFIXES[chainId] || BSCSCAN_PREFIXES[ChainId.MAINNET]}scope.klaytn.com`
 
   switch (type) {
