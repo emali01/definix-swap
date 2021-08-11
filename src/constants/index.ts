@@ -76,6 +76,23 @@ export const KBNB_ADDRESS = {
   [intTestnetId]: process.env.REACT_APP_KBNB_ADDRESS_TESTNET || ''
 }
 
+export const allTokens = {
+  SIX: SIX_ADDRESS,
+  FINIX: FINIX_ADDRESS,
+  WKLAY: WKLAY_ADDRESS,
+  KUSDT: KUSDT_ADDRESS,
+  KDAI: KDAI_ADDRESS,
+  KETH: KETH_ADDRESS,
+  KWBTC: KWBTC_ADDRESS,
+  KXRP: KXRP_ADDRESS,
+  KBNB: KBNB_ADDRESS,
+  KSP: KSP_ADDRESS,
+}
+
+
+
+
+
 export const FINIX_SIX_LP = {
   [intMainnetId]: process.env.REACT_APP_FINIX_SIX_LP_MAINNET || '',
   [intTestnetId]: process.env.REACT_APP_FINIX_SIX_LP_TESTNET || ''

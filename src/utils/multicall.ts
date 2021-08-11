@@ -1,6 +1,6 @@
 import { AbiItem } from 'web3-utils'
 import { Interface } from '@ethersproject/abi'
-import { getWeb3 } from 'utils/web3'
+import { getCaver } from 'utils/caver'
 import MultiCallAbi from 'constants/multicall/abi.json'
 
 interface Call {
@@ -10,8 +10,8 @@ interface Call {
 }
 
 const multicall = async (address: string, abi: any[], calls: Call[]) => {
-  const web3 = await getWeb3()
-  const multi = new web3.eth.Contract((MultiCallAbi as unknown) as AbiItem, address)
+  const caver = await getCaver()
+  const multi = new caver.klay.Contract((MultiCallAbi as unknown) as AbiItem, address)
   const itf = new Interface(abi)
 
   const calldata = calls.map((call) => [call.address.toLowerCase(), itf.encodeFunctionData(call.name, call.params)])
