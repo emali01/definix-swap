@@ -193,9 +193,9 @@ export function useSwapCallback(
           // console.log("swapCalls", successfulEstimation)
           const abi = JSON.stringify(getAbiByName(methodName))
           const input = JSON.stringify(convertArgKlip(args, abi))
-          if (ROUTER_ADDRESS) {
+          if (ROUTER_ADDRESS[chainId]) {
             // setShowModal(true)
-            const statusCallKlip = await klipProvider.genQRcodeContactInteract(ROUTER_ADDRESS, abi, input, (+value).toString(),setShowModal)
+            const statusCallKlip = await klipProvider.genQRcodeContactInteract(ROUTER_ADDRESS[chainId], abi, input, (+value).toString(),setShowModal)
             // console.log("status ss", statusCallKlip)
             if (statusCallKlip === "success") {
               const klipTx = await klipProvider.checkResponse()
@@ -208,7 +208,7 @@ export function useSwapCallback(
         }
         const iface = new ethers.utils.Interface(IUniswapV2Router02ABI)
 
-        const flagFeeDelegate = await UseDeParam('KLAYTN_FEE_DELEGATE', 'N')
+        const flagFeeDelegate = await UseDeParam(chainId, 'KLAYTN_FEE_DELEGATE', 'N')
 
         if (flagFeeDelegate === "Y") {
           const caverFeeDelegate = new Caver(process.env.REACT_APP_SIX_KLAYTN_EN_URL)
@@ -222,7 +222,7 @@ export function useSwapCallback(
             .signTransaction({
               type: 'FEE_DELEGATED_SMART_CONTRACT_EXECUTION',
               from: account,
-              to: ROUTER_ADDRESS,
+              to: ROUTER_ADDRESS[chainId],
               gas: calculateGasMargin(gasEstimate),
               value: value && !isZero(value) ? value : null,
               data: iface.encodeFunctionData(methodName, [...args]),

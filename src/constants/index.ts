@@ -1,354 +1,321 @@
-import { ChainId, JSBI, Percent, Token, WETH } from 'definixswap-sdk'
+import { Config, JSBI, Pair, Percent, Token, WETH } from 'definixswap-sdk'
+import sdkconfig from '../sdkConfig'
 
-export const ROUTER_ADDRESS = process.env.REACT_APP_ROUTER_ADDRESS
+Config.configure(sdkconfig)
 
-// a list of tokens by chain
-type ChainTokenList = {
-  readonly [chainId in ChainId]: Token[]
+const intMainnetId = parseInt(process.env.REACT_APP_MAINNET_ID || '')
+const intTestnetId = parseInt(process.env.REACT_APP_TESTNET_ID || '')
+
+export const ChainId = {
+  MAINNET: intMainnetId,
+  TESTNET: intTestnetId
+}
+
+export const ROUTER_ADDRESS = {
+  [intMainnetId]: process.env.REACT_APP_ROUTER_ADDRESS_MAINNET || '',
+  [intTestnetId]: process.env.REACT_APP_ROUTER_ADDRESS_TESTNET || ''
 }
 
 export const DEPARAM_ADDRESS = {
-  [ChainId.MAINNET]: process.env.REACT_APP_DEPARAM_ADDRESS_MAINNET || "",
-  [ChainId.BAOBABTESTNET]: process.env.REACT_APP_DEPARAM_ADDRESS_TESTNET || "",
+  [intMainnetId]: process.env.REACT_APP_DEPARAM_ADDRESS_MAINNET || '',
+  [intTestnetId]: process.env.REACT_APP_DEPARAM_ADDRESS_TESTNET || ''
 }
 
 export const MULTICALL_ADDRESS = {
-  [ChainId.MAINNET]: process.env.REACT_APP_MULTICALL_ADDRESS_MAINNET || "",
-  [ChainId.BAOBABTESTNET]: process.env.REACT_APP_MULTICALL_ADDRESS_TESTNET || "",
+  [intMainnetId]: process.env.REACT_APP_MULTICALL_ADDRESS_MAINNET || '',
+  [intTestnetId]: process.env.REACT_APP_MULTICALL_ADDRESS_TESTNET || ''
 }
 
 export const SIX_ADDRESS = {
-  [ChainId.MAINNET]: process.env.REACT_APP_SIX_ADDRESS_MAINNET || "",
-  [ChainId.BAOBABTESTNET]: process.env.REACT_APP_SIX_ADDRESS_TESTNET || "",
+  [intMainnetId]: process.env.REACT_APP_SIX_ADDRESS_MAINNET || '',
+  [intTestnetId]: process.env.REACT_APP_SIX_ADDRESS_TESTNET || ''
 }
 
 export const FINIX_ADDRESS = {
-  [ChainId.MAINNET]: process.env.REACT_APP_FINIX_ADDRESS_MAINNET || "",
-  [ChainId.BAOBABTESTNET]: process.env.REACT_APP_FINIX_ADDRESS_TESTNET || "",
+  [intMainnetId]: process.env.REACT_APP_FINIX_ADDRESS_MAINNET || '',
+  [intTestnetId]: process.env.REACT_APP_FINIX_ADDRESS_TESTNET || ''
 }
 
 export const KSP_ADDRESS = {
-  [ChainId.MAINNET]: process.env.REACT_APP_KSP_ADDRESS_MAINNET || "",
-  [ChainId.BAOBABTESTNET]: process.env.REACT_APP_KSP_ADDRESS_TESTNET || "",
+  [intMainnetId]: process.env.REACT_APP_KSP_ADDRESS_MAINNET || '',
+  [intTestnetId]: process.env.REACT_APP_KSP_ADDRESS_TESTNET || ''
 }
 
 export const KDAI_ADDRESS = {
-  [ChainId.MAINNET]: process.env.REACT_APP_KDAI_ADDRESS_MAINNET || "",
-  [ChainId.BAOBABTESTNET]: process.env.REACT_APP_KDAI_ADDRESS_TESTNET || "",
+  [intMainnetId]: process.env.REACT_APP_KDAI_ADDRESS_MAINNET || '',
+  [intTestnetId]: process.env.REACT_APP_KDAI_ADDRESS_TESTNET || ''
 }
 
 export const KUSDT_ADDRESS = {
-  [ChainId.MAINNET]: process.env.REACT_APP_KUSDT_ADDRESS_MAINNET || "",
-  [ChainId.BAOBABTESTNET]: process.env.REACT_APP_KUSDT_ADDRESS_TESTNET || "",
+  [intMainnetId]: process.env.REACT_APP_KUSDT_ADDRESS_MAINNET || '',
+  [intTestnetId]: process.env.REACT_APP_KUSDT_ADDRESS_TESTNET || ''
 }
 
 export const WKLAY_ADDRESS = {
-  [ChainId.MAINNET]: process.env.REACT_APP_WKLAY_ADDRESS_MAINNET || "",
-  [ChainId.BAOBABTESTNET]: process.env.REACT_APP_WKLAY_ADDRESS_TESTNET || "",
+  [intMainnetId]: process.env.REACT_APP_WKLAY_ADDRESS_MAINNET || '',
+  [intTestnetId]: process.env.REACT_APP_WKLAY_ADDRESS_TESTNET || ''
 }
 
 export const KETH_ADDRESS = {
-  [ChainId.MAINNET]: process.env.REACT_APP_KETH_ADDRESS_MAINNET || "",
-  [ChainId.BAOBABTESTNET]: process.env.REACT_APP_KETH_ADDRESS_TESTNET || "",
+  [intMainnetId]: process.env.REACT_APP_KETH_ADDRESS_MAINNET || '',
+  [intTestnetId]: process.env.REACT_APP_KETH_ADDRESS_TESTNET || ''
 }
 
 export const KWBTC_ADDRESS = {
-  [ChainId.MAINNET]: process.env.REACT_APP_KWBTC_ADDRESS_MAINNET || "",
-  [ChainId.BAOBABTESTNET]: process.env.REACT_APP_KWBTC_ADDRESS_TESTNET || "",
+  [intMainnetId]: process.env.REACT_APP_KWBTC_ADDRESS_MAINNET || '',
+  [intTestnetId]: process.env.REACT_APP_KWBTC_ADDRESS_TESTNET || ''
 }
 
 export const KXRP_ADDRESS = {
-  [ChainId.MAINNET]: process.env.REACT_APP_KXRP_ADDRESS_MAINNET || "",
-  [ChainId.BAOBABTESTNET]: process.env.REACT_APP_KXRP_ADDRESS_TESTNET || "",
+  [intMainnetId]: process.env.REACT_APP_KXRP_ADDRESS_MAINNET || '',
+  [intTestnetId]: process.env.REACT_APP_KXRP_ADDRESS_TESTNET || ''
 }
 
 export const KBNB_ADDRESS = {
-  [ChainId.MAINNET]: process.env.REACT_APP_KBNB_ADDRESS_MAINNET || "",
-  [ChainId.BAOBABTESTNET]: process.env.REACT_APP_KBNB_ADDRESS_TESTNET || "",
+  [intMainnetId]: process.env.REACT_APP_KBNB_ADDRESS_MAINNET || '',
+  [intTestnetId]: process.env.REACT_APP_KBNB_ADDRESS_TESTNET || ''
 }
 
-export const FINIX_SIX_LP = {
-  [ChainId.MAINNET]: process.env.REACT_APP_FINIX_SIX_LP_MAINNET || "",
-  [ChainId.BAOBABTESTNET]: process.env.REACT_APP_FINIX_SIX_LP_TESTNET || "",
+export const allTokens = {
+  SIX: SIX_ADDRESS,
+  FINIX: FINIX_ADDRESS,
+  WKLAY: WKLAY_ADDRESS,
+  KUSDT: KUSDT_ADDRESS,
+  KDAI: KDAI_ADDRESS,
+  KETH: KETH_ADDRESS,
+  KWBTC: KWBTC_ADDRESS,
+  KXRP: KXRP_ADDRESS,
+  KBNB: KBNB_ADDRESS,
+  KSP: KSP_ADDRESS,
 }
 
-export const FINIX_KUSDT_LP = {
-  [ChainId.MAINNET]: process.env.REACT_APP_FINIX_KUSDT_LP_MAINNET || "",
-  [ChainId.BAOBABTESTNET]: process.env.REACT_APP_FINIX_KUSDT_LP_TESTNET || "",
+export const getLpAddress = (firstAddress: string, secondAddress: string, chainId: number) => {
+  return Pair.getAddress(
+    new Token(chainId, firstAddress, 18, 'DUMMY', 'DUMMY'),
+    new Token(chainId, secondAddress, 18, 'DUMMY', 'DUMMY'),
+  )
 }
 
-export const FINIX_KLAY_LP = {
-  [ChainId.MAINNET]: process.env.REACT_APP_FINIX_KLAY_LP_MAINNET || "",
-  [ChainId.BAOBABTESTNET]: process.env.REACT_APP_FINIX_KLAY_LP_TESTNET || "",
-}
-
-export const FINIX_KSP_LP = {
-  [ChainId.MAINNET]: process.env.REACT_APP_FINIX_KSP_LP_MAINNET || "",
-  [ChainId.BAOBABTESTNET]: process.env.REACT_APP_FINIX_KSP_LP_TESTNET || "",
-}
-
-export const SIX_KUSDT_LP = {
-  [ChainId.MAINNET]: process.env.REACT_APP_SIX_KUSDT_LP_MAINNET || "",
-  [ChainId.BAOBABTESTNET]: process.env.REACT_APP_SIX_KUSDT_LP_TESTNET || "",
-}
-
-export const SIX_KLAY_LP = {
-  [ChainId.MAINNET]: process.env.REACT_APP_SIX_KLAY_LP_MAINNET || "",
-  [ChainId.BAOBABTESTNET]: process.env.REACT_APP_SIX_KLAY_LP_TESTNET || "",
-}
-
-export const KUSDT_KDAI_LP = {
-  [ChainId.MAINNET]: process.env.REACT_APP_KUSDT_KDAI_LP_MAINNET || "",
-  [ChainId.BAOBABTESTNET]: process.env.REACT_APP_KUSDT_KDAI_LP_TESTNET || "",
-}
-
-export const KLAY_KUSDT_LP = {
-  [ChainId.MAINNET]: process.env.REACT_APP_KLAY_KUSDT_LP_MAINNET || "",
-  [ChainId.BAOBABTESTNET]: process.env.REACT_APP_KLAY_KUSDT_LP_TESTNET || "",
-}
-
-export const KLAY_KETH_LP = {
-  [ChainId.MAINNET]: process.env.REACT_APP_KLAY_KETH_LP_MAINNET || "",
-  [ChainId.BAOBABTESTNET]: process.env.REACT_APP_KLAY_KETH_LP_TESTNET || "",
-}
-
-export const KLAY_KWBTC_LP = {
-  [ChainId.MAINNET]: process.env.REACT_APP_KLAY_KWBTC_LP_MAINNET || "",
-  [ChainId.BAOBABTESTNET]: process.env.REACT_APP_KLAY_KWBTC_LP_TESTNET || "",
-}
-
-export const KLAY_KXRP_LP = {
-  [ChainId.MAINNET]: process.env.REACT_APP_KLAY_KXRP_LP_MAINNET || "",
-  [ChainId.BAOBABTESTNET]: process.env.REACT_APP_KLAY_KXRP_LP_TESTNET || "",
-}
-
-export const KETH_KUSDT_LP = {
-  [ChainId.MAINNET]: process.env.REACT_APP_KETH_KUSDT_LP_MAINNET || "",
-  [ChainId.BAOBABTESTNET]: process.env.REACT_APP_KETH_KUSDT_LP_TESTNET || "",
-}
-
-export const KWBTC_KUSDT_LP = {
-  [ChainId.MAINNET]: process.env.REACT_APP_KWBTC_KUSDT_LP_MAINNET || "",
-  [ChainId.BAOBABTESTNET]: process.env.REACT_APP_KWBTC_KUSDT_LP_TESTNET || "",
-}
-
-export const KXRP_KUSDT_LP = {
-  [ChainId.MAINNET]: process.env.REACT_APP_KXRP_KUSDT_LP_MAINNET || "",
-  [ChainId.BAOBABTESTNET]: process.env.REACT_APP_KXRP_KUSDT_LP_TESTNET || "",
+export const getLpNetwork = (firstToken, secondToken) => {
+  return {
+    [intMainnetId]: getLpAddress(firstToken[intMainnetId], secondToken[intMainnetId], intMainnetId),
+    [intTestnetId]: getLpAddress(firstToken[intTestnetId], secondToken[intTestnetId], intTestnetId),
+  }
 }
 
 export const HERODOTUS_ADDRESS = {
-  [ChainId.MAINNET]: process.env.REACT_APP_HERODOTUS_MAINNET || "", // ==================
-  [ChainId.BAOBABTESTNET]: process.env.REACT_APP_HERODOTUS_TESTNET || "",
+  [intMainnetId]: process.env.REACT_APP_HERODOTUS_MAINNET || '', // ==================
+  [intTestnetId]: process.env.REACT_APP_HERODOTUS_TESTNET || ''
 }
 
 export const PANCAKE_MASTER_CHEF_ADDRESS = {
-  [ChainId.MAINNET]: process.env.REACT_APP_PANCAKE_MASTER_CHEF_MAINNET || "", // ==================
-  [ChainId.BAOBABTESTNET]: process.env.REACT_APP_PANCAKE_MASTER_CHEF_TESTNET || "",
+  [intMainnetId]: process.env.REACT_APP_PANCAKE_MASTER_CHEF_MAINNET || '', // ==================
+  [intTestnetId]: process.env.REACT_APP_PANCAKE_MASTER_CHEF_TESTNET || ''
 }
 
-export const DAI = new Token(ChainId.MAINNET, '0xf24400CA87E2260FaA63233c2Be8e4259B214E4E', 18, 'KDAI', 'Dai Stablecoin')
-// export const BUSD = new Token(ChainId.MAINNET, '0xe9e7cea3dedca5984780bafc599bd69add087d56', 18, 'BUSD', 'Binance USD')
-export const USDT = new Token(ChainId.MAINNET, '0x72f58bF36Ce713D408a854C060FbF89A25F87C4C', 18, 'KUSDT', 'Tether USD')
+export const DAI = new Token(intMainnetId, '0xf24400CA87E2260FaA63233c2Be8e4259B214E4E', 18, 'KDAI', 'Dai Stablecoin')
+// export const BUSD = new Token(intMainnetId, '0xe9e7cea3dedca5984780bafc599bd69add087d56', 18, 'BUSD', 'Binance USD')
+export const USDT = new Token(intMainnetId, '0x72f58bF36Ce713D408a854C060FbF89A25F87C4C', 18, 'KUSDT', 'Tether USD')
 // export const UST = new Token(
-//   ChainId.MAINNET,
+//   intMainnetId,
 //   '0x23396cf899ca06c4472205fc903bdb4de249d6fc',
 //   18,
 //   'UST',
 //   'Wrapped UST Token'
 // )
 
-const WETH_ONLY: ChainTokenList = {
-  [ChainId.MAINNET]: [WETH[ChainId.MAINNET]],
-  [ChainId.BAOBABTESTNET]: [WETH[ChainId.BAOBABTESTNET]],
+const WETH_ONLY = {
+  [intMainnetId]: [WETH(intMainnetId)],
+  [intTestnetId]: [WETH(intTestnetId)]
 }
 
 // used to construct intermediary pairs for trading
-export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
+export const BASES_TO_CHECK_TRADES_AGAINST = {
   ...WETH_ONLY,
-  [ChainId.BAOBABTESTNET]: [
-      new Token(ChainId.BAOBABTESTNET, SIX_ADDRESS[ChainId.BAOBABTESTNET], 18, 'SIX', 'SIX Token'),
-      new Token(ChainId.BAOBABTESTNET, FINIX_ADDRESS[ChainId.BAOBABTESTNET], 18, 'FINIX', 'FINIX Token'),
-      new Token(ChainId.BAOBABTESTNET, KUSDT_ADDRESS[ChainId.BAOBABTESTNET], 18, 'KUSDT', 'KUSDT Token'),
-      new Token(ChainId.BAOBABTESTNET, WKLAY_ADDRESS[ChainId.BAOBABTESTNET], 18, 'WKLAY', 'Wrapped KLAY'),
-      new Token(ChainId.BAOBABTESTNET, KUSDT_ADDRESS[ChainId.BAOBABTESTNET], 18, 'KUSDT', 'KUSDT Token'),
-      new Token(ChainId.BAOBABTESTNET, KSP_ADDRESS[ChainId.BAOBABTESTNET], 18, 'KSP', 'KLAY Swap Protocol'),
-      new Token(ChainId.BAOBABTESTNET, KDAI_ADDRESS[ChainId.BAOBABTESTNET], 18, 'KDAI', 'KDAI Token'),
-      new Token(ChainId.BAOBABTESTNET, KETH_ADDRESS[ChainId.BAOBABTESTNET], 18, 'KETH', 'KETH Token'),
-      new Token(ChainId.BAOBABTESTNET, KWBTC_ADDRESS[ChainId.BAOBABTESTNET], 18, 'KWBTC', 'KWBTC Token'),
-      new Token(ChainId.BAOBABTESTNET, KXRP_ADDRESS[ChainId.BAOBABTESTNET], 18, 'KXRP', 'KXRP Token'),
-      new Token(ChainId.BAOBABTESTNET, KBNB_ADDRESS[ChainId.BAOBABTESTNET], 18, 'KBNB', 'KBNB Token'),
-
+  [intTestnetId]: [
+    new Token(intTestnetId, SIX_ADDRESS[intTestnetId], 18, 'SIX', 'SIX Token'),
+    new Token(intTestnetId, FINIX_ADDRESS[intTestnetId], 18, 'FINIX', 'FINIX Token'),
+    new Token(intTestnetId, KUSDT_ADDRESS[intTestnetId], 18, 'KUSDT', 'KUSDT Token'),
+    new Token(intTestnetId, WKLAY_ADDRESS[intTestnetId], 18, 'WKLAY', 'Wrapped KLAY'),
+    new Token(intTestnetId, KUSDT_ADDRESS[intTestnetId], 18, 'KUSDT', 'KUSDT Token'),
+    new Token(intTestnetId, KSP_ADDRESS[intTestnetId], 18, 'KSP', 'KLAY Swap Protocol'),
+    new Token(intTestnetId, KDAI_ADDRESS[intTestnetId], 18, 'KDAI', 'KDAI Token'),
+    new Token(intTestnetId, KETH_ADDRESS[intTestnetId], 18, 'KETH', 'KETH Token'),
+    new Token(intTestnetId, KWBTC_ADDRESS[intTestnetId], 18, 'KWBTC', 'KWBTC Token'),
+    new Token(intTestnetId, KXRP_ADDRESS[intTestnetId], 18, 'KXRP', 'KXRP Token'),
+    new Token(intTestnetId, KBNB_ADDRESS[intTestnetId], 18, 'KBNB', 'KBNB Token')
   ],
-  [ChainId.MAINNET]: [...WETH_ONLY[ChainId.MAINNET], DAI, USDT,
-      new Token(ChainId.MAINNET, SIX_ADDRESS[ChainId.MAINNET], 18, 'SIX', 'SIX Token'),
-      new Token(ChainId.MAINNET, FINIX_ADDRESS[ChainId.MAINNET], 18, 'FINIX', 'FINIX Token'),
-      new Token(ChainId.MAINNET, KUSDT_ADDRESS[ChainId.MAINNET], 18, 'KUSDT', 'KUSDT Token'),
-      new Token(ChainId.MAINNET, WKLAY_ADDRESS[ChainId.MAINNET], 18, 'WKLAY', 'Wrapped KLAY'),
-      new Token(ChainId.MAINNET, KUSDT_ADDRESS[ChainId.MAINNET], 18, 'KUSDT', 'KUSDT Token'),
-      new Token(ChainId.MAINNET, KSP_ADDRESS[ChainId.MAINNET], 18, 'KSP', 'KLAY Swap Protocol'),
-      new Token(ChainId.MAINNET, KDAI_ADDRESS[ChainId.MAINNET], 18, 'KDAI', 'KDAI Token'),
-      new Token(ChainId.MAINNET, KWBTC_ADDRESS[ChainId.MAINNET], 18, 'KWBTC', 'KWBTC Token'),
-      new Token(ChainId.MAINNET, KETH_ADDRESS[ChainId.MAINNET], 18, 'KETH', 'KETH Token'),
-      new Token(ChainId.MAINNET, KXRP_ADDRESS[ChainId.MAINNET], 18, 'KXRP', 'KXRP Token'),
-      new Token(ChainId.MAINNET, KBNB_ADDRESS[ChainId.MAINNET], 18, 'KBNB', 'KBNB Token'),
-
-  ],
+  [intMainnetId]: [
+    ...WETH_ONLY[intMainnetId],
+    DAI,
+    USDT,
+    new Token(intMainnetId, SIX_ADDRESS[intMainnetId], 18, 'SIX', 'SIX Token'),
+    new Token(intMainnetId, FINIX_ADDRESS[intMainnetId], 18, 'FINIX', 'FINIX Token'),
+    new Token(intMainnetId, KUSDT_ADDRESS[intMainnetId], 18, 'KUSDT', 'KUSDT Token'),
+    new Token(intMainnetId, WKLAY_ADDRESS[intMainnetId], 18, 'WKLAY', 'Wrapped KLAY'),
+    new Token(intMainnetId, KUSDT_ADDRESS[intMainnetId], 18, 'KUSDT', 'KUSDT Token'),
+    new Token(intMainnetId, KSP_ADDRESS[intMainnetId], 18, 'KSP', 'KLAY Swap Protocol'),
+    new Token(intMainnetId, KDAI_ADDRESS[intMainnetId], 18, 'KDAI', 'KDAI Token'),
+    new Token(intMainnetId, KWBTC_ADDRESS[intMainnetId], 18, 'KWBTC', 'KWBTC Token'),
+    new Token(intMainnetId, KETH_ADDRESS[intMainnetId], 18, 'KETH', 'KETH Token'),
+    new Token(intMainnetId, KXRP_ADDRESS[intMainnetId], 18, 'KXRP', 'KXRP Token'),
+    new Token(intMainnetId, KBNB_ADDRESS[intMainnetId], 18, 'KBNB', 'KBNB Token')
+  ]
 }
 
 /**
  * Some tokens can only be swapped via certain pairs, so we override the list of bases that are considered for these
  * tokens.
  */
-export const CUSTOM_BASES: { [chainId in ChainId]?: { [tokenAddress: string]: Token[] } } = {
-  [ChainId.MAINNET]: {},
+export const CUSTOM_BASES = {
+  [intMainnetId]: {}
 }
 
 // used for display in the default list when adding liquidity
-export const SUGGESTED_BASES: ChainTokenList = {
+export const SUGGESTED_BASES = {
   ...WETH_ONLY,
-  [ChainId.MAINNET]: [...WETH_ONLY[ChainId.MAINNET], DAI, USDT],
+  [intMainnetId]: [...WETH_ONLY[intMainnetId], DAI, USDT]
 }
 
 // used to construct the list of all pairs we consider by default in the frontend
-export const BASES_TO_TRACK_LIQUIDITY_FOR: ChainTokenList = {
+export const BASES_TO_TRACK_LIQUIDITY_FOR = {
   ...WETH_ONLY,
-  [ChainId.MAINNET]: [...WETH_ONLY[ChainId.MAINNET], DAI, USDT],
+  [intMainnetId]: [...WETH_ONLY[intMainnetId], DAI, USDT]
 }
 
-export const PINNED_PAIRS: { readonly [chainId in ChainId]?: [Token, Token][] } = {
-  [ChainId.MAINNET]: [
+export const PINNED_PAIRS = {
+  [intMainnetId]: [
     [
-      new Token(ChainId.BAOBABTESTNET, SIX_ADDRESS[ChainId.MAINNET], 18, 'SIX', 'SIX Token'),
-      new Token(ChainId.BAOBABTESTNET, FINIX_ADDRESS[ChainId.MAINNET], 18, 'FINIX', 'FINIX Token'),
+      new Token(intTestnetId, SIX_ADDRESS[intMainnetId], 18, 'SIX', 'SIX Token'),
+      new Token(intTestnetId, FINIX_ADDRESS[intMainnetId], 18, 'FINIX', 'FINIX Token')
     ],
     [
-      new Token(ChainId.BAOBABTESTNET, SIX_ADDRESS[ChainId.MAINNET], 18, 'SIX', 'SIX Token'),
-      new Token(ChainId.BAOBABTESTNET, KUSDT_ADDRESS[ChainId.MAINNET], 18, 'KUSDT', 'KUSDT Token'),
+      new Token(intTestnetId, SIX_ADDRESS[intMainnetId], 18, 'SIX', 'SIX Token'),
+      new Token(intTestnetId, KUSDT_ADDRESS[intMainnetId], 18, 'KUSDT', 'KUSDT Token')
     ],
     [
-      new Token(ChainId.BAOBABTESTNET, SIX_ADDRESS[ChainId.MAINNET], 18, 'SIX', 'SIX Token'),
-      new Token(ChainId.BAOBABTESTNET, WKLAY_ADDRESS[ChainId.MAINNET], 18, 'WKLAY', 'Wrapped KLAY'),
+      new Token(intTestnetId, SIX_ADDRESS[intMainnetId], 18, 'SIX', 'SIX Token'),
+      new Token(intTestnetId, WKLAY_ADDRESS[intMainnetId], 18, 'WKLAY', 'Wrapped KLAY')
     ],
     [
-      new Token(ChainId.BAOBABTESTNET, FINIX_ADDRESS[ChainId.MAINNET], 18, 'FINIX', 'FINIX Token'),
-      new Token(ChainId.BAOBABTESTNET, KUSDT_ADDRESS[ChainId.MAINNET], 18, 'KUSDT', 'KUSDT Token'),
+      new Token(intTestnetId, FINIX_ADDRESS[intMainnetId], 18, 'FINIX', 'FINIX Token'),
+      new Token(intTestnetId, KUSDT_ADDRESS[intMainnetId], 18, 'KUSDT', 'KUSDT Token')
     ],
     [
-      new Token(ChainId.BAOBABTESTNET, FINIX_ADDRESS[ChainId.MAINNET], 18, 'FINIX', 'FINIX Token'),
-      new Token(ChainId.BAOBABTESTNET, WKLAY_ADDRESS[ChainId.MAINNET], 18, 'WKLAY', 'Wrapped KLAY'),
+      new Token(intTestnetId, FINIX_ADDRESS[intMainnetId], 18, 'FINIX', 'FINIX Token'),
+      new Token(intTestnetId, WKLAY_ADDRESS[intMainnetId], 18, 'WKLAY', 'Wrapped KLAY')
     ],
     [
-      new Token(ChainId.BAOBABTESTNET, FINIX_ADDRESS[ChainId.MAINNET], 18, 'FINIX', 'FINIX Token'),
-      new Token(ChainId.BAOBABTESTNET, KSP_ADDRESS[ChainId.MAINNET], 18, 'KSP', 'KLAY Swap Protocol'),
+      new Token(intTestnetId, FINIX_ADDRESS[intMainnetId], 18, 'FINIX', 'FINIX Token'),
+      new Token(intTestnetId, KSP_ADDRESS[intMainnetId], 18, 'KSP', 'KLAY Swap Protocol')
     ],
     [
-      new Token(ChainId.BAOBABTESTNET, WKLAY_ADDRESS[ChainId.MAINNET], 18, 'WKLAY', 'Wrapped KLAY'),
-      new Token(ChainId.BAOBABTESTNET, KUSDT_ADDRESS[ChainId.MAINNET], 18, 'KUSDT', 'KUSDT Token'),
+      new Token(intTestnetId, WKLAY_ADDRESS[intMainnetId], 18, 'WKLAY', 'Wrapped KLAY'),
+      new Token(intTestnetId, KUSDT_ADDRESS[intMainnetId], 18, 'KUSDT', 'KUSDT Token')
     ],
     [
-      new Token(ChainId.BAOBABTESTNET, KDAI_ADDRESS[ChainId.MAINNET], 18, 'KDAI', 'KDAI Token'),
-      new Token(ChainId.BAOBABTESTNET, KUSDT_ADDRESS[ChainId.MAINNET], 18, 'KUSDT', 'KUSDT Token'),
+      new Token(intTestnetId, KDAI_ADDRESS[intMainnetId], 18, 'KDAI', 'KDAI Token'),
+      new Token(intTestnetId, KUSDT_ADDRESS[intMainnetId], 18, 'KUSDT', 'KUSDT Token')
     ],
     [
-      new Token(ChainId.BAOBABTESTNET, KETH_ADDRESS[ChainId.MAINNET], 18, 'KETH', 'KETH Token'),
-      new Token(ChainId.BAOBABTESTNET, WKLAY_ADDRESS[ChainId.MAINNET], 18, 'WKLAY', 'Wrapped KLAY'),
+      new Token(intTestnetId, KETH_ADDRESS[intMainnetId], 18, 'KETH', 'KETH Token'),
+      new Token(intTestnetId, WKLAY_ADDRESS[intMainnetId], 18, 'WKLAY', 'Wrapped KLAY')
     ],
     [
-      new Token(ChainId.BAOBABTESTNET, KWBTC_ADDRESS[ChainId.MAINNET], 18, 'KWBTC', 'KWBTC Token'),
-      new Token(ChainId.BAOBABTESTNET, WKLAY_ADDRESS[ChainId.MAINNET], 18, 'WKLAY', 'Wrapped KLAY'),
+      new Token(intTestnetId, KWBTC_ADDRESS[intMainnetId], 18, 'KWBTC', 'KWBTC Token'),
+      new Token(intTestnetId, WKLAY_ADDRESS[intMainnetId], 18, 'WKLAY', 'Wrapped KLAY')
     ],
     [
-      new Token(ChainId.BAOBABTESTNET, KXRP_ADDRESS[ChainId.MAINNET], 18, 'KXRP', 'KXRP Token'),
-      new Token(ChainId.BAOBABTESTNET, WKLAY_ADDRESS[ChainId.MAINNET], 18, 'WKLAY', 'Wrapped KLAY'),
+      new Token(intTestnetId, KXRP_ADDRESS[intMainnetId], 18, 'KXRP', 'KXRP Token'),
+      new Token(intTestnetId, WKLAY_ADDRESS[intMainnetId], 18, 'WKLAY', 'Wrapped KLAY')
     ],
     [
-      new Token(ChainId.BAOBABTESTNET, KETH_ADDRESS[ChainId.MAINNET], 18, 'KETH', 'KETH Token'),
-      new Token(ChainId.BAOBABTESTNET, KUSDT_ADDRESS[ChainId.MAINNET], 18, 'KUSDT', 'KUSDT Token'),
+      new Token(intTestnetId, KETH_ADDRESS[intMainnetId], 18, 'KETH', 'KETH Token'),
+      new Token(intTestnetId, KUSDT_ADDRESS[intMainnetId], 18, 'KUSDT', 'KUSDT Token')
     ],
     [
-      new Token(ChainId.BAOBABTESTNET, KWBTC_ADDRESS[ChainId.MAINNET], 18, 'KWBTC', 'KWBTC Token'),
-      new Token(ChainId.BAOBABTESTNET, KUSDT_ADDRESS[ChainId.MAINNET], 18, 'KUSDT', 'KUSDT Token'),
+      new Token(intTestnetId, KWBTC_ADDRESS[intMainnetId], 18, 'KWBTC', 'KWBTC Token'),
+      new Token(intTestnetId, KUSDT_ADDRESS[intMainnetId], 18, 'KUSDT', 'KUSDT Token')
     ],
     [
-      new Token(ChainId.BAOBABTESTNET, KXRP_ADDRESS[ChainId.MAINNET], 18, 'KXRP', 'KXRP Token'),
-      new Token(ChainId.BAOBABTESTNET, KUSDT_ADDRESS[ChainId.MAINNET], 18, 'KUSDT', 'KUSDT Token'),
+      new Token(intTestnetId, KXRP_ADDRESS[intMainnetId], 18, 'KXRP', 'KXRP Token'),
+      new Token(intTestnetId, KUSDT_ADDRESS[intMainnetId], 18, 'KUSDT', 'KUSDT Token')
     ],
     [
-      new Token(ChainId.BAOBABTESTNET, KBNB_ADDRESS[ChainId.MAINNET], 18, 'KBNB', 'KBNB Token'),
-      new Token(ChainId.BAOBABTESTNET, KUSDT_ADDRESS[ChainId.MAINNET], 18, 'KUSDT', 'KUSDT Token'),
+      new Token(intTestnetId, KBNB_ADDRESS[intMainnetId], 18, 'KBNB', 'KBNB Token'),
+      new Token(intTestnetId, KUSDT_ADDRESS[intMainnetId], 18, 'KUSDT', 'KUSDT Token')
     ],
     [
-      new Token(ChainId.BAOBABTESTNET, KBNB_ADDRESS[ChainId.MAINNET], 18, 'KBNB', 'KBNB Token'),
-      new Token(ChainId.BAOBABTESTNET, FINIX_ADDRESS[ChainId.MAINNET], 18, 'FINIX', 'FINIX Token'),
-    ],
+      new Token(intTestnetId, KBNB_ADDRESS[intMainnetId], 18, 'KBNB', 'KBNB Token'),
+      new Token(intTestnetId, FINIX_ADDRESS[intMainnetId], 18, 'FINIX', 'FINIX Token')
+    ]
   ],
-  [ChainId.BAOBABTESTNET]: [
+  [intTestnetId]: [
     [
-      new Token(ChainId.BAOBABTESTNET, SIX_ADDRESS[ChainId.BAOBABTESTNET], 18, 'SIX', 'SIX Token'),
-      new Token(ChainId.BAOBABTESTNET, FINIX_ADDRESS[ChainId.BAOBABTESTNET], 18, 'FINIX', 'FINIX Token'),
+      new Token(intTestnetId, SIX_ADDRESS[intTestnetId], 18, 'SIX', 'SIX Token'),
+      new Token(intTestnetId, FINIX_ADDRESS[intTestnetId], 18, 'FINIX', 'FINIX Token')
     ],
     [
-      new Token(ChainId.BAOBABTESTNET, SIX_ADDRESS[ChainId.BAOBABTESTNET], 18, 'SIX', 'SIX Token'),
-      new Token(ChainId.BAOBABTESTNET, KUSDT_ADDRESS[ChainId.BAOBABTESTNET], 18, 'KUSDT', 'KUSDT Token'),
+      new Token(intTestnetId, SIX_ADDRESS[intTestnetId], 18, 'SIX', 'SIX Token'),
+      new Token(intTestnetId, KUSDT_ADDRESS[intTestnetId], 18, 'KUSDT', 'KUSDT Token')
     ],
     [
-      new Token(ChainId.BAOBABTESTNET, SIX_ADDRESS[ChainId.BAOBABTESTNET], 18, 'SIX', 'SIX Token'),
-      new Token(ChainId.BAOBABTESTNET, WKLAY_ADDRESS[ChainId.BAOBABTESTNET], 18, 'WKLAY', 'Wrapped KLAY'),
+      new Token(intTestnetId, SIX_ADDRESS[intTestnetId], 18, 'SIX', 'SIX Token'),
+      new Token(intTestnetId, WKLAY_ADDRESS[intTestnetId], 18, 'WKLAY', 'Wrapped KLAY')
     ],
     [
-      new Token(ChainId.BAOBABTESTNET, FINIX_ADDRESS[ChainId.BAOBABTESTNET], 18, 'FINIX', 'FINIX Token'),
-      new Token(ChainId.BAOBABTESTNET, KUSDT_ADDRESS[ChainId.BAOBABTESTNET], 18, 'KUSDT', 'KUSDT Token'),
+      new Token(intTestnetId, FINIX_ADDRESS[intTestnetId], 18, 'FINIX', 'FINIX Token'),
+      new Token(intTestnetId, KUSDT_ADDRESS[intTestnetId], 18, 'KUSDT', 'KUSDT Token')
     ],
     [
-      new Token(ChainId.BAOBABTESTNET, FINIX_ADDRESS[ChainId.BAOBABTESTNET], 18, 'FINIX', 'FINIX Token'),
-      new Token(ChainId.BAOBABTESTNET, WKLAY_ADDRESS[ChainId.BAOBABTESTNET], 18, 'WKLAY', 'Wrapped KLAY'),
+      new Token(intTestnetId, FINIX_ADDRESS[intTestnetId], 18, 'FINIX', 'FINIX Token'),
+      new Token(intTestnetId, WKLAY_ADDRESS[intTestnetId], 18, 'WKLAY', 'Wrapped KLAY')
     ],
     [
-      new Token(ChainId.BAOBABTESTNET, FINIX_ADDRESS[ChainId.BAOBABTESTNET], 18, 'FINIX', 'FINIX Token'),
-      new Token(ChainId.BAOBABTESTNET, KSP_ADDRESS[ChainId.BAOBABTESTNET], 18, 'KSP', 'KLAY Swap Protocol'),
+      new Token(intTestnetId, FINIX_ADDRESS[intTestnetId], 18, 'FINIX', 'FINIX Token'),
+      new Token(intTestnetId, KSP_ADDRESS[intTestnetId], 18, 'KSP', 'KLAY Swap Protocol')
     ],
     [
-      new Token(ChainId.BAOBABTESTNET, WKLAY_ADDRESS[ChainId.BAOBABTESTNET], 18, 'WKLAY', 'Wrapped KLAY'),
-      new Token(ChainId.BAOBABTESTNET, KUSDT_ADDRESS[ChainId.BAOBABTESTNET], 18, 'KUSDT', 'KUSDT Token'),
+      new Token(intTestnetId, WKLAY_ADDRESS[intTestnetId], 18, 'WKLAY', 'Wrapped KLAY'),
+      new Token(intTestnetId, KUSDT_ADDRESS[intTestnetId], 18, 'KUSDT', 'KUSDT Token')
     ],
     [
-      new Token(ChainId.BAOBABTESTNET, KDAI_ADDRESS[ChainId.BAOBABTESTNET], 18, 'KDAI', 'KDAI Token'),
-      new Token(ChainId.BAOBABTESTNET, KUSDT_ADDRESS[ChainId.BAOBABTESTNET], 18, 'KUSDT', 'KUSDT Token'),
+      new Token(intTestnetId, KDAI_ADDRESS[intTestnetId], 18, 'KDAI', 'KDAI Token'),
+      new Token(intTestnetId, KUSDT_ADDRESS[intTestnetId], 18, 'KUSDT', 'KUSDT Token')
     ],
     [
-      new Token(ChainId.BAOBABTESTNET, KETH_ADDRESS[ChainId.BAOBABTESTNET], 18, 'KETH', 'KETH Token'),
-      new Token(ChainId.BAOBABTESTNET, WKLAY_ADDRESS[ChainId.BAOBABTESTNET], 18, 'WKLAY', 'Wrapped KLAY'),
+      new Token(intTestnetId, KETH_ADDRESS[intTestnetId], 18, 'KETH', 'KETH Token'),
+      new Token(intTestnetId, WKLAY_ADDRESS[intTestnetId], 18, 'WKLAY', 'Wrapped KLAY')
     ],
     [
-      new Token(ChainId.BAOBABTESTNET, KWBTC_ADDRESS[ChainId.BAOBABTESTNET], 18, 'KWBTC', 'KWBTC Token'),
-      new Token(ChainId.BAOBABTESTNET, WKLAY_ADDRESS[ChainId.BAOBABTESTNET], 18, 'WKLAY', 'Wrapped KLAY'),
+      new Token(intTestnetId, KWBTC_ADDRESS[intTestnetId], 18, 'KWBTC', 'KWBTC Token'),
+      new Token(intTestnetId, WKLAY_ADDRESS[intTestnetId], 18, 'WKLAY', 'Wrapped KLAY')
     ],
     [
-      new Token(ChainId.BAOBABTESTNET, KXRP_ADDRESS[ChainId.BAOBABTESTNET], 18, 'KXRP', 'KXRP Token'),
-      new Token(ChainId.BAOBABTESTNET, WKLAY_ADDRESS[ChainId.BAOBABTESTNET], 18, 'WKLAY', 'Wrapped KLAY'),
+      new Token(intTestnetId, KXRP_ADDRESS[intTestnetId], 18, 'KXRP', 'KXRP Token'),
+      new Token(intTestnetId, WKLAY_ADDRESS[intTestnetId], 18, 'WKLAY', 'Wrapped KLAY')
     ],
     [
-      new Token(ChainId.BAOBABTESTNET, KETH_ADDRESS[ChainId.BAOBABTESTNET], 18, 'KETH', 'KETH Token'),
-      new Token(ChainId.BAOBABTESTNET, KUSDT_ADDRESS[ChainId.BAOBABTESTNET], 18, 'KUSDT', 'KUSDT Token'),
+      new Token(intTestnetId, KETH_ADDRESS[intTestnetId], 18, 'KETH', 'KETH Token'),
+      new Token(intTestnetId, KUSDT_ADDRESS[intTestnetId], 18, 'KUSDT', 'KUSDT Token')
     ],
     [
-      new Token(ChainId.BAOBABTESTNET, KWBTC_ADDRESS[ChainId.BAOBABTESTNET], 18, 'KWBTC', 'KWBTC Token'),
-      new Token(ChainId.BAOBABTESTNET, KUSDT_ADDRESS[ChainId.BAOBABTESTNET], 18, 'KUSDT', 'KUSDT Token'),
+      new Token(intTestnetId, KWBTC_ADDRESS[intTestnetId], 18, 'KWBTC', 'KWBTC Token'),
+      new Token(intTestnetId, KUSDT_ADDRESS[intTestnetId], 18, 'KUSDT', 'KUSDT Token')
     ],
     [
-      new Token(ChainId.BAOBABTESTNET, KXRP_ADDRESS[ChainId.BAOBABTESTNET], 18, 'KXRP', 'KXRP Token'),
-      new Token(ChainId.BAOBABTESTNET, KUSDT_ADDRESS[ChainId.BAOBABTESTNET], 18, 'KUSDT', 'KUSDT Token'),
+      new Token(intTestnetId, KXRP_ADDRESS[intTestnetId], 18, 'KXRP', 'KXRP Token'),
+      new Token(intTestnetId, KUSDT_ADDRESS[intTestnetId], 18, 'KUSDT', 'KUSDT Token')
     ],
     [
-      new Token(ChainId.BAOBABTESTNET, KBNB_ADDRESS[ChainId.BAOBABTESTNET], 18, 'KBNB', 'KBNB Token'),
-      new Token(ChainId.BAOBABTESTNET, KUSDT_ADDRESS[ChainId.BAOBABTESTNET], 18, 'KUSDT', 'KUSDT Token'),
+      new Token(intTestnetId, KBNB_ADDRESS[intTestnetId], 18, 'KBNB', 'KBNB Token'),
+      new Token(intTestnetId, KUSDT_ADDRESS[intTestnetId], 18, 'KUSDT', 'KUSDT Token')
     ],
     [
-      new Token(ChainId.BAOBABTESTNET, KBNB_ADDRESS[ChainId.BAOBABTESTNET], 18, 'KBNB', 'KBNB Token'),
-      new Token(ChainId.BAOBABTESTNET, FINIX_ADDRESS[ChainId.BAOBABTESTNET], 18, 'FINIX', 'FINIX Token'),
-    ],
-  ],
+      new Token(intTestnetId, KBNB_ADDRESS[intTestnetId], 18, 'KBNB', 'KBNB Token'),
+      new Token(intTestnetId, FINIX_ADDRESS[intTestnetId], 18, 'FINIX', 'FINIX Token')
+    ]
+  ]
 }
 
 export const NetworkContextName = 'NETWORK'

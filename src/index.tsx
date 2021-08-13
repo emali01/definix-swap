@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 import ReactGA from 'react-ga';
 import TagManager from 'react-gtm-module';
 import { ResetCSS } from 'uikit-dev'
+import { Config } from 'definixswap-sdk'
 import { KlipModalProvider } from "@sixnetwork/klaytn-use-wallet"
 import GlobalStyle from './style/Global'
 import App from './pages/App'
@@ -11,10 +12,11 @@ import ListsUpdater from './state/lists/updater'
 import MulticallUpdater from './state/multicall/updater'
 import TransactionUpdater from './state/transactions/updater'
 import Providers from './Providers'
+import sdkConfig from './sdkConfig'
 import 'inter-ui'
 import './i18n'
 
-
+Config.configure(sdkConfig)
 ReactGA.initialize('G-L997LXLF8F');
 
 const tagManagerArgs = {

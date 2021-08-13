@@ -1,4 +1,4 @@
-import { ChainId, Pair, Token } from 'definixswap-sdk'
+import { Pair, Token } from 'definixswap-sdk'
 import flatMap from 'lodash.flatmap'
 import { useCallback, useMemo } from 'react'
 import { shallowEqual, useDispatch, useSelector } from 'react-redux'
@@ -164,7 +164,7 @@ export function useUserAddedTokens(): Token[] {
 
   return useMemo(() => {
     if (!chainId) return []
-    return Object.values(serializedTokensMap[chainId as ChainId] ?? {}).map(deserializeToken)
+    return Object.values(serializedTokensMap[chainId] ?? {}).map(deserializeToken)
   }, [serializedTokensMap, chainId])
 }
 
@@ -216,6 +216,7 @@ export function useTrackedTokenPairs(): [Token, Token][] {
               // loop though all bases on the current chain
               (BASES_TO_TRACK_LIQUIDITY_FOR[chainId] ?? [])
                 // to construct pairs of the given token with each base
+                // @ts-ignore
                 .map((base) => {
                   if (base.address === token.address) {
                     return null
@@ -242,6 +243,7 @@ export function useTrackedTokenPairs(): [Token, Token][] {
     })
   }, [savedSerializedPairs, chainId])
 
+  // @ts-ignore
   const combinedList = useMemo(() => userPairs.concat(generatedPairs).concat(pinnedPairs), [
     generatedPairs,
     pinnedPairs,
