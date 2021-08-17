@@ -5,7 +5,7 @@ import { ContractOptions } from 'web3-eth-contract'
 import getRpcUrl from 'utils/getRpcUrl'
 
 const RPC_URL = getRpcUrl()
-// const httpProvider = new Caver.providers.HttpProvider(RPC_URL, { timeout: 10000 })
+const httpProvider = new Caver.providers.HttpProvider(RPC_URL, { timeout: 10000 })
 // eslint-disable-next-line
 declare const window: any;
 const baseCaver = new Caver(window.klaytn)
@@ -15,7 +15,7 @@ const Contract = baseCaver.contract
  * Provides a web3 instance using our own private provider httpProver
  */
 const getCaver = () => {
-  const caver = baseCaver
+  const caver = window.caver || new Caver(httpProvider)
   return caver
 }
 const getCaverContract = (address: string, abi: any, contractOptions?: ContractOptions) => {
