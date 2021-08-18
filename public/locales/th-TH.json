@@ -44,7 +44,7 @@
   "EXCHANGE": "EXCHANGE",
   "Add liquidity to receive LP tokens": "เพิ่ม liquidity เพื่อรับ LP โทเค็น",
   "When you add liquidity, you are given pool tokens that represent your share. If you don’t see a pool you joined in this list, try importing a pool below.": "เมื่อคุณเพิ่ม liquidity คุณจะได้รับโทเค็น Pool ที่แสดงถึงส่วนแบ่งของคุณ หากคุณไม่เห็น Pool ที่คุณเข้าร่วมในรายการนี้ ให้ลอง Import Pool ด้านล่าง.",
-  "Connect to a wallet to view your liquidity.": "เขื่อมต่อ wallet เพื่อดู liquidity ของคุณ",
+  "Connect to a wallet to view your liquidity.": "เชื่อมต่อ wallet เพื่อดู liquidity ของคุณ",
   "Loading": "กำลังดาวน์โหลด",
   "No liquidity found.": "ไม่พบ liquidity.",
   "Don't see a pool you joined": "ไม่พบ liquidity ของคุณ.",
@@ -176,5 +176,6 @@
   "and": "และ",
   "MAX": "ทั้งหมด",
   "Failed": "ล้มเหลว",
-  "Complete": "เสร็จสมบูรณ์"
+  "Complete": "เสร็จสมบูรณ์",
+  "Insufficient %symbol% balance": "เหรียญ %symbol% ของคุณไม่เพียงพอ"
 }
