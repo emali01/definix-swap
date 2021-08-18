@@ -175,5 +175,6 @@
   "and": "and",
   "MAX": "MAX",
   "Failed": "Failed",
-  "Complete": "Complete"
+  "Complete": "Complete",
+  "Insufficient %symbol% balance": "Insufficient %symbol% balance"
 }
