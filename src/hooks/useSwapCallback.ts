@@ -339,9 +339,9 @@ const convertArgKlip = (args: (string[] | string)[], abi) => {
       const element = args[i]
       const abiType = abiArr.inputs[i].type
 
-      if (abiType === "uint256") {
-
-        argToString.push((+element).toString())
+      if (abiType === "uint256" && typeof element === 'string') {
+        argToString.push(BigInt(+element).toString())
+        // argToString.push((+element).toString())
       }
       else {
         argToString.push(element)
