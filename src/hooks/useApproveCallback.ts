@@ -94,7 +94,7 @@ export function useApproveCallback(
       // setShowModal(true)
       await klipProvider.genQRcodeContactInteract(tokenContract.address, abi, input,"0",setShowModal)
       await klipProvider.checkResponse()
-      // setShowModal(false)
+      setShowModal(false)
       
     } else {
     const estimatedGas = await tokenContract.estimateGas.approve(spender, MaxUint256).catch(() => {
