@@ -47,7 +47,7 @@
   "Connect to a wallet to view your liquidity.": "เชื่อมต่อ wallet เพื่อดู liquidity ของคุณ",
   "Loading": "กำลังดาวน์โหลด",
   "No liquidity found.": "ไม่พบ liquidity.",
-  "Don't see a pool you joined": "ไม่พบ liquidity ของคุณ.",
+  "Don't see a pool you joined": "ไม่พบ liquidity ของคุณ?",
   "Import it": "กดที่นี่.",
   "Or, if you staked your LP tokens in a farm, unstake them to see them here": "หรือถ้าคุณ Stake LP token ลงใน Farm, ถอน LP ออกจากการ Farm ก่อน",
   "LIQUIDITY HISTORY": "ประวัติ LIQUIDITY",
