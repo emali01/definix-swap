@@ -481,7 +481,7 @@ it('renders AccountModal correctly', () => {
               rel="noreferrer noopener"
               target="_blank"
             >
-              View on Klaytn Scope
+              View on BscScan
               <svg
                 class="sc-dlfnbm dJUqYR"
                 color="primary"

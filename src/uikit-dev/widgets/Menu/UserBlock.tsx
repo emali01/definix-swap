@@ -73,7 +73,7 @@ const UserBlock: React.FC<Props> = ({ account, login, logout, className = '', po
             <LinkExternal
               isIconLeft
               small
-              href={`https://bscscan.com/address/${account}`}
+              href={`https://scope.klaytn.com/account/${account}`}
               className="mb-2"
               fontSize="13px"
             >
@@ -89,8 +89,8 @@ const UserBlock: React.FC<Props> = ({ account, login, logout, className = '', po
               className="mt-4"
               onClick={() => {
                 logout()
-                window.localStorage.removeItem(localStorageKey)
                 window.localStorage.removeItem('connector')
+                window.localStorage.removeItem(localStorageKey)
                 window.location.reload()
               }}
             >

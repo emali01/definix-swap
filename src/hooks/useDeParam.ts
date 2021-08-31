@@ -5,9 +5,9 @@ import {
   DEPARAM_ADDRESS,
 } from '../constants'
 
-const UseDeParam = async (key, defaultValue = '') => {
-  const multicallContractAddress = MULTICALL_ADDRESS[process.env.REACT_APP_CHAIN_ID || '8217']
-  const deParamContractAddress = DEPARAM_ADDRESS[process.env.REACT_APP_CHAIN_ID || '8217']
+const UseDeParam = async (chainId, key, defaultValue = '') => {
+  const multicallContractAddress = MULTICALL_ADDRESS[chainId || parseInt(process.env.REACT_APP_CHAIN_ID || '0')]
+  const deParamContractAddress = DEPARAM_ADDRESS[chainId || parseInt(process.env.REACT_APP_CHAIN_ID || '0')]
 
   const calls = [
     {
@@ -18,8 +18,6 @@ const UseDeParam = async (key, defaultValue = '') => {
   ]
 
   const [valuesResp] = await multicall(multicallContractAddress, DEPARAM_ABI, calls)
-
-  // console.log(">>>>>>>>>>>>>>>>>>>>>>>> valuesResp = ", valuesResp.toString())
 
   return valuesResp !== null && valuesResp !== undefined && valuesResp.toString() !== null
     ? valuesResp.toString()

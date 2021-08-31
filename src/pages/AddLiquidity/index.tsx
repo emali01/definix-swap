@@ -78,8 +78,8 @@ export default function AddLiquidity({
 
   const oneCurrencyIsWETH = Boolean(
     chainId &&
-      ((currencyA && currencyEquals(currencyA, WETH[chainId])) ||
-        (currencyB && currencyEquals(currencyB, WETH[chainId])))
+    ((currencyA && currencyEquals(currencyA, WETH(chainId))) ||
+      (currencyB && currencyEquals(currencyB, WETH(chainId))))
   )
   const expertMode = useIsExpertMode()
 
@@ -140,8 +140,8 @@ export default function AddLiquidity({
   )
 
   // check whether the user has approved the router on the tokens
-  const [approvalA, approveACallback] = useApproveCallback(parsedAmounts[Field.CURRENCY_A], ROUTER_ADDRESS)
-  const [approvalB, approveBCallback] = useApproveCallback(parsedAmounts[Field.CURRENCY_B], ROUTER_ADDRESS)
+  const [approvalA, approveACallback] = useApproveCallback(parsedAmounts[Field.CURRENCY_A], ROUTER_ADDRESS[chainId || parseInt(process.env.REACT_APP_CHAIN_ID || '0')])
+  const [approvalB, approveBCallback] = useApproveCallback(parsedAmounts[Field.CURRENCY_B], ROUTER_ADDRESS[chainId || parseInt(process.env.REACT_APP_CHAIN_ID || '0')])
   const [approvalLP, approveLPCallback] = useApproveCallback(liquidityMinted, herodotusAddress)
 
   const addTransaction = useTransactionAdder()
@@ -253,9 +253,9 @@ export default function AddLiquidity({
       })
     } else {
       const iface = new ethers.utils.Interface(IUniswapV2Router02ABI)
-
-      const flagFeeDelegate = await UseDeParam('KLAYTN_FEE_DELEGATE', 'N')
-      const flagDefinixAnalaytics = await UseDeParam('GA_TP', 'N')
+      
+      const flagFeeDelegate = await UseDeParam(chainId, 'KLAYTN_FEE_DELEGATE', 'N')
+      const flagDefinixAnalaytics = await UseDeParam(chainId, 'GA_TP', 'N')
 
       await estimate(...args, value ? { value } : {})
         .then((estimatedGasLimit) => {
@@ -265,15 +265,14 @@ export default function AddLiquidity({
 
             // @ts-ignore
             const caver = new Caver(window.caver)
-            caver.klay
-              .signTransaction({
-                type: 'FEE_DELEGATED_SMART_CONTRACT_EXECUTION',
-                from: account,
-                to: ROUTER_ADDRESS,
-                gas: calculateGasMargin(estimatedGasLimit),
-                value,
-                data: iface.encodeFunctionData(methodName, [...args]),
-              })
+            caver.klay.signTransaction({
+              type: 'FEE_DELEGATED_SMART_CONTRACT_EXECUTION',
+              from: account,
+              to: ROUTER_ADDRESS[chainId],
+              gas: calculateGasMargin(estimatedGasLimit),
+              value,
+              data: iface.encodeFunctionData(methodName, [...args]),
+            })
               .then(function (userSignTx) {
                 // console.log('userSignTx tx = ', userSignTx)
                 const userSigned = caver.transaction.decode(userSignTx.rawTransaction)
@@ -506,7 +505,7 @@ export default function AddLiquidity({
 
                       const iface = new ethers.utils.Interface(HERODOTUS_ABI)
 
-                      return UseDeParam('KLAYTN_FEE_DELEGATE', 'N').then((flagFeeDelegate) => {
+                      return UseDeParam(chainId, 'KLAYTN_FEE_DELEGATE', 'N').then((flagFeeDelegate) => {
                         if (flagFeeDelegate === 'Y') {
                           const caverFeeDelegate = new Caver(process.env.REACT_APP_SIX_KLAYTN_EN_URL)
                           const feePayerAddress = process.env.REACT_APP_FEE_PAYER_ADDRESS

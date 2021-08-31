@@ -1,18 +1,7 @@
 import { FC } from 'react'
 import { SvgProps } from '../../components/Svg/types'
 
-export type ConnectorId =
-  | 'authereum'
-  | 'fortmatic'
-  | 'frame'
-  | 'injected'
-  | 'portis'
-  | 'squarelink'
-  | 'torus'
-  | 'walletconnect'
-  | 'walletlink'
-  | 'bsc'
-  | 'klip'
+export type ConnectorId = 'injected' | 'klip'
 
 export type Login = (connectorId: ConnectorId) => void
 

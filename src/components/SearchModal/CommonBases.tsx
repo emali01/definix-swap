@@ -1,7 +1,7 @@
 import React from 'react'
 import { useTranslation } from 'contexts/Localization'
 import { Text } from 'uikit-dev'
-import { ChainId, Currency, currencyEquals, ETHER, Token } from 'definixswap-sdk'
+import { Currency, currencyEquals, ETHER, Token } from 'definixswap-sdk'
 import styled from 'styled-components'
 
 import { SUGGESTED_BASES } from '../../constants'
@@ -31,7 +31,7 @@ export default function CommonBases({
   onSelect,
   selectedCurrency,
 }: {
-  chainId?: ChainId
+  chainId?: number
   selectedCurrency?: Currency | null
   onSelect: (currency: Currency) => void
 }) {
@@ -52,7 +52,7 @@ export default function CommonBases({
           disable={selectedCurrency === ETHER}
         >
           <CurrencyLogo currency={ETHER} style={{ marginRight: 8 }} />
-          <Text>BNB</Text>
+          <Text>KLAY</Text>
         </BaseWrapper>
         {(chainId ? SUGGESTED_BASES[chainId] : []).map((token: Token) => {
           const selected = selectedCurrency instanceof Token && selectedCurrency.address === token.address

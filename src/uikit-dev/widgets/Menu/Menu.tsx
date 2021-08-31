@@ -3,25 +3,23 @@ import _ from 'lodash'
 import throttle from 'lodash/throttle'
 import numeral from 'numeral'
 import React, { useEffect, useRef, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import styled from 'styled-components'
-import CountDownBanner from 'uikit-dev/components/CountDownBanner'
-import StartTimeBanner from 'uikit-dev/components/StartTimeBanner'
-import SwitchNetwork from 'uikit-dev/components/SwitchNetwork'
-import finixCoin from 'uikit-dev/images/finix-coin.png'
-import logoTrade from 'uikit-dev/images/for-trading-challenge/Definix-Trading-Challenge-29.png'
-import colorGradient from 'uikit-dev/images/for-ui-v2/color-gradient.png'
+import { Text } from '../../components/Text'
+import CountDownBanner from '../../components/CountDownBanner'
+import StartTimeBanner from '../../components/StartTimeBanner'
+import SwitchNetwork from '../../components/SwitchNetwork'
+import logoTrade from '../../images/for-trading-challenge/Definix-Trading-Challenge-29.png'
+import colorGradient from '../../images/for-ui-v2/color-gradient.png'
+import logoNoti from '../../images/for-ui-v2/noti.png'
 import Button from '../../components/Button/Button'
 import { Flex } from '../../components/Flex'
 import Footer from '../../components/Footer'
 import Overlay from '../../components/Overlay/Overlay'
-import { SvgProps } from '../../components/Svg'
 import { useMatchBreakpoints } from '../../hooks'
-import en from '../../images/en.png'
 import FinixCoin from '../../images/finix-coin.png'
-import th from '../../images/th.png'
 import CopyToClipboard from '../WalletModal/CopyToClipboard'
 import { MENU_HEIGHT } from './config'
-import * as IconModule from './icons'
 import Logo from './Logo'
 import Panel from './Panel'
 import { NavProps } from './types'
@@ -140,11 +138,6 @@ const Price = styled.a`
   }
 `
 
-const Flag = styled.img`
-  width: 24px;
-  height: auto;
-`
-
 const Menu: React.FC<NavProps> = ({
   account,
   login,
@@ -159,24 +152,12 @@ const Menu: React.FC<NavProps> = ({
   children,
   price,
 }) => {
+  const location = useLocation()
   const { isXl, isMd, isLg } = useMatchBreakpoints()
   const isMobile = !isMd && !isXl && !isLg
   const [isPushed, setIsPushed] = useState(false)
   const [showMenu, setShowMenu] = useState(true)
   const refPrevOffset = useRef(window.pageYOffset)
-  const Icons = IconModule as unknown as { [key: string]: React.FC<SvgProps> }
-  const { LanguageIcon } = Icons
-  const IconFlag = () => {
-    if (currentLang === 'en') {
-      return <Flag src={en} alt="" />
-    }
-
-    if (currentLang === 'th') {
-      return <Flag src={th} alt="" />
-    }
-
-    return <LanguageIcon color="textSubtle" width="24px" />
-  }
   const endRegisterTimestamp = process.env.REACT_APP_TRADE_COMPETITION_TIMESTAMP
     ? parseInt(process.env.REACT_APP_TRADE_COMPETITION_TIMESTAMP || '', 10) || new Date().getTime()
     : new Date().getTime()
@@ -254,7 +235,6 @@ const Menu: React.FC<NavProps> = ({
             isDark={isDark}
             href={homeLink?.href ?? '/'}
           />
-
           {!isMobile && <SwitchNetwork />}
         </Flex>
 
@@ -301,20 +281,46 @@ const Menu: React.FC<NavProps> = ({
               }
             />
 
-            <CountDownBanner
-              logo={finixCoin}
-              title="FINIX-Klaytn Address : "
-              detail="0xd51c337147c8033a43f3b5ce0023382320c113aa"
-              disableCountdown
-              button={
-                <CopyToClipboard
-                  color="warning"
-                  noText
-                  toCopy="0xd51c337147c8033a43f3b5ce0023382320c113aa"
-                  tooltipPos="right"
-                />
-              }
-            />
+            {location.pathname === '/explore' ||
+            location.pathname === '/explore/detail' ||
+            location.pathname === '/explore/invest' ? (
+              <CountDownBanner
+                logo={logoNoti}
+                customText={
+                  <Text color="white" fontSize="12px">
+                    <strong>New Feature : Systematic Vault (Beta) :</strong>{' '}
+                    <span className="mr-1">
+                      Systematic vault is a vault that has been built by using rebalancing strategy. This feature is
+                      still in beta period. For the security of your assets,
+                    </span>
+                    <strong className="mr-1" style={{ color: '#ffd157' }}>
+                      {' '}
+                      the maximum amount of investment will be $100 per vault
+                    </strong>
+                    <span>
+                      during the beta period. This limit will be removed once the auditor finishes the smart contract of
+                      systematic vault.
+                    </span>
+                  </Text>
+                }
+                disableCountdown
+              />
+            ) : (
+              <CountDownBanner
+                logo={FinixCoin}
+                title="FINIX-Klaytn Address : "
+                detail="0xd51c337147c8033a43f3b5ce0023382320c113aa"
+                disableCountdown
+                button={
+                  <CopyToClipboard
+                    color="warning"
+                    noText
+                    toCopy="0xd51c337147c8033a43f3b5ce0023382320c113aa"
+                    tooltipPos="right"
+                  />
+                }
+              />
+            )}
 
             {currentTime > endStatedTradingTime ? (
               <CountDownBanner
