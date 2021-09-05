@@ -3,7 +3,8 @@ import React, { Suspense, useEffect, useState } from 'react'
 import { HashRouter, Route, Switch } from 'react-router-dom'
 import styled from 'styled-components'
 import { useCaverJsReact } from '@sixnetwork/caverjs-react-core'
-import { injected } from 'connectors'
+import { injected,klip } from 'connectors'
+import { KlipModalContext } from "@sixnetwork/klaytn-use-wallet"
 import { TwoPanelLayout } from 'uikit-dev/components/TwoPanelLayout'
 import Menu from '../components/Menu'
 import Popups from '../components/Popups'
@@ -77,12 +78,16 @@ export default function App() {
   }
 
   const { account, activate } = useCaverJsReact()
-
+  const { setShowModal, showModal } = React.useContext(KlipModalContext())
+ 
   useEffect(() => {
     if (!account && window.localStorage.getItem('accountStatus') && checkConnector("injected")) {
       activate(injected)
+    }else if (!account && window.localStorage.getItem('accountStatus') && window.localStorage.getItem('userAccount') && checkConnector("klip")){
+      activate(klip(()=>{setShowModal(true)}, ()=>{setShowModal(false)}))
     }
-  }, [account, activate])
+
+  }, [account, activate,setShowModal])
   const checkConnector = (connector: string) => window.localStorage.getItem('connector') === connector
   useEffect(() => {
     if (selectedLanguage) {
