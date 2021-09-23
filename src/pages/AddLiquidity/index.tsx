@@ -218,8 +218,8 @@ export default function AddLiquidity({
     setAttemptingTxn(true)
     const valueNumber = (Number(value ? (+value).toString() : "0") / (10 ** 18)).toString()
     const valueklip = Number.parseFloat(valueNumber).toFixed(6)
-    let expectValue = (`${(Number(valueklip) + 0.00001) * (10 ** 18)}`)
-    expectValue = expectValue.slice(0, -13)
+    // let expectValue = (`${(Number(valueklip) + 0.00001) / (10 ** 18)}`)
+    // expectValue = expectValue.slice(0, -13)
     // valueklip*(10**18).slice(0, -13)+"0000000000000"
     // Number(klipValue)
 
@@ -229,7 +229,7 @@ export default function AddLiquidity({
         router.address,
         JSON.stringify(getAbiByName(methodName)),
         JSON.stringify(args),
-        value ? `${expectValue}0000000000000` : "0",
+        value ? `${Math.ceil(+valueklip)}000000000000000000` : "0",
         setShowModal
       )
       const tx = await klipProvider.checkResponse()
