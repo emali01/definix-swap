@@ -191,11 +191,19 @@ export function useSwapCallback(
         } = successfulEstimation
         if (isKlipConnector(connector)) {
           // console.log("swapCalls", successfulEstimation)
+          const valueNumber = (Number(value ? (+value).toString() : "0") / (10 ** 18)).toString()
+          const valueklip = Number.parseFloat(valueNumber).toFixed(6)
           const abi = JSON.stringify(getAbiByName(methodName))
           const input = JSON.stringify(convertArgKlip(args, abi))
           if (ROUTER_ADDRESS[chainId]) {
             // setShowModal(true)
-            const statusCallKlip = await klipProvider.genQRcodeContactInteract(ROUTER_ADDRESS[chainId], abi, input, (+value).toString(),setShowModal)
+            const statusCallKlip = await klipProvider.genQRcodeContactInteract(
+              ROUTER_ADDRESS[chainId],
+              abi,
+              input,
+              (+valueklip !== 0 ? `${Math.ceil(+valueklip)}000000000000000000` : "0"),
+              setShowModal
+            )
             // console.log("status ss", statusCallKlip)
             if (statusCallKlip === "success") {
               const klipTx = await klipProvider.checkResponse()
@@ -242,17 +250,16 @@ export function useSwapCallback(
                   const outputSymbol = trade.outputAmount.currency.symbol
                   const inputAmount = trade.inputAmount.toSignificant(3)
                   const outputAmount = trade.outputAmount.toSignificant(3)
-      
+
                   const base = `Swap ${inputAmount} ${inputSymbol} for ${outputAmount} ${outputSymbol}`
                   const withRecipient =
                     recipient === account
                       ? base
-                      : `${base} to ${
-                          recipientAddressOrName && isAddress(recipientAddressOrName)
-                            ? shortenAddress(recipientAddressOrName)
-                            : recipientAddressOrName
-                        }`
-      
+                      : `${base} to ${recipientAddressOrName && isAddress(recipientAddressOrName)
+                        ? shortenAddress(recipientAddressOrName)
+                        : recipientAddressOrName
+                      }`
+
                   addTransaction(response, {
                     type: 'swap',
                     data: {
@@ -263,25 +270,25 @@ export function useSwapCallback(
                     },
                     summary: withRecipient,
                   })
-      
+
                   return response.transactionHash
                 })
-                .catch((error: any) => {
-                  // if the user rejected the tx, pass this along
-                  if (error?.code === 4001) {
-                    throw new Error('Transaction rejected.')
-                  } else {
-                    // otherwise, the error was unexpected and we need to convey that
-                    console.error(`Swap failed`, error, methodName, args, value)
-                    throw new Error(`Swap failed: ${error.message}`)
-                  }
-                })
+                  .catch((error: any) => {
+                    // if the user rejected the tx, pass this along
+                    if (error?.code === 4001) {
+                      throw new Error('Transaction rejected.')
+                    } else {
+                      // otherwise, the error was unexpected and we need to convey that
+                      console.error(`Swap failed`, error, methodName, args, value)
+                      throw new Error(`Swap failed: ${error.message}`)
+                    }
+                  })
               })
             })
         }
 
         // eslint-disable-next-line consistent-return
-        return contract[methodName](...args, {gasLimit: calculateGasMargin(gasEstimate), ...(value && !isZero(value) ? { value, from: account } : { from: account }),})
+        return contract[methodName](...args, { gasLimit: calculateGasMargin(gasEstimate), ...(value && !isZero(value) ? { value, from: account } : { from: account }), })
           .then((response: any) => {
             const inputSymbol = trade.inputAmount.currency.symbol
             const outputSymbol = trade.outputAmount.currency.symbol
