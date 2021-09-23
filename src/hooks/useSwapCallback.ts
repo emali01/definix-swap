@@ -359,7 +359,7 @@ const convertArgKlip = (args: (string[] | string)[], abi) => {
     return argToString
   } catch (error) {
     // console.log("ee,", error)
-    throw new Error(error)
+    throw new Error("convertArgKlip has error")
   }
 
 }
