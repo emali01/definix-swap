@@ -18,7 +18,6 @@ import Footer from '../../components/Footer'
 import Overlay from '../../components/Overlay/Overlay'
 import { useMatchBreakpoints } from '../../hooks'
 import FinixCoin from '../../images/finix-coin.png'
-import CopyToClipboard from '../WalletModal/CopyToClipboard'
 import { MENU_HEIGHT } from './config'
 import Logo from './Logo'
 import Panel from './Panel'
@@ -282,45 +281,45 @@ const Menu: React.FC<NavProps> = ({
             />
 
             {location.pathname === '/explore' ||
-            location.pathname === '/explore/detail' ||
-            location.pathname === '/explore/invest' ? (
-              <CountDownBanner
-                logo={logoNoti}
-                customText={
-                  <Text color="white" fontSize="12px">
-                    <strong>New Feature : Systematic Vault (Beta) :</strong>{' '}
-                    <span className="mr-1">
-                      Systematic vault is a vault that has been built by using rebalancing strategy. This feature is
-                      still in beta period. For the security of your assets,
-                    </span>
-                    <strong className="mr-1" style={{ color: '#ffd157' }}>
-                      {' '}
-                      the maximum amount of investment will be $100 per vault
-                    </strong>
-                    <span>
-                      during the beta period. This limit will be removed once the auditor finishes the smart contract of
-                      systematic vault.
-                    </span>
-                  </Text>
-                }
-                disableCountdown
-              />
-            ) : (
-              <CountDownBanner
-                logo={FinixCoin}
-                title="FINIX-Klaytn Address : "
-                detail="0xd51c337147c8033a43f3b5ce0023382320c113aa"
-                disableCountdown
-                button={
-                  <CopyToClipboard
-                    color="warning"
-                    noText
-                    toCopy="0xd51c337147c8033a43f3b5ce0023382320c113aa"
-                    tooltipPos="right"
-                  />
-                }
-              />
-            )}
+              location.pathname === '/explore/detail' ||
+              (location.pathname === '/explore/invest' && (
+                <CountDownBanner
+                  logo={logoNoti}
+                  customText={
+                    <Text color="white" fontSize="12px">
+                      <strong>New Feature : Systematic Vault (Beta) :</strong>{' '}
+                      <span className="mr-1">
+                        Systematic vault is a vault that has been built by using rebalancing strategy. This feature is
+                        still in beta period. For the security of your assets,
+                      </span>
+                      <strong className="mr-1" style={{ color: '#ffd157' }}>
+                        {' '}
+                        the maximum amount of investment will be $100 per vault
+                      </strong>
+                      <span>
+                        during the beta period. This limit will be removed once the auditor finishes the smart contract
+                        of systematic vault.
+                      </span>
+                    </Text>
+                  }
+                  disableCountdown
+                />
+                // ) : (
+                //   <CountDownBanner
+                //     logo={FinixCoin}
+                //     title="FINIX-Klaytn Address : "
+                //     detail="0xd51c337147c8033a43f3b5ce0023382320c113aa"
+                //     disableCountdown
+                //     button={
+                //       <CopyToClipboard
+                //         color="warning"
+                //         noText
+                //         toCopy="0xd51c337147c8033a43f3b5ce0023382320c113aa"
+                //         tooltipPos="right"
+                //       />
+                //     }
+                //   />
+              ))}
 
             {currentTime > endStatedTradingTime ? (
               <CountDownBanner
