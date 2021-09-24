@@ -32,6 +32,16 @@ export const USDT_ADDRESS = {
   [ChainId.BSCTESTNET]: process.env.REACT_APP_USDT_ADDRESS_TESTNET || ''
 }
 
+export const DAI_ADDRESS = {
+  [ChainId.MAINNET]: process.env.REACT_APP_DAI_ADDRESS_MAINNET || '',
+  [ChainId.BSCTESTNET]: process.env.REACT_APP_DAI_ADDRESS_TESTNET || ''
+}
+
+export const UST_ADDRESS = {
+  [ChainId.MAINNET]: process.env.REACT_APP_UST_ADDRESS_MAINNET || '',
+  [ChainId.BSCTESTNET]: process.env.REACT_APP_UST_ADDRESS_TESTNET || ''
+}
+
 export const WBNB_ADDRESS = {
   [ChainId.MAINNET]: process.env.REACT_APP_WBNB_ADDRESS_MAINNET || '',
   [ChainId.BSCTESTNET]: process.env.REACT_APP_WBNB_ADDRESS_TESTNET || ''
@@ -102,16 +112,10 @@ export const PANCAKE_MASTER_CHEF_ADDRESS = {
   [ChainId.BSCTESTNET]: process.env.REACT_APP_PANCAKE_MASTER_CHEF_TESTNET || ''
 }
 
-export const DAI = new Token(ChainId.MAINNET, '0x1af3f329e8be154074d8769d1ffa4ee058b1dbc3', 18, 'DAI', 'Dai Stablecoin')
-export const BUSD = new Token(ChainId.MAINNET, '0xe9e7cea3dedca5984780bafc599bd69add087d56', 18, 'BUSD', 'Binance USD')
-export const USDT = new Token(ChainId.MAINNET, '0x55d398326f99059ff775485246999027b3197955', 18, 'USDT', 'Tether USD')
-export const UST = new Token(
-  ChainId.MAINNET,
-  '0x23396cf899ca06c4472205fc903bdb4de249d6fc',
-  18,
-  'UST',
-  'Wrapped UST Token'
-)
+export const DAI = new Token(process.env.REACT_APP_CHAIN_ID === '97' ? ChainId.BSCTESTNET : ChainId.MAINNET, DAI_ADDRESS[process.env.REACT_APP_CHAIN_ID || ChainId.MAINNET], 18, 'DAI', 'Dai Stablecoin')
+export const BUSD = new Token(process.env.REACT_APP_CHAIN_ID === '97' ? ChainId.BSCTESTNET : ChainId.MAINNET, BUSD_ADDRESS[process.env.REACT_APP_CHAIN_ID || ChainId.MAINNET], 18, 'BUSD', 'Binance USD')
+export const USDT = new Token(process.env.REACT_APP_CHAIN_ID === '97' ? ChainId.BSCTESTNET : ChainId.MAINNET, USDT_ADDRESS[process.env.REACT_APP_CHAIN_ID || ChainId.MAINNET], 18, 'USDT', 'Tether USD')
+export const UST = new Token(process.env.REACT_APP_CHAIN_ID === '97' ? ChainId.BSCTESTNET : ChainId.MAINNET, UST_ADDRESS[process.env.REACT_APP_CHAIN_ID || ChainId.MAINNET], 18, 'UST', 'Wrapped UST Token')
 
 const WETH_ONLY: ChainTokenList = {
   [ChainId.MAINNET]: [WETH[ChainId.MAINNET]],
