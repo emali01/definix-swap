@@ -29,8 +29,20 @@ import { ArrowDown } from 'react-feather'
 import { Field } from 'state/swap/actions'
 import { useDefaultsFromURLSearch, useDerivedSwapInfo, useSwapActionHandlers, useSwapState } from 'state/swap/hooks'
 import { useExpertModeManager, useUserDeadline, useUserSlippageTolerance } from 'state/user/hooks'
-import { ThemeContext } from 'styled-components'
-import { ArrowDownIcon, Button, Card, CardBody, Heading, IconButton, Text, useMatchBreakpoints,useModal ,Modal} from 'uikit-dev'
+import styled, { ThemeContext } from 'styled-components'
+import {
+  ArrowDownIcon,
+  Button,
+  Card,
+  CardBody,
+  Heading,
+  IconButton,
+  Text,
+  useMatchBreakpoints,
+  useModal,
+  Modal,
+  Link,
+} from 'uikit-dev'
 import { Overlay } from 'uikit-dev/components/Overlay'
 import { LeftPanel, MaxWidthLeft, MaxWidthRight, RightPanel, ShowHideButton } from 'uikit-dev/components/TwoPanelLayout'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
@@ -54,7 +66,6 @@ import {
 } from '../../constants'
 import Flip from '../../uikit-dev/components/Flip'
 import AppBody from '../AppBody'
-
 
 const TimerWrapper = ({ isPhrase2, date, children }) => {
   return isPhrase2 ? (
@@ -87,6 +98,9 @@ const TimerWrapper = ({ isPhrase2, date, children }) => {
 
 const newTransactionsFirst = (a: TransactionDetails, b: TransactionDetails) => b.addedTime - a.addedTime
 
+const TutorailsLink = styled(Link)`
+  text-decoration-line: underline;
+`
 export default function Swap({
   match: {
     params: { currencyIdA, currencyIdB },
@@ -147,7 +161,13 @@ export default function Swap({
   }, [currentTime, phrase2TimeStamp])
 
   const { account, chainId = '' } = useActiveWeb3React()
-  const wklay = new Token(chainId || parseInt(process.env.REACT_APP_CHAIN_ID || '0'), WKLAY_ADDRESS[chainId || parseInt(process.env.REACT_APP_CHAIN_ID || '0')], 18, 'WKLAY', 'Wrapped KLAY')
+  const wklay = new Token(
+    chainId || parseInt(process.env.REACT_APP_CHAIN_ID || '0'),
+    WKLAY_ADDRESS[chainId || parseInt(process.env.REACT_APP_CHAIN_ID || '0')],
+    18,
+    'WKLAY',
+    'Wrapped KLAY'
+  )
   const theme = useContext(ThemeContext)
 
   const [isExpertMode] = useExpertModeManager()
@@ -169,13 +189,13 @@ export default function Swap({
 
   const parsedAmounts = showWrap
     ? {
-      [Field.INPUT]: parsedAmount,
-      [Field.OUTPUT]: parsedAmount,
-    }
+        [Field.INPUT]: parsedAmount,
+        [Field.OUTPUT]: parsedAmount,
+      }
     : {
-      [Field.INPUT]: independentField === Field.INPUT ? parsedAmount : trade?.inputAmount,
-      [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : trade?.outputAmount,
-    }
+        [Field.INPUT]: independentField === Field.INPUT ? parsedAmount : trade?.inputAmount,
+        [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : trade?.outputAmount,
+      }
 
   const { onSwitchTokens, onCurrencySelection, onUserInput, onChangeRecipient } = useSwapActionHandlers()
   const isValid = !swapInputError
@@ -221,9 +241,13 @@ export default function Swap({
     currencies[Field.INPUT] && currencies[Field.OUTPUT] && parsedAmounts[independentField]?.greaterThan(JSBI.BigInt(0))
   )
   const noRoute = !route
-const [onPresentSettings] = useModal(<Modal title="Settings" isRainbow={false}>
-  <a href="https://google.com" rel="noreferrer" target="_blank"><button type="button">klip login</button></a>
-</Modal>)
+  const [onPresentSettings] = useModal(
+    <Modal title="Settings" isRainbow={false}>
+      <a href="https://google.com" rel="noreferrer" target="_blank">
+        <button type="button">klip login</button>
+      </a>
+    </Modal>
+  )
   // check whether the user has approved the router on the input token
   const [approval, approveCallback] = useApproveCallbackFromTrade(chainId, trade, allowedSlippage)
 
@@ -330,15 +354,14 @@ const [onPresentSettings] = useModal(<Modal title="Settings" isRainbow={false}>
 
   const handleMaxInput = useCallback(() => {
     if (maxAmountInput) {
-      if (window.localStorage.getItem('connector') === "klip"){
+      if (window.localStorage.getItem('connector') === 'klip') {
         const floorDigit = 1000000
-        const valueMax = (+maxAmountInput.toExact())
-        const max = Math.floor( valueMax*floorDigit)/floorDigit
+        const valueMax = +maxAmountInput.toExact()
+        const max = Math.floor(valueMax * floorDigit) / floorDigit
         onUserInput(Field.INPUT, max.toString())
-      }else{
+      } else {
         onUserInput(Field.INPUT, maxAmountInput.toExact())
       }
-        
     }
   }, [maxAmountInput, onUserInput])
 
@@ -478,34 +501,35 @@ const [onPresentSettings] = useModal(<Modal title="Settings" isRainbow={false}>
                     {showWrap
                       ? null
                       : (Boolean(trade) || allowedSlippage !== INITIAL_ALLOWED_SLIPPAGE) && (
-                        <div className="flex mt-5 justify-end">
-                          {Boolean(trade) && (
-                            <div className="flex flex-wrap align-baseline justify-space-between col-6">
-                              <Text fontSize="14px" color="textSubtle">
-                                Price Rate
-                              </Text>
-                              <TradePrice
-                                price={trade?.executionPrice}
-                                showInverted={showInverted}
-                                setShowInverted={setShowInverted}
-                              />
-                            </div>
-                          )}
-                          {allowedSlippage !== INITIAL_ALLOWED_SLIPPAGE && (
-                            <div
-                              className={`flex flex-wrap align-baseline justify-space-between col-6 ${isMobileOrTablet ? 'pl-5' : 'pl-6'
+                          <div className="flex mt-5 justify-end">
+                            {Boolean(trade) && (
+                              <div className="flex flex-wrap align-baseline justify-space-between col-6">
+                                <Text fontSize="14px" color="textSubtle">
+                                  Price Rate
+                                </Text>
+                                <TradePrice
+                                  price={trade?.executionPrice}
+                                  showInverted={showInverted}
+                                  setShowInverted={setShowInverted}
+                                />
+                              </div>
+                            )}
+                            {allowedSlippage !== INITIAL_ALLOWED_SLIPPAGE && (
+                              <div
+                                className={`flex flex-wrap align-baseline justify-space-between col-6 ${
+                                  isMobileOrTablet ? 'pl-5' : 'pl-6'
                                 }`}
-                            >
-                              <Text fontSize="14px" color="textSubtle">
-                                Slippage Tolerance
-                              </Text>
-                              <Text fontSize="14px" textAlign="right" bold>
-                                {allowedSlippage / 100}%
-                              </Text>
-                            </div>
-                          )}
-                        </div>
-                      )}
+                              >
+                                <Text fontSize="14px" color="textSubtle">
+                                  Slippage Tolerance
+                                </Text>
+                                <Text fontSize="14px" textAlign="right" bold>
+                                  {allowedSlippage / 100}%
+                                </Text>
+                              </div>
+                            )}
+                          </div>
+                        )}
                   </div>
                 </CardBody>
 
@@ -598,6 +622,15 @@ const [onPresentSettings] = useModal(<Modal title="Settings" isRainbow={false}>
                             : `Swap${priceImpactSeverity > 2 ? ' Anyway' : ''}`)}
                       </Button>
                     )}
+                    <div className="mt-5 flex align-center justify-center">
+                      <Text paddingRight="1">I’m new to swap,</Text>
+                      <TutorailsLink
+                        href="https://sixnetwork.gitbook.io/definix-on-klaytn-en/exchange/how-to-trade-on-definix-exchange"
+                        target="_blank"
+                      >
+                        Teach me how.
+                      </TutorailsLink>
+                    </div>
                     {showApproveFlow && <ProgressSteps steps={[approval === ApprovalState.APPROVED]} />}
                     {isExpertMode && swapErrorMessage ? <SwapCallbackError error={swapErrorMessage} /> : null}
                   </BottomGrouping>
@@ -635,18 +668,21 @@ const [onPresentSettings] = useModal(<Modal title="Settings" isRainbow={false}>
           <MaxWidthRight>
             <Heading fontSize="20px !important" className="mb-3">
               SWAP HISTORY
-         
             </Heading>
             <Card style={{ overflow: 'auto', flexGrow: 1 }}>
               {sortedRecentTransactions.length > 0 ? (
                 sortedRecentTransactions.map((tx) => {
                   const firstToken =
                     tx.data?.firstToken === 'KLAY' || tx.data?.firstToken === 'WKLAY'
-                      ? tx.data?.firstToken === 'WKLAY' ? wklay : ETHER
+                      ? tx.data?.firstToken === 'WKLAY'
+                        ? wklay
+                        : ETHER
                       : Object.values(allTokens).find((t) => t.symbol === tx.data?.firstToken)
                   const secondToken =
                     tx.data?.secondToken === 'KLAY' || tx.data?.secondToken === 'WKLAY'
-                      ? tx.data?.secondToken === 'WKLAY' ? wklay : ETHER
+                      ? tx.data?.secondToken === 'WKLAY'
+                        ? wklay
+                        : ETHER
                       : Object.values(allTokens).find((t) => t.symbol === tx.data?.secondToken)
                   return (
                     <TransactionHistoryBox
@@ -661,12 +697,12 @@ const [onPresentSettings] = useModal(<Modal title="Settings" isRainbow={false}>
                       date={
                         tx.confirmedTime
                           ? new Date(tx.confirmedTime || 0).toLocaleString('en-US', {
-                            day: 'numeric',
-                            month: 'short',
-                            year: 'numeric',
-                            hour: 'numeric',
-                            minute: 'numeric',
-                          })
+                              day: 'numeric',
+                              month: 'short',
+                              year: 'numeric',
+                              hour: 'numeric',
+                              minute: 'numeric',
+                            })
                           : ''
                       }
                     />

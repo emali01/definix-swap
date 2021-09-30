@@ -5,9 +5,9 @@ import { StyledInternalLink } from 'components/Shared'
 import { Dots } from 'components/swap/styleds'
 import TransactionHistoryBox from 'components/TransactionHistoryBox'
 import TranslatedText from 'components/TranslatedText'
-import { injected ,klip} from 'connectors'
-import { KlipModalContext } from "@sixnetwork/klaytn-use-wallet"
-
+import { injected, klip } from 'connectors'
+import { KlipModalContext } from '@sixnetwork/klaytn-use-wallet'
+import styled from 'styled-components'
 import { usePairs } from 'data/Reserves'
 import { ETHER, Pair, Token } from 'definixswap-sdk'
 import { useActiveWeb3React } from 'hooks'
@@ -59,6 +59,13 @@ const TimerWrapper = ({ isPhrase2, date, children }) => {
 
 const newTransactionsFirst = (a: TransactionDetails, b: TransactionDetails) => b.addedTime - a.addedTime
 
+const TutorailsLink = styled(Link)`
+  text-decoration-line: underline;
+  font-size: 14px;
+  font-weight: bold;
+  color: #1587c9;
+`
+
 export default function Pool() {
   const { account, chainId, activate, deactivate } = useActiveWeb3React()
   const [isShowRightPanel, setIsShowRightPanel] = useState(false)
@@ -67,8 +74,13 @@ export default function Pool() {
 
   const allTransactions = useAllTransactions()
   const allTokens = useAllTokens()
-  const wklay = new Token(chainId || parseInt(process.env.REACT_APP_CHAIN_ID || '0'), WKLAY_ADDRESS[chainId || parseInt(process.env.REACT_APP_CHAIN_ID || '0')], 18, 'WKLAY', 'Wrapped KLAY')
-
+  const wklay = new Token(
+    chainId || parseInt(process.env.REACT_APP_CHAIN_ID || '0'),
+    WKLAY_ADDRESS[chainId || parseInt(process.env.REACT_APP_CHAIN_ID || '0')],
+    18,
+    'WKLAY',
+    'Wrapped KLAY'
+  )
 
   // Logic taken from Web3Status/index.tsx line 175
   const sortedRecentTransactions = useMemo(() => {
@@ -169,6 +181,16 @@ export default function Pool() {
               <Button id="join-pool-button" as={Link} to="/add/ETH" fullWidth radii="card">
                 <TranslatedText translationId={100}>Add Liquidity</TranslatedText>
               </Button>
+              <div className="mt-5 flex align-center justify-center">
+                <Text paddingRight="1">I’m new to add liquidity, </Text>
+                <TutorailsLink
+                  as="a"
+                  href=" https://sixnetwork.gitbook.io/definix-on-klaytn-en/exchange/how-to-add-liquidity"
+                  target="_blank"
+                >
+                  Teach me how.
+                </TutorailsLink>
+              </div>
             </div>
 
             <div className="pa-6">
@@ -187,14 +209,19 @@ export default function Pool() {
               {!account ? (
                 <div className="py-6 flex flex-column align-center">
                   {isMobileOrTablet && (
-                  <UserBlock account={account as string} login={(connectorId: ConnectorId) => {
-                    if (connectorId === "klip") {
-                      window.localStorage.setItem("connector", "klip")
-                      return activate(klip(showModalKlip, closeModalKlip))
-                    }
-                    window.localStorage.setItem("connector", "injected")
-                    return activate(injected)
-                  }} logout={deactivate} className="ml-3" />
+                    <UserBlock
+                      account={account as string}
+                      login={(connectorId: ConnectorId) => {
+                        if (connectorId === 'klip') {
+                          window.localStorage.setItem('connector', 'klip')
+                          return activate(klip(showModalKlip, closeModalKlip))
+                        }
+                        window.localStorage.setItem('connector', 'injected')
+                        return activate(injected)
+                      }}
+                      logout={deactivate}
+                      className="ml-3"
+                    />
                   )}
 
                   <Text color="textSubtle" textAlign="center" fontSize="16px" className="mt-2">
@@ -252,11 +279,15 @@ export default function Pool() {
                 sortedRecentTransactions.map((tx) => {
                   const firstToken =
                     tx.data?.firstToken === 'KLAY' || tx.data?.firstToken === 'WKLAY'
-                      ? tx.data?.firstToken === 'WKLAY' ? wklay : ETHER
+                      ? tx.data?.firstToken === 'WKLAY'
+                        ? wklay
+                        : ETHER
                       : Object.values(allTokens).find((t) => t.symbol === tx.data?.firstToken)
                   const secondToken =
                     tx.data?.secondToken === 'KLAY' || tx.data?.secondToken === 'WKLAY'
-                      ? tx.data?.secondToken === 'WKLAY' ? wklay : ETHER
+                      ? tx.data?.secondToken === 'WKLAY'
+                        ? wklay
+                        : ETHER
                       : Object.values(allTokens).find((t) => t.symbol === tx.data?.secondToken)
                   return (
                     <TransactionHistoryBox
@@ -271,12 +302,12 @@ export default function Pool() {
                       date={
                         tx.confirmedTime
                           ? new Date(tx.confirmedTime || 0).toLocaleString('en-US', {
-                            day: 'numeric',
-                            month: 'short',
-                            year: 'numeric',
-                            hour: 'numeric',
-                            minute: 'numeric',
-                          })
+                              day: 'numeric',
+                              month: 'short',
+                              year: 'numeric',
+                              hour: 'numeric',
+                              minute: 'numeric',
+                            })
                           : ''
                       }
                     />
