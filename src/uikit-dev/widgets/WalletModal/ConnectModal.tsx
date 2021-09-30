@@ -27,7 +27,10 @@ const ConnectModal: React.FC<Props> = ({ login, onDismiss = () => null }) => (
     ))}
     <div className="mt-3 flex align-center justify-center">
       <Text paddingRight="1">I’m new to this,</Text>
-      <TutorailsLink href="https://github.com/thesixnetwork/" target="_blank">
+      <TutorailsLink
+        href="https://sixnetwork.gitbook.io/definix-on-klaytn-en/guides-and-faqs/how-to-use-kaikas-on-definix"
+        target="_blank"
+      >
         How to set up.
       </TutorailsLink>
     </div>
