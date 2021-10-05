@@ -170,7 +170,7 @@ export default function Pool() {
                 <Text paddingRight="1">I’m new to add liquidity, </Text>
                 <TutorailsLink
                   as="a"
-                  href=" https://sixnetwork.gitbook.io/definix-on-klaytn-en/exchange/how-to-add-liquidity"
+                  href="https://sixnetwork.gitbook.io/definix/exchange/how-to-add-liquidity"
                   target="_blank"
                 >
                   Teach me how.

@@ -583,7 +583,7 @@ export default function Swap({
                     <div className="mt-5 flex align-center justify-center">
                       <Text paddingRight="1">I’m new to swap,</Text>
                       <TutorailsLink
-                        href="https://sixnetwork.gitbook.io/definix-on-klaytn-en/exchange/how-to-trade-on-definix-exchange"
+                        href="https://sixnetwork.gitbook.io/definix/exchange/how-to-swap-token"
                         target="_blank"
                       >
                         Teach me how.
