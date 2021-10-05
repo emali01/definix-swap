@@ -30,8 +30,8 @@ import { ArrowDown } from 'react-feather'
 import { Field } from 'state/swap/actions'
 import { useDefaultsFromURLSearch, useDerivedSwapInfo, useSwapActionHandlers, useSwapState } from 'state/swap/hooks'
 import { useExpertModeManager, useUserDeadline, useUserSlippageTolerance } from 'state/user/hooks'
-import { ThemeContext } from 'styled-components'
-import { ArrowDownIcon, Button, Card, CardBody, Heading, IconButton, Text, useMatchBreakpoints } from 'uikit-dev'
+import styled, { ThemeContext } from 'styled-components'
+import { ArrowDownIcon, Button, Card, CardBody, Heading, IconButton, Text, useMatchBreakpoints, Link } from 'uikit-dev'
 import { Overlay } from 'uikit-dev/components/Overlay'
 import { LeftPanel, MaxWidthLeft, MaxWidthRight, RightPanel, ShowHideButton } from 'uikit-dev/components/TwoPanelLayout'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
@@ -74,6 +74,10 @@ const TimerWrapper = ({ isPhrase2, date, children }) => {
 }
 
 const newTransactionsFirst = (a: TransactionDetails, b: TransactionDetails) => b.addedTime - a.addedTime
+
+const TutorailsLink = styled(Link)`
+  text-decoration-line: underline;
+`
 
 export default function Swap({
   match: {
@@ -577,6 +581,15 @@ export default function Swap({
                             : `${translate('Swap')}${priceImpactSeverity > 2 ? translate('Anyway') : ''}`)}
                       </Button>
                     )}
+                    <div className="mt-5 flex align-center justify-center">
+                      <Text paddingRight="1">I’m new to swap,</Text>
+                      <TutorailsLink
+                        href="https://sixnetwork.gitbook.io/definix/exchange/how-to-swap-token"
+                        target="_blank"
+                      >
+                        Teach me how.
+                      </TutorailsLink>
+                    </div>
                     {showApproveFlow && <ProgressSteps steps={[approval === ApprovalState.APPROVED]} />}
                     {isExpertMode && swapErrorMessage ? <SwapCallbackError error={swapErrorMessage} /> : null}
                   </BottomGrouping>

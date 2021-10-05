@@ -10,6 +10,7 @@ import { usePairs } from 'data/Reserves'
 import { Pair } from 'definixswap-sdk'
 import { useActiveWeb3React } from 'hooks'
 import React, { useEffect, useMemo, useState } from 'react'
+import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 import { toV2LiquidityToken, useTrackedTokenPairs } from 'state/user/hooks'
 import { useTokenBalancesWithLoadingIndicator } from 'state/wallet/hooks'
@@ -54,6 +55,13 @@ const TimerWrapper = ({ isPhrase2, date, children }) => {
 }
 
 const newTransactionsFirst = (a: TransactionDetails, b: TransactionDetails) => b.addedTime - a.addedTime
+
+const TutorailsLink = styled(Link)`
+  text-decoration-line: underline;
+  font-size: 14px;
+  font-weight: bold;
+  color: #1587c9;
+`
 
 export default function Pool() {
   const { account, chainId, activate, deactivate } = useActiveWeb3React()
@@ -158,6 +166,16 @@ export default function Pool() {
               <Button id="join-pool-button" as={Link} to="/add/ETH" fullWidth radii="card">
                 {translate('Add Liquidity')}
               </Button>
+              <div className="mt-5 flex align-center justify-center">
+                <Text paddingRight="1">I’m new to add liquidity, </Text>
+                <TutorailsLink
+                  as="a"
+                  href="https://sixnetwork.gitbook.io/definix/exchange/how-to-add-liquidity"
+                  target="_blank"
+                >
+                  Teach me how.
+                </TutorailsLink>
+              </div>
             </div>
 
             <div className="pa-6">
