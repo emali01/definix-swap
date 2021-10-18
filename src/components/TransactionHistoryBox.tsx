@@ -41,12 +41,16 @@ const TransactionHistoryBox = ({ href = "/", title, firstCoin, secondCoin, first
         <Text>{title}</Text>
         <Currency>
           <CurrencyLogo currency={firstCoin} size="24px" style={{ marginRight: '8px' }} />
-          <Text bold>{firstCoinAmount} {firstCoin.name}</Text>
+          <Text bold>
+            {firstCoinAmount} {(firstCoin || {}).name}
+          </Text>
         </Currency>
         <Text color="textSubtle">{withText}</Text>
         <Currency>
           <CurrencyLogo currency={secondCoin} size="24px" style={{ marginRight: '8px' }} />
-          <Text bold>{secondCoinAmount} {secondCoin.name}</Text>
+          <Text bold>
+            {secondCoinAmount} {(secondCoin || {}).name}
+          </Text>
         </Currency>
       </div>
 

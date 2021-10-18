@@ -4,8 +4,8 @@ import { AddressZero } from '@ethersproject/constants'
 import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers'
 import { BigNumber } from '@ethersproject/bignumber'
 import { abi as IUniswapV2Router02ABI } from '@uniswap/v2-periphery/build/IUniswapV2Router02.json'
-import { ChainId, JSBI, Percent, Token, CurrencyAmount, Currency, ETHER } from 'definixswap-sdk'
-import { ROUTER_ADDRESS } from '../constants'
+import { JSBI, Percent, Token, CurrencyAmount, Currency, ETHER } from 'definixswap-sdk'
+import { ChainId, ROUTER_ADDRESS } from '../constants'
 import { TokenAddressMap } from '../state/lists/hooks'
 
 // returns the checksummed address if the address is valid, otherwise returns false
@@ -17,12 +17,12 @@ export function isAddress(value: any): string | false {
   }
 }
 
-const BSCSCAN_PREFIXES: { [chainId in ChainId]: string } = {
+const BSCSCAN_PREFIXES: { [chainId: number]: string } = {
   56: '',
   97: 'testnet.'
 }
 
-export function getBscScanLink(chainId: ChainId, data: string, type: 'transaction' | 'token' | 'address'): string {
+export function getBscScanLink(chainId: number, data: string, type: 'transaction' | 'token' | 'address'): string {
   const prefix = `https://${BSCSCAN_PREFIXES[chainId] || BSCSCAN_PREFIXES[ChainId.MAINNET]}bscscan.com`
 
   switch (type) {
@@ -88,8 +88,8 @@ export function getContract(address: string, ABI: any, library: Web3Provider, ac
 }
 
 // account is optional
-export function getRouterContract(_: number, library: Web3Provider, account?: string): Contract {
-  return getContract(ROUTER_ADDRESS || '', IUniswapV2Router02ABI, library, account)
+export function getRouterContract(chainId: number, library: Web3Provider, account?: string): Contract {
+  return getContract(ROUTER_ADDRESS[chainId] || '', IUniswapV2Router02ABI, library, account)
 }
 
 export function escapeRegExp(string: string): string {

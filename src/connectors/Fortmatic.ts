@@ -1,13 +1,13 @@
-import { ChainId } from 'definixswap-sdk'
 import { FortmaticConnector as FortmaticConnectorCore } from '@web3-react/fortmatic-connector'
 
 export const OVERLAY_READY = 'OVERLAY_READY'
 
-type FormaticSupportedChains = Extract<ChainId, ChainId.MAINNET | ChainId.BSCTESTNET>
+const intMainnetId = parseInt(process.env.REACT_APP_MAINNET_ID || '')
+const intTestnetId = parseInt(process.env.REACT_APP_TESTNET_ID || '')
 
-const CHAIN_ID_NETWORK_ARGUMENT: { readonly [chainId in FormaticSupportedChains]: string | undefined } = {
-  [ChainId.MAINNET]: undefined,
-  [ChainId.BSCTESTNET]: 'Bsc-testnet'
+const CHAIN_ID_NETWORK_ARGUMENT = {
+  [intMainnetId]: undefined,
+  [intTestnetId]: 'Bsc-testnet'
 }
 
 export class FortmaticConnector extends FortmaticConnectorCore {
@@ -17,7 +17,7 @@ export class FortmaticConnector extends FortmaticConnectorCore {
 
       const { apiKey, chainId } = this as any
       if (chainId in CHAIN_ID_NETWORK_ARGUMENT) {
-        this.fortmatic = new Fortmatic(apiKey, CHAIN_ID_NETWORK_ARGUMENT[chainId as FormaticSupportedChains])
+        this.fortmatic = new Fortmatic(apiKey, CHAIN_ID_NETWORK_ARGUMENT[chainId])
       } else {
         throw new Error(`Unsupported network ID: ${chainId}`)
       }

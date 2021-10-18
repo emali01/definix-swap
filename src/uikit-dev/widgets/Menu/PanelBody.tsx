@@ -133,6 +133,7 @@ const PanelBody: React.FC<Props> = (props) => {
   const addressEllipsis = addressFinix
     ? `${addressFinix.substring(0, 6)}...${addressFinix.substring(addressFinix.length - 4)}`
     : null
+
   return (
     <Container>
       {isMobile && (
@@ -154,28 +155,27 @@ const PanelBody: React.FC<Props> = (props) => {
 
       {isDark ? (
         <StyledDark>
-          <img src={FinixCoin} alt="FinixCoin" width="22" />
+          <img src={FinixCoin} alt="FinixCoin" width="24" />
           <Text className="pl-1" color="text" fontSize="14px">
             FINIX
           </Text>
-          <Text className="px-1" fontSize="14px">
+          <Text className="px-2" fontSize="14px">
             {addressEllipsis}
           </Text>
           <CopyToClipboard color="#FFF" noText toCopy={addressFinix} tooltipPos="bottom" iconWidth="16px" />
         </StyledDark>
       ) : (
         <StyleLight>
-          <img src={FinixCoin} alt="FinixCoin" width="22" />
+          <img src={FinixCoin} alt="FinixCoin" width="24" />
           <Text className="pl-1" color="text" fontSize="14px">
             FINIX
           </Text>
-          <Text className="px-1" fontSize="14px">
+          <Text className="px-2" fontSize="14px">
             {addressEllipsis}
           </Text>
           <CopyToClipboard color="#000" noText toCopy={addressFinix} tooltipPos="bottom" iconWidth="16px" />
         </StyleLight>
       )}
-
       {/* <BorderBox>
         <Heading fontSize="14px" className="mb-4">
           Wallet

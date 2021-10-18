@@ -1,6 +1,6 @@
 import React from 'react'
 import { Text } from 'uikit-dev'
-import { ChainId, Currency, currencyEquals, ETHER, Token } from 'definixswap-sdk'
+import { Currency, currencyEquals, ETHER, Token } from 'definixswap-sdk'
 import styled from 'styled-components'
 
 import { SUGGESTED_BASES } from '../../constants'
@@ -30,7 +30,7 @@ export default function CommonBases({
   onSelect,
   selectedCurrency,
 }: {
-  chainId?: ChainId
+  chainId?: number
   selectedCurrency?: Currency | null
   onSelect: (currency: Currency) => void
 }) {

@@ -35,7 +35,7 @@
     "ajv": "^6.12.3",
     "cids": "^1.0.0",
     "copy-to-clipboard": "^3.2.0",
-    "definixswap-sdk": "0.0.11",
+    "definixswap-sdk": "1.0.1",
     "definixswap-uikit": "0.0.1",
     "ethers": "^5.0.7",
     "i18next": "^15.0.9",

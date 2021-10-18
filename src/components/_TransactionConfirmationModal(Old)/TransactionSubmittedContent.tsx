@@ -1,4 +1,3 @@
-import { ChainId } from 'definixswap-sdk'
 import React, { useContext } from 'react'
 import { ThemeContext } from 'styled-components'
 import { Button, LinkExternal } from 'uikit-dev'
@@ -10,7 +9,7 @@ import { Wrapper, Section, ConfirmedIcon, ContentHeader } from './helpers'
 type TransactionSubmittedContentProps = {
   onDismiss: () => void
   hash: string | undefined
-  chainId: ChainId
+  chainId: number
 }
 
 const TransactionSubmittedContent = ({ onDismiss, chainId, hash }: TransactionSubmittedContentProps) => {

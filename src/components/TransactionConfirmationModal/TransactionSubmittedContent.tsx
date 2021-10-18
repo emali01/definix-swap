@@ -1,5 +1,4 @@
 import { RowBetween } from 'components/Row'
-import { ChainId } from 'definixswap-sdk'
 import React from 'react'
 import Lottie from 'react-lottie'
 import { ArrowDownIcon, Button, ChevronRightIcon, Heading, Link, Text } from 'uikit-dev'
@@ -17,7 +16,7 @@ type TransactionSubmittedContentProps = {
   title: string
   date?: string
   hash: string | undefined
-  chainId: ChainId | undefined
+  chainId: number | undefined
   content?: any
   button?: any
 }
