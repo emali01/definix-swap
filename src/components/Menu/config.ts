@@ -16,6 +16,8 @@ import partnerBlack from 'uikit-dev/images/for-ui-v2/menu/Partnership-Black.png'
 import partnerWhite from 'uikit-dev/images/for-ui-v2/menu/Partnership-White.png'
 import swapBlack from 'uikit-dev/images/for-ui-v2/menu/Swap-Black.png'
 import swapWhite from 'uikit-dev/images/for-ui-v2/menu/Swap-White.png'
+import safeBlack from 'uikit-dev/images/for-ui-v2/menu/Safe-Black.png'
+import safeWhite from 'uikit-dev/images/for-ui-v2/menu/Safe-White.png'
 
 const config: MenuEntry[] = [
   {
@@ -90,6 +92,22 @@ const config: MenuEntry[] = [
     href: `${process.env.REACT_APP_FRONTEND_URL}/rebalancing`,
     notHighlight: false,
     newTab: false,
+  },
+  {
+    label: 'Finix',
+    icon: safeBlack,
+    iconActive: safeWhite,
+    href: '/finix',
+    notHighlight: false,
+    newTab: false,
+    items: [
+      {
+        label: 'Long-term Stake',
+        href: `${process.env.REACT_APP_FRONTEND_URL}/long-term-stake`,
+        notHighlight: false,
+        newTab: false,
+      },
+    ],
   },
   // {
   //   label: 'Vault',
