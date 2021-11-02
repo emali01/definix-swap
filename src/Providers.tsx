@@ -2,7 +2,8 @@ import React from 'react'
 import { createCaverJsReactRoot, CaverJsReactProvider } from '@sixnetwork/caverjs-react-core'
 import { KlipModalContext } from '@sixnetwork/klaytn-use-wallet'
 import { Provider } from 'react-redux'
-import { ModalProvider } from 'uikit-dev'
+import { ModalProvider } from 'definixswap-uikit'
+import { ModalProvider as OldModalProvider } from 'uikit-dev'
 import { NetworkContextName } from './constants'
 import store from './state'
 import getLibrary from './utils/getLibrary'
@@ -25,7 +26,9 @@ const Providers: React.FC = ({ children }) => {
       <Web3ProviderNetwork getLibrary={getLibrary}>
         <Provider store={store}>
           <ThemeContextProvider>
-            <ModalProvider>{children}</ModalProvider>
+            <OldModalProvider>
+              <ModalProvider>{children}</ModalProvider>
+            </OldModalProvider>
           </ThemeContextProvider>
         </Provider>
       </Web3ProviderNetwork>

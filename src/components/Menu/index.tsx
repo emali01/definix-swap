@@ -7,7 +7,9 @@ import useGetPriceData from 'hooks/useGetPriceData'
 import useTheme from 'hooks/useTheme'
 import React, { useContext } from 'react'
 import { KlipModalContext } from "@sixnetwork/klaytn-use-wallet"
-import { ConnectorId, Menu as UikitMenu } from 'uikit-dev'
+// import { ConnectorId, Menu as UikitMenu } from 'uikit-dev'
+import { ConnectorId } from 'uikit-dev'
+import { Menu as UikitMenu } from 'definixswap-uikit'
 import numeral from 'numeral'
 import links from './config'
 import useFinixPrice from '../../hooks/useFinixPrice'
@@ -29,9 +31,9 @@ const Menu: React.FC = (props) => {
   }
   return (
     <UikitMenu
-      links={links}
+      // links={links}
       account={account as string}
-      login={(connectorId: ConnectorId) => {
+      login={(connectorId: string) => {
         if (connectorId === "klip") {   
           window.localStorage.setItem("connector","klip")
           return activate(klip(showModalKlip, closeModalKlip))
@@ -45,9 +47,9 @@ const Menu: React.FC = (props) => {
       currentLang={selectedLanguage?.code || 'en'}
       langs={allLanguages}
       setLang={setSelectedLanguage}
-      finixPriceUsd={finixPriceUsd}
+      // finixPriceUsd={finixPriceUsd}
       profile={profile}
-      price={finixPrice <= 0 ? 'N/A' : numeral(finixPrice).format('0,0.0000')}
+      // price={finixPrice <= 0 ? 'N/A' : numeral(finixPrice).format('0,0.0000')}
       {...props}
     />
   )
