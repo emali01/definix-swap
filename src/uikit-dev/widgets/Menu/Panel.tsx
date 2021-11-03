@@ -10,6 +10,7 @@ interface Props extends PanelProps, PushedProps {
   showMenu: boolean
   isMobile: boolean
   account?: string
+  vfinixBalance?: number
   login: Login
   logout: () => void
 }

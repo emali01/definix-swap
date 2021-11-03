@@ -11,6 +11,7 @@ import { ConnectorId, Menu as UikitMenu } from 'uikit-dev'
 import numeral from 'numeral'
 import links from './config'
 import useFinixPrice from '../../hooks/useFinixPrice'
+import useLongTermStake  from '../../hooks/useLongTermStake'
 
 const Menu: React.FC = (props) => {
   const { setShowModal, showModal } = React.useContext(KlipModalContext())
@@ -27,6 +28,9 @@ const Menu: React.FC = (props) => {
   const closeModalKlip = () => {
     setShowModal(false)
   }
+  const vfinixBalnace = useLongTermStake()
+  console.log("vfinixBalnace 555 ",vfinixBalnace)
+    
   return (
     <UikitMenu
       links={links}
@@ -48,6 +52,7 @@ const Menu: React.FC = (props) => {
       finixPriceUsd={finixPriceUsd}
       profile={profile}
       price={finixPrice <= 0 ? 'N/A' : numeral(finixPrice).format('0,0.0000')}
+      vfinixBalnace={vfinixBalnace}
       {...props}
     />
   )

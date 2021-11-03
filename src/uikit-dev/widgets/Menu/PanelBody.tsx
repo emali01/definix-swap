@@ -14,10 +14,12 @@ import { PanelProps, PushedProps } from './types'
 import UserBlock from './UserBlock'
 import CopyToClipboard from '../WalletModal/CopyToClipboard'
 import FinixCoin from '../../images/finix-coin.png'
+import RankMenuCard from "./RankMenuCard"
 
 interface Props extends PanelProps, PushedProps {
   isMobile: boolean
   account?: string
+  vfinixBalance?: number
   login: Login
   logout: () => void
 }
@@ -74,7 +76,7 @@ const StyledDark = styled.div`
 const PanelBody: React.FC<Props> = (props) => {
   const location = useLocation()
   const { isDark } = useTheme()
-  const { isPushed, pushNav, isMobile, links, account, login, logout, currentLang } = props
+  const { isPushed, pushNav, isMobile, links, account, login, logout, currentLang ,vfinixBalance} = props
 
   // Close the menu when a user clicks a link on mobile
   const handleClick = isMobile ? () => pushNav(false) : undefined
@@ -146,7 +148,9 @@ const PanelBody: React.FC<Props> = (props) => {
           <UserBlock account={account} login={login} logout={logout} className="mt-2 dis-in-block" />
         </div>
       )}
-
+      <div className="py-2 bd-b">
+        <RankMenuCard  account={account} vfinixBalance={vfinixBalance}/>
+      </div>
       {links.map((link) => (
         <div className="py-2 bd-b">
           <MenuItem menu={link} key={link.label} />

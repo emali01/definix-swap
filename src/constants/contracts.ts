@@ -7,6 +7,10 @@ export default {
     1001: process.env.REACT_APP_HERODOTUS_TESTNET,
     8217: process.env.REACT_APP_HERODOTUS_MAINNET
   },
+  vfinix:{
+    1001: process.env.REACT_APP_VFINIX_ADDRESS_TESTNET,
+    8217: process.env.REACT_APP_VFINIX_ADDRESS_MAINNET
+  },
   wklay: {
     1001: process.env.REACT_APP_WKLAY_ADDRESS_TESTNET,
     8217: process.env.REACT_APP_WKLAY_ADDRESS_MAINNET

@@ -63,4 +63,5 @@ export interface NavProps extends PanelProps {
   price?: number
   logout: () => void
   value?: number
+  vfinixBalnace?: number
 }

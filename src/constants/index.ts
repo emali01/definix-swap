@@ -30,6 +30,10 @@ export const SIX_ADDRESS = {
   [intMainnetId]: process.env.REACT_APP_SIX_ADDRESS_MAINNET || '',
   [intTestnetId]: process.env.REACT_APP_SIX_ADDRESS_TESTNET || ''
 }
+export const VFINIX_ADDRESS = {
+  [intTestnetId]: process.env.REACT_APP_VFINIX_ADDRESS_TESTNET || '',
+  [intMainnetId]: process.env.REACT_APP_VFINIX_ADDRESS_MAINNET || ''
+}
 
 export const FINIX_ADDRESS = {
   [intMainnetId]: process.env.REACT_APP_FINIX_ADDRESS_MAINNET || '',

@@ -150,6 +150,7 @@ const Menu: React.FC<NavProps> = ({
   links,
   children,
   price,
+  vfinixBalnace
 }) => {
   const location = useLocation()
   const { isXl, isMd, isLg } = useMatchBreakpoints()
@@ -177,7 +178,7 @@ const Menu: React.FC<NavProps> = ({
   //     return l.code === lang
   //   })?.language
   // }
-
+  
   useEffect(() => {
     const handleScroll = () => {
       const currentOffset = window.pageYOffset
