@@ -1,6 +1,6 @@
 {
-  "name": "@pancakeswap/interface",
-  "description": "Pancakeswap Interface",
+  "name": "@definixswap/interface",
+  "description": "Definixswap Interface",
   "homepage": ".",
   "private": true,
   "dependencies": {
@@ -43,7 +43,7 @@
     "cids": "^1.0.0",
     "copy-to-clipboard": "^3.2.0",
     "definixswap-sdk": "1.0.0-klaytn",
-    "definixswap-uikit": "0.0.1",
+    "definixswap-uikit": "../definix-uikit/definixswap-uikit-0.15.0.tgz",
     "ethers": "^5.0.7",
     "finix-caver-providers": "^1.0.3",
     "i18next": "^15.0.9",

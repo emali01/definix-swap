@@ -24,7 +24,7 @@ const ModalWrapper = styled.div`
   width: 100%;
   padding: 24px;
   z-index: ${({ theme }) => theme.zIndices.modal - 1};
-  background: url(${({ theme }) => theme.colors.backgroundPolygon});
+  /* background: url(${({ theme }) => theme.colors.backgroundPolygon}); */
   background-size: cover;
   background-repeat: no-repeat;
 

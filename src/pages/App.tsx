@@ -1,11 +1,9 @@
 import { Credentials, StringTranslations } from '@crowdin/crowdin-api-client'
 import React, { Suspense, useEffect, useState } from 'react'
 import { HashRouter, Route, Switch } from 'react-router-dom'
-import styled from 'styled-components'
 import { useCaverJsReact } from '@sixnetwork/caverjs-react-core'
 import { injected,klip } from 'connectors'
 import { KlipModalContext } from "@sixnetwork/klaytn-use-wallet"
-import { TwoPanelLayout } from 'uikit-dev/components/TwoPanelLayout'
 import Menu from '../components/Menu'
 import Popups from '../components/Popups'
 import Web3ReactManager from '../components/Web3ReactManager'
@@ -20,15 +18,7 @@ import RemoveLiquidity from './RemoveLiquidity'
 import { RedirectOldRemoveLiquidityPathStructure } from './RemoveLiquidity/redirects'
 import Swap from './Swap'
 import { RedirectPathToSwapOnly, RedirectToSwap } from './Swap/redirects'
-// import WaitingPage from 'uikit-dev/components/WaitingPage'
-
-const AppWrapper = styled.div`
-  display: flex;
-  flex-flow: column;
-  align-items: flex-start;
-  // overflow-x: hidden;
-  height: 100%;
-`
+import { AppWrapper } from '../components/Layout'
 
 export default function App() {
   const [selectedLanguage, setSelectedLanguage] = useState<any>(undefined)
@@ -93,7 +83,7 @@ export default function App() {
     if (selectedLanguage) {
       fetchTranslationsForSelectedLanguage()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedLanguage])
 
   return (
@@ -105,31 +95,22 @@ export default function App() {
           >
             <TranslationsContext.Provider value={{ translations, setTranslations }}>
               <Menu>
-                <TwoPanelLayout>
-                  <Popups />
-                  <Web3ReactManager>
-                    <Switch>
-                      <Route exact strict path="/swap" component={Swap} />
-                      <Route exact path="/swap/:currencyIdA/:currencyIdB" component={RedirectToSwap} />
-                      <Route exact path="/swap/:currencyIdA" component={RedirectToSwap} />
-                      <Route exact strict path="/find" component={PoolFinder} />
-                      <Route exact strict path="/liquidity" component={Pool} />
-                      <Route exact path="/add" component={AddLiquidity} />
-                      <Route exact strict path="/remove/:currencyIdA/:currencyIdB" component={RemoveLiquidity} />
-
-                      {/* <Route path="/xxx">
-                        <WaitingPage pageName="XXX" openDate="Tue Mar 30 2021 08:00:00 GMT+0700 (Indochina Time)" />
-                      </Route> */}
-
-                      {/* Redirection: These old routes are still used in the code base */}
-                      <Route exact path="/add/:currencyIdA" component={RedirectOldAddLiquidityPathStructure} />
-                      <Route exact path="/add/:currencyIdA/:currencyIdB" component={RedirectDuplicateTokenIds} />
-                      <Route exact strict path="/remove/:tokens" component={RedirectOldRemoveLiquidityPathStructure} />
-
-                      <Route component={RedirectPathToSwapOnly} />
-                    </Switch>
-                  </Web3ReactManager>
-                </TwoPanelLayout>
+                <Popups />
+                <Web3ReactManager>
+                  <Switch>
+                    <Route exact strict path="/swap" component={Swap} />
+                    <Route exact path="/swap/:currencyIdA/:currencyIdB" component={RedirectToSwap} />
+                    <Route exact path="/swap/:currencyIdA" component={RedirectToSwap} />
+                    <Route exact strict path="/find" component={PoolFinder} />
+                    <Route exact strict path="/liquidity" component={Pool} />
+                    <Route exact path="/add" component={AddLiquidity} />
+                    <Route exact strict path="/remove/:currencyIdA/:currencyIdB" component={RemoveLiquidity} />
+                    <Route exact path="/add/:currencyIdA" component={RedirectOldAddLiquidityPathStructure} />
+                    <Route exact path="/add/:currencyIdA/:currencyIdB" component={RedirectDuplicateTokenIds} />
+                    <Route exact strict path="/remove/:tokens" component={RedirectOldRemoveLiquidityPathStructure} />
+                    <Route component={RedirectPathToSwapOnly} />
+                  </Switch>
+                </Web3ReactManager>
               </Menu>
             </TranslationsContext.Provider>
           </LanguageContext.Provider>

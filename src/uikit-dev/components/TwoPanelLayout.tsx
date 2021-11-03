@@ -32,7 +32,7 @@ export const LeftPanel = styled.div<{ isShowRightPanel: boolean }>`
   width: 100%;
   min-height: 100%;
   padding: 40px 24px;
-  background: url(${({ theme }) => theme.colors.backgroundPolygon});
+  /* background: url(${({ theme }) => theme.colors.backgroundPolygon}); */
   background-size: cover;
   background-repeat: no-repeat;
   transition: 0.1s;
