@@ -1,7 +1,7 @@
 import { Currency, Pair } from 'definixswap-sdk'
 import React, { useCallback, useState } from 'react'
 import styled from 'styled-components'
-import { ChevronDownIcon, Text, useMatchBreakpoints } from 'uikit-dev'
+import { Text, useMatchBreakpoints, Flex } from 'definixswap-uikit'
 import AnountButton from 'uikit-dev/components/AnountButton'
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
@@ -12,7 +12,7 @@ import { Input as NumericalInput } from '../NumericalInput'
 import CurrencySearchModal from '../SearchModal/CurrencySearchModal'
 import TranslatedText from '../TranslatedText'
 
-const Container = styled.div<{ hideInput: boolean }>``
+const Container = styled.div<{ hideInput: boolean }>``;
 
 const InputBox = styled.div`
   display: flex;
@@ -20,10 +20,11 @@ const InputBox = styled.div`
   flex-wrap: wrap;
   align-items: center;
   justify-content: flex-end;
-  padding: 0.5rem 0.5rem 0.5rem 1rem;
-  background: ${({ theme }) => theme.colors.backgroundBox};
-  border-radius: ${({ theme }) => theme.radii.default};
-  border: 1px solid ${({ theme }) => theme.colors.border};
+  
+  /* padding: 0.5rem 0.5rem 0.5rem 1rem; */
+  /* background: ${({ theme }) => theme.colors.backgroundBox}; */
+  /* border-radius: ${({ theme }) => theme.radii.default}; */
+  /* border: 1px solid ${({ theme }) => theme.colors.border}; */
 `
 const CurrencySelect = styled.button<{ selected: boolean }>`
   align-items: center;
@@ -103,16 +104,18 @@ export default function CurrencyInputPanel({
       <Container id={id} hideInput={hideInput} className={className}>
         {!hideInput && (
           <div className="flex justify-space-between mb-1">
-            <Text fontSize="14px" color="textSubtle">
-              {label}
-            </Text>
             {account && (
-              <Text fontSize="14px" color="textSubtle">
-                Balance:{' '}
-                {!hideBalance && !!currency && selectedCurrencyBalance
-                  ? selectedCurrencyBalance?.toSignificant(6)
-                  : ' -'}
-              </Text>
+              <Flex>
+                <Text fontSize="14px" color="textSubtle" mr="4px">
+                  Balance
+                </Text>
+                <Text fontSize="14px" fontWeight="bold">
+                  {!hideBalance && !!currency && selectedCurrencyBalance
+                    ? selectedCurrencyBalance?.toSignificant(6)
+                    : ' -'}
+                </Text>
+              </Flex>
+             
             )}
           </div>
         )}
@@ -128,13 +131,7 @@ export default function CurrencyInputPanel({
                 }}
                 style={{ width: isMobile && currency && showMaxButton && label ? '100%' : 'auto' }}
               />
-              {account && currency && showMaxButton && label !== 'To' && (
-                <div className="flex align-center justify-end" style={{ width: isMobile ? '100%' : 'auto' }}>
-                  <AnountButton title="25%" onClick={onQuarter} />
-                  <AnountButton title="50%" onClick={onHalf} />
-                  <AnountButton title="MAX" onClick={onMax} />
-                </div>
-              )}
+              
             </>
           )}
           <CurrencySelect
@@ -166,10 +163,17 @@ export default function CurrencyInputPanel({
                     : currency?.symbol) || <TranslatedText translationId={82}>Select Token</TranslatedText>}
                 </Text>
               )}
-              {!disableCurrencySelect && <ChevronDownIcon />}
+              {/* {!disableCurrencySelect && <ChevronDownIcon />} */}
             </Aligner>
           </CurrencySelect>
         </InputBox>
+        {account && currency && showMaxButton && label !== 'To' && (
+          <div className="flex align-center" style={{ width: isMobile ? '100%' : 'auto' }}>
+            <AnountButton title="25%" onClick={onQuarter} />
+            <AnountButton title="50%" onClick={onHalf} />
+            <AnountButton title="MAX" onClick={onMax} />
+          </div>
+        )}
       </Container>
 
       {!disableCurrencySelect && onCurrencySelect && (

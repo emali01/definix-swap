@@ -4,7 +4,6 @@ import { Button } from './Button'
 
 const StyleButton = styled(Button)`
   padding: 0 12px;
-  border-radius: 8px;
   margin-right: 4px;
   font-size: 12px;
 `

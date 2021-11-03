@@ -11,13 +11,18 @@ const StyledInput = styled.input<{ error?: boolean; fontSize?: string; align?: s
   border: none;
   flex: 1 1 auto;
   background-color: transparent;
-  font-size: 16px;
+  /* font-size: 16px; */
   text-align: ${({ align }) => align && align};
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   padding: 0px;
   -webkit-appearance: textfield;
+
+  font-family: Roboto;
+  font-size: 28px;
+  line-height: 1.43;
+  color: var(--04-greyscale-greyscale-05-black);
 
   ::-webkit-search-decoration {
     -webkit-appearance: none;

@@ -37,7 +37,8 @@ import {
   Modal,
   Link,
   Flex,
-  Box
+  Box,
+  TitleSet
 } from 'definixswap-uikit'
 
 import { Overlay } from 'uikit-dev/components/Overlay'
@@ -47,7 +48,6 @@ import { TranslateString } from 'utils/translateTextHelpers'
 import { isTransactionRecent, useAllTransactions } from 'state/transactions/hooks'
 import { TransactionDetails } from 'state/transactions/reducer'
 import { RouteComponentProps } from 'react-router-dom'
-import Title from 'components/Title'
 import { ContentContainer } from 'components/Layout'
 import {
   SIX_ADDRESS,
@@ -373,9 +373,15 @@ export default function Swap({
       {!showConfirm ? (
         <Flex flexDirection="column">
           <Box mb="40px">
-            <Title/>
+            <TitleSet
+              title="Swap"
+              description="Trade tokens in an instant."
+              link=""
+              linkLabel="Learn to swap."
+            />
           </Box>
           <ContentContainer>
+
             <Overlay
               show={isShowRightPanel && isMobileOrTablet}
               style={{ position: 'absolute', zIndex: 6 }}
@@ -383,7 +389,8 @@ export default function Swap({
                 setIsShowRightPanel(false)
               }}
             />
-            <Card>
+
+            <Flex flexDirection="column">
               <CurrencyInputPanel
                 className="mb-4"
                 label={
@@ -497,7 +504,7 @@ export default function Swap({
                     )}
                   </div>
                 )}
-            </Card>
+            </Flex>
 
             {/* 하단 버튼 및 스왑 정보 */}
             <div className={`${isMobileOrTablet ? 'pa-5' : 'pa-6'} bd-t`} style={{border: '1px solid #039BE5'}}>
