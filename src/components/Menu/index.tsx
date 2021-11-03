@@ -41,7 +41,7 @@ const Menu: React.FC = (props) => {
       setLang={setSelectedLanguage}
       profile={profile}
       {...props}
-      isMobile={false}
+      // isMobile={false}
       // isDark={isDark}
       // toggleTheme={toggleTheme}
       // links={links}

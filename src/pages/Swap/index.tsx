@@ -28,10 +28,8 @@ import { useExpertModeManager, useUserDeadline, useUserSlippageTolerance } from 
 import styled, { ThemeContext } from 'styled-components'
 
 import {
-  ArrowDownIcon,
   Button,
   Card,
-  CardBody,
   IconButton,
   Text,
   useMatchBreakpoints,
@@ -416,7 +414,7 @@ export default function Swap({
                       }}
                       size="sm"
                     >
-                      <ArrowDownIcon />
+                      {/* <ArrowDownIcon /> */}
                     </IconButton>
                   </ArrowWrapper>
                   

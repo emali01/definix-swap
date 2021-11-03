@@ -17,8 +17,8 @@ export const ContentContainer = styled.div`
   margin-bottom: 76px;
   
   border-radius: 16px;
-  background-color: ${lightColors.greyscale.white};
-  border: ${`1px solid ${lightColors.bg.yellow[1]}`};
+  background-color: ${lightColors.white};
+  border: ${`1px solid ${lightColors.yellow[1]}`};
 `
 
 export const AppWrapper = ({children}) => {
@@ -37,12 +37,12 @@ export const AppWrapper = ({children}) => {
         height="100%"
       >
         <Flex
-          background={lightColors.bg.yellow[0]}
+          background={lightColors.yellow[0]}
           width="100%"
           height="370px"
         />
         <Flex 
-          background={lightColors.bg.yellow[1]}
+          background={lightColors.yellow[1]}
           width="100%"
           flex="1 1 0"
         />
