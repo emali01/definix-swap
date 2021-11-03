@@ -266,6 +266,7 @@ const Menu: React.FC<NavProps> = ({
           account={account}
           login={login}
           logout={logout}
+          vfinixBalance={vfinixBalnace}
         />
         <Inner isPushed={isPushed} showMenu={showMenu}>
           <InnerBg>
