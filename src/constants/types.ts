@@ -1,3 +1,5 @@
+export type ConnectorId = "injected" | "klip"
+
 export enum QuoteToken {
   'KLAY' = 'KLAY',
   'SYRUP' = 'SYRUP',

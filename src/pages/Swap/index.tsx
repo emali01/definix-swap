@@ -10,7 +10,7 @@ import { LinkStyledButton } from 'components/Shared'
 import AdvancedSwapDetailsDropdown from 'components/swap/AdvancedSwapDetailsDropdown'
 import confirmPriceImpactWithoutFee from 'components/swap/confirmPriceImpactWithoutFee'
 import ConfirmSwapModal from 'components/swap/ConfirmSwapModal'
-import { ArrowWrapper, BottomGrouping, SwapCallbackError, Wrapper } from 'components/swap/styleds'
+import { ArrowWrapper, SwapCallbackError, Wrapper } from 'components/swap/styleds'
 import TradePrice from 'components/swap/TradePrice'
 import SyrupWarningModal from 'components/SyrupWarningModal'
 import TokenWarningModal from 'components/TokenWarningModal'
@@ -29,7 +29,6 @@ import styled, { ThemeContext } from 'styled-components'
 
 import {
   Button,
-  Card,
   IconButton,
   Text,
   useMatchBreakpoints,
@@ -38,7 +37,8 @@ import {
   Link,
   Flex,
   Box,
-  TitleSet
+  TitleSet,
+  ButtonScales,
 } from 'definixswap-uikit'
 
 import { Overlay } from 'uikit-dev/components/Overlay'
@@ -392,64 +392,87 @@ export default function Swap({
               }}
             />
 
-            <Flex flexDirection="column">
-              <CurrencyInputPanel
-                className="mb-4"
-                label={
-                  independentField === Field.OUTPUT && !showWrap && trade
-                    ? 'From (estimated)'
-                    : TranslateString(76, 'From')
-                }
-                value={formattedAmounts[Field.INPUT]}
-                showMaxButton={!atMaxAmountInput}
-                currency={currencies[Field.INPUT]}
-                onUserInput={handleTypeInput}
-                onQuarter={handleQuarterInput}
-                onHalf={handleHalfInput}
-                onMax={handleMaxInput}
-                onCurrencySelect={handleInputSelect}
-                otherCurrency={currencies[Field.OUTPUT]}
-                id="swap-currency-input"
-              />
+            <Flex 
+              flexDirection="column"
+              borderBottom="1px solid rgba(224, 224, 224, 0.5)"
+              mb="20px"
+            >
+              <Flex flexDirection="column" mb="20px">
+                <CurrencyInputPanel
+                  className="mb-4"
+                  label={
+                    independentField === Field.OUTPUT && !showWrap && trade
+                      ? 'From (estimated)'
+                      : TranslateString(76, 'From')
+                  }
+                  value={formattedAmounts[Field.INPUT]}
+                  showMaxButton={!atMaxAmountInput}
+                  currency={currencies[Field.INPUT]}
+                  onUserInput={handleTypeInput}
+                  onQuarter={handleQuarterInput}
+                  onHalf={handleHalfInput}
+                  onMax={handleMaxInput}
+                  onCurrencySelect={handleInputSelect}
+                  otherCurrency={currencies[Field.OUTPUT]}
+                  id="swap-currency-input"
+                />
 
-              <AutoColumn justify="space-between">
-                <AutoRow justify={isExpertMode ? 'space-between' : 'center'} style={{ padding: '0 1rem' }}>
-                  <ArrowWrapper clickable>
-                    <IconButton
-                      variant="text"
-                      onClick={() => {
-                        setApprovalSubmitted(false) // reset 2 step UI for approvals
-                        onSwitchTokens()
-                      }}
-                      size="sm"
-                    >
-                      {/* <ArrowDownIcon /> */}
-                    </IconButton>
-                  </ArrowWrapper>
-                  
-                  {recipient === null && !showWrap && isExpertMode ? (
-                    <LinkStyledButton id="add-recipient-button" onClick={() => onChangeRecipient('')}>
-                      + Add a send (optional)
-                    </LinkStyledButton>
-                  ) : null}
-                </AutoRow>
-              </AutoColumn>
+                <AutoColumn justify="space-between">
+                  <AutoRow justify={isExpertMode ? 'space-between' : 'center'} style={{ padding: '0 1rem' }}>
+                    <ArrowWrapper clickable>
+                      <IconButton
+                        variant="text"
+                        onClick={() => {
+                          setApprovalSubmitted(false) // reset 2 step UI for approvals
+                          onSwitchTokens()
+                        }}
+                        size="sm"
+                      >
+                        {/* <ArrowDownIcon /> */}
+                      </IconButton>
+                    </ArrowWrapper>
+                    
+                    {recipient === null && !showWrap && isExpertMode ? (
+                      <LinkStyledButton id="add-recipient-button" onClick={() => onChangeRecipient('')}>
+                        + Add a send (optional)
+                      </LinkStyledButton>
+                    ) : null}
+                  </AutoRow>
+                </AutoColumn>
 
-              <CurrencyInputPanel
-                value={formattedAmounts[Field.OUTPUT]}
-                onUserInput={handleTypeOutput}
-                label={
-                  independentField === Field.INPUT && !showWrap && trade
-                    ? 'To (estimated)'
-                    : TranslateString(80, 'To')
-                }
-                showMaxButton={false}
-                currency={currencies[Field.OUTPUT]}
-                onCurrencySelect={handleOutputSelect}
-                otherCurrency={currencies[Field.INPUT]}
-                id="swap-currency-output"
-              />
-              
+                <CurrencyInputPanel
+                  value={formattedAmounts[Field.OUTPUT]}
+                  onUserInput={handleTypeOutput}
+                  label={
+                    independentField === Field.INPUT && !showWrap && trade
+                      ? 'To (estimated)'
+                      : TranslateString(80, 'To')
+                  }
+                  showMaxButton={false}
+                  currency={currencies[Field.OUTPUT]}
+                  onCurrencySelect={handleOutputSelect}
+                  otherCurrency={currencies[Field.INPUT]}
+                  id="swap-currency-output"
+                />
+              </Flex>
+
+              {showWrap
+                ? null
+                : (Boolean(trade) || allowedSlippage !== INITIAL_ALLOWED_SLIPPAGE) && (
+                  <Flex mb="20px">
+                    {/* 슬리피지 발생 시 */}
+                    {/* {allowedSlippage !== INITIAL_ALLOWED_SLIPPAGE && ( */}
+                      <Flex flex="1 1 0" justifyContent="space-between">
+                        <Text fontSize="14px" color="textSubtle">
+                          Slippage Tolerance
+                        </Text>
+                        <Text fontSize="14px" textAlign="right" bold>
+                          {/* {allowedSlippage / 100}% */}
+                          {50 / 100}%
+                        </Text>
+                     </Flex>
+                  </Flex>
+                )}
 
               {/* {recipient !== null && !showWrap ? (
                 <>
@@ -464,55 +487,13 @@ export default function Swap({
                   <AddressInputPanel id="recipient" value={recipient} onChange={onChangeRecipient} />
                 </>
               ) : null} */}
-
-              {showWrap
-                ? null
-                : (Boolean(trade) || allowedSlippage !== INITIAL_ALLOWED_SLIPPAGE) && (
-                  <div 
-                    className="flex mt-5 justify-end"
-                    style={{border: '1px solid #039BE5'}}
-                  >
-                    
-                    {/* Price Rate 화면 */}
-                    {Boolean(trade) && (
-                      <div 
-                        className="flex flex-wrap align-baseline justify-space-between col-6"
-                      >
-                        <Text fontSize="14px" color="textSubtle">
-                          Price Rate
-                        </Text>
-                        <TradePrice
-                          price={trade?.executionPrice}
-                          showInverted={showInverted}
-                          setShowInverted={setShowInverted}
-                        />
-                      </div>
-                    )}
-
-                    {/* 슬리피지 발생 시 */}
-                    {allowedSlippage !== INITIAL_ALLOWED_SLIPPAGE && (
-                      <div
-                        className={`flex flex-wrap align-baseline justify-space-between col-6 ${
-                          isMobileOrTablet ? 'pl-5' : 'pl-6'
-                        }`}
-                      >
-                        <Text fontSize="14px" color="textSubtle">
-                          Slippage Tolerance
-                        </Text>
-                        <Text fontSize="14px" textAlign="right" bold>
-                          {allowedSlippage / 100}%
-                        </Text>
-                      </div>
-                    )}
-                  </div>
-                )}
             </Flex>
 
             {/* 하단 버튼 및 스왑 정보 */}
-            <div className={`${isMobileOrTablet ? 'pa-5' : 'pa-6'} bd-t`} style={{border: '1px solid #039BE5'}}>
-              <BottomGrouping>
+            <Flex flexDirection="column">
+              <Flex mb="20px">
                 {!account ? (
-                  <ConnectWalletButton fullWidth />
+                  <ConnectWalletButton />
                 ) : showWrap ? (
                   <Button disabled={Boolean(wrapInputError)} onClick={onWrap}>
                     {wrapInputError ??
@@ -569,59 +550,80 @@ export default function Swap({
                     </Button>
                   </RowBetween>
                 ) : (
-                  <Button
-                    onClick={() => {
-                      if (isExpertMode) {
-                        handleSwap()
-                      } else {
-                        setSwapState({
-                          tradeToConfirm: trade,
-                          attemptingTxn: false,
-                          swapErrorMessage: undefined,
-                          showConfirm: true,
-                          txHash: undefined,
-                        })
-                      }
-                    }}
-                    id="swap-button"
-                    disabled={!isValid || (priceImpactSeverity > 3 && !isExpertMode) || !!swapCallbackError}
-                    variant={isValid && priceImpactSeverity > 2 && !swapCallbackError ? 'danger' : 'primary'}
-                  >
-                    {swapInputError ||
-                      (priceImpactSeverity > 3 && !isExpertMode
-                        ? `Price Impact Too High`
-                        : `Swap${priceImpactSeverity > 2 ? ' Anyway' : ''}`)}
-                  </Button>
+                  <>
+                    <Button
+                      width="100%"
+                      scale="48"
+                      onClick={() => {
+                        if (isExpertMode) {
+                          handleSwap()
+                        } else {
+                          setSwapState({
+                            tradeToConfirm: trade,
+                            attemptingTxn: false,
+                            swapErrorMessage: undefined,
+                            showConfirm: true,
+                            txHash: undefined,
+                          })
+                        }
+                      }}
+                      id="swap-button"
+                      disabled={!isValid || (priceImpactSeverity > 3 && !isExpertMode) || !!swapCallbackError}
+                      variant={isValid && priceImpactSeverity > 2 && !swapCallbackError ? 'danger' : 'primary'}
+
+                    >
+                      {swapInputError ||
+                        (priceImpactSeverity > 3 && !isExpertMode
+                          ? `Price Impact Too High`
+                          : `Swap${priceImpactSeverity > 2 ? ' Anyway' : ''}`)}
+                    </Button>
+                  </>
                 )}
 
-                {showApproveFlow && <ProgressSteps steps={[approval === ApprovalState.APPROVED]} />}
-                {isExpertMode && swapErrorMessage ? <SwapCallbackError error={swapErrorMessage} /> : null}
+                {/* {showApproveFlow && <ProgressSteps steps={[approval === ApprovalState.APPROVED]} />} */}
+                {/* {isExpertMode && swapErrorMessage ? <SwapCallbackError error={swapErrorMessage} /> : null} */}
 
-              </BottomGrouping>
+              </Flex>
 
               {/* 라우팅 및 기타 스왑 정보 */}
               {trade && (
-                <div style={{border: '1px solid #8BC34A'}}>
+                <Flex flexDirection="column">
+                  {/* Price Rate 화면 */}
+                  {Boolean(trade) && (
+                      <Flex flex="1 1 0" justifyContent="space-between" mb="12px">
+                        <Text fontSize="14px" color="textSubtle">
+                          Price Rate
+                        </Text>
+                        <TradePrice
+                          price={trade?.executionPrice}
+                          showInverted={showInverted}
+                          setShowInverted={setShowInverted}
+                        />
+                      </Flex>
+                    )}
                   <AdvancedSwapDetailsDropdown trade={trade} />
-                </div>
+                </Flex>
               )}
-            </div>
+            </Flex>
         </ContentContainer>
       </Flex>
       ) : (
-        <ConfirmSwapModal
-          isOpen={showConfirm}
-          trade={trade}
-          originalTrade={tradeToConfirm}
-          onAcceptChanges={handleAcceptChanges}
-          attemptingTxn={attemptingTxn}
-          txHash={txHash}
-          recipient={recipient}
-          allowedSlippage={allowedSlippage}
-          onConfirm={handleSwap}
-          swapErrorMessage={swapErrorMessage}
-          onDismiss={handleConfirmDismiss}
-        />
+        // <ConfirmSwapModal
+        //   isOpen={showConfirm}
+        //   trade={trade}
+        //   originalTrade={tradeToConfirm}
+        //   onAcceptChanges={handleAcceptChanges}
+        //   attemptingTxn={attemptingTxn}
+        //   txHash={txHash}
+        //   recipient={recipient}
+        //   allowedSlippage={allowedSlippage}
+        //   onConfirm={handleSwap}
+        //   swapErrorMessage={swapErrorMessage}
+        //   onDismiss={handleConfirmDismiss}
+        // />
+        <>
+          ConfirmSwapModal
+        </>
       )}
 
       {/* 스왑 히스토리 화면 */}

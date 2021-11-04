@@ -1,8 +1,6 @@
-import { createGlobalStyle } from 'styled-components'
+import { createGlobalStyle, css } from 'styled-components'
 
 const GlobalStyle = createGlobalStyle`
-  @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
-
   body {
     /* background-color: ${({ theme }) => theme.colors.backgroundGray}; */
     font-family: 'Roboto';
@@ -753,6 +751,7 @@ const GlobalStyle = createGlobalStyle`
     padding-top: 6rem !important;
     padding-bottom: 6rem !important;
   }
+
   
   /*# sourceMappingURL=s.css.map */
   

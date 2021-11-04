@@ -1,6 +1,7 @@
 import React from 'react'
 import { useCaverJsReact } from '@sixnetwork/caverjs-react-core'
-import { Button, ButtonProps, ConnectorId, useWalletModal } from 'uikit-dev'
+import { ConnectorId, useWalletModal } from 'uikit-dev'
+import { Button, ButtonProps } from 'definixswap-uikit'
 import { injected, klip } from 'connectors'
 import { KlipModalContext } from "@sixnetwork/klaytn-use-wallet"
 import useI18n from 'hooks/useI18n'
@@ -29,7 +30,7 @@ const UnlockButton: React.FC<ButtonProps> = props => {
   const { onPresentConnectModal } = useWalletModal(handleLogin, deactivate, account as string)
 
   return (
-    <Button onClick={onPresentConnectModal} {...props}>
+    <Button scale="48" width="100%" onClick={onPresentConnectModal} {...props}>
       {TranslateString(292, 'Unlock Wallet')}
     </Button>
   )

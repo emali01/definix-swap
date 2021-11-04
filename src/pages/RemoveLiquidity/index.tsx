@@ -791,7 +791,7 @@ export default function RemoveLiquidity({
 
                 <div className="pa-6 bd-t">
                   {!account ? (
-                    <ConnectWalletButton fullWidth />
+                    <ConnectWalletButton />
                   ) : (
                     <RowBetween>
                       <Button

@@ -1,8 +1,7 @@
 import { Currency, Pair } from 'definixswap-sdk'
 import React, { useCallback, useState } from 'react'
 import styled from 'styled-components'
-import { Text, useMatchBreakpoints, Flex } from 'definixswap-uikit'
-import AnountButton from 'uikit-dev/components/AnountButton'
+import { Text, useMatchBreakpoints, Flex, AnountButton, SmallDownIcon, ColorStyles } from 'definixswap-uikit'
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
 import { TranslateString } from '../../utils/translateTextHelpers'
@@ -10,46 +9,29 @@ import CurrencyLogo from '../CurrencyLogo'
 import DoubleCurrencyLogo from '../DoubleLogo'
 import { Input as NumericalInput } from '../NumericalInput'
 import CurrencySearchModal from '../SearchModal/CurrencySearchModal'
-import TranslatedText from '../TranslatedText'
 
 const Container = styled.div<{ hideInput: boolean }>``;
 
 const InputBox = styled.div`
   display: flex;
-  flex-flow: row nowrap;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: flex-end;
-  
-  /* padding: 0.5rem 0.5rem 0.5rem 1rem; */
-  /* background: ${({ theme }) => theme.colors.backgroundBox}; */
-  /* border-radius: ${({ theme }) => theme.radii.default}; */
-  /* border: 1px solid ${({ theme }) => theme.colors.border}; */
+  /* flex-flow: row nowrap; */
+  /* flex-wrap: wrap; */
+  /* align-items: center; */
+  /* justify-content: flex-end; */
 `
 const CurrencySelect = styled.button<{ selected: boolean }>`
   align-items: center;
-  height: 32px;
-  font-size: 16px;
-  font-weight: 500;
   background-color: transparent;
-  color: ${({ selected, theme }) => (selected ? theme.colors.text : '#FFFFFF')};
-  border-radius: ${({ theme }) => theme.radii.default};
   outline: none;
   cursor: pointer;
   user-select: none;
   border: none;
-  padding: 0 0.5rem;
-
-  :focus,
+  /* :focus,
   :hover {
     background-color: ${({ theme }) => theme.colors.tertiary};
-  }
+  } */
 `
-const Aligner = styled.span`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-`
+
 interface CurrencyInputPanelProps {
   value: string
   showMaxButton: boolean
@@ -106,13 +88,13 @@ export default function CurrencyInputPanel({
           <div className="flex justify-space-between mb-1">
             {account && (
               <Flex>
-                <Text fontSize="14px" color="textSubtle" mr="4px">
+                <Text textStyle="R_14R" color={ColorStyles.DEEPGREY} mr="4px" >
                   Balance
                 </Text>
-                <Text fontSize="14px" fontWeight="bold">
+                <Text textStyle="R_14B" color={ColorStyles.DEEPGREY}>
                   {!hideBalance && !!currency && selectedCurrencyBalance
                     ? selectedCurrencyBalance?.toSignificant(6)
-                    : ' -'}
+                    : '-'}
                 </Text>
               </Flex>
              
@@ -120,20 +102,14 @@ export default function CurrencyInputPanel({
           </div>
         )}
 
-        <InputBox style={hideInput ? { padding: '0', borderRadius: '8px' } : {}}>
+        <InputBox>
           {!hideInput && (
-            <>
-              <NumericalInput
-                className="token-amount-input"
-                value={value}
-                onUserInput={(val) => {
-                  onUserInput(val)
-                }}
-                style={{ width: isMobile && currency && showMaxButton && label ? '100%' : 'auto' }}
-              />
-              
-            </>
+            <NumericalInput
+              value={value}
+              onUserInput={(val) => onUserInput(val)}
+            />
           )}
+
           <CurrencySelect
             selected={!!currency}
             className="open-currency-select-button"
@@ -143,37 +119,57 @@ export default function CurrencyInputPanel({
               }
             }}
           >
-            <Aligner>
-              {pair ? (
-                <DoubleCurrencyLogo currency0={pair.token0} currency1={pair.token1} size={16} margin />
-              ) : currency ? (
-                <CurrencyLogo currency={currency} size="24px" style={{ marginRight: '8px' }} />
-              ) : null}
-              {pair ? (
-                <Text>
-                  {pair?.token0.symbol}:{pair?.token1.symbol}
-                </Text>
-              ) : (
-                <Text>
-                  {(currency && currency.symbol && currency.symbol.length > 20
-                    ? `${currency.symbol.slice(0, 4)}...${currency.symbol.slice(
-                        currency.symbol.length - 5,
-                        currency.symbol.length
-                      )}`
-                    : currency?.symbol) || <TranslatedText translationId={82}>Select Token</TranslatedText>}
-                </Text>
-              )}
-              {/* {!disableCurrencySelect && <ChevronDownIcon />} */}
-            </Aligner>
+            <Flex>
+              <Flex alignItems="center" flex="1 1 0" mr="6px">
+                <Flex>
+                  {!disableCurrencySelect && <SmallDownIcon />}
+                </Flex>
+              </Flex>
+              <Flex flexDirection="column" alignItems="center">
+                <Flex mb="5px">
+                  {pair ? (
+                      <DoubleCurrencyLogo currency0={pair.token0} currency1={pair.token1} size={16} margin />
+                    ) : currency ? (
+                      <CurrencyLogo currency={currency} size="40px" />
+                  ) : null}
+                </Flex>
+                {pair ? (
+                  <Text textStyle="R_14B" color={ColorStyles.BLACK}>
+                    {pair?.token0.symbol}:{pair?.token1.symbol}
+                  </Text>
+                ) : (
+                  <Text
+                    textStyle="R_14B"
+                    color={ColorStyles.BLACK}
+                  >
+                    {(currency && currency.symbol && currency.symbol.length > 20
+                      ? `${currency.symbol.slice(0, 4)}...${currency.symbol.slice(
+                          currency.symbol.length - 5,
+                          currency.symbol.length
+                        )}`
+                      : currency?.symbol) || <Text textStyle="R_14B" color={ColorStyles.BLACK}>Select Token</Text>}
+                  </Text>
+                )}
+              </Flex>
+            </Flex>
           </CurrencySelect>
+
         </InputBox>
-        {account && currency && showMaxButton && label !== 'To' && (
+
+        {account && currency && label !== 'To' && (
           <div className="flex align-center" style={{ width: isMobile ? '100%' : 'auto' }}>
-            <AnountButton title="25%" onClick={onQuarter} />
-            <AnountButton title="50%" onClick={onHalf} />
-            <AnountButton title="MAX" onClick={onMax} />
+            <AnountButton onClick={onQuarter} mr="6px">
+              25%
+            </AnountButton>
+            <AnountButton onClick={onHalf} mr="6px">
+              50%
+            </AnountButton>
+            <AnountButton onClick={onMax}>
+              MAX
+            </AnountButton>
           </div>
         )}
+
       </Container>
 
       {!disableCurrencySelect && onCurrencySelect && (

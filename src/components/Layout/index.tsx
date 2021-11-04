@@ -13,7 +13,8 @@ export const ContentContainer = styled.div`
   padding: 40px;
   border-radius: 16px;
   background-color: ${lightColors.white};
-  border: ${`1px solid ${lightColors.yellow[1]}`};
+  border: 1px solid ${lightColors.yellowBg2};
+  box-shadow: 0 12px 12px 0 rgba(254, 169, 72, 0.2);
 `
 
 export const AppWrapper = ({children}) => {
