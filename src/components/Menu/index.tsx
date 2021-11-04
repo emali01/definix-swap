@@ -11,7 +11,7 @@ import useTranslation from 'hooks/Localisation/useTranslation'
 const Menu: React.FC = (props) => {
   const { setShowModal, showModal } = React.useContext(KlipModalContext())
   const { account, activate, deactivate } = useCaverJsReact()
-  const { setLangCode, selectedLangCode } = useTranslation();
+  const { setLangCode, selectedLangCode, t } = useTranslation();
   const { isDark, toggleTheme } = useTheme()
   // const priceData = useGetPriceData()
   // const finixPrice = useFinixPrice()
@@ -25,6 +25,7 @@ const Menu: React.FC = (props) => {
   }
   return (
     <UikitMenu
+      t={t}
       account={account as string}
       login={(connectorId: string) => {
         if (connectorId === "klip") {   
