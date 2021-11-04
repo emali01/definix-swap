@@ -36,7 +36,7 @@ export default function useLongTermStake() {
   const [vfinixBalnace, setVfinixBalnace] = useState(new BigNumber(0))
   const { account } = useActiveWeb3React()
   const vfinixContract = useTokenContract(getAddress(addresses.vfinix), false)
-  const vfinix: BigNumber = useSingleCallResult(vfinixContract, 'balanceOf', [account || ''])?.result?.[0]
+  const vfinix: BigNumber = useSingleCallResult(vfinixContract, 'balanceOf', [account || undefined])?.result?.[0]
 
   const fetch = useCallback(() => {
     return setVfinixBalnace(new BigNumber(vfinix).dividedBy(new BigNumber(10).pow(18)))
