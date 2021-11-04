@@ -46,6 +46,7 @@ import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { computeTradePriceBreakdown, warningSeverity } from 'utils/prices'
 import { TranslateString } from 'utils/translateTextHelpers'
 import { isTransactionRecent, useAllTransactions } from 'state/transactions/hooks'
+import useTranslation from 'hooks/Localisation/useTranslation'
 import { TransactionDetails } from 'state/transactions/reducer'
 import { RouteComponentProps } from 'react-router-dom'
 import { ContentContainer } from 'components/Layout'
@@ -74,6 +75,7 @@ export default function Swap({
   },
   history,
 }: RouteComponentProps<{ currencyIdA?: string; currencyIdB?: string }>) {
+  const { t } = useTranslation();
   const loadedUrlParams = useDefaultsFromURLSearch()
   const { isXl } = useMatchBreakpoints()
   const isMobileOrTablet = !isXl
@@ -86,7 +88,7 @@ export default function Swap({
     const txs = Object.values(allTransactions)
     return txs
       .filter(isTransactionRecent)
-      .filter((t) => t.type === 'swap')
+      .filter((tx) => tx.type === 'swap')
       .sort(newTransactionsFirst)
   }, [allTransactions])
 
@@ -374,7 +376,7 @@ export default function Swap({
         <Flex flexDirection="column">
           <Box mb="40px">
             <TitleSet
-              title="Swap"
+              title={t("Swap")}
               description="Trade tokens in an instant."
               link=""
               linkLabel="Learn to swap."

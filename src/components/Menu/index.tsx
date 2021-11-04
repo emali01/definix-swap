@@ -1,17 +1,17 @@
 import { useCaverJsReact } from '@sixnetwork/caverjs-react-core'
 import { injected,klip } from 'connectors'
-import { allLanguages } from 'constants/localisation/languageCodes'
-import { LanguageContext } from 'hooks/LanguageContext'
+import { supportedLanguages } from 'constants/localisation/languageCodes'
 import useGetLocalProfile from 'hooks/useGetLocalProfile'
 import useTheme from 'hooks/useTheme'
-import React, { useContext } from 'react'
+import React from 'react'
 import { KlipModalContext } from "@sixnetwork/klaytn-use-wallet"
 import { Menu as UikitMenu } from 'definixswap-uikit'
+import useTranslation from 'hooks/Localisation/useTranslation'
 
 const Menu: React.FC = (props) => {
   const { setShowModal, showModal } = React.useContext(KlipModalContext())
   const { account, activate, deactivate } = useCaverJsReact()
-  const { selectedLanguage, setSelectedLanguage } = useContext(LanguageContext)
+  const { setLangCode, selectedLangCode } = useTranslation();
   const { isDark, toggleTheme } = useTheme()
   // const priceData = useGetPriceData()
   // const finixPrice = useFinixPrice()
@@ -36,9 +36,9 @@ const Menu: React.FC = (props) => {
       }}
       logout={deactivate}
       
-      currentLang={selectedLanguage?.code || 'en'}
-      langs={allLanguages}
-      setLang={setSelectedLanguage}
+      currentLang={selectedLangCode}
+      langs={supportedLanguages}
+      setLang={({ code }) => setLangCode(code)}
       profile={profile}
       {...props}
       // isMobile={false}

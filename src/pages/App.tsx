@@ -7,6 +7,7 @@ import { KlipModalContext } from "@sixnetwork/klaytn-use-wallet"
 import Menu from '../components/Menu'
 import Popups from '../components/Popups'
 import Web3ReactManager from '../components/Web3ReactManager'
+import { AppWrapper } from '../components/Layout'
 import { allLanguages, EN } from '../constants/localisation/languageCodes'
 import { LanguageContext } from '../hooks/LanguageContext'
 import { TranslationsContext } from '../hooks/TranslationsContext'
@@ -18,7 +19,6 @@ import RemoveLiquidity from './RemoveLiquidity'
 import { RedirectOldRemoveLiquidityPathStructure } from './RemoveLiquidity/redirects'
 import Swap from './Swap'
 import { RedirectPathToSwapOnly, RedirectToSwap } from './Swap/redirects'
-import { AppWrapper } from '../components/Layout'
 
 export default function App() {
   const [selectedLanguage, setSelectedLanguage] = useState<any>(undefined)
