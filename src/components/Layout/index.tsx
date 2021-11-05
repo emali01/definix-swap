@@ -8,14 +8,22 @@ export const MaxWidthLeft = styled.div`
   margin-right: auto;
 `;
 
-export const ContentContainer = styled.div`
+export const SwapContainer = styled.div`
   width: 629px;
+  margin-top: 28px;
+`
+
+export const CardContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
   padding: 40px;
   border-radius: 16px;
   background-color: ${lightColors.white};
   border: 1px solid ${lightColors.yellowBg2};
   box-shadow: 0 12px 12px 0 rgba(254, 169, 72, 0.2);
-`
+`;
+
 
 export const AppWrapper = ({children}) => {
   return (

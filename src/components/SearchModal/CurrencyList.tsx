@@ -2,14 +2,13 @@ import { Currency, CurrencyAmount, currencyEquals, ETHER, Token } from 'definixs
 import React, { CSSProperties, MutableRefObject, useCallback, useMemo } from 'react'
 import { FixedSizeList } from 'react-window'
 import styled from 'styled-components'
-import { Text } from 'uikit-dev'
+import { Text, Flex } from 'definixswap-uikit'
 import { useActiveWeb3React } from '../../hooks'
 import { useSelectedTokenList, WrappedTokenInfo } from '../../state/lists/hooks'
 import { useAddUserToken, useRemoveUserAddedToken } from '../../state/user/hooks'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
 import { LinkStyledButton } from '../Shared'
 import { useIsUserAddedToken } from '../../hooks/Tokens'
-import Column from '../Column'
 import { RowFixed } from '../Row'
 import CurrencyLogo from '../CurrencyLogo'
 import { MouseoverTooltip } from '../Tooltip'
@@ -43,7 +42,8 @@ const Tag = styled.div`
 `
 
 function Balance({ balance }: { balance: CurrencyAmount }) {
-  return <StyledBalanceText title={balance.toExact()}>{balance.toSignificant(4)}</StyledBalanceText>
+  // return <></>
+  return <StyledBalanceText textStyle="R_16R" title={balance.toExact()}>{balance.toSignificant(4)}</StyledBalanceText>
 }
 
 const TagContainer = styled.div`
@@ -107,13 +107,13 @@ function CurrencyRow({
   return (
     <MenuItem
       style={style}
-      className={`token-item-${key}`}
+      // className={`token-item-${key}`}
       onClick={() => (isSelected ? null : onSelect())}
       disabled={isSelected}
       selected={otherSelected}
     >
-      <CurrencyLogo currency={currency} size="24px" />
-      <Column>
+      <CurrencyLogo currency={currency} size="32px" />
+      <Flex>
         <Text title={currency.name}>{currency.symbol}</Text>
         <FadedSpan>
           {!isOnSelectedList && customAdded && !(currency instanceof WrappedTokenInfo) ? (
@@ -143,11 +143,13 @@ function CurrencyRow({
             </Text>
           ) : null}
         </FadedSpan>
-      </Column>
+      </Flex>
+
       <TokenTags currency={currency} />
-      <RowFixed style={{ justifySelf: 'flex-end' }}>
+
+      <Flex justifySelf="flex-end">
         {balance ? <Balance balance={balance} /> : account ? <Loader /> : null}
-      </RowFixed>
+      </Flex>
     </MenuItem>
   )
 }

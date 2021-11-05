@@ -1,12 +1,10 @@
 import { Trade, TradeType } from 'definixswap-sdk'
 import React from 'react'
-import { Text } from 'uikit-dev'
+import { Text, Flex, ColorStyles } from 'definixswap-uikit'
 import { Field } from '../../state/swap/actions'
 import { useUserSlippageTolerance } from '../../state/user/hooks'
 import { computeSlippageAdjustedAmounts, computeTradePriceBreakdown } from '../../utils/prices'
-import { AutoColumn } from '../Column'
 import QuestionHelper from '../QuestionHelper'
-import { RowBetween, RowFixed } from '../Row'
 import FormattedPriceImpact from './FormattedPriceImpact'
 import SwapRoute from './SwapRoute'
 
@@ -24,49 +22,50 @@ function TradeSummary({
   const slippageAdjustedAmounts = computeSlippageAdjustedAmounts(trade, allowedSlippage)
 
   return (
-    <div className={className}>
-      <RowBetween align="baseline">
-        <RowFixed>
-          <Text fontSize="12px" color="textSubtle">
+    <Flex flexDirection="column" mb="12px">
+
+      <Flex alignItems="center" justifyContent="space-between" mb="12px">
+        <Flex>
+          <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>
             {isExactIn ? 'Minimum received' : 'Maximum sold'}
           </Text>
           <QuestionHelper text="Your transaction will revert if there is a large, unfavorable price movement before it is confirmed." />
-        </RowFixed>
-        <RowFixed>
-          <Text fontSize="14px" fontWeight="600" textAlign="right">
+        </Flex>
+        <Flex>
+          <Text textStyle="R_14M" color={ColorStyles.DEEPGREY} textAlign="right">
             {isExactIn
               ? `${slippageAdjustedAmounts[Field.OUTPUT]?.toSignificant(4)} ${trade.outputAmount.currency.symbol}` ??
                 '-'
               : `${slippageAdjustedAmounts[Field.INPUT]?.toSignificant(4)} ${trade.inputAmount.currency.symbol}` ?? '-'}
           </Text>
-        </RowFixed>
-      </RowBetween>
+        </Flex>
+      </Flex>
 
-      <RowBetween align="baseline">
-        <RowFixed margin="0">
-          <Text fontSize="12px" color="textSubtle">
+      <Flex justifyContent="space-between" mb="12px">
+        <Flex margin="0">
+          <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>
             Price Impact
           </Text>
           <QuestionHelper text="The difference between the market price and estimated price due to trade size." />
-        </RowFixed>
+        </Flex>
         <FormattedPriceImpact priceImpact={priceImpactWithoutFee} />
-      </RowBetween>
+      </Flex>
 
-      <RowBetween>
-        <RowFixed marginBottom="0 !important">
-          <Text fontSize="12px" color="textSubtle">
+      <Flex justifyContent="space-between">
+        <Flex marginBottom="0 !important">
+          <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>
             Liquidity Provider Fee
           </Text>
           <QuestionHelper
             text="For each trade a 0.2% fee is paid.
 0.15% goes to liquidity providers and 0.05% goes to the Definix Swap treasury"
           />
-        </RowFixed>
-        <Text fontSize="14px" fontWeight="600" textAlign="right">
+        </Flex>
+        <Text textStyle="R_14M" color={ColorStyles.DEEPGREY} textAlign="right">
           {realizedLPFee ? `${realizedLPFee.toSignificant(4)} ${trade.inputAmount.currency.symbol}` : '-'}
         </Text>
-      </RowBetween>
-    </div>
+      </Flex>
+    </Flex>
   )
 }
 
@@ -80,21 +79,20 @@ export function AdvancedSwapDetails({ trade }: AdvancedSwapDetailsProps) {
   const showRoute = Boolean(trade && trade.route.path.length > 2)
 
   return trade ? (
-    <div className={`flex ${trade ? 'mb-5' : ''}`}>
+    <Flex flexDirection="column">
+      <TradeSummary trade={trade} allowedSlippage={allowedSlippage} className={showRoute ? 'col-6' : 'col-12'} />
       {showRoute && (
-        <AutoColumn className="col-6">
-          <RowFixed className="mb-3">
-            <Text fontSize="14px" bold>
+        <Flex justifyContent="space-between">
+          <Flex className="mb-3">
+            <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>
               Routing
             </Text>
             <QuestionHelper text="Routing through these tokens resulted in the best price for your trade." />
-          </RowFixed>
+          </Flex>
           <SwapRoute trade={trade} />
-        </AutoColumn>
+        </Flex>
       )}
-
-      <TradeSummary trade={trade} allowedSlippage={allowedSlippage} className={showRoute ? 'col-6 pl-6' : 'col-12'} />
-    </div>
+    </Flex>
   ) : (
     <></>
   )

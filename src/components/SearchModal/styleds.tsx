@@ -13,11 +13,13 @@ export const PaddedColumn = styled(AutoColumn)`
 `
 
 export const MenuItem = styled(RowBetween)`
-  padding: 4px 20px;
-  height: 56px;
+  /* padding: 4px 20px; */
+  padding: 14px 0;
+  min-height: 60px;
   display: grid;
   grid-template-columns: auto minmax(auto, 1fr) auto minmax(0, 72px);
-  grid-gap: 16px;
+  grid-gap: 10px;
+
   cursor: ${({ disabled }) => !disabled && 'pointer'};
   pointer-events: ${({ disabled }) => disabled && 'none'};
   :hover {
@@ -29,14 +31,15 @@ export const MenuItem = styled(RowBetween)`
 export const SearchInput = styled.input`
   position: relative;
   display: flex;
-  padding: 0.5rem 0.5rem 0.5rem 1rem;
+  padding: 10px 16px;
   align-items: center;
   width: 100%;
   white-space: nowrap;
   background: none;
   border: none;
   outline: none;
-  border-radius: ${({ theme }) => theme.radii.default};
+  border-radius: 8px;
+
   color: ${({ theme }) => theme.colors.text};
   border-style: solid;
   border: 1px solid ${({ theme }) => theme.colors.border};
@@ -46,7 +49,8 @@ export const SearchInput = styled.input`
 
   ::placeholder {
     color: ${({ theme }) => theme.colors.textDisabled};
-    font-size: 1rem;
+    /* font-size: 1rem; */
+    font-size: 14px;
   }
   transition: border 100ms;
   :focus {

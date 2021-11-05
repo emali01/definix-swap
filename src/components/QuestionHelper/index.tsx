@@ -1,3 +1,4 @@
+import { ColorStyles } from 'definixswap-uikit'
 import React, { useCallback, useState } from 'react'
 import { HelpCircle as Question } from 'react-feather'
 import styled from 'styled-components'
@@ -13,9 +14,8 @@ const QuestionWrapper = styled.div`
   outline: none;
   cursor: default;
   border-radius: ${({ theme }) => theme.radii.default};
-  background-color: ${({ theme }) => theme.colors.invertedContrast};
-  color: ${({ theme }) => theme.colors.primary};
-
+  /* background-color: ${ColorStyles.MEDIUMGREY}; */
+  /* color: ${ColorStyles.MEDIUMGREY}; */
   :hover,
   :focus {
     opacity: 0.7;
@@ -29,10 +29,10 @@ export default function QuestionHelper({ text }: { text: string }) {
   const close = useCallback(() => setShow(false), [setShow])
 
   return (
-    <span style={{ marginLeft: 4 }}>
+    <span style={{ marginLeft: 5 }}>
       <Tooltip text={text} show={show}>
         <QuestionWrapper onClick={open} onMouseEnter={open} onMouseLeave={close}>
-          <Question size={16} />
+          <Question size={14} />
         </QuestionWrapper>
       </Tooltip>
     </span>

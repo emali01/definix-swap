@@ -4,7 +4,6 @@ import { animated, useTransition } from 'react-spring'
 import { DialogOverlay, DialogContent } from '@reach/dialog'
 import { isMobile } from 'react-device-detect'
 import '@reach/dialog/styles.css'
-import { transparentize } from 'polished'
 
 const AnimatedDialogOverlay = animated(DialogOverlay)
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -31,17 +30,17 @@ const StyledDialogContent = styled(({ minHeight, maxHeight, mobile, isOpen, ...r
   'aria-label': 'dialog',
 })`
   &[data-reach-dialog-content] {
-    margin: 0 0 2rem 0;
     border: 1px solid ${({ theme }) => theme.colors.card};
     background-color: ${({ theme }) => theme.colors.card};
     box-shadow: 0px 20px 36px -8px rgba(14, 14, 44, 0.1), 0px 1px 1px rgba(0, 0, 0, 0.05);
     padding: 0px;
-    width: 80%;
     overflow: hidden;
 
     align-self: ${({ mobile }) => (mobile ? 'flex-end' : 'center')};
 
-    max-width: 420px;
+    width: 100%;
+    max-width: 464px;
+
     ${({ maxHeight }) =>
       maxHeight &&
       css`
@@ -55,12 +54,12 @@ const StyledDialogContent = styled(({ minHeight, maxHeight, mobile, isOpen, ...r
     display: flex;
     border-radius: ${({ theme }) => theme.radii.default};
 
-    ${({ theme }) => theme.mediaQueries.lg} {
-      width: 65vw;
-    }
-    ${({ theme }) => theme.mediaQueries.sm} {
-      width: 85vw;
-    }
+    // ${({ theme }) => theme.mediaQueries.lg} {
+    //   width: 65vw;
+    // }
+    // ${({ theme }) => theme.mediaQueries.sm} {
+    //   width: 85vw;
+    // }
   }
 `
 

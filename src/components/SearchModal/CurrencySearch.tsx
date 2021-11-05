@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { FixedSizeList } from 'react-window'
 import styled, { ThemeContext } from 'styled-components'
-import { CloseIcon, Heading, IconButton, Text } from 'uikit-dev'
+import { CloseIcon, Heading, IconButton, Text, Flex, Box } from 'definixswap-uikit'
 import searchIcon from '../../assets/svg/search.svg'
 import { useActiveWeb3React } from '../../hooks'
 import { useAllTokens, useToken } from '../../hooks/Tokens'
@@ -12,7 +12,6 @@ import { useSelectedListInfo } from '../../state/lists/hooks'
 import { isAddress } from '../../utils'
 import { TranslateString } from '../../utils/translateTextHelpers'
 import Card from '../Card'
-import Column from '../Column'
 import ListLogo from '../ListLogo'
 import QuestionHelper from '../QuestionHelper'
 import Row, { RowBetween } from '../Row'
@@ -21,9 +20,8 @@ import TranslatedText from '../TranslatedText'
 import CommonBases from './CommonBases'
 import CurrencyList from './CurrencyList'
 import { filterTokens } from './filtering'
-import SortButton from './SortButton'
 import { useTokenComparator } from './sorting'
-import { PaddedColumn, SearchInput, Separator } from './styleds'
+import { SearchInput, Separator } from './styleds'
 
 interface CurrencySearchProps {
   isOpen: boolean
@@ -37,14 +35,15 @@ interface CurrencySearchProps {
 
 const SearchInputWithIcon = styled.div`
   position: relative;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
 
   img {
     position: absolute;
-    top: 0;
-    right: 0;
-    width: 46px;
-    height: 46px;
-    padding: 16px;
+    width: 16px;
+    height: 16px;
+    margin-right: 12px;
   }
 
   input {
@@ -155,24 +154,25 @@ export function CurrencySearch({
   const selectedListInfo = useSelectedListInfo()
 
   return (
-    <Column style={{ width: '100%', flex: '1 1' }}>
-      <PaddedColumn gap="16px">
-        <RowBetween>
+    <Flex flex="1 1 0" flexDirection="column" p="24px">
+      <Flex flexDirection="column" mb="20px">
+        <Flex justifyContent="space-between" alignItems="center" mb="22px">
           <Text>
             <Heading>
               <TranslatedText translationId={82}>Select a token</TranslatedText>
-              <QuestionHelper
+              {/* <QuestionHelper
                 text={TranslateString(
                   130,
                   'Find a token by searching for its name or symbol or by pasting its address below.'
                 )}
-              />
+              /> */}
             </Heading>
           </Text>
           <IconButton onClick={onDismiss} variant="text">
             <CloseIcon />
           </IconButton>
-        </RowBetween>
+        </Flex>
+
         <SearchInputWithIcon>
           <SearchInput
             type="text"
@@ -185,20 +185,14 @@ export function CurrencySearch({
           />
           <img src={searchIcon} alt="" />
         </SearchInputWithIcon>
+
         {showCommonBases && (
           <CommonBases chainId={chainId} onSelect={handleCurrencySelect} selectedCurrency={selectedCurrency} />
         )}
-        <RowBetween className="pb-2">
-          <Heading>
-            <TranslatedText translationId={126}>Token name</TranslatedText>
-          </Heading>
-          <SortButton ascending={invertSearchOrder} toggleSortOrder={() => setInvertSearchOrder((iso) => !iso)} />
-        </RowBetween>
-      </PaddedColumn>
 
-      <Separator />
+      </Flex>
 
-      <div style={{ flex: '1' }}>
+      <Flex flexDirection="column" flex="1 1 0">
         <AutoSizer disableWidth>
           {({ height }) => (
             <CurrencyList
@@ -212,7 +206,7 @@ export function CurrencySearch({
             />
           )}
         </AutoSizer>
-      </div>
+      </Flex>
 
       {null && (
         <>
@@ -242,7 +236,7 @@ export function CurrencySearch({
           </Card>
         </>
       )}
-    </Column>
+    </Flex>
   )
 }
 

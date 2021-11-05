@@ -32,7 +32,7 @@ export const AutoRow = styled(Row)<{ gap?: string; justify?: string }>`
 
 export const RowFixed = styled(Row)<{ gap?: string; justify?: string }>`
   width: fit-content;
-  margin-bottom: 0.5rem;
+  margin-bottom: 12px;
 `
 
 export default Row

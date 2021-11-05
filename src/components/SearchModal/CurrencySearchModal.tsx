@@ -51,29 +51,35 @@ export default function CurrencySearchModal({
   const noListSelected = !selectedListUrl
 
   return (
-    <Modal isOpen={isOpen} onDismiss={onDismiss} maxHeight={90} minHeight={listView ? 40 : noListSelected ? 0 : 80}>
+    <Modal isOpen={isOpen} onDismiss={onDismiss} maxHeight={90} minHeight={listView ? 40 : noListSelected ? 0 : 69.4}>
       {listView ? (
-        <ListSelect onDismiss={onDismiss} onBack={handleClickBack} />
+        <>
+          {/* <ListSelect onDismiss={onDismiss} onBack={handleClickBack} /> */}
+        </>
       ) : noListSelected ? (
-        <CurrencySearch
-          isOpen={isOpen}
-          onDismiss={onDismiss}
-          onCurrencySelect={handleCurrencySelect}
-          onChangeList={handleClickChangeList}
-          selectedCurrency={selectedCurrency}
-          otherSelectedCurrency={otherSelectedCurrency}
-          showCommonBases={false}
-        />
+        <>
+          <CurrencySearch
+            isOpen={isOpen}
+            onDismiss={onDismiss}
+            onCurrencySelect={handleCurrencySelect}
+            onChangeList={handleClickChangeList}
+            selectedCurrency={selectedCurrency}
+            otherSelectedCurrency={otherSelectedCurrency}
+            showCommonBases={false}
+          />
+        </>
       ) : (
-        <CurrencySearch
-          isOpen={isOpen}
-          onDismiss={onDismiss}
-          onCurrencySelect={handleCurrencySelect}
-          onChangeList={handleClickChangeList}
-          selectedCurrency={selectedCurrency}
-          otherSelectedCurrency={otherSelectedCurrency}
-          showCommonBases={false}
-        />
+        <>
+          <CurrencySearch
+            isOpen={isOpen}
+            onDismiss={onDismiss}
+            onCurrencySelect={handleCurrencySelect}
+            onChangeList={handleClickChangeList}
+            selectedCurrency={selectedCurrency}
+            otherSelectedCurrency={otherSelectedCurrency}
+            showCommonBases={false}
+          />
+        </>
       )}
     </Modal>
   )
