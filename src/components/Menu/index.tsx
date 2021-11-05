@@ -6,12 +6,12 @@ import useTheme from 'hooks/useTheme'
 import React from 'react'
 import { KlipModalContext } from "@sixnetwork/klaytn-use-wallet"
 import { Menu as UikitMenu } from 'definixswap-uikit'
-import useTranslation from 'hooks/Localisation/useTranslation'
+import useTranslation, { Trans } from 'hooks/Localisation/useTranslation'
 
 const Menu: React.FC = (props) => {
   const { setShowModal, showModal } = React.useContext(KlipModalContext())
   const { account, activate, deactivate } = useCaverJsReact()
-  const { setLangCode, selectedLangCode, t } = useTranslation();
+  const { setLangCode, selectedLangCode } = useTranslation();
   const { isDark, toggleTheme } = useTheme()
   // const priceData = useGetPriceData()
   // const finixPrice = useFinixPrice()
@@ -25,7 +25,7 @@ const Menu: React.FC = (props) => {
   }
   return (
     <UikitMenu
-      t={t}
+      Trans={Trans}
       account={account as string}
       login={(connectorId: string) => {
         if (connectorId === "klip") {   
