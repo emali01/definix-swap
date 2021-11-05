@@ -7,11 +7,14 @@ import React from 'react'
 import { KlipModalContext } from "@sixnetwork/klaytn-use-wallet"
 import { Menu as UikitMenu } from 'definixswap-uikit'
 import useTranslation from 'hooks/Localisation/useTranslation'
+import { links } from './config'
+import UserBlock from './UserBlock'
+import Chain from './Chain'
 
 const Menu: React.FC = (props) => {
   const { setShowModal, showModal } = React.useContext(KlipModalContext())
   const { account, activate, deactivate } = useCaverJsReact()
-  const { setLangCode, selectedLangCode, t } = useTranslation();
+  const { setLangCode, selectedLangCode, t } = useTranslation()
   const { isDark, toggleTheme } = useTheme()
   // const priceData = useGetPriceData()
   // const finixPrice = useFinixPrice()
@@ -25,22 +28,24 @@ const Menu: React.FC = (props) => {
   }
   return (
     <UikitMenu
-      t={t}
-      account={account as string}
-      login={(connectorId: string) => {
-        if (connectorId === "klip") {   
-          window.localStorage.setItem("connector","klip")
-          return activate(klip(showModalKlip, closeModalKlip))
-        } 
-        window.localStorage.setItem("connector","injected")
-        return activate(injected)
-      }}
-      logout={deactivate}
+      userBlock={<UserBlock />}
+      chain={<Chain />}
+      // account={account as string}
+      // login={(connectorId: string) => {
+      //   if (connectorId === "klip") {   
+      //     window.localStorage.setItem("connector","klip")
+      //     return activate(klip(showModalKlip, closeModalKlip))
+      //   } 
+      //   window.localStorage.setItem("connector","injected")
+      //   return activate(injected)
+      // }}
+      // logout={deactivate}
       
+      links={links(t)}
       currentLang={selectedLangCode}
       langs={supportedLanguages}
       setLang={({ code }) => setLangCode(code)}
-      profile={profile}
+      // profile={profile}
       {...props}
       // isMobile={false}
       // isDark={isDark}
