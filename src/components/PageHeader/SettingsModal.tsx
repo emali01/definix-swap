@@ -1,5 +1,5 @@
 import React from 'react'
-import { Modal } from 'uikit-dev'
+import { Modal, Box } from 'definixswap-uikit'
 import SlippageToleranceSetting from './SlippageToleranceSetting'
 import TransactionDeadlineSetting from './TransactionDeadlineSetting'
 
@@ -12,9 +12,11 @@ const defaultOnDismiss = () => null
 
 const SettingsModal = ({ onDismiss = defaultOnDismiss }: SettingsModalProps) => {
   return (
-    <Modal title="Settings" onDismiss={onDismiss} isRainbow={false}>
-      <SlippageToleranceSetting />
-      <TransactionDeadlineSetting />
+    <Modal title="Settings" onDismiss={onDismiss}>
+      <Box px="S_24" pb="S_24">
+        <SlippageToleranceSetting />
+        <TransactionDeadlineSetting />
+      </Box>
     </Modal>
   )
 }

@@ -66,7 +66,7 @@ const UserBlock: React.FC = () => {
       <>
         <Flex>
           <WalletDropdown target={<Button
-            scale={ButtonScales.S32}
+            scale={ButtonScales.S_32}
             variant={ButtonVariants.LIGHTBROWN}
             textStyle={TextStyles.R_12B}
           >
@@ -75,7 +75,7 @@ const UserBlock: React.FC = () => {
         </Flex>
         <Button
           ml="8px"
-          scale={ButtonScales.S32ICON}
+          scale={ButtonScales.S_32ICON}
           minWidth="auto"
           variant={ButtonVariants.DEEPBROWN}
           startIcon={<GnbMySIcon />}
@@ -94,7 +94,7 @@ const UserBlock: React.FC = () => {
 
   return <Flex width="100%" height={isMobile ? "188px" : "auto"} alignItems="center" justifyContent="center">
     <Button
-      scale={isMobile ? ButtonScales.S40 : ButtonScales.S32}
+      scale={isMobile ? ButtonScales.S_40 : ButtonScales.S_32}
       variant={ButtonVariants.RED}
       onClick={() => {
         onPresentConnectModal();

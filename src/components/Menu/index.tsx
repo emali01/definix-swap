@@ -10,6 +10,7 @@ import useTranslation from 'hooks/Localisation/useTranslation'
 import { links } from './config'
 import UserBlock from './UserBlock'
 import Chain from './Chain'
+import SettingsModal from '../PageHeader/SettingsModal'
 
 const Menu: React.FC = (props) => {
   const { setShowModal, showModal } = React.useContext(KlipModalContext())
@@ -29,6 +30,7 @@ const Menu: React.FC = (props) => {
   return (
     <UikitMenu
       userBlock={<UserBlock />}
+      settingModal={<SettingsModal />}
       chain={<Chain />}
       // account={account as string}
       // login={(connectorId: string) => {
