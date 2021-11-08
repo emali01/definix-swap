@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Input, Text, TextStyles, ColorStyles, Flex, SettingIcon } from 'definixswap-uikit'
 import { useUserDeadline } from 'state/user/hooks'
-import useTranslation from 'hooks/Localisation/useTranslation'
+import { useTranslation } from 'react-i18next'
 import QuestionHelper from '../QuestionHelper'
 
 const StyledTransactionDeadlineSetting = styled.div`

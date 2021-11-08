@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Button, ButtonScales, ColorStyles, Flex, Input, SettingIcon, Text, TextStyles } from 'definixswap-uikit'
 import { useUserSlippageTolerance } from 'state/user/hooks'
-import useTranslation from 'hooks/Localisation/useTranslation'
+import { useTranslation } from 'react-i18next'
 import QuestionHelper from '../QuestionHelper'
 
 const MAX_SLIPPAGE = 5000
