@@ -154,7 +154,7 @@ export function CurrencySearch({
   const selectedListInfo = useSelectedListInfo()
 
   return (
-    <Flex flex="1 1 0" flexDirection="column" p="24px">
+    <Flex flex="1 1 0" flexDirection="column">
       <Flex flexDirection="column" mb="20px">
         <Flex justifyContent="space-between" alignItems="center" mb="22px">
           <Text>

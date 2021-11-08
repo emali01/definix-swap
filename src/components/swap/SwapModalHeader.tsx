@@ -2,7 +2,7 @@ import { Trade, TradeType } from 'definixswap-sdk'
 import React, { useContext, useMemo } from 'react'
 import { ArrowDown } from 'react-feather'
 import styled, { ThemeContext } from 'styled-components'
-import { Button, ErrorIcon, Text } from 'uikit-dev'
+import { Button, Text } from 'definixswap-uikit'
 import { Field } from '../../state/swap/actions'
 import { isAddress, shortenAddress } from '../../utils'
 import { computeSlippageAdjustedAmounts, computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
@@ -85,7 +85,7 @@ export default function SwapModalHeader({
           {showAcceptChanges ? (
             <RowBetween>
               <div className="flex align-center">
-                <ErrorIcon className="mr-2" />
+                {/* <ErrorIcon className="mr-2" /> */}
                 <Text>Price Updated</Text>
               </div>
               <Button onClick={onAcceptChanges} size="sm" className="flex-shrink">
