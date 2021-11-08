@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { useWallet } from '@sixnetwork/klaytn-use-wallet'
 import { Text, Flex, Button, IconButton, ButtonVariants, ButtonScales, useWalletModal, Login, ArrowRightGIcon, MoreNIcon, GnbMySIcon, CheckBIcon, ColorStyles, TextStyles, Dropdown, DropdownItem, useMatchBreakpoints } from "definixswap-uikit";
-import useTranslation from 'hooks/Localisation/useTranslation'
+import { useTranslation } from 'react-i18next'
 import { useHistory } from "react-router";
 import WalletDropdown from "./WalletDropdown";
 

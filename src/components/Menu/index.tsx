@@ -6,7 +6,7 @@ import useTheme from 'hooks/useTheme'
 import React from 'react'
 import { KlipModalContext } from "@sixnetwork/klaytn-use-wallet"
 import { Menu as UikitMenu } from 'definixswap-uikit'
-import useTranslation from 'hooks/Localisation/useTranslation'
+import { useTranslation } from 'react-i18next'
 import { links } from './config'
 import UserBlock from './UserBlock'
 import Chain from './Chain'
@@ -15,7 +15,7 @@ import SettingsModal from '../PageHeader/SettingsModal'
 const Menu: React.FC = (props) => {
   const { setShowModal, showModal } = React.useContext(KlipModalContext())
   const { account, activate, deactivate } = useCaverJsReact()
-  const { setLangCode, selectedLangCode, t } = useTranslation()
+  const { i18n, t } = useTranslation()
   const { isDark, toggleTheme } = useTheme()
   // const priceData = useGetPriceData()
   // const finixPrice = useFinixPrice()
@@ -44,9 +44,9 @@ const Menu: React.FC = (props) => {
       // logout={deactivate}
       
       links={links(t)}
-      currentLang={selectedLangCode}
+      currentLang={i18n.language}
       langs={supportedLanguages}
-      setLang={({ code }) => setLangCode(code)}
+      setLang={({ code }) => i18n.changeLanguage(code)}
       // profile={profile}
       {...props}
       // isMobile={false}
