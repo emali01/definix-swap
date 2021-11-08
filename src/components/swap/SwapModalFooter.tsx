@@ -1,6 +1,6 @@
 import { Trade, TradeType } from 'definixswap-sdk'
 import React, { useMemo, useState } from 'react'
-import { Button, Text } from 'uikit-dev'
+import { Button, Text } from 'definixswap-uikit'
 import { Field } from '../../state/swap/actions'
 import { computeSlippageAdjustedAmounts, computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
 import { AutoColumn } from '../Column'
@@ -93,9 +93,7 @@ export default function SwapModalFooter({
           onClick={onConfirm}
           disabled={disabledConfirm}
           variant={severity > 2 ? 'danger' : 'primary'}
-          radii="card"
           id="confirm-swap-or-send"
-          fullWidth
         >
           {severity > 2 ? 'Swap Anyway' : 'Confirm Swap'}
         </Button>

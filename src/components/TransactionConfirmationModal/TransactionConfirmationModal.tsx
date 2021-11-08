@@ -1,8 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Modal } from 'uikit-dev'
+import { Modal } from 'definixswap-uikit'
 import { useActiveWeb3React } from '../../hooks'
-import ConfirmationPendingContent from './ConfirmationPendingContent'
+// import ConfirmationPendingContent from './ConfirmationPendingContent'
 
 interface ConfirmationModalProps {
   isOpen: boolean
@@ -25,9 +25,8 @@ const ModalWrapper = styled.div`
   padding: 24px;
   z-index: ${({ theme }) => theme.zIndices.modal - 1};
   /* background: url(${({ theme }) => theme.colors.backgroundPolygon}); */
-  background-size: cover;
-  background-repeat: no-repeat;
-
+  /* background-size: cover; */
+  /* background-repeat: no-repeat; */
   ${({ theme }) => theme.mediaQueries.sm} {
     padding: 40px;
   }
@@ -55,15 +54,18 @@ const TransactionConfirmationModal = ({
         title=""
         onBack={!isPending ? onDismiss : undefined}
         onDismiss={onDismiss}
-        isRainbow={false}
-        bodyPadding="0"
-        maxWidth="480px"
+        // isRainbow={false}
+        // bodyPadding="0"
+        // maxWidth="480px"
         hideCloseButton
-        classHeader="bd-b-n"
-        className="w-100"
+        // classHeader="bd-b-n"
+        // className="w-100"
       >
         {isPending ? (
-          <ConfirmationPendingContent pendingIcon={pendingIcon} />
+          <>
+            pending icon
+          {/* <ConfirmationPendingContent pendingIcon={pendingIcon} /> */}
+          </>
         ) : isSubmitted ? (
           submittedContent()
         ) : isError ? (

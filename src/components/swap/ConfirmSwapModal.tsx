@@ -1,8 +1,8 @@
 import { currencyEquals, Trade } from 'definixswap-sdk'
 import { useActiveWeb3React } from 'hooks'
 import React, { useCallback, useMemo } from 'react'
-import { Button } from 'uikit-dev'
-import swap from 'uikit-dev/animation/swap.json'
+import { Button } from 'definixswap-uikit'
+// import swap from 'uikit-dev/animation/swap.json'
 import TransactionConfirmationModal, {
   ConfirmationModalContent,
   TransactionErrorContent,
@@ -107,7 +107,7 @@ export default function ConfirmSwapModal({
         hash={txHash}
         content={modalHeaderWithoutAction}
         button={
-          <Button onClick={onDismiss} radii="card" fullWidth>
+          <Button onClick={onDismiss}>
             Back to Swap
           </Button>
         }
@@ -125,7 +125,7 @@ export default function ConfirmSwapModal({
         hash={txHash}
         content={modalHeaderWithoutAction}
         button={
-          <Button onClick={onDismiss} radii="card" fullWidth>
+          <Button onClick={onDismiss}>
             Back to Swap
           </Button>
         }
@@ -141,7 +141,7 @@ export default function ConfirmSwapModal({
       isSubmitted={!!txHash}
       isError={!!swapErrorMessage}
       confirmContent={confirmContent}
-      pendingIcon={swap}
+      // pendingIcon={swap}
       submittedContent={submittedContent}
       errorContent={errorContent}
       onDismiss={onDismiss}
