@@ -6,7 +6,8 @@ import useTheme from 'hooks/useTheme'
 import React from 'react'
 import { KlipModalContext } from "@sixnetwork/klaytn-use-wallet"
 import { Menu as UikitMenu } from 'definixswap-uikit'
-import { useTranslation } from 'react-i18next'
+import { useUserSlippageTolerance, useUserDeadline } from 'state/user/hooks'
+import { useTranslation, Trans } from 'react-i18next'
 import { links } from './config'
 import UserBlock from './UserBlock'
 import Chain from './Chain'
@@ -14,13 +15,15 @@ import SettingsModal from '../PageHeader/SettingsModal'
 
 const Menu: React.FC = (props) => {
   const { setShowModal, showModal } = React.useContext(KlipModalContext())
+  const [userSlippageTolerance, setUserslippageTolerance] = useUserSlippageTolerance();
+  const [deadline, setDeadline] = useUserDeadline();
   const { account, activate, deactivate } = useCaverJsReact()
   const { i18n, t } = useTranslation()
   const { isDark, toggleTheme } = useTheme()
   // const priceData = useGetPriceData()
   // const finixPrice = useFinixPrice()
   // const finixPriceUsd = priceData ? Number(priceData.prices.Finix) : undefined
-  const profile = useGetLocalProfile()
+  // const profile = useGetLocalProfile()
   const showModalKlip = () => {
     setShowModal(true)
   }
@@ -29,26 +32,36 @@ const Menu: React.FC = (props) => {
   }
   return (
     <UikitMenu
-      userBlock={<UserBlock />}
-      settingModal={<SettingsModal />}
-      chain={<Chain />}
-      // account={account as string}
-      // login={(connectorId: string) => {
-      //   if (connectorId === "klip") {   
-      //     window.localStorage.setItem("connector","klip")
-      //     return activate(klip(showModalKlip, closeModalKlip))
-      //   } 
-      //   window.localStorage.setItem("connector","injected")
-      //   return activate(injected)
-      // }}
-      // logout={deactivate}
-      
-      links={links(t)}
+      // SettingsModal slippage
+      userSlippageTolerance={userSlippageTolerance}
+      setUserslippageTolerance={setUserslippageTolerance}
+      // SettingsModal deadline
+      deadline={deadline}
+      setDeadline={setDeadline}
+
+      account={account}
+      login={(connectorId: string) => {
+        if (connectorId === "klip") {   
+          window.localStorage.setItem("connector", "klip")
+          return activate(klip(showModalKlip, closeModalKlip))
+        } 
+        window.localStorage.setItem("connector", "injected")
+        return activate(injected)
+      }}
+      logout={deactivate}
+      // netWorth={<NetWorth />}
+
+      Trans={Trans}
       currentLang={i18n.language}
       langs={supportedLanguages}
       setLang={({ code }) => i18n.changeLanguage(code)}
+
+      // isDark={isDark}
+      // toggleTheme={toggleTheme}
+      links={links(t)}
+      
       // profile={profile}
-      {...props}
+      // {...props}
       // isMobile={false}
       // isDark={isDark}
       // toggleTheme={toggleTheme}
