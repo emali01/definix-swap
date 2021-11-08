@@ -554,7 +554,7 @@ export default function Swap({
                     <>
                       <Button
                         width="100%"
-                        scale="48"
+                        lg
                         onClick={() => {
                           if (isExpertMode) {
                             handleSwap()
