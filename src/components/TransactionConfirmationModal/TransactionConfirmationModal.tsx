@@ -61,16 +61,16 @@ const TransactionConfirmationModal = ({
         // classHeader="bd-b-n"
         // className="w-100"
       >
-        {isPending ? (
-          <>
-            pending icon
-          {/* <ConfirmationPendingContent pendingIcon={pendingIcon} /> */}
-          </>
+        {/* {isPending ? (
+          <ConfirmationPendingContent pendingIcon={pendingIcon} />
         ) : isSubmitted ? (
           submittedContent()
         ) : isError ? (
           errorContent()
         ) : (
+          confirmContent()
+        )} */}
+        {!isSubmitted && !isError && (
           confirmContent()
         )}
       </Modal>

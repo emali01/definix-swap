@@ -15,7 +15,7 @@ import TradePrice from 'components/swap/TradePrice'
 import SyrupWarningModal from 'components/SyrupWarningModal'
 import TokenWarningModal from 'components/TokenWarningModal'
 import { INITIAL_ALLOWED_SLIPPAGE } from 'constants/index'
-import { CurrencyAmount, JSBI, Trade, Token } from 'definixswap-sdk'
+import { CurrencyAmount, JSBI, Trade, Token, Currency } from 'definixswap-sdk'
 import { useActiveWeb3React } from 'hooks'
 import { useCurrency, useAllTokens } from 'hooks/Tokens'
 import { ApprovalState, useApproveCallbackFromTrade } from 'hooks/useApproveCallback'
@@ -40,6 +40,8 @@ import {
   TitleSet,
   ButtonScales,
   ColorStyles,
+  ChangeIcon,
+  ButtonVariants,
 } from 'definixswap-uikit'
 
 import { Overlay } from 'uikit-dev/components/Overlay'
@@ -51,6 +53,7 @@ import { useTranslation } from 'react-i18next'
 import { TransactionDetails } from 'state/transactions/reducer'
 import { RouteComponentProps } from 'react-router-dom'
 import { SwapContainer, CardContainer } from 'components/Layout'
+import CurrencyLogo from 'components/CurrencyLogo'
 import {
   SIX_ADDRESS,
   FINIX_ADDRESS,
@@ -359,6 +362,20 @@ export default function Swap({
     [onCurrencySelection, checkForSyrup]
   )
 
+  const initSwapData = useCallback(() => {
+    setSwapState({
+      showConfirm: false,
+      tradeToConfirm: undefined,
+      attemptingTxn: false,
+      swapErrorMessage: undefined,
+      txHash: undefined,
+    });
+    onUserInput(Field.INPUT, '')
+    onUserInput(Field.OUTPUT, '')
+    onCurrencySelection(Field.INPUT, '')
+    onCurrencySelection(Field.OUTPUT, '')
+  }, [onCurrencySelection, onUserInput])
+
   useEffect(() => {
     if (isMobileOrTablet) {
       setIsShowRightPanel(false)
@@ -429,7 +446,7 @@ export default function Swap({
                           }}
                           size="sm"
                         >
-                          {/* <ArrowDownIcon /> */}
+                          <ChangeIcon />
                         </IconButton>
                       </ArrowWrapper>
                       
@@ -506,49 +523,71 @@ export default function Swap({
                     </GreyCard>
                   ) : showApproveFlow ? (
                     <RowBetween className="mb-3">
-                      <Button
-                        onClick={approveCallback}
-                        disabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted}
-                        style={{ width: '48%' }}
-                        variant={approval === ApprovalState.APPROVED ? 'success' : 'primary'}
-                      >
-                        {approval === ApprovalState.PENDING ? (
-                          <AutoRow gap="6px" justify="center">
-                            Approving <Loader stroke="white" />
-                          </AutoRow>
-                        ) : approvalSubmitted && approval === ApprovalState.APPROVED ? (
-                          'Approved'
-                        ) : (
-                          `Approve ${currencies[Field.INPUT]?.symbol}`
-                        )}
-                      </Button>
-                      <Button
-                        onClick={() => {
-                          if (isExpertMode) {
-                            handleSwap()
-                          } else {
-                            setSwapState({
-                              tradeToConfirm: trade,
-                              attemptingTxn: false,
-                              swapErrorMessage: undefined,
-                              showConfirm: true,
-                              txHash: undefined,
-                            })
+
+                      <Flex flexDirection="column" flex="1 1 0">
+
+                        <Flex justifyContent="space-between" alignItems="center" flex="1 1 0" mb="20px">
+                          <Flex alignItems="center">
+                            <CurrencyLogo
+                              currency={currencies[Field.INPUT]} 
+                              size="32px"
+                              style={{marginRight: '12px'}}
+                            />
+                            <Text textStyle="R_16M" color={ColorStyles.MEDIUMGREY}>
+                              {`${currencies[Field.INPUT]?.symbol}`}
+                            </Text>
+                          </Flex>
+
+                          <Button
+                            scale={ButtonScales.MD}
+                            onClick={approveCallback}
+                            disabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted}
+                            // style={{ width: '186px' }}
+                            width="186px"
+                            variant={approval === ApprovalState.APPROVED ?  'primary' : ButtonVariants.BROWN}
+                          >
+                            {approval === ApprovalState.PENDING ? (
+                              <AutoRow gap="6px" justify="center">
+                                Approving <Loader stroke="white" />
+                              </AutoRow>
+                            ) : approvalSubmitted && approval === ApprovalState.APPROVED ? (
+                              'Approved'
+                            ) : (
+                              `Approve ${currencies[Field.INPUT]?.symbol}`
+                            )}
+                          </Button>
+                        </Flex>
+
+                        <Button
+                          width="100%"
+                          variant={isValid && priceImpactSeverity > 2 ? 'danger' : 'primary'}
+                          scale={ButtonScales.LG}
+                          id="swap-button"
+                          onClick={() => {
+                            if (isExpertMode) {
+                              handleSwap()
+                            } else {
+                              setSwapState({
+                                tradeToConfirm: trade,
+                                attemptingTxn: false,
+                                swapErrorMessage: undefined,
+                                showConfirm: true,
+                                txHash: undefined,
+                              })
+                            }
+                          }}
+                          disabled={
+                            !isValid ||
+                            approval !== ApprovalState.APPROVED ||
+                            (priceImpactSeverity > 3 && !isExpertMode)
                           }
-                        }}
-                        style={{ width: '48%' }}
-                        id="swap-button"
-                        disabled={
-                          !isValid ||
-                          approval !== ApprovalState.APPROVED ||
-                          (priceImpactSeverity > 3 && !isExpertMode)
-                        }
-                        variant={isValid && priceImpactSeverity > 2 ? 'danger' : 'primary'}
-                      >
-                        {priceImpactSeverity > 3 && !isExpertMode
-                          ? `Price Impact High`
-                          : `Swap${priceImpactSeverity > 2 ? ' Anyway' : ''}`}
-                      </Button>
+                        >
+                          {priceImpactSeverity > 3 && !isExpertMode
+                            ? `Price Impact High`
+                            : `Swap${priceImpactSeverity > 2 ? ' Anyway' : ''}`}
+                        </Button>
+                      </Flex>
+
                     </RowBetween>
                   ) : (
                     <>
@@ -611,22 +650,25 @@ export default function Swap({
           </SwapContainer>
         </Flex>
       ) : (
-        <></>
+        <>
+          <ConfirmSwapModal
+            isOpen={showConfirm}
+            trade={trade}
+            originalTrade={tradeToConfirm}
+            onAcceptChanges={handleAcceptChanges}
+            attemptingTxn={attemptingTxn}
+            txHash={txHash}
+            recipient={recipient}
+            allowedSlippage={allowedSlippage}
+            onConfirm={handleSwap}
+            swapErrorMessage={swapErrorMessage}
+            onDismiss={handleConfirmDismiss}
+            initSwapData={initSwapData}
+          />
+        </>
       )}
       
-      <ConfirmSwapModal
-        isOpen={showConfirm}
-        trade={trade}
-        originalTrade={tradeToConfirm}
-        onAcceptChanges={handleAcceptChanges}
-        attemptingTxn={attemptingTxn}
-        txHash={txHash}
-        recipient={recipient}
-        allowedSlippage={allowedSlippage}
-        onConfirm={handleSwap}
-        swapErrorMessage={swapErrorMessage}
-        onDismiss={handleConfirmDismiss}
-      />
+      
 
       {/* 스왑 히스토리 화면 */}
       {/* <SwapHistory 

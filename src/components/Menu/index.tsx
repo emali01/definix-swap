@@ -55,13 +55,12 @@ const Menu: React.FC = (props) => {
       currentLang={i18n.language}
       langs={supportedLanguages}
       setLang={({ code }) => i18n.changeLanguage(code)}
+      links={links(t)}
+      {...props}
 
       // isDark={isDark}
       // toggleTheme={toggleTheme}
-      links={links(t)}
-      
       // profile={profile}
-      // {...props}
       // isMobile={false}
       // isDark={isDark}
       // toggleTheme={toggleTheme}

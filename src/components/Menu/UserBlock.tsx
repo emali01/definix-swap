@@ -75,7 +75,7 @@ const UserBlock: React.FC = () => {
         </Flex>
         <Button
           ml="8px"
-          scale={ButtonScales.S_32ICON}
+          // scale={ButtonScales.S_32ICON}
           minWidth="auto"
           variant={ButtonVariants.DEEPBROWN}
           startIcon={<GnbMySIcon />}

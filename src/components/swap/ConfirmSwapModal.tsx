@@ -1,8 +1,9 @@
 import { currencyEquals, Trade } from 'definixswap-sdk'
 import { useActiveWeb3React } from 'hooks'
-import React, { useCallback, useMemo } from 'react'
+import React, { useCallback, useEffect, useMemo } from 'react'
 import { Button } from 'definixswap-uikit'
 // import swap from 'uikit-dev/animation/swap.json'
+import { useHistory, useLocation } from 'react-router'
 import TransactionConfirmationModal, {
   ConfirmationModalContent,
   TransactionErrorContent,
@@ -38,6 +39,7 @@ export default function ConfirmSwapModal({
   isOpen,
   attemptingTxn,
   txHash,
+  initSwapData,
 }: {
   isOpen: boolean
   trade: Trade | undefined
@@ -50,7 +52,9 @@ export default function ConfirmSwapModal({
   onConfirm: () => void
   swapErrorMessage: string | undefined
   onDismiss: () => void
+  initSwapData: () => void
 }) {
+  const history = useHistory();
   const { chainId } = useActiveWeb3React()
 
   const showAcceptChanges = useMemo(
@@ -82,9 +86,10 @@ export default function ConfirmSwapModal({
         disabledConfirm={showAcceptChanges}
         swapErrorMessage={swapErrorMessage}
         allowedSlippage={allowedSlippage}
+        isPending={attemptingTxn}
       />
     ) : null
-  }, [allowedSlippage, onConfirm, showAcceptChanges, swapErrorMessage, trade])
+  }, [allowedSlippage, onConfirm, showAcceptChanges, swapErrorMessage, trade, attemptingTxn])
 
   const confirmContent = useCallback(
     () => (
@@ -99,20 +104,22 @@ export default function ConfirmSwapModal({
   )
 
   const submittedContent = useCallback(
-    () => (
-      <TransactionSubmittedContent
-        title="Swap Complete"
-        date={`${new Date().toDateString()}, ${new Date().toTimeString().split(" ")[0]}`}
-        chainId={chainId}
-        hash={txHash}
-        content={modalHeaderWithoutAction}
-        button={
-          <Button onClick={onDismiss}>
-            Back to Swap
-          </Button>
-        }
-      />
-    ),
+    () => {
+      return (
+        <TransactionSubmittedContent
+          title="Swap Complete"
+          date={`${new Date().toDateString()}, ${new Date().toTimeString().split(" ")[0]}`}
+          chainId={chainId}
+          hash={txHash}
+          content={modalHeaderWithoutAction}
+          button={
+            <Button onClick={onDismiss}>
+              Back to Swap
+            </Button>
+          }
+        />
+      )
+    },
     [chainId, modalHeaderWithoutAction, onDismiss, txHash]
   )
 
@@ -133,6 +140,29 @@ export default function ConfirmSwapModal({
     ),
     [chainId, modalHeaderWithoutAction, onDismiss, txHash]
   )
+
+  useEffect(() => {
+    if(attemptingTxn){
+      console.log('~~~isPending', attemptingTxn)
+      // history.replace('/swap')
+    }
+  }, [attemptingTxn, history])
+
+  useEffect(() => {
+    // 성공
+    if(txHash) {
+      console.log('~~~isSubmitted', txHash)
+      initSwapData();
+    }
+  }, [txHash, initSwapData])
+
+  useEffect(() => {
+    // 실패
+    if(swapErrorMessage) {
+      console.log('~~~isError', swapErrorMessage)
+      initSwapData();
+    }
+  }, [swapErrorMessage, initSwapData])
 
   return (
     <TransactionConfirmationModal

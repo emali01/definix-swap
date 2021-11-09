@@ -16,12 +16,14 @@ export default function SwapModalFooter({
   allowedSlippage,
   swapErrorMessage,
   disabledConfirm,
+  isPending,
 }: {
   trade: Trade
   allowedSlippage: number
   onConfirm: () => void
   swapErrorMessage: string | undefined
   disabledConfirm: boolean
+  isPending: boolean
 }) {
   const [showInverted, setShowInverted] = useState<boolean>(false)
   const slippageAdjustedAmounts = useMemo(() => computeSlippageAdjustedAmounts(trade, allowedSlippage), [
@@ -95,7 +97,7 @@ export default function SwapModalFooter({
           variant={severity > 2 ? 'danger' : 'primary'}
           id="confirm-swap-or-send"
         >
-          {severity > 2 ? 'Swap Anyway' : 'Confirm Swap'}
+          {isPending ? 'Pending...' : severity > 2 ? 'Swap Anyway' : 'Confirm Swap'}
         </Button>
 
         {swapErrorMessage ? <SwapCallbackError error={swapErrorMessage} /> : null}
