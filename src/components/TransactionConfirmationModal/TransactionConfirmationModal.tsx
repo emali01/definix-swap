@@ -11,22 +11,26 @@ interface ConfirmationModalProps {
   isError: boolean
   confirmContent: () => React.ReactNode
   pendingIcon?: any
-  submittedContent: () => React.ReactNode
-  errorContent: () => React.ReactNode
+  submittedContent?: () => React.ReactNode
+  errorContent?: () => React.ReactNode
   onDismiss: () => void
 }
 
 const ModalWrapper = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
   width: 100%;
+  height: 100%;
+
   padding: 24px;
   z-index: ${({ theme }) => theme.zIndices.modal - 1};
-  /* background: url(${({ theme }) => theme.colors.backgroundPolygon}); */
-  /* background-size: cover; */
-  /* background-repeat: no-repeat; */
   ${({ theme }) => theme.mediaQueries.sm} {
     padding: 40px;
   }
@@ -38,10 +42,10 @@ const TransactionConfirmationModal = ({
   isSubmitted,
   isError,
   confirmContent,
+  onDismiss,
   pendingIcon,
   submittedContent,
-  errorContent,
-  onDismiss,
+  errorContent
 }: ConfirmationModalProps) => {
   const { chainId } = useActiveWeb3React()
 
@@ -52,24 +56,10 @@ const TransactionConfirmationModal = ({
     <ModalWrapper>
       <Modal
         title=""
-        onBack={!isPending ? onDismiss : undefined}
+        // onBack={!isPending ? onDismiss : undefined}
         onDismiss={onDismiss}
-        // isRainbow={false}
-        // bodyPadding="0"
-        // maxWidth="480px"
         hideCloseButton
-        // classHeader="bd-b-n"
-        // className="w-100"
       >
-        {/* {isPending ? (
-          <ConfirmationPendingContent pendingIcon={pendingIcon} />
-        ) : isSubmitted ? (
-          submittedContent()
-        ) : isError ? (
-          errorContent()
-        ) : (
-          confirmContent()
-        )} */}
         {!isSubmitted && !isError && (
           confirmContent()
         )}

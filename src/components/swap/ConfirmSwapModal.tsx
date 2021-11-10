@@ -172,8 +172,8 @@ export default function ConfirmSwapModal({
       isError={!!swapErrorMessage}
       confirmContent={confirmContent}
       // pendingIcon={swap}
-      submittedContent={submittedContent}
-      errorContent={errorContent}
+      // submittedContent={submittedContent}
+      // errorContent={errorContent}
       onDismiss={onDismiss}
     />
   )

@@ -85,7 +85,6 @@ export default function SwapModalHeader({
           {showAcceptChanges ? (
             <RowBetween>
               <div className="flex align-center">
-                {/* <ErrorIcon className="mr-2" /> */}
                 <Text>Price Updated</Text>
               </div>
               <Button onClick={onAcceptChanges} size="sm" className="flex-shrink">

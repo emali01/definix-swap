@@ -1,7 +1,7 @@
 import { Currency, Pair } from 'definixswap-sdk'
 import React, { useCallback, useState } from 'react'
 import styled from 'styled-components'
-import { Text, useMatchBreakpoints, Flex, AnountButton, SmallDownIcon, ColorStyles } from 'definixswap-uikit'
+import { Text, useMatchBreakpoints, Flex, AnountButton, SmallDownIcon, ColorStyles, Noti, NotiType } from 'definixswap-uikit'
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
 import { TranslateString } from '../../utils/translateTextHelpers'
@@ -97,7 +97,6 @@ export default function CurrencyInputPanel({
                     : '-'}
                 </Text>
               </Flex>
-             
             )}
           </div>
         )}
@@ -169,6 +168,10 @@ export default function CurrencyInputPanel({
             </AnountButton>
           </div>
         )}
+
+        <Noti type={NotiType.ALERT} mt="12px">
+          Insufficient balance
+        </Noti>
 
       </Container>
 
