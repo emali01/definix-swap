@@ -81,8 +81,8 @@ export default function Swap({
 }: RouteComponentProps<{ currencyIdA?: string; currencyIdB?: string }>) {
   const { t } = useTranslation();
   const loadedUrlParams = useDefaultsFromURLSearch()
-  const { isXl } = useMatchBreakpoints()
-  const isMobileOrTablet = !isXl
+  const { isLg } = useMatchBreakpoints()
+  const isMobile = !isLg
 
   const allTransactions = useAllTransactions()
   const allTokens = useAllTokens()
@@ -391,10 +391,10 @@ export default function Swap({
   }, [handleSwap, isExpertMode, trade])
 
   useEffect(() => {
-    if (isMobileOrTablet) {
+    if (isMobile) {
       setIsShowRightPanel(false)
     }
-  }, [isMobileOrTablet])
+  }, [isMobile])
 
   useEffect(() => {
     return () => {
@@ -405,7 +405,7 @@ export default function Swap({
   return (
     <TimerWrapper isPhrase2={!(currentTime < phrase2TimeStamp && isPhrase2 === false)} date={phrase2TimeStamp}>
       <Flex flexDirection="column" alignItems="center">
-        <SwapContainer>
+        <SwapContainer isMobile={isMobile}>
           <Flex mb="40px">
             <TitleSet
               title={t("Swap")}
@@ -414,9 +414,9 @@ export default function Swap({
               linkLabel="Learn to swap."
             />
           </Flex>
-          <CardContainer>
+          <CardContainer isMobile={isMobile}>
             <Overlay
-              show={isShowRightPanel && isMobileOrTablet}
+              show={isShowRightPanel && isMobile}
               style={{ position: 'absolute', zIndex: 6 }}
               onClick={() => {
                 setIsShowRightPanel(false)
@@ -487,23 +487,21 @@ export default function Swap({
                 />
               </Flex>
 
-              {showWrap
-                ? null
-                : (Boolean(trade) || allowedSlippage !== INITIAL_ALLOWED_SLIPPAGE) && (
-                  <Flex mb="20px">
-                    {/* 슬리피지 발생 시 */}
-                    {/* {allowedSlippage !== INITIAL_ALLOWED_SLIPPAGE && ( */}
-                      <Flex flex="1 1 0" justifyContent="space-between">
-                        <Text fontSize="14px" color="textSubtle">
-                          Slippage Tolerance
-                        </Text>
-                        <Text fontSize="14px" textAlign="right" bold>
-                          {/* {allowedSlippage / 100}% */}
-                          {50 / 100}%
-                        </Text>
-                    </Flex>
+              {!showWrap && (Boolean(trade) || allowedSlippage !== INITIAL_ALLOWED_SLIPPAGE) && (
+                <Flex mb="20px">
+                  {/* 슬리피지 발생 시 */}
+                  {/* {allowedSlippage !== INITIAL_ALLOWED_SLIPPAGE && ( */}
+                    <Flex flex="1 1 0" justifyContent="space-between">
+                      <Text fontSize="14px" color="textSubtle">
+                        Slippage Tolerance
+                      </Text>
+                      <Text fontSize="14px" textAlign="right" bold>
+                        {/* {allowedSlippage / 100}% */}
+                        {50 / 100}%
+                      </Text>
                   </Flex>
-                )}
+                </Flex>
+              )}
 
               {/* 영수증 발행 */}
               {/* {recipient !== null && !showWrap ? (
@@ -519,7 +517,6 @@ export default function Swap({
                   <AddressInputPanel id="recipient" value={recipient} onChange={onChangeRecipient} />
                 </>
               ) : null} */}
-
             </Flex>
 
             {/* 하단 버튼 및 스왑 정보 */}
@@ -613,20 +610,7 @@ export default function Swap({
                 {/* {isExpertMode && swapErrorMessage ? <SwapCallbackError error={swapErrorMessage} /> : null} */}
               </Flex>
 
-              <ConfirmSwapModal
-                isOpen={showConfirm}
-                trade={trade}
-                originalTrade={tradeToConfirm}
-                onAcceptChanges={handleAcceptChanges}
-                attemptingTxn={attemptingTxn}
-                txHash={txHash}
-                recipient={recipient}
-                allowedSlippage={allowedSlippage}
-                onConfirm={handleSwap}
-                swapErrorMessage={swapErrorMessage}
-                onDismiss={handleConfirmDismiss}
-                initSwapData={initSwapData}
-              />
+              
 
               {/* 라우팅 및 기타 스왑 정보 */}
               {trade && (
@@ -654,6 +638,23 @@ export default function Swap({
           </CardContainer>
         </SwapContainer>
       </Flex>
+
+      {showConfirm && (
+        <ConfirmSwapModal
+          isOpen={showConfirm}
+          trade={trade}
+          originalTrade={tradeToConfirm}
+          onAcceptChanges={handleAcceptChanges}
+          attemptingTxn={attemptingTxn}
+          txHash={txHash}
+          recipient={recipient}
+          allowedSlippage={allowedSlippage}
+          onConfirm={handleSwap}
+          swapErrorMessage={swapErrorMessage}
+          onDismiss={handleConfirmDismiss}
+          initSwapData={initSwapData}
+        />
+      )}
 
       {/* 스왑 히스토리 화면 */}
       {/* <SwapHistory 

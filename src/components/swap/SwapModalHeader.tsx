@@ -1,8 +1,8 @@
 import { Trade, TradeType } from 'definixswap-sdk'
 import React, { useContext, useMemo } from 'react'
 import { ArrowDown } from 'react-feather'
-import styled, { ThemeContext } from 'styled-components'
-import { Button, Text } from 'definixswap-uikit'
+import styled, { DefaultTheme, ThemeContext } from 'styled-components'
+import { Button, Text, Flex, Box, ArrowBottomGIcon } from 'definixswap-uikit'
 import { Field } from '../../state/swap/actions'
 import { isAddress, shortenAddress } from '../../utils'
 import { computeSlippageAdjustedAmounts, computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
@@ -15,6 +15,50 @@ const PriceInfoText = styled(Text)`
     font-weight: 600;
   }
 `
+
+const SwapTokenInfo = ({
+  isInput,
+  trade,
+  theme,
+  showAcceptChanges,
+  priceImpactSeverity}: {
+    isInput: boolean
+    trade: Trade
+    theme: DefaultTheme
+    showAcceptChanges?: boolean
+    priceImpactSeverity?: 0 | 1 | 2 | 3 | 4
+  }) => {
+  return (
+    <Flex justifyContent="space-between" alignItems="center" p="15px 0">
+      <Flex alignItems="center">
+        <Box mr="12px" mt="2px">
+          {isInput && <CurrencyLogo currency={trade.inputAmount.currency} size="30px" />}
+          {!isInput && <CurrencyLogo currency={trade.outputAmount.currency} size="30px" />}
+        </Box>
+        <Text textStyle="R_16M">
+          {isInput && trade.inputAmount.currency.symbol}
+          {!isInput && trade.outputAmount.currency.symbol}
+        </Text>
+      </Flex>
+      {isInput && (
+        <Text
+          textStyle="R_16R"
+          color={showAcceptChanges && trade.tradeType === TradeType.EXACT_OUTPUT ? theme.colors.primary : 'text'}
+        >
+          {trade.inputAmount.toSignificant(6)}
+        </Text>
+      )}
+      {!isInput && priceImpactSeverity && (
+        <Text 
+          textStyle="R_16R"
+          color={priceImpactSeverity > 2 ? theme.colors.failure : 'text'}
+        >
+          {trade.outputAmount.toSignificant(6)}
+        </Text>
+      )}
+    </Flex>
+  )
+}
 
 export default function SwapModalHeader({
   trade,
@@ -41,45 +85,24 @@ export default function SwapModalHeader({
   const theme = useContext(ThemeContext)
 
   return (
-    <AutoColumn gap="24px">
-      <AutoColumn gap="16px">
-        <RowBetween align="flex-end">
-          <RowFixed mb="0 !important">
-            <CurrencyLogo currency={trade.inputAmount.currency} size="24px" style={{ marginRight: '12px' }} />
-            <Text
-              fontSize="24px"
-              fontWeight="500"
-              color={showAcceptChanges && trade.tradeType === TradeType.EXACT_OUTPUT ? theme.colors.primary : 'text'}
-            >
-              {trade.inputAmount.toSignificant(6)}
-            </Text>
-          </RowFixed>
-          <RowFixed mb="0 !important">
-            <Text fontSize="24px" fontWeight="500">
-              {trade.inputAmount.currency.symbol}
-            </Text>
-          </RowFixed>
-        </RowBetween>
+    <Flex flexDirection="column">
+      <Flex flexDirection="column">
 
-        <RowFixed mb="0 !important">
-          <ArrowDown size="16" color={theme.colors.textSubtle} style={{ marginLeft: '4px', minWidth: '16px' }} />
-        </RowFixed>
+        <SwapTokenInfo 
+          isInput
+          trade={trade}
+          theme={theme}
+          showAcceptChanges={showAcceptChanges}
+        />
 
-        <RowBetween align="flex-end">
-          <RowFixed mb="0 !important">
-            <CurrencyLogo currency={trade.outputAmount.currency} size="24px" style={{ marginRight: '12px' }} />
-            <Text fontSize="24px" fontWeight="500" color={priceImpactSeverity > 2 ? theme.colors.failure : 'text'}>
-              {trade.outputAmount.toSignificant(6)}
-            </Text>
-          </RowFixed>
-          <RowFixed mb="0 !important">
-            <Text fontSize="24px" fontWeight="500">
-              {trade.outputAmount.currency.symbol}
-            </Text>
-          </RowFixed>
-        </RowBetween>
-      </AutoColumn>
-
+        <SwapTokenInfo
+          isInput={false}
+          trade={trade}
+          theme={theme}
+          priceImpactSeverity={priceImpactSeverity}
+        />
+      </Flex>
+    {/* 
       {!onlyCurrency && (
         <>
           {showAcceptChanges ? (
@@ -118,7 +141,7 @@ export default function SwapModalHeader({
             </Text>
           ) : null}
         </>
-      )}
-    </AutoColumn>
+      )} */}
+    </Flex>
   )
 }

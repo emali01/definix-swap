@@ -1,6 +1,6 @@
 import { Trade, TradeType } from 'definixswap-sdk'
 import React, { useMemo, useState } from 'react'
-import { Button, Text } from 'definixswap-uikit'
+import { Button, Text, Flex, ColorStyles, ButtonScales } from 'definixswap-uikit'
 import { Field } from '../../state/swap/actions'
 import { computeSlippageAdjustedAmounts, computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
 import { AutoColumn } from '../Column'
@@ -34,49 +34,63 @@ export default function SwapModalFooter({
   const severity = warningSeverity(priceImpactWithoutFee)
 
   return (
-    <>
-      <AutoColumn gap="16px" className="mb-6">
-        <RowBetween>
-          <Text fontSize="14px" color="textSubtle">
+    <Flex flexDirection="column">
+      <Text 
+        textStyle="R_16M"
+        color={ColorStyles.DEEPGREY}
+        mb="12px"
+      >
+        Estimated Returns
+      </Text>
+
+      <Flex flexDirection="column" mb="32px">
+        <Flex justifyContent="space-between" mb="8px">
+          <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>
             Price Rate
           </Text>
-          <TradePrice price={trade?.executionPrice} showInverted={showInverted} setShowInverted={setShowInverted} />
-        </RowBetween>
+          <TradePrice 
+            price={trade?.executionPrice} 
+            showInverted={showInverted} 
+            setShowInverted={setShowInverted} 
+          />
+        </Flex>
 
-        <RowBetween>
-          <RowFixed mb="0 !important">
-            <Text fontSize="14px" color="textSubtle">
+        <Flex justifyContent="space-between" mb="8px">
+          <Flex>
+            <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY} mr="5px">
               {trade.tradeType === TradeType.EXACT_INPUT ? 'Minimum received' : 'Maximum sold'}
             </Text>
-            <QuestionHelper text="Your transaction will revert if there is a large, unfavorable price movement before it is confirmed." />
-          </RowFixed>
-          <RowFixed mb="0 !important">
-            <Text fontSize="14px" bold>
+            <QuestionHelper 
+              text="Your transaction will revert if there is a large, unfavorable price movement before it is confirmed." 
+            />
+          </Flex>
+          <Flex>
+            <Text textStyle="R_14M" color={ColorStyles.DEEPGREY} mr="4px">
               {trade.tradeType === TradeType.EXACT_INPUT
                 ? slippageAdjustedAmounts[Field.OUTPUT]?.toSignificant(4) ?? '-'
                 : slippageAdjustedAmounts[Field.INPUT]?.toSignificant(4) ?? '-'}
             </Text>
-            <Text fontSize="14px" marginLeft="4px" bold>
+            <Text textStyle="R_14M" color={ColorStyles.DEEPGREY}>
               {trade.tradeType === TradeType.EXACT_INPUT
                 ? trade.outputAmount.currency.symbol
                 : trade.inputAmount.currency.symbol}
             </Text>
-          </RowFixed>
-        </RowBetween>
+          </Flex>
+        </Flex>
 
-        <RowBetween>
+        <Flex justifyContent="space-between" mb="8px">
           <RowFixed mb="0 !important">
-            <Text fontSize="14px" color="textSubtle">
+            <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>
               Price Impact
             </Text>
             <QuestionHelper text="The difference between the market price and your price due to trade size." />
           </RowFixed>
           <FormattedPriceImpact priceImpact={priceImpactWithoutFee} />
-        </RowBetween>
+        </Flex>
 
-        <RowBetween>
+        <Flex justifyContent="space-between">
           <RowFixed mb="0 !important">
-            <Text fontSize="14px" color="textSubtle">
+            <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>
               Liquidity Provider Fee
             </Text>
             <QuestionHelper
@@ -84,24 +98,28 @@ export default function SwapModalFooter({
 0.15% goes to liquidity providers and 0.05% goes to the Definix Swap treasury"
             />
           </RowFixed>
-          <Text fontSize="14px" bold>
+          <Text textStyle="R_14M" color={ColorStyles.DEEPGREY}>
             {realizedLPFee ? `${realizedLPFee?.toSignificant(6)} ${trade.inputAmount.currency.symbol}` : '-'}
           </Text>
-        </RowBetween>
-      </AutoColumn>
+        </Flex>
+      </Flex>
 
-      <AutoRow>
+      <Flex>
         <Button
+          scale={ButtonScales.LG}
+          width="100%"
           onClick={onConfirm}
           disabled={disabledConfirm}
           variant={severity > 2 ? 'danger' : 'primary'}
           id="confirm-swap-or-send"
         >
-          {isPending ? 'Pending...' : severity > 2 ? 'Swap Anyway' : 'Confirm Swap'}
+          <Text textStyle="R_16B">
+            {isPending ? 'Pending...' : severity > 2 ? 'Swap Anyway' : 'Swap'}
+          </Text>
         </Button>
 
         {swapErrorMessage ? <SwapCallbackError error={swapErrorMessage} /> : null}
-      </AutoRow>
-    </>
+      </Flex>
+    </Flex>
   )
 }

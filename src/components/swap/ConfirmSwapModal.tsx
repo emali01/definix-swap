@@ -2,8 +2,7 @@ import { currencyEquals, Trade } from 'definixswap-sdk'
 import { useActiveWeb3React } from 'hooks'
 import React, { useCallback, useEffect, useMemo } from 'react'
 import { Button } from 'definixswap-uikit'
-// import swap from 'uikit-dev/animation/swap.json'
-import { useHistory, useLocation } from 'react-router'
+import { useHistory } from 'react-router'
 import TransactionConfirmationModal, {
   ConfirmationModalContent,
   TransactionErrorContent,
@@ -144,7 +143,6 @@ export default function ConfirmSwapModal({
   useEffect(() => {
     if(attemptingTxn){
       console.log('~~~isPending', attemptingTxn)
-      // history.replace('/swap')
     }
   }, [attemptingTxn, history])
 

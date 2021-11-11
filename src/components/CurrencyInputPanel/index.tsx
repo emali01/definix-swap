@@ -74,8 +74,8 @@ export default function CurrencyInputPanel({
   const [modalOpen, setModalOpen] = useState(false)
   const { account } = useActiveWeb3React()
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
-  const { isXl, isMd, isLg } = useMatchBreakpoints()
-  const isMobile = !isXl && !isMd && !isLg
+  const { isLg } = useMatchBreakpoints()
+  const isMobile = !isLg
 
   const handleDismissSearch = useCallback(() => {
     setModalOpen(false)
@@ -155,8 +155,8 @@ export default function CurrencyInputPanel({
 
         </InputBox>
 
-        {account && currency && label !== 'To' && (
-          <div className="flex align-center" style={{ width: isMobile ? '100%' : 'auto' }}>
+        {(!isMobile && account && currency && label !== 'To') && (
+          <Flex>
             <AnountButton onClick={onQuarter} mr="6px">
               25%
             </AnountButton>
@@ -166,7 +166,7 @@ export default function CurrencyInputPanel({
             <AnountButton onClick={onMax}>
               MAX
             </AnountButton>
-          </div>
+          </Flex>
         )}
 
         <Noti type={NotiType.ALERT} mt="12px">

@@ -21,19 +21,13 @@ const ModalWrapper = styled.div`
   top: 0;
   left: 0;
   background-color: rgba(0, 0, 0, 0.3);
-
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   width: 100%;
   height: 100%;
-
-  padding: 24px;
   z-index: ${({ theme }) => theme.zIndices.modal - 1};
-  ${({ theme }) => theme.mediaQueries.sm} {
-    padding: 40px;
-  }
 `
 
 const TransactionConfirmationModal = ({
@@ -55,9 +49,10 @@ const TransactionConfirmationModal = ({
   return isOpen ? (
     <ModalWrapper>
       <Modal
-        title=""
+        // title=""
         // onBack={!isPending ? onDismiss : undefined}
         onDismiss={onDismiss}
+        hideHeader
         hideCloseButton
       >
         {!isSubmitted && !isError && (

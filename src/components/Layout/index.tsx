@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Flex, lightColors } from 'definixswap-uikit'
+import { Flex, lightColors  } from 'definixswap-uikit'
 
 export const MaxWidthLeft = styled.div`
   max-width: 800px;
@@ -8,16 +8,19 @@ export const MaxWidthLeft = styled.div`
   margin-right: auto;
 `;
 
-export const SwapContainer = styled.div`
-  width: 629px;
+export const SwapContainer = styled.div<{isMobile?: boolean}>`
+  width: ${({isMobile}) => isMobile ? '100%' : '629px'};
+  max-width: 629px;
+
   margin-top: 28px;
 `
 
-export const CardContainer = styled.div`
+export const CardContainer = styled.div<{isMobile?: boolean}>`
   display: flex;
   flex-direction: column;
   width: 100%;
-  padding: 40px;
+  padding: ${({isMobile}) => isMobile ? '20px' : '40px'};
+  
   border-radius: 16px;
   background-color: ${lightColors.white};
   border: 1px solid ${lightColors.yellowBg2};

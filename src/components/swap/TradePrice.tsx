@@ -1,6 +1,6 @@
 import { Price } from 'definixswap-sdk'
 import React from 'react'
-import { IconButton, SyncAltIcon, Text } from 'uikit-dev'
+import { ColorStyles, IconButton, Text } from 'definixswap-uikit'
 
 interface TradePriceProps {
   price?: Price
@@ -14,25 +14,25 @@ export default function TradePrice({ price, showInverted, setShowInverted }: Tra
   const show = Boolean(price?.baseCurrency && price?.quoteCurrency)
   const label = showInverted ? (
     <>
-      <Text fontSize="14px" bold>
+      <Text textStyle="R_14M" color={ColorStyles.DEEPGREY}>
         {price?.quoteCurrency?.symbol}
       </Text>
-      <Text fontSize="14px" color="textSubtle" className="mx-1">
-        per
+      <Text textStyle="R_14M" color={ColorStyles.DEEPGREY} ml="2px" mr="2px">
+        =
       </Text>
-      <Text fontSize="14px" bold>
+      <Text textStyle="R_14M" color={ColorStyles.DEEPGREY}>
         {price?.baseCurrency?.symbol}
       </Text>
     </>
   ) : (
     <>
-      <Text fontSize="14px" bold>
+      <Text textStyle="R_14M" color={ColorStyles.DEEPGREY}>
         {price?.baseCurrency?.symbol}
       </Text>
-      <Text fontSize="14px" color="textSubtle" className="mx-1">
-        per
+      <Text textStyle="R_14M" color={ColorStyles.DEEPGREY} ml="2px" mr="2px">
+        =
       </Text>
-      <Text fontSize="14px" bold>
+      <Text textStyle="R_14M" color={ColorStyles.DEEPGREY}>
         {price?.quoteCurrency?.symbol}
       </Text>
     </>
@@ -42,13 +42,13 @@ export default function TradePrice({ price, showInverted, setShowInverted }: Tra
     <div className="flex align-center justify-end flex-wrap">
       {show ? (
         <>
-          <Text fontSize="14px" className="mr-1" bold>
+          <Text textStyle="R_14M" color={ColorStyles.DEEPGREY} mr="2px">
             {formattedPrice ?? '-'}
           </Text>
           {label}
-          <IconButton size="xs" onClick={() => setShowInverted(!showInverted)} variant="tertiary" className="ml-2">
+          {/* <IconButton size="xs" onClick={() => setShowInverted(!showInverted)} variant="tertiary" className="ml-2">
             <SyncAltIcon width="14px" color="primary" />
-          </IconButton>
+          </IconButton> */}
         </>
       ) : (
         '-'
