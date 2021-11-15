@@ -62,6 +62,12 @@ const config: MenuEntry[] = [
         notHighlight: false,
         newTab: false,
       },
+      {
+        label: 'Partnership Pool',
+        href: `${process.env.REACT_APP_FRONTEND_URL}/partnership-pool`,
+        notHighlight: false,
+        newTab: false,
+      },
     ],
   },
   // {
