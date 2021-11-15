@@ -57,6 +57,11 @@ export const ADA_ADDRESS = {
   [ChainId.BSCTESTNET]: process.env.REACT_APP_ADA_ADDRESS_TESTNET || ''
 }
 
+export const VELO_ADDRESS = {
+  [ChainId.MAINNET]: process.env.REACT_APP_VELO_ADDRESS_MAINNET || '',
+  [ChainId.BSCTESTNET]: process.env.REACT_APP_VELO_ADDRESS_TESTNET || ''
+}
+
 export const FINIX_SIX_LP = {
   [ChainId.MAINNET]: process.env.REACT_APP_FINIX_SIX_LP_MAINNET || '',
   [ChainId.BSCTESTNET]: process.env.REACT_APP_FINIX_SIX_LP_TESTNET || ''
@@ -131,7 +136,8 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
     new Token(ChainId.BSCTESTNET, BTCB_ADDRESS[ChainId.BSCTESTNET], 18, 'BTCB', 'BTCB Token'),
     new Token(ChainId.BSCTESTNET, ETH_ADDRESS[ChainId.BSCTESTNET], 18, 'ETH', 'ETH Token'),
     new Token(ChainId.BSCTESTNET, XRP_ADDRESS[ChainId.BSCTESTNET], 18, 'XRP', 'XRP Token'),
-    new Token(ChainId.BSCTESTNET, ADA_ADDRESS[ChainId.BSCTESTNET], 18, 'ADA', 'ADA Token')
+    new Token(ChainId.BSCTESTNET, ADA_ADDRESS[ChainId.BSCTESTNET], 18, 'ADA', 'ADA Token'),
+    new Token(ChainId.BSCTESTNET, VELO_ADDRESS[ChainId.BSCTESTNET], 18, 'VELO', 'VELO Token')
   ],
   [ChainId.MAINNET]: [
     ...WETH_ONLY[ChainId.MAINNET],
@@ -143,7 +149,8 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
     new Token(ChainId.MAINNET, BTCB_ADDRESS[ChainId.MAINNET], 18, 'BTCB', 'BTCB Token'),
     new Token(ChainId.MAINNET, ETH_ADDRESS[ChainId.MAINNET], 18, 'ETH', 'ETH Token'),
     new Token(ChainId.MAINNET, XRP_ADDRESS[ChainId.MAINNET], 18, 'XRP', 'XRP Token'),
-    new Token(ChainId.MAINNET, ADA_ADDRESS[ChainId.MAINNET], 18, 'ADA', 'ADA Token')
+    new Token(ChainId.MAINNET, ADA_ADDRESS[ChainId.MAINNET], 18, 'ADA', 'ADA Token'),
+    new Token(ChainId.MAINNET, VELO_ADDRESS[ChainId.MAINNET], 5, 'VELO', 'VELO Token'),
   ]
 }
 
@@ -252,7 +259,19 @@ export const PINNED_PAIRS: { readonly [chainId in ChainId]?: [Token, Token][] } 
     [
       new Token(ChainId.MAINNET, BTCB_ADDRESS[ChainId.MAINNET], 18, 'BTCB', 'BTCB Token'),
       new Token(ChainId.MAINNET, ETH_ADDRESS[ChainId.MAINNET], 18, 'ETH', 'ETH Token')
-    ]
+    ],
+    [
+      new Token(ChainId.MAINNET, VELO_ADDRESS[ChainId.MAINNET], 5, 'VELO', 'VELO Token'),
+      new Token(ChainId.MAINNET, WBNB_ADDRESS[ChainId.MAINNET], 18, 'WBNB', 'Wrapped BNB')
+    ],
+    [
+      new Token(ChainId.MAINNET, VELO_ADDRESS[ChainId.MAINNET], 5, 'VELO', 'VELO Token'),
+      new Token(ChainId.MAINNET, BUSD_ADDRESS[ChainId.MAINNET], 18, 'BUSD', 'BUSD BNB'),
+    ],
+    [
+      new Token(ChainId.MAINNET, VELO_ADDRESS[ChainId.MAINNET], 5, 'VELO', 'VELO Token'),
+      new Token(ChainId.MAINNET, FINIX_ADDRESS[ChainId.MAINNET], 18, 'FINIX', 'FINIX Token'),
+    ],
   ],
   [ChainId.BSCTESTNET]: [
     [
@@ -314,7 +333,19 @@ export const PINNED_PAIRS: { readonly [chainId in ChainId]?: [Token, Token][] } 
     [
       new Token(ChainId.BSCTESTNET, USDT_ADDRESS[ChainId.BSCTESTNET], 18, 'USDT', 'USDT Token'),
       new Token(ChainId.BSCTESTNET, BTCB_ADDRESS[ChainId.BSCTESTNET], 18, 'BTCB', 'BTCB Token')
-    ]
+    ],
+    [
+      new Token(ChainId.BSCTESTNET, VELO_ADDRESS[ChainId.BSCTESTNET], 18, 'VELO', 'VELO Token'),
+      new Token(ChainId.BSCTESTNET, WBNB_ADDRESS[ChainId.BSCTESTNET], 18, 'WBNB', 'Wrapped BNB')
+    ],
+    [
+      new Token(ChainId.BSCTESTNET, VELO_ADDRESS[ChainId.BSCTESTNET], 18, 'VELO', 'VELO Token'),
+      new Token(ChainId.BSCTESTNET, BUSD_ADDRESS[ChainId.BSCTESTNET], 18, 'BUSD', 'BUSD BNB'),
+    ],
+    [
+      new Token(ChainId.BSCTESTNET, VELO_ADDRESS[ChainId.BSCTESTNET], 18, 'VELO', 'VELO Token'),
+      new Token(ChainId.BSCTESTNET, FINIX_ADDRESS[ChainId.BSCTESTNET], 18, 'FINIX', 'FINIX Token'),
+    ],
   ]
 }
 

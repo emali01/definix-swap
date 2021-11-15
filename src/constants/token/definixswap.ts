@@ -138,5 +138,13 @@ export default {
       decimals: 18,
       logoURI: '/images/coins/ada.png'
     },
+    {
+      name: 'VELO Token',
+      symbol: 'VELO',
+      address: process.env.REACT_APP_VELO_ADDRESS_MAINNET,
+      chainId: 56,
+      decimals: 5,
+      logoURI: '/images/coins/VELO.png'
+    },
   ]
 }
