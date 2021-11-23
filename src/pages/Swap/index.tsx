@@ -452,12 +452,10 @@ export default function Swap({
                   <AutoRow justify={isExpertMode ? 'space-between' : 'center'} style={{ padding: '0 1rem' }}>
                     <ArrowWrapper clickable>
                       <IconButton
-                        variant="text"
                         onClick={() => {
                           setApprovalSubmitted(false) // reset 2 step UI for approvals
                           onSwitchTokens()
                         }}
-                        size="sm"
                       >
                         <ChangeIcon />
                       </IconButton>

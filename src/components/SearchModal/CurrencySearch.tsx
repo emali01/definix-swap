@@ -168,7 +168,7 @@ export function CurrencySearch({
               /> */}
             </Heading>
           </Text>
-          <IconButton onClick={onDismiss} variant="text">
+          <IconButton onClick={onDismiss}>
             <CloseIcon />
           </IconButton>
         </Flex>

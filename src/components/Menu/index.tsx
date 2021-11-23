@@ -9,9 +9,6 @@ import { Menu as UikitMenu } from 'definixswap-uikit'
 import { useUserSlippageTolerance, useUserDeadline } from 'state/user/hooks'
 import { useTranslation, Trans } from 'react-i18next'
 import { links } from './config'
-import UserBlock from './UserBlock'
-import Chain from './Chain'
-import SettingsModal from '../PageHeader/SettingsModal'
 
 const Menu: React.FC = (props) => {
   const { setShowModal, showModal } = React.useContext(KlipModalContext())
