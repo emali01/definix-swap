@@ -78,8 +78,7 @@ export default function SwapModalFooter({
               Liquidity Provider Fee
             </Text>
             <QuestionHelper
-              text="For each trade a 0.2% fee is paid.
-0.15% goes to liquidity providers and 0.05% goes to the Definix Swap treasury"
+              text="For each trade a 0.25% fee is paid. 0.2% goes to liquidity providers and 0.05% goes to the Definix Swap treasury"
             />
           </RowFixed>
           <Text fontSize="14px" bold>
