@@ -32,13 +32,14 @@ import { useCurrency } from 'hooks/Tokens'
 import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
 import React, { useCallback, useState, useContext } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import { Field } from 'state/mint/actions'
 import { useDerivedMintInfo, useMintActionHandlers, useMintState } from 'state/mint/hooks'
 import { useTransactionAdder } from 'state/transactions/hooks'
 import { KlaytnTransactionResponse } from 'state/transactions/actions'
 import { useIsExpertMode, useUserDeadline, useUserSlippageTolerance } from 'state/user/hooks'
-import { Button, CardBody, Text, Text as UIKitText } from 'definixswap-uikit'
+import { Box, Flex, Button, CardBody, Text, Text as UIKitText, TitleSet } from 'definixswap-uikit'
 // import liquidity from 'uikit-dev/animation/liquidity.json'
 // import { LeftPanel, MaxWidthLeft } from 'uikit-dev/components/TwoPanelLayout'
 import { calculateGasMargin, calculateSlippageAmount, getRouterContract } from 'utils'
@@ -58,6 +59,7 @@ import { getAbiByName } from '../../hooks/HookHelper'
 // import { AppDispatch, AppState } from '../../state/index'
 // import { addTransaction as addTxn } from '../../state/transactions/actions'
 import HERODOTUS_ABI from '../../constants/abis/herodotus.json'
+import NoLiquidity from './NoLiquidity'
 
 export default function AddLiquidity({
   match: {
@@ -604,22 +606,25 @@ export default function AddLiquidity({
     setErrorMsg('')
   }, [onFieldAInput, txHash])
 
+  const { t } = useTranslation();
+
   return (
     <>
-      {!showConfirm && (
-        <Wrapper>
-          <CardBody>
-            <div>
-              {!noLiquidity && (
-                <BorderCard>
-                  <AutoColumn>
-                    <Text>You are the first liquidity provider.</Text>
-                    <Text>The ratio of tokens you add will set the price of this pool.</Text>
-                    <Text>Once you are happy with the rate click supply to review.</Text>
-                  </AutoColumn>
-                </BorderCard>
-              )}
-
+      <Flex flexDirection="column">
+        <Flex mb="40px">
+          <TitleSet
+            title={t("Liquidity")}
+            description={t("Pair your tokens and deposit in a liquidity pool to get high interest profit.")}
+            link="/"
+            linkLabel={t("Learn to swap.")}
+          />
+        </Flex>
+        <Flex flexDirection="column">
+          {!noLiquidity && (
+            <NoLiquidity />
+          )}
+          <CardBody style={{border: '1px solid red'}}>
+            <Flex flexDirection="column">
               <CurrencyInputPanel
                 value={formattedAmounts[Field.CURRENCY_A]}
                 onUserInput={onFieldAInput}
@@ -665,25 +670,7 @@ export default function AddLiquidity({
                 id="add-liquidity-input-tokenb"
                 showCommonBases={false}
               />
-            </div>
-          </CardBody>
-
-          <div>
-            {currencies[Field.CURRENCY_A] && currencies[Field.CURRENCY_B] && pairState !== PairState.INVALID && (
-              <div>
-                <Text>
-                  {noLiquidity ? 'Initial Prices and Pool Share' : 'Prices and Pool Share'}
-                </Text>
-                <BorderCard>
-                  <PoolPriceBar
-                    currencies={currencies}
-                    poolTokenPercentage={poolTokenPercentage}
-                    noLiquidity={noLiquidity}
-                    price={price}
-                  />
-                </BorderCard>
-              </div>
-            )}
+            </Flex>
 
             {!account ? (
               <ConnectWalletButton />
@@ -745,16 +732,35 @@ export default function AddLiquidity({
                 </Button>
               </AutoColumn>
             )}
-          </div>
+          </CardBody>
 
-          {pair && !noLiquidity && pairState !== PairState.INVALID ? (
-            <div>
-              <MinimalPositionCard showUnwrapped={oneCurrencyIsWETH} pair={pair} />
-            </div>
-          ) : null}
-        </Wrapper>
-      )}
+          
+        </Flex>
 
+        <Box>
+          {currencies[Field.CURRENCY_A] && currencies[Field.CURRENCY_B] && pairState !== PairState.INVALID && (
+            <Box>
+              <Text>
+                {noLiquidity ? t('Initial Prices and Pool Share') : t('Prices and Pool Share')}
+              </Text>
+              <BorderCard>
+                <PoolPriceBar
+                  currencies={currencies}
+                  poolTokenPercentage={poolTokenPercentage}
+                  noLiquidity={noLiquidity}
+                  price={price}
+                />
+              </BorderCard>
+            </Box>
+          )}
+        </Box>
+
+        {pair && !noLiquidity && pairState !== PairState.INVALID ? (
+          <Box>
+            <MinimalPositionCard showUnwrapped={oneCurrencyIsWETH} pair={pair} />
+          </Box>
+        ) : null}
+      </Flex>
       
       {showConfirm && (
         <TransactionConfirmationModal
