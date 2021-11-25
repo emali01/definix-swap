@@ -44,7 +44,7 @@ import {
   ButtonVariants,
 } from 'definixswap-uikit'
 
-import { Overlay } from 'uikit-dev/components/Overlay'
+// import { Overlay } from 'uikit-dev/components/Overlay'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { computeTradePriceBreakdown, warningSeverity } from 'utils/prices'
 import { TranslateString } from 'utils/translateTextHelpers'
@@ -415,13 +415,13 @@ export default function Swap({
             />
           </Flex>
           <CardContainer isMobile={isMobile}>
-            <Overlay
+            {/* <Overlay
               show={isShowRightPanel && isMobile}
               style={{ position: 'absolute', zIndex: 6 }}
               onClick={() => {
                 setIsShowRightPanel(false)
               }}
-            />
+            /> */}
 
             <Flex 
               flexDirection="column"

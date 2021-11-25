@@ -1,7 +1,7 @@
 import { AutoColumn } from 'components/Column'
 import { Currency, CurrencyAmount, Fraction, Percent } from 'definixswap-sdk'
 import React from 'react'
-import { Button, Text } from 'uikit-dev'
+import { Button, Text } from 'definixswap-uikit'
 import CurrencyLogo from '../../components/CurrencyLogo'
 import { RowBetween } from '../../components/Row'
 import { Field } from '../../state/mint/actions'
@@ -82,7 +82,7 @@ export function ConfirmAddModalBottom({
           <Text bold>{noLiquidity ? '100' : poolTokenPercentage?.toSignificant(4)}%</Text>
         </RowBetween>
       </AutoColumn>
-      <Button className="mt-6" onClick={onAdd} fullWidth radii="card">
+      <Button className="mt-6" onClick={onAdd} width="100%">
         {noLiquidity ? 'Create Pool & Supply' : 'Confirm Supply'}
       </Button>
     </>

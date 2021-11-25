@@ -1,6 +1,6 @@
 import React from 'react'
 import { Currency, Percent, Price } from 'definixswap-sdk'
-import { Text } from 'uikit-dev'
+import { Text } from 'definixswap-uikit'
 import { AutoColumn } from '../../components/Column'
 import { AutoRow } from '../../components/Row'
 import { ONE_BIPS } from '../../constants'
