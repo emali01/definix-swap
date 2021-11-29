@@ -11,8 +11,8 @@ import { AppWrapper } from '../components/Layout'
 import { allLanguages, EN } from '../constants/localisation/languageCodes'
 import { LanguageContext } from '../hooks/LanguageContext'
 import { TranslationsContext } from '../hooks/TranslationsContext'
-import AddLiquidity from './AddLiquidity'
-import { RedirectDuplicateTokenIds, RedirectOldAddLiquidityPathStructure } from './AddLiquidity/redirects'
+import Liquidity from './Liquidity'
+import { RedirectDuplicateTokenIds, RedirectOldAddLiquidityPathStructure } from './Liquidity/redirects'
 import Pool from './Pool'
 import PoolFinder from './PoolFinder'
 import RemoveLiquidity from './RemoveLiquidity'
@@ -103,7 +103,7 @@ export default function App() {
                     <Route exact path="/swap/:currencyIdA" component={RedirectToSwap} />
                     <Route exact strict path="/find" component={PoolFinder} />
                     {/* <Route exact strict path="/liquidity" component={Pool} /> */}
-                    <Route exact strict path="/liquidity" component={AddLiquidity} />
+                    <Route exact strict path="/liquidity" component={Liquidity} />
                     {/* <Route exact path="/add" component={AddLiquidity} /> */}
                     <Route exact strict path="/remove/:currencyIdA/:currencyIdB" component={RemoveLiquidity} />
                     <Route exact path="/add/:currencyIdA" component={RedirectOldAddLiquidityPathStructure} />

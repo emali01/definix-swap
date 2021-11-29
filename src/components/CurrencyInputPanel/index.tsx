@@ -1,7 +1,7 @@
 import { Currency, Pair } from 'definixswap-sdk'
 import React, { useCallback, useState } from 'react'
 import styled from 'styled-components'
-import { Text, useMatchBreakpoints, Flex, AnountButton, SmallDownIcon, ColorStyles, Noti, NotiType } from 'definixswap-uikit'
+import { Text, useMatchBreakpoints, Flex, AnountButton, SmallDownIcon, ColorStyles, Noti, NotiType, UnSelectTokenIcon } from 'definixswap-uikit'
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
 import { TranslateString } from '../../utils/translateTextHelpers'
@@ -14,6 +14,10 @@ const Container = styled.div<{ hideInput: boolean }>``;
 
 const InputBox = styled.div`
   display: flex;
+  /* flex-flow: row nowrap; */
+  /* flex-wrap: wrap; */
+  /* align-items: center; */
+  /* justify-content: flex-end; */
 `
 const CurrencySelect = styled.button<{ selected: boolean }>`
   align-items: center;
@@ -22,6 +26,10 @@ const CurrencySelect = styled.button<{ selected: boolean }>`
   cursor: pointer;
   user-select: none;
   border: none;
+  /* :focus,
+  :hover {
+    background-color: ${({ theme }) => theme.colors.tertiary};
+  } */
 `
 
 interface CurrencyInputPanelProps {
@@ -122,7 +130,7 @@ export default function CurrencyInputPanel({
                       <DoubleCurrencyLogo currency0={pair.token0} currency1={pair.token1} size={16} margin />
                     ) : currency ? (
                       <CurrencyLogo currency={currency} size="40px" />
-                  ) : null}
+                  ) : <UnSelectTokenIcon />}
                 </Flex>
                 {pair ? (
                   <Text textStyle="R_14B" color={ColorStyles.BLACK}>
@@ -138,7 +146,9 @@ export default function CurrencyInputPanel({
                           currency.symbol.length - 5,
                           currency.symbol.length
                         )}`
-                      : currency?.symbol) || <Text textStyle="R_14B" color={ColorStyles.BLACK}>Select Token</Text>}
+                      : currency?.symbol) || 
+                        <Text textStyle="R_14B" color={ColorStyles.BLACK}>Token</Text>
+                  }
                   </Text>
                 )}
               </Flex>
@@ -147,7 +157,7 @@ export default function CurrencyInputPanel({
 
         </InputBox>
 
-        {(!isMobile && account && currency && label !== 'To') && (
+        {/* {(!isMobile && account && currency && label !== 'To') && ( */}
           <Flex>
             <AnountButton onClick={onQuarter} mr="6px">
               25%
@@ -159,7 +169,7 @@ export default function CurrencyInputPanel({
               MAX
             </AnountButton>
           </Flex>
-        )}
+        {/* )} */}
 
         <Noti type={NotiType.ALERT} mt="12px">
           Insufficient balance

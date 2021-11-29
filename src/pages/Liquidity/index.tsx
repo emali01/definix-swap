@@ -33,13 +33,12 @@ import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
 import React, { useCallback, useState, useContext } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { useDispatch, useSelector } from 'react-redux'
 import { Field } from 'state/mint/actions'
 import { useDerivedMintInfo, useMintActionHandlers, useMintState } from 'state/mint/hooks'
 import { useTransactionAdder } from 'state/transactions/hooks'
 import { KlaytnTransactionResponse } from 'state/transactions/actions'
 import { useIsExpertMode, useUserDeadline, useUserSlippageTolerance } from 'state/user/hooks'
-import { Box, Flex, Button, CardBody, Text, Text as UIKitText, TitleSet } from 'definixswap-uikit'
+import { TabBox, Box, Flex, Button, CardBody, Text, Text as UIKitText, TitleSet, ColorStyles, ChangeIcon, PlusIcon, ButtonScales, Noti, NotiType } from 'definixswap-uikit'
 // import liquidity from 'uikit-dev/animation/liquidity.json'
 // import { LeftPanel, MaxWidthLeft } from 'uikit-dev/components/TwoPanelLayout'
 import { calculateGasMargin, calculateSlippageAmount, getRouterContract } from 'utils'
@@ -47,9 +46,8 @@ import { currencyId } from 'utils/currencyId'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { wrappedCurrency } from 'utils/wrappedCurrency'
 import UseDeParam from 'hooks/useDeParam'
+import CurrencyLogo from 'components/CurrencyLogo'
 import { ROUTER_ADDRESS, HERODOTUS_ADDRESS } from '../../constants'
-import AppBody from '../AppBody'
-import { Wrapper } from '../Pool/styleds'
 import { ConfirmAddModalBottom } from './ConfirmAddModalBottom'
 import { PoolPriceBar } from './PoolPriceBar'
 import farms from '../../constants/farm'
@@ -608,9 +606,20 @@ export default function AddLiquidity({
 
   const { t } = useTranslation();
 
+  const tabs = [
+    {
+      name: "Add",
+      component: <></>,
+    },
+    {
+      name: "Remove",
+      component: <></>,
+    },
+  ];
+
   return (
     <>
-      <Flex flexDirection="column">
+      <Flex flexDirection="column" width="629px">
         <Flex mb="40px">
           <TitleSet
             title={t("Liquidity")}
@@ -619,11 +628,13 @@ export default function AddLiquidity({
             linkLabel={t("Learn to swap.")}
           />
         </Flex>
-        <Flex flexDirection="column">
+        <TabBox tabs={tabs} />
+
+        <Flex flexDirection="column" backgroundColor={ColorStyles.WHITE} borderRadius="16px">
           {!noLiquidity && (
             <NoLiquidity />
           )}
-          <CardBody style={{border: '1px solid red'}}>
+          <CardBody>
             <Flex flexDirection="column">
               <CurrencyInputPanel
                 value={formattedAmounts[Field.CURRENCY_A]}
@@ -647,6 +658,11 @@ export default function AddLiquidity({
                 id="add-liquidity-input-tokena"
                 showCommonBases={false}
               />
+                <Flex width="100%" justifyContent="center">
+                  <Box p="14px">
+                    <PlusIcon />
+                  </Box>
+                </Flex>
 
               <CurrencyInputPanel
                 value={formattedAmounts[Field.CURRENCY_B]}
@@ -672,91 +688,115 @@ export default function AddLiquidity({
               />
             </Flex>
 
-            {!account ? (
-              <ConnectWalletButton />
-            ) : (
-              <AutoColumn>
-                {(approvalA === ApprovalState.NOT_APPROVED ||
-                  approvalA === ApprovalState.PENDING ||
-                  approvalB === ApprovalState.NOT_APPROVED ||
-                  approvalB === ApprovalState.PENDING) &&
-                  isValid && (
-                    <RowBetween>
-                      {approvalA !== ApprovalState.APPROVED && (
-                        <Button
-                          onClick={approveACallback}
-                          disabled={approvalA === ApprovalState.PENDING}
-                          style={{ width: approvalB !== ApprovalState.APPROVED ? '48%' : '100%' }}
-                        >
-                          {approvalA === ApprovalState.PENDING ? (
-                            <Dots>Approving {currencies[Field.CURRENCY_A]?.symbol}</Dots>
-                          ) : (
-                            `Approve ${currencies[Field.CURRENCY_A]?.symbol}`
-                          )}
-                        </Button>
-                      )}
-                      {approvalB !== ApprovalState.APPROVED && (
-                        <Button
-                          onClick={approveBCallback}
-                          disabled={approvalB === ApprovalState.PENDING}
-                          style={{ width: approvalA !== ApprovalState.APPROVED ? '48%' : '100%' }}
-                        >
-                          {approvalB === ApprovalState.PENDING ? (
-                            <Dots>Approving {currencies[Field.CURRENCY_B]?.symbol}</Dots>
-                          ) : (
-                            `Approve ${currencies[Field.CURRENCY_B]?.symbol}`
-                          )}
-                        </Button>
-                      )}
-                    </RowBetween>
-                  )}
-                <Button
-                  onClick={() => {
-                    if (expertMode) {
-                      onAdd()
-                    } else {
-                      setShowConfirm(true)
-                    }
-                  }}
-                  disabled={
-                    !isValid || approvalA !== ApprovalState.APPROVED || approvalB !== ApprovalState.APPROVED
-                  }
-                  variant={
-                    !isValid && !!parsedAmounts[Field.CURRENCY_A] && !!parsedAmounts[Field.CURRENCY_B]
-                      ? 'danger'
-                      : 'primary'
-                  }
-                  width="100%"
-                >
-                  {error ?? 'Supply'}
-                </Button>
-              </AutoColumn>
-            )}
-          </CardBody>
+            <Box width="100%" height="1px" m="32px 0" backgroundColor={ColorStyles.LIGHTGREY} />
 
-          
+            <Box>
+              {!account ? (
+
+                <ConnectWalletButton />
+              ) : (
+                <Flex flexDirection="column">
+                  {(approvalA === ApprovalState.NOT_APPROVED ||
+                    approvalA === ApprovalState.PENDING ||
+                    approvalB === ApprovalState.NOT_APPROVED ||
+                    approvalB === ApprovalState.PENDING) &&
+                    isValid && (
+                      <Flex flexDirection="column" mb="16px">
+                        <Flex justifyContent="space-between" alignItems="center" mb="8px">
+                          {approvalA !== ApprovalState.APPROVED && (
+                            <>
+                              <Flex alignItems="center">
+                                <CurrencyLogo currency={currencies[Field.CURRENCY_A]} size="32px" />
+                                <Text ml="12px" textStyle="R_16M" color={ColorStyles.MEDIUMGREY}>{currencies[Field.CURRENCY_A]?.symbol}</Text>
+                              </Flex>
+                              <Button
+                                scale={ButtonScales.LG}
+                                onClick={approveACallback}
+                                disabled={approvalA === ApprovalState.PENDING}
+                                width="186px"
+                              >
+                                {approvalA === ApprovalState.PENDING ? (
+                                  <Dots>Approving {currencies[Field.CURRENCY_A]?.symbol}</Dots>
+                                ) : (
+                                  `Approve ${currencies[Field.CURRENCY_A]?.symbol}`
+                                )}
+                              </Button>
+                            </>
+                          )}
+                        </Flex>
+                        <Flex justifyContent="space-between" alignItems="center">
+                          {approvalB !== ApprovalState.APPROVED && (
+                            <>
+                              <Flex alignItems="center">
+                                <CurrencyLogo currency={currencies[Field.CURRENCY_B]} size="32px" />
+                                <Text ml="12px" textStyle="R_16M" color={ColorStyles.MEDIUMGREY}>{currencies[Field.CURRENCY_B]?.symbol}</Text>
+                              </Flex>
+                              <Button
+                                scale={ButtonScales.LG}
+                                onClick={approveBCallback}
+                                disabled={approvalB === ApprovalState.PENDING}
+                                width="186px"
+                              >
+                                {approvalB === ApprovalState.PENDING ? (
+                                  <Dots>Approving {currencies[Field.CURRENCY_B]?.symbol}</Dots>
+                                ) : (
+                                  `Approve ${currencies[Field.CURRENCY_B]?.symbol}`
+                                )}
+                              </Button>
+                            </>
+                          )}
+                        </Flex>
+                      </Flex>
+                    )}
+                  <Button
+                    onClick={() => {
+                      if (expertMode) {
+                        onAdd()
+                      } else {
+                        setShowConfirm(true)
+                      }
+                    }}
+                    disabled={
+                      !isValid || approvalA !== ApprovalState.APPROVED || approvalB !== ApprovalState.APPROVED
+                    }
+                    variant={
+                      !isValid && !!parsedAmounts[Field.CURRENCY_A] && !!parsedAmounts[Field.CURRENCY_B]
+                        ? 'danger'
+                        : 'primary'
+                    }
+                    width="100%"
+                    scale={ButtonScales.LG}
+                  >
+                    {error ?? 'Supply'}
+                  </Button>
+                </Flex>
+              )}
+            </Box>
+
+            <Noti type={NotiType.ALERT} mt="12px">
+              Error message
+            </Noti>
+
+            <Box mt="24px">
+              {currencies[Field.CURRENCY_A] && currencies[Field.CURRENCY_B] && pairState !== PairState.INVALID && (
+                <Box>
+                  <Text textStyle="R_16M" color={ColorStyles.DEEPGREY} mb="12px">
+                    {noLiquidity ? t('Initial Prices and Pool Share') : t('Estimated Returns')}
+                  </Text>
+                  <PoolPriceBar
+                    currencies={currencies}
+                    poolTokenPercentage={poolTokenPercentage}
+                    noLiquidity={noLiquidity}
+                    price={price}
+                  />
+                </Box>
+              )}
+            </Box>
+          </CardBody>
         </Flex>
 
-        <Box>
-          {currencies[Field.CURRENCY_A] && currencies[Field.CURRENCY_B] && pairState !== PairState.INVALID && (
-            <Box>
-              <Text>
-                {noLiquidity ? t('Initial Prices and Pool Share') : t('Prices and Pool Share')}
-              </Text>
-              <BorderCard>
-                <PoolPriceBar
-                  currencies={currencies}
-                  poolTokenPercentage={poolTokenPercentage}
-                  noLiquidity={noLiquidity}
-                  price={price}
-                />
-              </BorderCard>
-            </Box>
-          )}
-        </Box>
-
         {pair && !noLiquidity && pairState !== PairState.INVALID ? (
-          <Box>
+          <Box mt="12px">
             <MinimalPositionCard showUnwrapped={oneCurrencyIsWETH} pair={pair} />
           </Box>
         ) : null}
