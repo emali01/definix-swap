@@ -752,7 +752,7 @@ export default function AddLiquidity({
                               textStyle="R_14B"
                               color={ColorStyles.MEDIUMGREY}
                               variant="line"
-                            >
+                            >ㅇ
                               <Box style={{opacity: 0.5}} mt="4px">
                                 <CheckBIcon />
                               </Box>

@@ -1,6 +1,7 @@
 import React from 'react'
 import { Currency, Percent, Price } from 'definixswap-sdk'
-import { Text } from 'definixswap-uikit'
+import { Text, Flex, ColorStyles } from 'definixswap-uikit'
+import { useTranslation } from 'react-i18next'
 import { AutoColumn } from '../../components/Column'
 import { AutoRow } from '../../components/Row'
 import { ONE_BIPS } from '../../constants'
@@ -17,34 +18,36 @@ export function PoolPriceBar({
   poolTokenPercentage?: Percent
   price?: Price
 }) {
+  const { t } = useTranslation();
+
   return (
-    <AutoColumn gap="md">
-      <AutoRow justify="space-around" gap="4px">
-        <AutoColumn justify="center">
-          <Text fontWeight="bold">{price?.toSignificant(6) ?? '-'}</Text>
-          <Text fontSize="14px" color="textSubtle" pt={1}>
-            {currencies[Field.CURRENCY_B]?.symbol} per {currencies[Field.CURRENCY_A]?.symbol}
+    <Flex flexDirection="column">
+      <Flex justifyContent="space-between" mb="8px">
+        <Flex>
+          <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>{t('Price Rate')}</Text>
+        </Flex>
+        <Flex flexDirection="column">
+          <Text textStyle="R_14M" color={ColorStyles.DEEPGREY} textAlign="right">
+            1 {currencies[Field.CURRENCY_B]?.symbol} = {price?.toSignificant(6) ?? '-'} {currencies[Field.CURRENCY_A]?.symbol}
           </Text>
-        </AutoColumn>
-        <AutoColumn justify="center">
-          <Text fontWeight="bold">{price?.invert()?.toSignificant(6) ?? '-'}</Text>
-          <Text fontSize="14px" color="textSubtle" pt={1}>
-            {currencies[Field.CURRENCY_A]?.symbol} per {currencies[Field.CURRENCY_B]?.symbol}
+          <Text textStyle="R_14M" color={ColorStyles.DEEPGREY} textAlign="right">
+            1 {currencies[Field.CURRENCY_A]?.symbol} = {price?.invert()?.toSignificant(6) ?? '-'} {currencies[Field.CURRENCY_B]?.symbol}
           </Text>
-        </AutoColumn>
-        <AutoColumn justify="center">
-          <Text fontWeight="bold" color="success">
-            {noLiquidity && price
-              ? '100'
-              : (poolTokenPercentage?.lessThan(ONE_BIPS) ? '<0.01' : poolTokenPercentage?.toFixed(2)) ?? '0'}
-            %
-          </Text>
-          <Text fontSize="14px" color="textSubtle" pt={1}>
-            Share of Pool
-          </Text>
-        </AutoColumn>
-      </AutoRow>
-    </AutoColumn>
+        </Flex>
+      </Flex>
+      
+      <Flex justifyContent="space-between">
+        <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>
+          {t('Share of Pool')}
+        </Text>
+        <Text textStyle="R_14M" color={ColorStyles.DEEPGREY}>
+          {noLiquidity && price
+            ? '100'
+            : (poolTokenPercentage?.lessThan(ONE_BIPS) ? '<0.01' : poolTokenPercentage?.toFixed(2)) ?? '0'}
+          %
+        </Text>
+      </Flex>
+    </Flex>
   )
 }
 
