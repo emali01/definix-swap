@@ -14,10 +14,6 @@ const Container = styled.div<{ hideInput: boolean }>``;
 
 const InputBox = styled.div`
   display: flex;
-  /* flex-flow: row nowrap; */
-  /* flex-wrap: wrap; */
-  /* align-items: center; */
-  /* justify-content: flex-end; */
 `
 const CurrencySelect = styled.button<{ selected: boolean }>`
   align-items: center;
@@ -26,10 +22,6 @@ const CurrencySelect = styled.button<{ selected: boolean }>`
   cursor: pointer;
   user-select: none;
   border: none;
-  /* :focus,
-  :hover {
-    background-color: ${({ theme }) => theme.colors.tertiary};
-  } */
 `
 
 interface CurrencyInputPanelProps {
