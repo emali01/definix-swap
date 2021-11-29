@@ -2851,6 +2851,7 @@
 "@sixnetwork/klaytn-use-wallet@^1.1.10":
   version "1.1.10"
   resolved "https://registry.yarnpkg.com/@sixnetwork/klaytn-use-wallet/-/klaytn-use-wallet-1.1.10.tgz#30739c5c9607b8c75c4437abc7194d53753e2c84"
+  integrity sha512-m2E942pva/1O7GTzMOuGHlW+E7/Wo6Aw33Q4UPt5Arqxl3tkaR7BcbZ/gOeUCMOwpY3Vgtq9DM94OlMJCwwfTg==
   dependencies:
     "@rollup/plugin-image" "^2.0.6"
     "@sixnetwork/caverjs-react-core" "^1.1.3"
