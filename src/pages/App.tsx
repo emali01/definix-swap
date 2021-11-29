@@ -3,7 +3,7 @@ import React, { Suspense, useEffect, useState } from 'react'
 import { HashRouter, Route, Switch } from 'react-router-dom'
 import { useCaverJsReact } from '@sixnetwork/caverjs-react-core'
 import { injected,klip } from 'connectors'
-import { KlipModalContext } from "@sixnetwork/klaytn-use-wallet"
+import { KlipModalContext, useWallet } from "@sixnetwork/klaytn-use-wallet"
 import Menu from '../components/Menu'
 import Popups from '../components/Popups'
 import Web3ReactManager from '../components/Web3ReactManager'
@@ -21,12 +21,28 @@ import Swap from './Swap'
 import { RedirectPathToSwapOnly, RedirectToSwap } from './Swap/redirects'
 
 export default function App() {
+  const { account, connect } = useWallet();
   const [selectedLanguage, setSelectedLanguage] = useState<any>(undefined)
   const [translatedLanguage, setTranslatedLanguage] = useState<any>(undefined)
   const [translations, setTranslations] = useState<Array<any>>([])
   const apiKey = `${process.env.REACT_APP_CROWDIN_APIKEY}`
   const projectId = parseInt(`${process.env.REACT_APP_CROWDIN_PROJECTID}`)
   const fileId = 6
+
+  // wallet
+  useEffect(() => {
+    if (!account && window.localStorage.getItem('accountStatus') && checkConnector('injected')) {
+      connect('injected')
+    } else if (
+      !account &&
+      window.localStorage.getItem('accountStatus') &&
+      checkConnector('klip') &&
+      window.localStorage.getItem('userAccount')
+    ) {
+      connect('klip')
+    }
+  }, [account, connect])
+  const checkConnector = (connector: string) => window.localStorage.getItem('connector') === connector
 
   const credentials: Credentials = {
     token: apiKey,
@@ -67,18 +83,6 @@ export default function App() {
       })
   }
 
-  const { account, activate } = useCaverJsReact()
-  const { setShowModal, showModal } = React.useContext(KlipModalContext())
- 
-  useEffect(() => {
-    if (!account && window.localStorage.getItem('accountStatus') && checkConnector("injected")) {
-      activate(injected)
-    }else if (!account && window.localStorage.getItem('accountStatus') && window.localStorage.getItem('userAccount') && checkConnector("klip")){
-      activate(klip(()=>{setShowModal(true)}, ()=>{setShowModal(false)}))
-    }
-
-  }, [account, activate,setShowModal])
-  const checkConnector = (connector: string) => window.localStorage.getItem('connector') === connector
   useEffect(() => {
     if (selectedLanguage) {
       fetchTranslationsForSelectedLanguage()
