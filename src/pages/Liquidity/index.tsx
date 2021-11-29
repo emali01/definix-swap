@@ -38,7 +38,7 @@ import { useDerivedMintInfo, useMintActionHandlers, useMintState } from 'state/m
 import { useTransactionAdder } from 'state/transactions/hooks'
 import { KlaytnTransactionResponse } from 'state/transactions/actions'
 import { useIsExpertMode, useUserDeadline, useUserSlippageTolerance } from 'state/user/hooks'
-import { TabBox, Box, Flex, Button, CardBody, Text, Text as UIKitText, TitleSet, ColorStyles, ChangeIcon, PlusIcon, ButtonScales, Noti, NotiType } from 'definixswap-uikit'
+import { TabBox, Box, Flex, Button, CardBody, Text, Text as UIKitText, TitleSet, ColorStyles, ChangeIcon, PlusIcon, ButtonScales, Noti, NotiType, CheckBIcon } from 'definixswap-uikit'
 // import liquidity from 'uikit-dev/animation/liquidity.json'
 // import { LeftPanel, MaxWidthLeft } from 'uikit-dev/components/TwoPanelLayout'
 import { calculateGasMargin, calculateSlippageAmount, getRouterContract } from 'utils'
@@ -692,7 +692,6 @@ export default function AddLiquidity({
 
             <Box>
               {!account ? (
-
                 <ConnectWalletButton />
               ) : (
                 <Flex flexDirection="column">
@@ -703,48 +702,77 @@ export default function AddLiquidity({
                     isValid && (
                       <Flex flexDirection="column" mb="16px">
                         <Flex justifyContent="space-between" alignItems="center" mb="8px">
-                          {approvalA !== ApprovalState.APPROVED && (
-                            <>
-                              <Flex alignItems="center">
-                                <CurrencyLogo currency={currencies[Field.CURRENCY_A]} size="32px" />
-                                <Text ml="12px" textStyle="R_16M" color={ColorStyles.MEDIUMGREY}>{currencies[Field.CURRENCY_A]?.symbol}</Text>
-                              </Flex>
-                              <Button
-                                scale={ButtonScales.LG}
-                                onClick={approveACallback}
-                                disabled={approvalA === ApprovalState.PENDING}
-                                width="186px"
-                              >
-                                {approvalA === ApprovalState.PENDING ? (
-                                  <Dots>Approving {currencies[Field.CURRENCY_A]?.symbol}</Dots>
-                                ) : (
-                                  `Approve ${currencies[Field.CURRENCY_A]?.symbol}`
-                                )}
-                              </Button>
-                            </>
-                          )}
+                            <Flex alignItems="center">
+                              <CurrencyLogo currency={currencies[Field.CURRENCY_A]} size="32px" />
+                              <Text ml="12px" textStyle="R_16M" color={ColorStyles.MEDIUMGREY}>{currencies[Field.CURRENCY_A]?.symbol}</Text>
+                            </Flex>
+
+                            {approvalA === ApprovalState.APPROVED && ( <Button
+                              scale={ButtonScales.LG}
+                              onClick={approveBCallback}
+                              disabled
+                              width="186px"
+                              textStyle="R_14B"
+                              color={ColorStyles.MEDIUMGREY}
+                              variant="line"
+                            >
+                              <Box style={{opacity: 0.5}} mt="4px">
+                                <CheckBIcon />
+                              </Box>
+                              <Text ml="6px">
+                                Approved to {currencies[Field.CURRENCY_A]?.symbol}
+                              </Text>
+                            </Button> )}
+
+                            {approvalA !== ApprovalState.APPROVED && (<Button
+                              scale={ButtonScales.LG}
+                              onClick={approveACallback}
+                              disabled={approvalA === ApprovalState.PENDING}
+                              width="186px"
+                            >
+                              {approvalA === ApprovalState.PENDING ? (
+                                <Dots>Approving {currencies[Field.CURRENCY_A]?.symbol}</Dots>
+                              ) : (
+                                `Approve ${currencies[Field.CURRENCY_A]?.symbol}`
+                              )}
+                            </Button>)}
                         </Flex>
+
                         <Flex justifyContent="space-between" alignItems="center">
-                          {approvalB !== ApprovalState.APPROVED && (
-                            <>
-                              <Flex alignItems="center">
-                                <CurrencyLogo currency={currencies[Field.CURRENCY_B]} size="32px" />
-                                <Text ml="12px" textStyle="R_16M" color={ColorStyles.MEDIUMGREY}>{currencies[Field.CURRENCY_B]?.symbol}</Text>
-                              </Flex>
-                              <Button
-                                scale={ButtonScales.LG}
-                                onClick={approveBCallback}
-                                disabled={approvalB === ApprovalState.PENDING}
-                                width="186px"
-                              >
-                                {approvalB === ApprovalState.PENDING ? (
-                                  <Dots>Approving {currencies[Field.CURRENCY_B]?.symbol}</Dots>
-                                ) : (
-                                  `Approve ${currencies[Field.CURRENCY_B]?.symbol}`
-                                )}
-                              </Button>
-                            </>
-                          )}
+                            <Flex alignItems="center">
+                              <CurrencyLogo currency={currencies[Field.CURRENCY_B]} size="32px" />
+                              <Text ml="12px" textStyle="R_16M" color={ColorStyles.MEDIUMGREY}>{currencies[Field.CURRENCY_B]?.symbol}</Text>
+                            </Flex>
+                            
+                            {approvalB === ApprovalState.APPROVED && ( <Button
+                              scale={ButtonScales.LG}
+                              onClick={approveBCallback}
+                              disabled
+                              width="186px"
+                              textStyle="R_14B"
+                              color={ColorStyles.MEDIUMGREY}
+                              variant="line"
+                            >
+                              <Box style={{opacity: 0.5}} mt="4px">
+                                <CheckBIcon />
+                              </Box>
+                              <Text ml="6px">
+                                Approved to {currencies[Field.CURRENCY_B]?.symbol}
+                              </Text>
+                            </Button> )}
+
+                            {approvalB !== ApprovalState.APPROVED && ( <Button
+                              scale={ButtonScales.LG}
+                              onClick={approveBCallback}
+                              disabled={approvalB === ApprovalState.PENDING}
+                              width="186px"
+                            >
+                              {approvalB === ApprovalState.PENDING ? (
+                                <Dots>Approving {currencies[Field.CURRENCY_B]?.symbol}</Dots>
+                              ) : (
+                                `Approve to ${currencies[Field.CURRENCY_B]?.symbol}`
+                              )}
+                            </Button>)}
                         </Flex>
                       </Flex>
                     )}
