@@ -1,10 +1,10 @@
 import { Trade, TradeType } from 'definixswap-sdk'
 import React from 'react'
-import { Text, Flex, ColorStyles } from 'definixswap-uikit'
+import { useTranslation } from 'react-i18next'
+import { Text, Flex, ColorStyles, Helper } from 'definixswap-uikit'
 import { Field } from '../../state/swap/actions'
 import { useUserSlippageTolerance } from '../../state/user/hooks'
 import { computeSlippageAdjustedAmounts, computeTradePriceBreakdown } from '../../utils/prices'
-import QuestionHelper from '../QuestionHelper'
 import FormattedPriceImpact from './FormattedPriceImpact'
 import SwapRoute from './SwapRoute'
 
@@ -17,6 +17,7 @@ function TradeSummary({
   allowedSlippage: number
   className?: string
 }) {
+  const { t } = useTranslation();
   const { priceImpactWithoutFee, realizedLPFee } = computeTradePriceBreakdown(trade)
   const isExactIn = trade.tradeType === TradeType.EXACT_INPUT
   const slippageAdjustedAmounts = computeSlippageAdjustedAmounts(trade, allowedSlippage)
@@ -27,9 +28,9 @@ function TradeSummary({
       <Flex alignItems="center" justifyContent="space-between" mb="12px">
         <Flex>
           <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>
-            {isExactIn ? 'Minimum received' : 'Maximum sold'}
+            {t(isExactIn ? 'Minimum Received' : 'Maximum sold')}
           </Text>
-          <QuestionHelper text="Your transaction will revert if there is a large, unfavorable price movement before it is confirmed." />
+          <Helper ml="4px" text={t('Your transaction will revert if there')} />
         </Flex>
         <Flex>
           <Text textStyle="R_14M" color={ColorStyles.DEEPGREY} textAlign="right">
@@ -44,9 +45,9 @@ function TradeSummary({
       <Flex justifyContent="space-between" mb="12px">
         <Flex margin="0">
           <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>
-            Price Impact
+            {t('Price Impact')}
           </Text>
-          <QuestionHelper text="The difference between the market price and estimated price due to trade size." />
+          <Helper ml="4px" text={t('The difference between the market')} />
         </Flex>
         <FormattedPriceImpact priceImpact={priceImpactWithoutFee} />
       </Flex>
@@ -54,11 +55,10 @@ function TradeSummary({
       <Flex justifyContent="space-between">
         <Flex marginBottom="0 !important">
           <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>
-            Liquidity Provider Fee
+            {t('Liquidity Provider Fee')}
           </Text>
-          <QuestionHelper
-            text="For each trade a 0.2% fee is paid.
-0.15% goes to liquidity providers and 0.05% goes to the Definix Swap treasury"
+          <Helper ml="4px"
+            text={t('For each trade a 0.2%')}
           />
         </Flex>
         <Text textStyle="R_14M" color={ColorStyles.DEEPGREY} textAlign="right">
@@ -75,6 +75,7 @@ export interface AdvancedSwapDetailsProps {
 
 export function AdvancedSwapDetails({ trade }: AdvancedSwapDetailsProps) {
   const [allowedSlippage] = useUserSlippageTolerance()
+  const { t } = useTranslation();
 
   const showRoute = Boolean(trade && trade.route.path.length > 2)
 
@@ -82,12 +83,12 @@ export function AdvancedSwapDetails({ trade }: AdvancedSwapDetailsProps) {
     <Flex flexDirection="column">
       <TradeSummary trade={trade} allowedSlippage={allowedSlippage} className={showRoute ? 'col-6' : 'col-12'} />
       {showRoute && (
-        <Flex justifyContent="space-between">
+        <Flex justifyContent="space-between" alignItems="center">
           <Flex className="mb-3">
             <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>
-              Routing
+              {t('Routing')}
             </Text>
-            <QuestionHelper text="Routing through these tokens resulted in the best price for your trade." />
+            <Helper ml="4px" text={t('Routing through these tokens')} />
           </Flex>
           <SwapRoute trade={trade} />
         </Flex>
