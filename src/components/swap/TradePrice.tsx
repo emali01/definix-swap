@@ -15,7 +15,7 @@ export default function TradePrice({ price, showInverted, setShowInverted }: Tra
     <div className="flex align-center justify-end flex-wrap">
       {show ? (
         <Box>
-          <Flex>
+          <Flex justifyContent="flex-end">
             <Text textStyle="R_14M" color={ColorStyles.DEEPGREY}>
               1 {price?.baseCurrency?.symbol}
             </Text>
@@ -29,7 +29,7 @@ export default function TradePrice({ price, showInverted, setShowInverted }: Tra
               {price?.quoteCurrency?.symbol}
             </Text>
           </Flex>
-          <Flex>
+          <Flex justifyContent="flex-end">
             <Text textStyle="R_14M" color={ColorStyles.DEEPGREY}>
               1 {price?.quoteCurrency?.symbol}
             </Text>

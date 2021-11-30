@@ -2,7 +2,7 @@ import { Currency, CurrencyAmount, currencyEquals, ETHER, Token } from 'definixs
 import React, { CSSProperties, MutableRefObject, useCallback, useMemo } from 'react'
 import { FixedSizeList } from 'react-window'
 import styled from 'styled-components'
-import { Text, Flex } from 'definixswap-uikit'
+import { Text, Flex, Box } from 'definixswap-uikit'
 import { useActiveWeb3React } from '../../hooks'
 import { useSelectedTokenList, WrappedTokenInfo } from '../../state/lists/hooks'
 import { useAddUserToken, useRemoveUserAddedToken } from '../../state/user/hooks'
@@ -195,16 +195,30 @@ export default function CurrencyList({
   const itemKey = useCallback((index: number, data: any) => currencyKey(data[index]), [])
 
   return (
-    <FixedSizeList
-      height={height}
-      ref={fixedListRef as any}
-      width="100%"
-      itemData={itemData}
-      itemCount={itemData.length}
-      itemSize={56}
-      itemKey={itemKey}
-    >
-      {Row}
-    </FixedSizeList>
+    <Box height="500px">
+      {
+        itemData.map((item) => {
+          const currency = item;
+          return <CurrencyRow
+            style={{}}
+            currency={currency}
+            isSelected={Boolean(selectedCurrency && currencyEquals(selectedCurrency, currency))}
+            onSelect={() => onCurrencySelect(currency)}
+            otherSelected={Boolean(otherCurrency && currencyEquals(otherCurrency, currency))}
+          />
+        })
+      }
+    </Box>
+    // <FixedSizeList
+    //   height={height}
+    //   ref={fixedListRef as any}
+    //   width="100%"
+    //   itemData={itemData}
+    //   itemCount={itemData.length}
+    //   itemSize={56}
+    //   itemKey={itemKey}
+    // >
+    //   {Row}
+    // </FixedSizeList>
   )
 }

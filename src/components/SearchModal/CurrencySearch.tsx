@@ -24,8 +24,7 @@ import { useTokenComparator } from './sorting'
 import { SearchInput, Separator } from './styleds'
 
 interface CurrencySearchProps {
-  isOpen: boolean
-  onDismiss: () => void
+  onDismiss?: () => void
   selectedCurrency?: Currency | null
   onCurrencySelect: (currency: Currency) => void
   otherSelectedCurrency?: Currency | null
@@ -57,7 +56,6 @@ export function CurrencySearch({
   otherSelectedCurrency,
   showCommonBases,
   onDismiss,
-  isOpen,
   onChangeList,
 }: CurrencySearchProps) {
   const { t } = useTranslation()
@@ -119,9 +117,9 @@ export function CurrencySearch({
   )
 
   // clear the input on open
-  useEffect(() => {
-    if (isOpen) setSearchQuery('')
-  }, [isOpen])
+  // useEffect(() => {
+  //   if (isOpen) setSearchQuery('')
+  // }, [isOpen])
 
   // manage focus on modal show
   const inputRef = useRef<HTMLInputElement>()
@@ -156,23 +154,6 @@ export function CurrencySearch({
   return (
     <Flex flex="1 1 0" flexDirection="column">
       <Flex flexDirection="column" mb="20px">
-        <Flex justifyContent="space-between" alignItems="center" mb="22px">
-          <Text>
-            <Heading>
-              <TranslatedText translationId={82}>Select a token</TranslatedText>
-              {/* <QuestionHelper
-                text={TranslateString(
-                  130,
-                  'Find a token by searching for its name or symbol or by pasting its address below.'
-                )}
-              /> */}
-            </Heading>
-          </Text>
-          <IconButton onClick={onDismiss}>
-            <CloseIcon />
-          </IconButton>
-        </Flex>
-
         <SearchInputWithIcon>
           <SearchInput
             type="text"
@@ -193,7 +174,16 @@ export function CurrencySearch({
       </Flex>
 
       <Flex flexDirection="column" flex="1 1 0">
-        <AutoSizer disableWidth>
+        <CurrencyList
+          height={500}
+          showETH={showETH}
+          currencies={filteredSortedTokens}
+          onCurrencySelect={handleCurrencySelect}
+          otherCurrency={otherSelectedCurrency}
+          selectedCurrency={selectedCurrency}
+          fixedListRef={fixedList}
+        />
+        {/* <AutoSizer disableWidth>
           {({ height }) => (
             <CurrencyList
               height={height}
@@ -205,7 +195,7 @@ export function CurrencySearch({
               fixedListRef={fixedList}
             />
           )}
-        </AutoSizer>
+        </AutoSizer> */}
       </Flex>
 
       {null && (
