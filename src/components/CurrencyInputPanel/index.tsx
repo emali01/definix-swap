@@ -1,5 +1,6 @@
 import { Currency, Pair } from 'definixswap-sdk'
 import React, { useCallback, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import { Text, useMatchBreakpoints, Flex, AnountButton, SmallDownIcon, ColorStyles, Noti, NotiType, UnSelectTokenIcon } from 'definixswap-uikit'
 import { useActiveWeb3React } from '../../hooks'
@@ -14,6 +15,7 @@ const Container = styled.div<{ hideInput: boolean }>``;
 
 const InputBox = styled.div`
   display: flex;
+  justify-content: space-between;
   /* flex-flow: row nowrap; */
   /* flex-wrap: wrap; */
   /* align-items: center; */
@@ -30,6 +32,11 @@ const CurrencySelect = styled.button<{ selected: boolean }>`
   :hover {
     background-color: ${({ theme }) => theme.colors.tertiary};
   } */
+`
+
+const StyledNoti = styled(Noti)`
+  position: absolute;
+  bottom: -28px;
 `
 
 interface CurrencyInputPanelProps {
@@ -71,11 +78,10 @@ export default function CurrencyInputPanel({
   onUserInput,
   onCurrencySelect,
 }: CurrencyInputPanelProps) {
+  const { t } = useTranslation();
   const [modalOpen, setModalOpen] = useState(false)
   const { account } = useActiveWeb3React()
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
-  const { isLg } = useMatchBreakpoints()
-  const isMobile = !isLg
 
   const handleDismissSearch = useCallback(() => {
     setModalOpen(false)
@@ -84,29 +90,40 @@ export default function CurrencyInputPanel({
   return (
     <>
       <Container id={id} hideInput={hideInput} className={className}>
-        {!hideInput && (
-          <div className="flex justify-space-between mb-1">
-            {account && (
-              <Flex>
-                <Text textStyle="R_14R" color={ColorStyles.DEEPGREY} mr="4px" >
-                  Balance
-                </Text>
-                <Text textStyle="R_14B" color={ColorStyles.DEEPGREY}>
-                  {!hideBalance && !!currency && selectedCurrencyBalance
-                    ? selectedCurrencyBalance?.toSignificant(6)
-                    : '-'}
-                </Text>
-              </Flex>
-            )}
-          </div>
-        )}
-
         <InputBox>
           {!hideInput && (
-            <NumericalInput
-              value={value}
-              onUserInput={(val) => onUserInput(val)}
-            />
+            <Flex flexDirection="column" className="mb-1" flex="1" position="relative">
+              {account && (
+                <Flex mb="4px">
+                  <Text textStyle="R_14R" color={ColorStyles.DEEPGREY} mr="4px" >
+                    {t('Balance')}
+                  </Text>
+                  <Text textStyle="R_14B" color={ColorStyles.DEEPGREY}>
+                    {!hideBalance && !!currency && selectedCurrencyBalance
+                      ? selectedCurrencyBalance?.toSignificant(6)
+                      : '-'}
+                  </Text>
+                </Flex>
+              )}
+              <NumericalInput
+                value={value}
+                onUserInput={(val) => onUserInput(val)}
+              />
+              <Flex mt="8px">
+                <AnountButton onClick={onQuarter} mr="6px">
+                  25%
+                </AnountButton>
+                <AnountButton onClick={onHalf} mr="6px">
+                  50%
+                </AnountButton>
+                <AnountButton onClick={onMax}>
+                  MAX
+                </AnountButton>
+              </Flex>
+              <StyledNoti type={NotiType.ALERT} mt="12px">
+                Insufficient balance
+              </StyledNoti>
+            </Flex>
           )}
 
           <CurrencySelect
@@ -158,7 +175,7 @@ export default function CurrencyInputPanel({
         </InputBox>
 
         {/* {(!isMobile && account && currency && label !== 'To') && ( */}
-          <Flex>
+          {/* <Flex mt="8px">
             <AnountButton onClick={onQuarter} mr="6px">
               25%
             </AnountButton>
@@ -168,12 +185,8 @@ export default function CurrencyInputPanel({
             <AnountButton onClick={onMax}>
               MAX
             </AnountButton>
-          </Flex>
+          </Flex> */}
         {/* )} */}
-
-        <Noti type={NotiType.ALERT} mt="12px">
-          Insufficient balance
-        </Noti>
 
       </Container>
 

@@ -48,8 +48,6 @@ ReactDOM.render(
         <TransactionUpdater />
         <MulticallUpdater />
       </>
-      <ResetCSS />
-      <GlobalStyle />
       <App />
     </Providers>
     </KlipModalProvider>

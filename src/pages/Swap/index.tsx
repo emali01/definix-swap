@@ -70,9 +70,13 @@ import TimerWrapper from './TimerWrapper'
 
 const newTransactionsFirst = (a: TransactionDetails, b: TransactionDetails) => b.addedTime - a.addedTime
 
-const TutorailsLink = styled(Link)`
-  text-decoration-line: underline;
+const WrapTop = styled(Flex)`
+  flex-direction: column;
+  margin-bottom: 20px;
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
 `
+
+
 export default function Swap({
   match: {
     params: { currencyIdA, currencyIdB },
@@ -81,8 +85,8 @@ export default function Swap({
 }: RouteComponentProps<{ currencyIdA?: string; currencyIdB?: string }>) {
   const { t } = useTranslation();
   const loadedUrlParams = useDefaultsFromURLSearch()
-  const { isLg } = useMatchBreakpoints()
-  const isMobile = !isLg
+  const { isXl, isXxl } = useMatchBreakpoints()
+  const isMobile = useMemo(() => !isXl && !isXxl, [isXl, isXxl])
 
   const allTransactions = useAllTransactions()
   const allTokens = useAllTokens()
@@ -410,7 +414,7 @@ export default function Swap({
             <TitleSet
               title={t("Swap")}
               description="Trade tokens in an instant."
-              link=""
+              link="https://sixnetwork.gitbook.io/definix-on-klaytn-en/exchange/how-to-trade-on-definix-exchange"
               linkLabel="Learn to swap."
             />
           </Flex>
@@ -423,14 +427,10 @@ export default function Swap({
               }}
             /> */}
 
-            <Flex 
-              flexDirection="column"
-              borderBottom="1px solid rgba(224, 224, 224, 0.5)"
-              mb="20px"
-            >
+            <WrapTop>
               <Flex flexDirection="column" mb="20px">
                 <CurrencyInputPanel
-                  className="mb-4"
+                  className="mb-s32"
                   label={
                     independentField === Field.OUTPUT && !showWrap && trade
                       ? 'From (estimated)'
@@ -515,7 +515,7 @@ export default function Swap({
                   <AddressInputPanel id="recipient" value={recipient} onChange={onChangeRecipient} />
                 </>
               ) : null} */}
-            </Flex>
+            </WrapTop>
 
             {/* 하단 버튼 및 스왑 정보 */}
             <Flex flexDirection="column">
