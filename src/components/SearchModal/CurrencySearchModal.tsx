@@ -1,3 +1,4 @@
+import styled from 'styled-components'
 import { Currency } from 'definixswap-sdk'
 import { Modal, Box } from 'definixswap-uikit'
 import { useTranslation } from 'react-i18next'
@@ -6,6 +7,14 @@ import useLast from '../../hooks/useLast'
 import { useSelectedListUrl } from '../../state/lists/hooks'
 import { CurrencySearch } from './CurrencySearch'
 import { ListSelect } from './ListSelect'
+
+const Wrap = styled(Box)`
+  width: auto;
+  ${({ theme }) => theme.mediaQueries.sm} {
+    min-width: 464px;
+    max-width: auto;
+  }
+`
 
 interface CurrencySearchModalProps {
   isOpen?: boolean;
@@ -58,8 +67,8 @@ export default function CurrencySearchModal({
   const noListSelected = !selectedListUrl
 
   return (
-    <Modal title={t('Select a token')} onDismiss={onDismiss}>
-      <Box>
+    <Modal title={t('Select a token')} mobileFull onDismiss={onDismiss}>
+      <Wrap>
         <CurrencySearch
           onCurrencySelect={onCurrencySelect}
           onChangeList={() => {
@@ -69,7 +78,7 @@ export default function CurrencySearchModal({
           otherSelectedCurrency={otherSelectedCurrency}
           showCommonBases={false}
         />
-      </Box>
+      </Wrap>
     </Modal>
     // <Box maxHeight={90} minHeight={listView ? 40 : noListSelected ? 0 : 69.4}>
     //   {listView ? (

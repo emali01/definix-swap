@@ -158,7 +158,7 @@ export function CurrencySearch({
           <SearchInput
             type="text"
             id="token-search-input"
-            placeholder={t('tokenSearchPlaceholder')}
+            placeholder={t('Search Token name or address')}
             value={searchQuery}
             ref={inputRef as RefObject<HTMLInputElement>}
             onChange={handleInput}
@@ -170,7 +170,6 @@ export function CurrencySearch({
         {showCommonBases && (
           <CommonBases chainId={chainId} onSelect={handleCurrencySelect} selectedCurrency={selectedCurrency} />
         )}
-
       </Flex>
 
       <Flex flexDirection="column" flex="1 1 0">
@@ -183,49 +182,7 @@ export function CurrencySearch({
           selectedCurrency={selectedCurrency}
           fixedListRef={fixedList}
         />
-        {/* <AutoSizer disableWidth>
-          {({ height }) => (
-            <CurrencyList
-              height={height}
-              showETH={showETH}
-              currencies={filteredSortedTokens}
-              onCurrencySelect={handleCurrencySelect}
-              otherCurrency={otherSelectedCurrency}
-              selectedCurrency={selectedCurrency}
-              fixedListRef={fixedList}
-            />
-          )}
-        </AutoSizer> */}
       </Flex>
-
-      {null && (
-        <>
-          <Separator />
-          <Card>
-            <RowBetween>
-              {selectedListInfo.current ? (
-                <Row>
-                  {selectedListInfo.current.logoURI ? (
-                    <ListLogo
-                      style={{ marginRight: 12 }}
-                      logoURI={selectedListInfo.current.logoURI}
-                      alt={`${selectedListInfo.current.name} list logo`}
-                    />
-                  ) : null}
-                  <Text id="currency-search-selected-list-name">{selectedListInfo.current.name}</Text>
-                </Row>
-              ) : null}
-              <LinkStyledButton
-                style={{ fontWeight: 500, color: theme.colors.textSubtle, fontSize: 16 }}
-                onClick={onChangeList}
-                id="currency-search-change-list-button"
-              >
-                {selectedListInfo.current ? 'Change' : 'Select a list'}
-              </LinkStyledButton>
-            </RowBetween>
-          </Card>
-        </>
-      )}
     </Flex>
   )
 }

@@ -195,7 +195,7 @@ export default function CurrencyList({
   const itemKey = useCallback((index: number, data: any) => currencyKey(data[index]), [])
 
   return (
-    <Box height="500px">
+    <Box height="auto">
       {
         itemData.map((item) => {
           const currency = item;
