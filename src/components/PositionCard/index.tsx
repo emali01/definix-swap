@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { ChevronDown, ChevronUp } from 'react-feather'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
-import { Button, Text, CardBody, Flex, Box, ColorStyles } from 'definixswap-uikit'
+import { Button, Text, CardBody, Flex, Box, ColorStyles, ButtonScales, ButtonVariants } from 'definixswap-uikit'
 import { useTotalSupply } from '../../data/TotalSupply'
 import { useActiveWeb3React } from '../../hooks'
 import { useTokenBalance } from '../../state/wallet/hooks'
@@ -16,17 +16,14 @@ import DoubleCurrencyLogo from '../DoubleLogo'
 import { RowBetween, RowFixed } from '../Row'
 import { Dots } from '../swap/styleds'
 
-export const FixedHeightRow = styled(RowBetween)`
-  height: 24px;
-`
-
 interface PositionCardProps {
   pair: Pair
   // eslint-disable-next-line react/no-unused-prop-types
   showUnwrapped?: boolean
+  isLastCard?: boolean
 }
 
-export function MinimalPositionCard({ pair, showUnwrapped = false }: PositionCardProps) {
+export function MinimalPositionCard({ pair, showUnwrapped = false, isLastCard = false }: PositionCardProps) {
   const { account } = useActiveWeb3React()
 
   const currency0 = showUnwrapped ? pair.token0 : unwrappedToken(pair.token0)
@@ -116,7 +113,7 @@ export function MinimalPositionCard({ pair, showUnwrapped = false }: PositionCar
   )
 }
 
-export default function FullPositionCard({ pair }: PositionCardProps) {
+export default function FullPositionCard({ pair, isLastCard = false }: PositionCardProps) {
   const { account } = useActiveWeb3React()
 
   const currency0 = unwrappedToken(pair.token0)
@@ -145,73 +142,77 @@ export default function FullPositionCard({ pair }: PositionCardProps) {
       : [undefined, undefined]
 
   return (
-    <HoverCard>
-      <AutoColumn gap="12px">
-        <FixedHeightRow onClick={() => setShowMore(!showMore)} style={{ cursor: 'pointer' }}>
-          <RowFixed>
-            <DoubleCurrencyLogo currency0={currency0} currency1={currency1} margin size={20} />
-            <Text bold fontSize="16px !important">
-              {!currency0 || !currency1 ? <Dots>Loading</Dots> : `${currency0.symbol}/${currency1.symbol}`}
+    <Flex p="16px 0" style={{borderBottom: `${!isLastCard ? '1px solid #e0e0e0' : ''}`}}>
+      <Flex alignItems="center">
+        <Box mr="12px">
+          <DoubleCurrencyLogo currency0={currency0} currency1={currency1} size={32} />
+        </Box>
+
+        <Flex flexDirection="column" mr="20px" justifyContent="center">
+          <Text mb="6px" textStyle="R_12R" color={ColorStyles.MEDIUMGREY}>LP</Text>
+          <Text mb="4px" textStyle="R_14M" color={ColorStyles.BLACK}>
+            {!currency0 || !currency1 ? <Dots>Loading</Dots> : `${currency0.symbol}-${currency1.symbol}`}
+          </Text>
+          <Box width="130px">
+            <Text textStyle="R_14M" color={ColorStyles.DEEPGREY}>
+              100,000,000.123456
             </Text>
-          </RowFixed>
-          <RowFixed>
-            {showMore ? <ChevronUp size="20" className="ml-2" /> : <ChevronDown size="20" className="ml-2" />}
-          </RowFixed>
-        </FixedHeightRow>
+          </Box>
+        </Flex>
 
-        {showMore && (
-          <AutoColumn gap="8px">
-            <FixedHeightRow>
-              <RowFixed>
-                <Text>Pooled {currency0.symbol}:</Text>
-              </RowFixed>
+        <Flex flexDirection="column" mr="27px" justifyContent="center">
+          <Text mb="4px" textStyle="R_12R" color={ColorStyles.MEDIUMGREY}>Pooled</Text>
+          <Flex mb="4px" alignItems="center">
+            <Box
+              mr="6px"
+              width="58px"
+              p="2px 0px"
+              borderRadius="10px"
+              backgroundColor={ColorStyles.LIGHTBROWN}
+            >
+              <Text textAlign="center" textStyle="R_12R" color={ColorStyles.WHITE}>{currency0.symbol}</Text>
+            </Box>
+            <Box width="140px">
               {token0Deposited ? (
-                <RowFixed>
-                  <Text ml="6px">{token0Deposited?.toSignificant(6)}</Text>
-                  <CurrencyLogo size="20px" style={{ marginLeft: '8px' }} currency={currency0} />
-                </RowFixed>
+                <Text textStyle="R_14M" color={ColorStyles.BLACK}>{token0Deposited?.toSignificant(6)}</Text>
               ) : (
                 '-'
               )}
-            </FixedHeightRow>
+            </Box>
+          </Flex>
 
-            <FixedHeightRow>
-              <RowFixed>
-                <Text>Pooled {currency1.symbol}:</Text>
-              </RowFixed>
+          <Flex alignItems="center">
+            <Box 
+              mr="6px"
+              width="58px"
+              p="2px 0px"
+              borderRadius="10px"
+              backgroundColor={ColorStyles.LIGHTBROWN}
+            >
+              <Text textAlign="center" textStyle="R_12R" color={ColorStyles.WHITE}>{currency1.symbol}</Text>
+            </Box>
+            <Box width="140px">
               {token1Deposited ? (
-                <RowFixed>
-                  <Text ml="6px">{token1Deposited?.toSignificant(6)}</Text>
-                  <CurrencyLogo size="20px" style={{ marginLeft: '8px' }} currency={currency1} />
-                </RowFixed>
+                <Text textStyle="R_14M" color={ColorStyles.BLACK}>{token1Deposited?.toSignificant(6)}</Text>
               ) : (
                 '-'
               )}
-            </FixedHeightRow>
-            <FixedHeightRow>
-              <Text>Your pool tokens:</Text>
-              <Text>{userPoolBalance ? userPoolBalance.toSignificant(4) : '-'}</Text>
-            </FixedHeightRow>
-            <FixedHeightRow>
-              <Text>Your pool share:</Text>
-              <Text>{poolTokenPercentage ? `${poolTokenPercentage.toFixed(2)}%` : '-'}</Text>
-            </FixedHeightRow>
-
-            <RowBetween marginTop="10px">
-              <Button as={Link} to={`/add/${currencyId(currency0)}/${currencyId(currency1)}`} style={{ width: '48%' }}>
-                Add
-              </Button>
-              <Button
-                as={Link}
-                style={{ width: '48%' }}
-                to={`/remove/${currencyId(currency0)}/${currencyId(currency1)}`}
-              >
-                Remove
-              </Button>
-            </RowBetween>
-          </AutoColumn>
-        )}
-      </AutoColumn>
-    </HoverCard>
+            </Box>
+          </Flex>
+        </Flex>
+        
+        <Button
+          as={Link}
+          to={`/remove/${currencyId(currency0)}/${currencyId(currency1)}`}
+          width="100px"
+          scale={ButtonScales.MD}
+          variant={ButtonVariants.LINE}
+          textStyle="R_14B"
+          color={ColorStyles.DEEPGREY}
+        >
+          Select
+        </Button>
+      </Flex>
+    </Flex>
   )
 }

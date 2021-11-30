@@ -19,9 +19,9 @@ import React, { useCallback, useContext, useMemo, useState } from 'react'
 import { ArrowDown, Plus } from 'react-feather'
 import { RouteComponentProps } from 'react-router'
 import { ThemeContext } from 'styled-components'
-import { Button, CardBody, Flex, Text } from 'uikit-dev'
+import { Button, CardBody, Flex, Text } from 'definixswap-uikit'
 import UseDeParam from 'hooks/useDeParam'
-import { LeftPanel, MaxWidthLeft } from 'uikit-dev/components/TwoPanelLayout'
+// import { LeftPanel, MaxWidthLeft } from 'uikit-dev/components/TwoPanelLayout'
 import { AutoColumn, ColumnCenter } from '../../components/Column'
 import CurrencyInputPanel from '../../components/CurrencyInputPanel'
 import CurrencyLogo from '../../components/CurrencyLogo'
@@ -46,7 +46,6 @@ import { calculateGasMargin, calculateSlippageAmount, getRouterContract } from '
 import { currencyId } from '../../utils/currencyId'
 import useDebouncedChangeHandler from '../../utils/useDebouncedChangeHandler'
 import { wrappedCurrency } from '../../utils/wrappedCurrency'
-import AppBody from '../AppBody'
 import { ClickableText, Wrapper } from '../Pool/styleds'
 import * as klipProvider from '../../hooks/KlipProvider'
 import { getAbiByName } from '../../hooks/HookHelper'
@@ -427,10 +426,10 @@ export default function RemoveLiquidity({
         <AutoColumn gap="24px">
           <AutoColumn gap="16px">
             <RowBetween align="flex-end">
-              <Text fontSize="24px">{parsedAmounts[Field.CURRENCY_A]?.toSignificant(6)}</Text>
+              <Text>{parsedAmounts[Field.CURRENCY_A]?.toSignificant(6)}</Text>
               <RowFixed mb="0 !important">
                 <CurrencyLogo currency={currencyA} size="24px" />
-                <Text fontSize="24px" fontWeight="500" style={{ marginLeft: '12px' }}>
+                <Text>
                   {currencyA?.symbol}
                 </Text>
               </RowFixed>
@@ -439,17 +438,17 @@ export default function RemoveLiquidity({
               <Plus size="16" color={theme.colors.textSubtle} />
             </RowFixed>
             <RowBetween align="flex-end">
-              <Text fontSize="24px">{parsedAmounts[Field.CURRENCY_B]?.toSignificant(6)}</Text>
+              <Text>{parsedAmounts[Field.CURRENCY_B]?.toSignificant(6)}</Text>
               <RowFixed mb="0 !important">
                 <CurrencyLogo currency={currencyB} size="24px" />
-                <Text fontSize="24px" fontWeight="500" style={{ marginLeft: '12px' }}>
+                <Text>
                   {currencyB?.symbol}
                 </Text>
               </RowFixed>
             </RowBetween>
           </AutoColumn>
 
-          <Text small color="textSubtle" textAlign="left" padding="12px 0 0 0" style={{ fontStyle: 'italic' }}>
+          <Text>
             {`Output is estimated. If the price changes by more than ${allowedSlippage / 100
               }% your transaction will revert.`}
           </Text>
@@ -487,8 +486,6 @@ export default function RemoveLiquidity({
         <Button
           disabled={!(approval === ApprovalState.APPROVED || signatureData !== null)}
           onClick={onRemove}
-          fullWidth
-          radii="card"
         >
           Confirm
         </Button>
@@ -555,8 +552,6 @@ export default function RemoveLiquidity({
             onClick={() => {
               console.log('Remove this Liquidity from Farm')
             }}
-            radii="card"
-            fullWidth
           >
             Remove this Liquidity from Farm
           </Button>
@@ -579,8 +574,6 @@ export default function RemoveLiquidity({
             onClick={() => {
               console.log('Remove Liquidity Again')
             }}
-            radii="card"
-            fullWidth
           >
             Remove Liquidity Again
           </Button>
@@ -598,9 +591,7 @@ export default function RemoveLiquidity({
   return (
     <>
       {!showConfirm ? (
-        <LeftPanel isShowRightPanel={false}>
-          <MaxWidthLeft>
-            <AppBody>
+            <Flex>
               <AddRemoveTabs adding={false} />
 
               <Wrapper>
@@ -669,19 +660,19 @@ export default function RemoveLiquidity({
                       <BorderCard>
                         <AutoColumn gap="10px">
                           <RowBetween>
-                            <Text fontSize="24px">{formattedAmounts[Field.CURRENCY_A] || '-'}</Text>
+                            <Text>{formattedAmounts[Field.CURRENCY_A] || '-'}</Text>
                             <RowFixed>
                               <CurrencyLogo currency={currencyA} style={{ marginRight: '12px' }} />
-                              <Text fontSize="24px" id="remove-liquidity-tokena-symbol">
+                              <Text id="remove-liquidity-tokena-symbol">
                                 {currencyA?.symbol}
                               </Text>
                             </RowFixed>
                           </RowBetween>
                           <RowBetween>
-                            <Text fontSize="24px">{formattedAmounts[Field.CURRENCY_B] || '-'}</Text>
+                            <Text>{formattedAmounts[Field.CURRENCY_B] || '-'}</Text>
                             <RowFixed>
                               <CurrencyLogo currency={currencyB} style={{ marginRight: '12px' }} />
-                              <Text fontSize="24px" id="remove-liquidity-tokenb-symbol">
+                              <Text id="remove-liquidity-tokenb-symbol">
                                 {currencyB?.symbol}
                               </Text>
                             </RowFixed>
@@ -831,9 +822,7 @@ export default function RemoveLiquidity({
                   <MinimalPositionCard showUnwrapped={oneCurrencyIsWETH} pair={pair} />
                 </div>
               ) : null}
-            </AppBody>
-          </MaxWidthLeft>
-        </LeftPanel>
+            </Flex>
       ) : (
         <TransactionConfirmationModal
           isOpen={showConfirm}

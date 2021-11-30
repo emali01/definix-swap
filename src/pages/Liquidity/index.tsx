@@ -1,31 +1,21 @@
-import numeral from 'numeral'
 import Caver from 'caver-js'
 import { ethers } from 'ethers'
-import axios from 'axios'
 import { BigNumber } from '@ethersproject/bignumber'
 import { abi as IUniswapV2Router02ABI } from '@uniswap/v2-periphery/build/IUniswapV2Router02.json'
 import BigNumberJs from 'bignumber.js'
-import { BorderCard } from 'components/Card'
-import { AutoColumn, ColumnCenter } from 'components/Column'
-import ConnectWalletButton from 'components/ConnectWalletButton'
-import CurrencyInputPanel from 'components/CurrencyInputPanel'
+import { AutoColumn } from 'components/Column'
 import DoubleCurrencyLogo from 'components/DoubleLogo'
-import { AddRemoveTabs } from 'components/NavigationTabs'
-import { MinimalPositionCard } from 'components/PositionCard'
 import { KlipModalContext } from '@sixnetwork/klaytn-use-wallet'
 import { useCaverJsReact } from '@sixnetwork/caverjs-react-core'
 import { RowBetween, RowFixed } from 'components/Row'
 import { KlipConnector } from "@sixnetwork/klip-connector"
-import { Dots } from 'components/swap/styleds'
 import tp from 'tp-js-sdk'
 import {sendAnalyticsData} from 'utils/definixAnalytics'
-// import { Transaction } from "@ethersproject/transactios";
 import TransactionConfirmationModal, {
   ConfirmationModalContent,
   TransactionErrorContent,
   TransactionSubmittedContent
 } from 'components/TransactionConfirmationModal'
-import { PairState } from 'data/Reserves'
 import { Currency, currencyEquals, ETHER, TokenAmount, WETH } from 'definixswap-sdk'
 import { useActiveWeb3React } from 'hooks'
 import { useCurrency } from 'hooks/Tokens'
@@ -38,28 +28,23 @@ import { useDerivedMintInfo, useMintActionHandlers, useMintState } from 'state/m
 import { useTransactionAdder } from 'state/transactions/hooks'
 import { KlaytnTransactionResponse } from 'state/transactions/actions'
 import { useIsExpertMode, useUserDeadline, useUserSlippageTolerance } from 'state/user/hooks'
-import { TabBox, Box, Flex, Button, CardBody, Text, Text as UIKitText, TitleSet, ColorStyles, ChangeIcon, PlusIcon, ButtonScales, Noti, NotiType, CheckBIcon } from 'definixswap-uikit'
-// import liquidity from 'uikit-dev/animation/liquidity.json'
-// import { LeftPanel, MaxWidthLeft } from 'uikit-dev/components/TwoPanelLayout'
+import { TabBox, Box, Flex, Button, Text as UIKitText, TitleSet, ColorStyles } from 'definixswap-uikit'
 import { calculateGasMargin, calculateSlippageAmount, getRouterContract } from 'utils'
 import { currencyId } from 'utils/currencyId'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { wrappedCurrency } from 'utils/wrappedCurrency'
 import UseDeParam from 'hooks/useDeParam'
-import CurrencyLogo from 'components/CurrencyLogo'
 import { ROUTER_ADDRESS, HERODOTUS_ADDRESS } from '../../constants'
 import { ConfirmAddModalBottom } from './ConfirmAddModalBottom'
-import { PoolPriceBar } from './PoolPriceBar'
 import farms from '../../constants/farm'
 import { useHerodotusContract } from '../../hooks/useContract'
 import * as klipProvider from '../../hooks/KlipProvider'
 import { getAbiByName } from '../../hooks/HookHelper'
-// import { AppDispatch, AppState } from '../../state/index'
-// import { addTransaction as addTxn } from '../../state/transactions/actions'
 import HERODOTUS_ABI from '../../constants/abis/herodotus.json'
-import NoLiquidity from './NoLiquidity'
+import LiquidityList from './LiquidityList'
+import AddLiquidity from './AddLiquidity'
 
-export default function AddLiquidity({
+export default function Liquidity({
   match: {
     params: { currencyIdA, currencyIdB }
   },
@@ -609,11 +594,39 @@ export default function AddLiquidity({
   const tabs = [
     {
       name: "Add",
-      component: <></>,
+      component: (
+        <>
+          <AddLiquidity 
+            noLiquidity={noLiquidity}
+            formattedAmounts={formattedAmounts}
+            onFieldAInput={onFieldAInput}
+            maxAmounts={maxAmounts}
+            handleCurrencyASelect={handleCurrencyASelect}
+            atMaxAmounts={atMaxAmounts}
+            currencies={currencies}
+            onFieldBInput={onFieldBInput}
+            handleCurrencyBSelect={handleCurrencyBSelect}
+            approvalA={approvalA}
+            approvalB={approvalB}
+            isValid={isValid}
+            approveACallback={approveACallback}
+            approveBCallback={approveBCallback}
+            onAdd={onAdd}
+            setShowConfirm={setShowConfirm}
+            parsedAmounts={parsedAmounts}
+            error={error}
+            pairState={pairState}
+            poolTokenPercentage={poolTokenPercentage}
+            price={price}
+            pair={pair}
+            oneCurrencyIsWETH={oneCurrencyIsWETH}
+          />
+        </>
+      ),
     },
     {
       name: "Remove",
-      component: <></>,
+      component: <><LiquidityList /></>,
     },
   ];
 
@@ -628,206 +641,9 @@ export default function AddLiquidity({
             linkLabel={t("Learn to swap.")}
           />
         </Flex>
-        <TabBox tabs={tabs} />
-
-        <Flex flexDirection="column" backgroundColor={ColorStyles.WHITE} borderRadius="16px">
-          {!noLiquidity && (
-            <NoLiquidity />
-          )}
-          <CardBody>
-            <Flex flexDirection="column">
-              <CurrencyInputPanel
-                value={formattedAmounts[Field.CURRENCY_A]}
-                onUserInput={onFieldAInput}
-                onMax={() => {
-                  onFieldAInput(maxAmounts[Field.CURRENCY_A]?.toExact() ?? '')
-                }}
-                onQuarter={() => {
-                  onFieldAInput(
-                    numeral(parseFloat(maxAmounts[Field.CURRENCY_A]?.toExact() || '') / 4).format('0.00') ?? ''
-                  )
-                }}
-                onHalf={() => {
-                  onFieldAInput(
-                    numeral(parseFloat(maxAmounts[Field.CURRENCY_A]?.toExact() || '') / 2).format('0.00') ?? ''
-                  )
-                }}
-                onCurrencySelect={handleCurrencyASelect}
-                showMaxButton={!atMaxAmounts[Field.CURRENCY_A]}
-                currency={currencies[Field.CURRENCY_A]}
-                id="add-liquidity-input-tokena"
-                showCommonBases={false}
-              />
-                <Flex width="100%" justifyContent="center">
-                  <Box p="14px">
-                    <PlusIcon />
-                  </Box>
-                </Flex>
-
-              <CurrencyInputPanel
-                value={formattedAmounts[Field.CURRENCY_B]}
-                onUserInput={onFieldBInput}
-                onCurrencySelect={handleCurrencyBSelect}
-                onMax={() => {
-                  onFieldBInput(maxAmounts[Field.CURRENCY_B]?.toExact() ?? '')
-                }}
-                onQuarter={() => {
-                  onFieldBInput(
-                    numeral(parseFloat(maxAmounts[Field.CURRENCY_B]?.toExact() || '') / 4).format('0.00') ?? ''
-                  )
-                }}
-                onHalf={() => {
-                  onFieldBInput(
-                    numeral(parseFloat(maxAmounts[Field.CURRENCY_B]?.toExact() || '') / 2).format('0.00') ?? ''
-                  )
-                }}
-                showMaxButton={!atMaxAmounts[Field.CURRENCY_B]}
-                currency={currencies[Field.CURRENCY_B]}
-                id="add-liquidity-input-tokenb"
-                showCommonBases={false}
-              />
-            </Flex>
-
-            <Box width="100%" height="1px" m="32px 0" backgroundColor={ColorStyles.LIGHTGREY} />
-
-            <Box>
-              {!account ? (
-                <ConnectWalletButton />
-              ) : (
-                <Flex flexDirection="column">
-                  {(approvalA === ApprovalState.NOT_APPROVED ||
-                    approvalA === ApprovalState.PENDING ||
-                    approvalB === ApprovalState.NOT_APPROVED ||
-                    approvalB === ApprovalState.PENDING) &&
-                    isValid && (
-                      <Flex flexDirection="column" mb="16px">
-                        <Flex justifyContent="space-between" alignItems="center" mb="8px">
-                            <Flex alignItems="center">
-                              <CurrencyLogo currency={currencies[Field.CURRENCY_A]} size="32px" />
-                              <Text ml="12px" textStyle="R_16M" color={ColorStyles.MEDIUMGREY}>{currencies[Field.CURRENCY_A]?.symbol}</Text>
-                            </Flex>
-
-                            {approvalA === ApprovalState.APPROVED && ( <Button
-                              scale={ButtonScales.LG}
-                              onClick={approveBCallback}
-                              disabled
-                              width="186px"
-                              textStyle="R_14B"
-                              color={ColorStyles.MEDIUMGREY}
-                              variant="line"
-                            >
-                              <Box style={{opacity: 0.5}} mt="4px">
-                                <CheckBIcon />
-                              </Box>
-                              <Text ml="6px">
-                                Approved to {currencies[Field.CURRENCY_A]?.symbol}
-                              </Text>
-                            </Button> )}
-
-                            {approvalA !== ApprovalState.APPROVED && (<Button
-                              scale={ButtonScales.LG}
-                              onClick={approveACallback}
-                              disabled={approvalA === ApprovalState.PENDING}
-                              width="186px"
-                            >
-                              {approvalA === ApprovalState.PENDING ? (
-                                <Dots>Approving {currencies[Field.CURRENCY_A]?.symbol}</Dots>
-                              ) : (
-                                `Approve ${currencies[Field.CURRENCY_A]?.symbol}`
-                              )}
-                            </Button>)}
-                        </Flex>
-
-                        <Flex justifyContent="space-between" alignItems="center">
-                            <Flex alignItems="center">
-                              <CurrencyLogo currency={currencies[Field.CURRENCY_B]} size="32px" />
-                              <Text ml="12px" textStyle="R_16M" color={ColorStyles.MEDIUMGREY}>{currencies[Field.CURRENCY_B]?.symbol}</Text>
-                            </Flex>
-                            
-                            {approvalB === ApprovalState.APPROVED && ( <Button
-                              scale={ButtonScales.LG}
-                              onClick={approveBCallback}
-                              disabled
-                              width="186px"
-                              textStyle="R_14B"
-                              color={ColorStyles.MEDIUMGREY}
-                              variant="line"
-                            >
-                              <Box style={{opacity: 0.5}} mt="4px">
-                                <CheckBIcon />
-                              </Box>
-                              <Text ml="6px">
-                                Approved to {currencies[Field.CURRENCY_B]?.symbol}
-                              </Text>
-                            </Button> )}
-
-                            {approvalB !== ApprovalState.APPROVED && ( <Button
-                              scale={ButtonScales.LG}
-                              onClick={approveBCallback}
-                              disabled={approvalB === ApprovalState.PENDING}
-                              width="186px"
-                            >
-                              {approvalB === ApprovalState.PENDING ? (
-                                <Dots>Approving {currencies[Field.CURRENCY_B]?.symbol}</Dots>
-                              ) : (
-                                `Approve to ${currencies[Field.CURRENCY_B]?.symbol}`
-                              )}
-                            </Button>)}
-                        </Flex>
-                      </Flex>
-                    )}
-                  <Button
-                    onClick={() => {
-                      if (expertMode) {
-                        onAdd()
-                      } else {
-                        setShowConfirm(true)
-                      }
-                    }}
-                    disabled={
-                      !isValid || approvalA !== ApprovalState.APPROVED || approvalB !== ApprovalState.APPROVED
-                    }
-                    variant={
-                      !isValid && !!parsedAmounts[Field.CURRENCY_A] && !!parsedAmounts[Field.CURRENCY_B]
-                        ? 'danger'
-                        : 'primary'
-                    }
-                    width="100%"
-                    scale={ButtonScales.LG}
-                  >
-                    {error ?? 'Supply'}
-                  </Button>
-                </Flex>
-              )}
-            </Box>
-
-            <Noti type={NotiType.ALERT} mt="12px">
-              Error message
-            </Noti>
-
-            <Box mt="24px">
-              {currencies[Field.CURRENCY_A] && currencies[Field.CURRENCY_B] && pairState !== PairState.INVALID && (
-                <Box>
-                  <Text textStyle="R_16M" color={ColorStyles.DEEPGREY} mb="12px">
-                    {noLiquidity ? t('Initial Prices and Pool Share') : t('Estimated Returns')}
-                  </Text>
-                  <PoolPriceBar
-                    currencies={currencies}
-                    poolTokenPercentage={poolTokenPercentage}
-                    noLiquidity={noLiquidity}
-                    price={price}
-                  />
-                </Box>
-              )}
-            </Box>
-          </CardBody>
-        </Flex>
-
-        {pair && !noLiquidity && pairState !== PairState.INVALID ? (
-          <Box mt="12px">
-            <MinimalPositionCard showUnwrapped={oneCurrencyIsWETH} pair={pair} />
-          </Box>
-        ) : null}
+        <Box backgroundColor={ColorStyles.WHITE} borderRadius="16px">
+          <TabBox tabs={tabs} />
+        </Box>
       </Flex>
       
       {showConfirm && (

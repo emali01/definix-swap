@@ -2,7 +2,7 @@ import QuestionHelper from 'components/QuestionHelper'
 import React from 'react'
 import { Link as HistoryLink } from 'react-router-dom'
 import styled from 'styled-components'
-import { ArrowBackIcon, Button, Heading, Text } from 'uikit-dev'
+import { Button, Heading, Text } from 'definixswap-uikit'
 
 const Tabs = styled.div`
   display: flex;
@@ -16,7 +16,7 @@ const Tabs = styled.div`
 export function FindPoolTabs() {
   return (
     <Tabs className="flex flex-column pb-0 align-start">
-      <Button variant="text" as={HistoryLink} to="/liquidity" ml="-12px" padding="0 12px" startIcon={<ArrowBackIcon />}>
+      <Button as={HistoryLink} to="/liquidity" ml="-12px" padding="0 12px">
         <Text fontSize="14px" color="textSubtle">
           Back
         </Text>
@@ -32,7 +32,7 @@ export function FindPoolTabs() {
 export function AddRemoveTabs({ adding }: { adding: boolean }) {
   return (
     <Tabs className="flex flex-column align-start">
-      <Button variant="text" as={HistoryLink} to="/liquidity" ml="-12px" padding="0 12px" startIcon={<ArrowBackIcon />}>
+      <Button as={HistoryLink} to="/liquidity" ml="-12px" padding="0 12px">
         <Text fontSize="14px" color="textSubtle">
           Back
         </Text>

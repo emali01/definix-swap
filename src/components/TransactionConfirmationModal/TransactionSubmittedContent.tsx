@@ -1,7 +1,7 @@
 import { RowBetween } from 'components/Row'
 import React from 'react'
 import Lottie from 'react-lottie'
-import { ArrowDownIcon, Button, ChevronRightIcon, Heading, Link, Text } from 'uikit-dev'
+import { Button, Heading, Link, Text } from 'definixswap-uikit'
 import complete from 'uikit-dev/animation/complete.json'
 import CopyToClipboard from 'uikit-dev/widgets/WalletModal/CopyToClipboard'
 import { getBscScanLink } from '../../utils'
@@ -65,14 +65,14 @@ const TransactionSubmittedContent = ({
               fontSize="12px"
             >
               View on Klaytn Scope
-              <ChevronRightIcon color="textSubtle" />
+              {/* <ChevronRightIcon color="textSubtle" /> */}
             </Link>
           </RowBetween>
 
           {false && (
             <div className="flex justify-center mt-6">
               <Button
-                startIcon={<ArrowDownIcon />}
+                startIcon={<></>}
                 onClick={() => {
                   console.log('Download IMG')
                 }}

@@ -1,6 +1,6 @@
 import { RowBetween } from 'components/Row'
 import React from 'react'
-import { ArrowDownIcon, Button, ChevronRightIcon, ErrorIcon, Heading, Link, Text } from 'uikit-dev'
+import { Button, ErrorIcon, Heading, Link, Text } from 'definixswap-uikit'
 import CopyToClipboard from 'uikit-dev/widgets/WalletModal/CopyToClipboard'
 import { getBscScanLink } from '../../utils'
 
@@ -48,18 +48,16 @@ const TransactionErrorContent = ({ title, date, chainId, hash, content, button }
               fontSize="12px"
             >
               View on Klaytn Scope
-              <ChevronRightIcon color="textSubtle" />
+              {/* <ChevronRightIcon color="textSubtle" /> */}
             </Link>
           </RowBetween>
 
           {false && <div className="flex justify-center mt-6">
             <Button
-              startIcon={<ArrowDownIcon />}
+              startIcon={<></>}
               onClick={() => {
                 console.log('Download IMG')
               }}
-              variant="secondary"
-              size="sm"
             >
               Download IMG Transaction
             </Button>
