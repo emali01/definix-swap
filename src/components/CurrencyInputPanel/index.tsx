@@ -22,6 +22,7 @@ const InputBox = styled.div`
   /* justify-content: flex-end; */
 `
 const CurrencySelect = styled.button<{ selected: boolean }>`
+  padding: 0;
   align-items: center;
   background-color: transparent;
   outline: none;
@@ -32,11 +33,6 @@ const CurrencySelect = styled.button<{ selected: boolean }>`
   :hover {
     background-color: ${({ theme }) => theme.colors.tertiary};
   } */
-`
-
-const StyledNoti = styled(Noti)`
-  position: absolute;
-  bottom: -28px;
 `
 
 interface CurrencyInputPanelProps {
@@ -57,6 +53,7 @@ interface CurrencyInputPanelProps {
   onHalf?: () => void
   onUserInput: (value: string) => void
   onCurrencySelect?: (currency: Currency) => void
+  isInsufficientBalance?: boolean
 }
 
 export default function CurrencyInputPanel({
@@ -77,6 +74,7 @@ export default function CurrencyInputPanel({
   onHalf,
   onUserInput,
   onCurrencySelect,
+  isInsufficientBalance,
 }: CurrencyInputPanelProps) {
   const { t } = useTranslation();
   const [modalOpen, setModalOpen] = useState(false)
@@ -92,7 +90,7 @@ export default function CurrencyInputPanel({
       <Container id={id} hideInput={hideInput} className={className}>
         <InputBox>
           {!hideInput && (
-            <Flex flexDirection="column" className="mb-1" flex="1" position="relative">
+            <Flex flexDirection="column" flex="1" position="relative">
               {account && (
                 <Flex mb="4px">
                   <Text textStyle="R_14R" color={ColorStyles.DEEPGREY} mr="4px" >
@@ -109,20 +107,24 @@ export default function CurrencyInputPanel({
                 value={value}
                 onUserInput={(val) => onUserInput(val)}
               />
-              <Flex mt="8px">
-                <AnountButton onClick={onQuarter} mr="6px">
-                  25%
-                </AnountButton>
-                <AnountButton onClick={onHalf} mr="6px">
-                  50%
-                </AnountButton>
-                <AnountButton onClick={onMax}>
-                  MAX
-                </AnountButton>
-              </Flex>
-              <StyledNoti type={NotiType.ALERT} mt="12px">
-                Insufficient balance
-              </StyledNoti>
+              {(account && currency && label !== 'To') && 
+                <>
+                  <Flex mt="8px">
+                    <AnountButton onClick={onQuarter} mr="6px">
+                      25%
+                    </AnountButton>
+                    <AnountButton onClick={onHalf} mr="6px">
+                      50%
+                    </AnountButton>
+                    <AnountButton onClick={onMax}>
+                      MAX
+                    </AnountButton>
+                  </Flex>
+                  {isInsufficientBalance && <Noti type={NotiType.ALERT} mt="12px">
+                    {t('Insufficient balance')}
+                  </Noti>}
+                </>
+              }
             </Flex>
           )}
 
@@ -136,7 +138,7 @@ export default function CurrencyInputPanel({
             }}
           >
             <Flex>
-              <Flex alignItems="center" flex="1 1 0" mr="6px">
+              <Flex alignItems="center" height="40px" mr="6px">
                 <Flex>
                   {!disableCurrencySelect && <SmallDownIcon />}
                 </Flex>
@@ -164,7 +166,7 @@ export default function CurrencyInputPanel({
                           currency.symbol.length
                         )}`
                       : currency?.symbol) || 
-                        <Text textStyle="R_14B" color={ColorStyles.BLACK}>Token</Text>
+                        <Text textStyle="R_14B" color={ColorStyles.BLACK}>{t('Token')}</Text>
                   }
                   </Text>
                 )}

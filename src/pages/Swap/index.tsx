@@ -23,7 +23,7 @@ import { useSwapCallback } from 'hooks/useSwapCallback'
 import useWrapCallback, { WrapType } from 'hooks/useWrapCallback'
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { Field } from 'state/swap/actions'
-import { useDefaultsFromURLSearch, useDerivedSwapInfo, useSwapActionHandlers, useSwapState } from 'state/swap/hooks'
+import { SWAP_STATE, useDefaultsFromURLSearch, useDerivedSwapInfo, useSwapActionHandlers, useSwapState } from 'state/swap/hooks'
 import { useExpertModeManager, useUserDeadline, useUserSlippageTolerance } from 'state/user/hooks'
 import styled, { ThemeContext } from 'styled-components'
 
@@ -107,7 +107,6 @@ export default function Swap({
   ]
   const [dismissTokenWarning, setDismissTokenWarning] = useState<boolean>(false)
   const [isSyrup, setIsSyrup] = useState<boolean>(false)
-  const [isShowRightPanel, setIsShowRightPanel] = useState(false)
   const [syrupTransactionType, setSyrupTransactionType] = useState<string>('')
   const urlLoadedTokens: Token[] = useMemo(
     () => [loadedInputCurrency, loadedOutputCurrency]?.filter((c): c is Token => c instanceof Token) ?? [],
@@ -155,7 +154,7 @@ export default function Swap({
 
   // swap state
   const { independentField, typedValue, recipient } = useSwapState()
-  const { v2Trade, currencyBalances, parsedAmount, currencies, inputError: swapInputError } = useDerivedSwapInfo()
+  const { v2Trade, currencyBalances, parsedAmount, currencies, inputError: swapInputError, swapState } = useDerivedSwapInfo()
   const { wrapType, execute: onWrap, inputError: wrapInputError } = useWrapCallback(
     currencies[Field.INPUT],
     currencies[Field.OUTPUT],
@@ -218,14 +217,6 @@ export default function Swap({
     currencies[Field.INPUT] && currencies[Field.OUTPUT] && parsedAmounts[independentField]?.greaterThan(JSBI.BigInt(0))
   )
   const noRoute = !route
-
-  const [onPresentSettings] = useModal(
-    <Modal title="Settings">
-      <a href="https://google.com" rel="noreferrer" target="_blank">
-        <button type="button">klip login</button>
-      </a>
-    </Modal>
-  )
 
   // check whether the user has approved the router on the input token
   const [approval, approveCallback] = useApproveCallbackFromTrade(chainId, trade, allowedSlippage)
@@ -394,18 +385,6 @@ export default function Swap({
     }
   }, [handleSwap, isExpertMode, trade])
 
-  useEffect(() => {
-    if (isMobile) {
-      setIsShowRightPanel(false)
-    }
-  }, [isMobile])
-
-  useEffect(() => {
-    return () => {
-      setIsShowRightPanel(false)
-    }
-  }, [])
-
   return (
     <TimerWrapper isPhrase2={!(currentTime < phrase2TimeStamp && isPhrase2 === false)} date={phrase2TimeStamp}>
       <Flex flexDirection="column" alignItems="center">
@@ -428,9 +407,9 @@ export default function Swap({
             /> */}
 
             <WrapTop>
-              <Flex flexDirection="column" mb="20px">
+              <Flex flexDirection="column">
                 <CurrencyInputPanel
-                  className="mb-s32"
+                  className="mb-s20"
                   label={
                     independentField === Field.OUTPUT && !showWrap && trade
                       ? 'From (estimated)'
@@ -445,6 +424,7 @@ export default function Swap({
                   onMax={handleMaxInput}
                   onCurrencySelect={handleInputSelect}
                   otherCurrency={currencies[Field.OUTPUT]}
+                  isInsufficientBalance={swapState === SWAP_STATE.INSUFFICIENT_BALANCE}
                   id="swap-currency-input"
                 />
 
@@ -470,6 +450,7 @@ export default function Swap({
                 </AutoColumn>
 
                 <CurrencyInputPanel
+                  className="mb-s20"
                   value={formattedAmounts[Field.OUTPUT]}
                   onUserInput={handleTypeOutput}
                   label={
@@ -485,17 +466,17 @@ export default function Swap({
                 />
               </Flex>
 
-              {!showWrap && (Boolean(trade) || allowedSlippage !== INITIAL_ALLOWED_SLIPPAGE) && (
-                <Flex mb="20px">
+              {/* (Boolean(trade) || allowedSlippage !== INITIAL_ALLOWED_SLIPPAGE) && */}
+              {!showWrap && (
+                <Flex mb="32px">
                   {/* 슬리피지 발생 시 */}
                   {/* {allowedSlippage !== INITIAL_ALLOWED_SLIPPAGE && ( */}
                     <Flex flex="1 1 0" justifyContent="space-between">
-                      <Text fontSize="14px" color="textSubtle">
-                        Slippage Tolerance
+                      <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>
+                        {t('Slippage Tolerance')}
                       </Text>
-                      <Text fontSize="14px" textAlign="right" bold>
-                        {/* {allowedSlippage / 100}% */}
-                        {50 / 100}%
+                      <Text textStyle="R_14M" color={ColorStyles.DEEPGREY}>
+                        {allowedSlippage / 100}%
                       </Text>
                   </Flex>
                 </Flex>
@@ -596,10 +577,11 @@ export default function Swap({
                       disabled={!isValid || (priceImpactSeverity > 3 && !isExpertMode) || !!swapCallbackError}
                       variant={isValid && priceImpactSeverity > 2 && !swapCallbackError ? 'danger' : 'primary'}
                     >
-                      {swapInputError ||
+                      {t('Swap')}
+                      {/* {swapInputError ||
                         (priceImpactSeverity > 3 && !isExpertMode
                           ? `Price Impact Too High`
-                          : `Swap${priceImpactSeverity > 2 ? ' Anyway' : ''}`)}
+                          : `Swap${priceImpactSeverity > 2 ? ' Anyway' : ''}`)} */}
                     </Button>
                   </>
                 )}

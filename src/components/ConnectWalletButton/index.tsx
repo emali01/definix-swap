@@ -1,37 +1,17 @@
 import React from 'react'
-import { useCaverJsReact } from '@sixnetwork/caverjs-react-core'
-import { ConnectorId, useWalletModal } from 'uikit-dev'
-import { Button, ButtonProps } from 'definixswap-uikit'
-import { injected, klip } from 'connectors'
-import { KlipModalContext } from "@sixnetwork/klaytn-use-wallet"
-import useI18n from 'hooks/useI18n'
+import { Button, ButtonProps, useWalletModal } from 'definixswap-uikit'
+import { useTranslation } from 'react-i18next'
+import { useWallet } from "@sixnetwork/klaytn-use-wallet"
 
 const UnlockButton: React.FC<ButtonProps> = props => {
-  const { setShowModal, showModal } = React.useContext(KlipModalContext())
-  const TranslateString = useI18n()
-  const { account, activate, deactivate } = useCaverJsReact()
-  const showModalKlip = () => {
-    setShowModal(true)
-  }
-  const closeModalKlip = () => {
-    setShowModal(false)
-  }
-  const handleLogin = (connectorId: ConnectorId) => {
-    if (connectorId === "klip") {
-      window.localStorage.setItem("connector","klip")
-      return activate(klip(showModalKlip, closeModalKlip))
-    }
-    window.localStorage.setItem("connector", "injected")
-    return activate(injected)
+  const { t } = useTranslation();
+  const { account, connect, reset } = useWallet()
 
-
-  }
-
-  const { onPresentConnectModal } = useWalletModal(handleLogin, deactivate, account as string)
+  const { onPresentConnectModal } = useWalletModal(connect as any, reset, account)
 
   return (
     <Button lg width="100%" onClick={onPresentConnectModal} {...props}>
-      {TranslateString(292, 'Unlock Wallet')}
+      {t('Unlock Wallet')}
     </Button>
   )
 }

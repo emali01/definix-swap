@@ -105,6 +105,16 @@ function involvesAddress(trade: Trade, checksummedAddress: string): boolean {
   )
 }
 
+export enum SWAP_STATE {
+  CONNECT_WALLET ='CONNECT_WALLET',
+  POSSIBLE ='POSSIBLE',
+  PRICE_IMPACT_AT_LEAST_10 ='PRICE_IMPACT_AT_LEAST_10',
+  PRICE_IMPACE_TOO_HIGH ='PRICE_IMPACE_TOO_HIGH',
+  INSUFFICIENT_LIQUIDITY ='INSUFFICIENT_LIQUIDITY',
+  INSUFFICIENT_BALANCE ='INSUFFICIENT_BALANCE',
+  NOT_POSSIBLE ='NOT_POSSIBLE',
+}
+
 // from the current swap inputs, compute the best trade and return it.
 export function useDerivedSwapInfo(): {
   currencies: { [field in Field]?: Currency }
@@ -112,6 +122,7 @@ export function useDerivedSwapInfo(): {
   parsedAmount: CurrencyAmount | undefined
   v2Trade: Trade | undefined
   inputError?: string
+  swapState: SWAP_STATE
 } {
   const { account } = useActiveWeb3React()
 
@@ -151,12 +162,15 @@ export function useDerivedSwapInfo(): {
     [Field.OUTPUT]: outputCurrency ?? undefined,
   }
 
+  let swapState: SWAP_STATE;
   let inputError: string | undefined
   if (!account) {
+    swapState = SWAP_STATE.CONNECT_WALLET;
     inputError = 'Connect Wallet'
   }
 
   if (!parsedAmount) {
+    swapState = SWAP_STATE.NOT_POSSIBLE;
     inputError = inputError ?? 'Enter an amount'
   }
 
@@ -186,6 +200,7 @@ export function useDerivedSwapInfo(): {
   ]
 
   if (balanceIn && amountIn && balanceIn.lessThan(amountIn)) {
+    swapState = SWAP_STATE.INSUFFICIENT_BALANCE;
     inputError = `Insufficient ${amountIn.currency.symbol} balance`
   }
 
@@ -195,6 +210,7 @@ export function useDerivedSwapInfo(): {
     parsedAmount,
     v2Trade: v2Trade ?? undefined,
     inputError,
+    swapState
   }
 }
 
