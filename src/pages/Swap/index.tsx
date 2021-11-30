@@ -42,6 +42,8 @@ import {
   ColorStyles,
   ChangeIcon,
   ButtonVariants,
+  Noti,
+  NotiType,
 } from 'definixswap-uikit'
 
 // import { Overlay } from 'uikit-dev/components/Overlay'
@@ -385,6 +387,22 @@ export default function Swap({
     }
   }, [handleSwap, isExpertMode, trade])
 
+  const renderNoti = useCallback(() => {
+    if (isExpertMode) return <></>;
+
+    if (priceImpactSeverity > 3) {
+      return <Noti type={NotiType.ALERT} mt="12px">
+        {t('Price Impact Too High')}
+      </Noti>
+    }
+    if (priceImpactSeverity > 2) {
+      return <Noti type={NotiType.ALERT} mt="12px">
+        {t('This swap has a price impact of at least 10%')}
+      </Noti>
+    }
+    return <></>
+  }, [priceImpactSeverity, isExpertMode, t])
+
   return (
     <TimerWrapper isPhrase2={!(currentTime < phrase2TimeStamp && isPhrase2 === false)} date={phrase2TimeStamp}>
       <Flex flexDirection="column" alignItems="center">
@@ -568,7 +586,7 @@ export default function Swap({
 
                   </RowBetween>
                 ) : (
-                  <>
+                  <Flex flexDirection="column" flex="1">
                     <Button
                       width="100%"
                       lg
@@ -583,7 +601,8 @@ export default function Swap({
                           ? `Price Impact Too High`
                           : `Swap${priceImpactSeverity > 2 ? ' Anyway' : ''}`)} */}
                     </Button>
-                  </>
+                    {renderNoti()}
+                  </Flex>
                 )}
 
                 {/* {showApproveFlow && <ProgressSteps steps={[approval === ApprovalState.APPROVED]} />} */}
@@ -594,19 +613,19 @@ export default function Swap({
 
               {/* 라우팅 및 기타 스왑 정보 */}
               {trade && (
-                <Flex flexDirection="column">
+                <Flex flexDirection="column" mt="24px">
                   {/* Price Rate 화면 */}
-                  <Text textStyle="R_16M" color={ColorStyles.DEEPGREY} mb="12px">Estimated Returns</Text>
+                  <Text textStyle="R_16M" color={ColorStyles.DEEPGREY} mb="12px">{t('Estimated Returns')}</Text>
 
                   {Boolean(trade) && (
                     <Flex flex="1 1 0" justifyContent="space-between" mb="12px">
                       <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>
-                        Price Rate
+                        {t('Price Rate')}
                       </Text>
                       <TradePrice
                         price={trade?.executionPrice}
-                        showInverted={showInverted}
-                        setShowInverted={setShowInverted}
+                        // showInverted={showInverted}
+                        // setShowInverted={setShowInverted}
                       />
                     </Flex>
                   )}
