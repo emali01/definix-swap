@@ -3,6 +3,7 @@ import React, { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import { Text, Flex, AnountButton, SmallDownIcon, ColorStyles, Noti, NotiType, UnSelectTokenIcon, useModal } from 'definixswap-uikit'
+import { useWallet } from '@sixnetwork/klaytn-use-wallet'
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
 import { TranslateString } from '../../utils/translateTextHelpers'
@@ -37,6 +38,7 @@ const CurrencySelect = styled.button<{ selected: boolean }>`
 `
 
 interface CurrencyInputPanelProps {
+  isMobile: boolean;
   value: string
   showMaxButton: boolean
   label?: string
@@ -58,6 +60,7 @@ interface CurrencyInputPanelProps {
 }
 
 export default function CurrencyInputPanel({
+  isMobile,
   value,
   showMaxButton,
   label = TranslateString(132, 'Input'),
@@ -78,8 +81,7 @@ export default function CurrencyInputPanel({
   isInsufficientBalance,
 }: CurrencyInputPanelProps) {
   const { t } = useTranslation();
-  const [modalOpen, setModalOpen] = useState(false)
-  const { account } = useActiveWeb3React()
+  const { account } = useWallet()
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
   const handleDismissSearch = useCallback(() => {
     // setModalOpen(false)
@@ -118,7 +120,7 @@ export default function CurrencyInputPanel({
                 value={value}
                 onUserInput={(val) => onUserInput(val)}
               />
-              {(account && currency && label !== 'To') && 
+              {(account && currency && showMaxButton) && 
                 <>
                   <Flex mt="8px">
                     <AnountButton onClick={onQuarter} mr="6px">
@@ -149,7 +151,7 @@ export default function CurrencyInputPanel({
             }}
           >
             <Flex>
-              <Flex alignItems="center" height="40px" mr="6px">
+              <Flex alignItems="center" height={isMobile ? "32px" : "40px"} mr="6px">
                 <Flex>
                   {!disableCurrencySelect && <SmallDownIcon />}
                 </Flex>
@@ -159,11 +161,11 @@ export default function CurrencyInputPanel({
                   {pair ? (
                       <DoubleCurrencyLogo currency0={pair.token0} currency1={pair.token1} size={16} margin />
                     ) : currency ? (
-                      <CurrencyLogo currency={currency} size="40px" />
-                  ) : <UnSelectTokenIcon />}
+                      <CurrencyLogo currency={currency} size={isMobile ? "32px" : "40px"} />
+                  ) : <UnSelectTokenIcon viewBox="0 0 40 40" width={isMobile ? "32" : "40"} height={isMobile ? "32" : "40"} />}
                 </Flex>
                 {pair ? (
-                  <Text textStyle="R_14B" color={ColorStyles.BLACK}>
+                  <Text textStyle={isMobile ? "R_12B" : "R_14B"} color={ColorStyles.BLACK}>
                     {pair?.token0.symbol}:{pair?.token1.symbol}
                   </Text>
                 ) : (
@@ -184,23 +186,7 @@ export default function CurrencyInputPanel({
               </Flex>
             </Flex>
           </CurrencySelect>
-
         </InputBox>
-
-        {/* {(!isMobile && account && currency && label !== 'To') && ( */}
-          {/* <Flex mt="8px">
-            <AnountButton onClick={onQuarter} mr="6px">
-              25%
-            </AnountButton>
-            <AnountButton onClick={onHalf} mr="6px">
-              50%
-            </AnountButton>
-            <AnountButton onClick={onMax}>
-              MAX
-            </AnountButton>
-          </Flex> */}
-        {/* )} */}
-
       </Container>
 
       {/* {!disableCurrencySelect && onCurrencySelect && (

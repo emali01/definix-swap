@@ -19,10 +19,11 @@ const StyledInput = styled.input<{ error?: boolean; fontSize?: string; align?: s
   padding: 0px;
   -webkit-appearance: textfield;
 
-  font-family: Roboto;
-  font-size: 28px;
-  line-height: 1.43;
-  color: var(--04-greyscale-greyscale-05-black);
+  ${({ theme }) => theme.textStyle.R_28M}
+  ${({ theme }) => theme.mediaQueries.mobile} {
+    ${({ theme }) => theme.textStyle.R_23M}
+  }
+
 
   ::-webkit-search-decoration {
     -webkit-appearance: none;

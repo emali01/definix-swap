@@ -421,23 +421,12 @@ export default function Swap({
             linkLabel={t('Learn how to Swap')}
           />
           <WrapCardContainer isMobile={isMobile}>
-            {/* <Overlay
-              show={isShowRightPanel && isMobile}
-              style={{ position: 'absolute', zIndex: 6 }}
-              onClick={() => {
-                setIsShowRightPanel(false)
-              }}
-            /> */}
-
             <WrapTop>
               <Flex flexDirection="column">
                 <CurrencyInputPanel
+                  isMobile={isMobile}
                   className="mb-s20"
-                  label={
-                    independentField === Field.OUTPUT && !showWrap && trade
-                      ? 'From (estimated)'
-                      : TranslateString(76, 'From')
-                  }
+                  label="From"
                   value={formattedAmounts[Field.INPUT]}
                   showMaxButton={!atMaxAmountInput}
                   currency={currencies[Field.INPUT]}
@@ -473,14 +462,11 @@ export default function Swap({
                 </AutoColumn>
 
                 <CurrencyInputPanel
+                  isMobile={isMobile}
                   className="mb-s20"
                   value={formattedAmounts[Field.OUTPUT]}
                   onUserInput={handleTypeOutput}
-                  label={
-                    independentField === Field.INPUT && !showWrap && trade
-                      ? 'To (estimated)'
-                      : TranslateString(80, 'To')
-                  }
+                  label="To"
                   showMaxButton={false}
                   currency={currencies[Field.OUTPUT]}
                   onCurrencySelect={handleOutputSelect}

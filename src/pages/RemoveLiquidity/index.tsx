@@ -19,7 +19,7 @@ import React, { useCallback, useContext, useMemo, useState } from 'react'
 import { ArrowDown, Plus } from 'react-feather'
 import { RouteComponentProps } from 'react-router'
 import { ThemeContext } from 'styled-components'
-import { Button, CardBody, Flex, Text } from 'definixswap-uikit'
+import { Button, CardBody, Flex, Text, useMatchBreakpoints } from 'definixswap-uikit'
 import UseDeParam from 'hooks/useDeParam'
 // import { LeftPanel, MaxWidthLeft } from 'uikit-dev/components/TwoPanelLayout'
 import { AutoColumn, ColumnCenter } from '../../components/Column'
@@ -56,6 +56,8 @@ export default function RemoveLiquidity({
     params: { currencyIdA, currencyIdB }
   }
 }: RouteComponentProps<{ currencyIdA: string; currencyIdB: string }>) {
+  const { isXl, isXxl } = useMatchBreakpoints()
+  const isMobile = useMemo(() => !isXl && !isXxl, [isXl, isXxl])
   const [currencyA, currencyB] = [useCurrency(currencyIdA) ?? undefined, useCurrency(currencyIdB) ?? undefined]
   const { account, chainId, library } = useActiveWeb3React()
   const [tokenA, tokenB] = useMemo(() => [wrappedCurrency(currencyA, chainId), wrappedCurrency(currencyB, chainId)], [
@@ -704,6 +706,7 @@ export default function RemoveLiquidity({
                   {showDetailed && (
                     <>
                       <CurrencyInputPanel
+                        isMobile={isMobile}
                         value={formattedAmounts[Field.LIQUIDITY]}
                         onUserInput={onLiquidityInput}
                         onMax={() => {
@@ -728,6 +731,7 @@ export default function RemoveLiquidity({
                       </ColumnCenter>
 
                       <CurrencyInputPanel
+                        isMobile={isMobile}
                         hideBalance
                         value={formattedAmounts[Field.CURRENCY_A]}
                         onUserInput={onCurrencyAInput}
@@ -747,6 +751,7 @@ export default function RemoveLiquidity({
                       </ColumnCenter>
 
                       <CurrencyInputPanel
+                        isMobile={isMobile}
                         hideBalance
                         value={formattedAmounts[Field.CURRENCY_B]}
                         onUserInput={onCurrencyBInput}

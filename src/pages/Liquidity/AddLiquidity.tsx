@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { 
   ColorStyles,
   Flex,
@@ -10,7 +10,8 @@ import {
   ButtonScales,
   CheckBIcon,
   NotiType,
-  Noti
+  Noti,
+  useMatchBreakpoints
 } from 'definixswap-uikit';
 import { Field } from 'state/mint/actions'
 import CurrencyInputPanel from 'components/CurrencyInputPanel';
@@ -80,6 +81,8 @@ const AddLiquidity: React.FC<IProps> = ({
 }) => {
   const { account } = useActiveWeb3React()
   const expertMode = useIsExpertMode()
+  const { isXl, isXxl } = useMatchBreakpoints()
+  const isMobile = useMemo(() => !isXl && !isXxl, [isXl, isXxl])
   const { t } = useTranslation(); 
   
   return (
@@ -91,6 +94,7 @@ const AddLiquidity: React.FC<IProps> = ({
           <CardBody>
             <Flex flexDirection="column">
               <CurrencyInputPanel
+                isMobile={isMobile}
                 value={formattedAmounts[Field.CURRENCY_A]}
                 onUserInput={onFieldAInput}
                 onMax={() => {
@@ -119,6 +123,7 @@ const AddLiquidity: React.FC<IProps> = ({
                 </Flex>
 
               <CurrencyInputPanel
+                isMobile={isMobile}
                 value={formattedAmounts[Field.CURRENCY_B]}
                 onUserInput={onFieldBInput}
                 onCurrencySelect={handleCurrencyBSelect}
