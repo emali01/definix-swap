@@ -78,6 +78,13 @@ const WrapTop = styled(Flex)`
   border-bottom: 1px solid ${({ theme }) => theme.colors.border};
 `
 
+const WrapCardContainer = styled(CardContainer)`
+  margin-top: 40px;
+  ${({ theme }) => theme.mediaQueries.mobile} {
+    margin-bottom: 28px;
+  }
+`
+
 
 export default function Swap({
   match: {
@@ -407,15 +414,13 @@ export default function Swap({
     <TimerWrapper isPhrase2={!(currentTime < phrase2TimeStamp && isPhrase2 === false)} date={phrase2TimeStamp}>
       <Flex flexDirection="column" alignItems="center">
         <SwapContainer isMobile={isMobile}>
-          <Flex mb="40px">
-            <TitleSet
-              title={t("Swap")}
-              description="Trade tokens in an instant."
-              link="https://sixnetwork.gitbook.io/definix-on-klaytn-en/exchange/how-to-trade-on-definix-exchange"
-              linkLabel="Learn to swap."
-            />
-          </Flex>
-          <CardContainer isMobile={isMobile}>
+          <TitleSet
+            title={t("Swap")}
+            description={t('Swap it for any token')}
+            link="https://sixnetwork.gitbook.io/definix-on-klaytn-en/exchange/how-to-trade-on-definix-exchange"
+            linkLabel={t('Learn how to Swap')}
+          />
+          <WrapCardContainer isMobile={isMobile}>
             {/* <Overlay
               show={isShowRightPanel && isMobile}
               style={{ position: 'absolute', zIndex: 6 }}
@@ -634,7 +639,7 @@ export default function Swap({
               )}
 
             </Flex>
-          </CardContainer>
+          </WrapCardContainer>
         </SwapContainer>
       </Flex>
 
