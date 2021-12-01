@@ -11,30 +11,6 @@ import DoubleCurrencyLogo from '../DoubleLogo'
 import { Input as NumericalInput } from '../NumericalInput'
 import CurrencySearchModal from '../SearchModal/CurrencySearchModal'
 
-const Container = styled.div<{ hideInput: boolean }>``;
-
-const InputBox = styled.div`
-  display: flex;
-  justify-content: space-between;
-  /* flex-flow: row nowrap; */
-  /* flex-wrap: wrap; */
-  /* align-items: center; */
-  /* justify-content: flex-end; */
-`
-const CurrencySelect = styled.button<{ selected: boolean }>`
-  padding: 0;
-  align-items: center;
-  background-color: transparent;
-  outline: none;
-  cursor: pointer;
-  user-select: none;
-  border: none;
-  /* :focus,
-  :hover {
-    background-color: ${({ theme }) => theme.colors.tertiary};
-  } */
-`
-
 interface CurrencyInputPanelProps {
   value: string
   showMaxButton: boolean
@@ -55,6 +31,22 @@ interface CurrencyInputPanelProps {
   onCurrencySelect?: (currency: Currency) => void
   isInsufficientBalance?: boolean
 }
+
+const Container = styled.div<{ hideInput: boolean }>``;
+
+const InputBox = styled.div`
+  display: flex;
+  justify-content: space-between;
+`
+const CurrencySelect = styled.button<{ selected: boolean }>`
+  padding: 0;
+  align-items: center;
+  background-color: transparent;
+  outline: none;
+  cursor: pointer;
+  user-select: none;
+  border: none;
+`
 
 export default function CurrencyInputPanel({
   value,
