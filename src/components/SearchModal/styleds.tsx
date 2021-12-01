@@ -54,7 +54,6 @@ export const SearchInput = styled.input`
   }
   transition: border 100ms;
   :focus {
-    border: 1px solid ${({ theme }) => theme.colors.primary};
     outline: none;
   }
 `

@@ -9,7 +9,6 @@ import { useAddUserToken, useRemoveUserAddedToken } from '../../state/user/hooks
 import { useCurrencyBalance } from '../../state/wallet/hooks'
 import { LinkStyledButton } from '../Shared'
 import { useIsUserAddedToken } from '../../hooks/Tokens'
-import { RowFixed } from '../Row'
 import CurrencyLogo from '../CurrencyLogo'
 import { MouseoverTooltip } from '../Tooltip'
 import { FadedSpan, MenuItem } from './styleds'
@@ -155,49 +154,23 @@ function CurrencyRow({
 }
 
 export default function CurrencyList({
-  height,
   currencies,
   selectedCurrency,
   onCurrencySelect,
   otherCurrency,
   fixedListRef,
-  showETH,
 }: {
-  height: number
   currencies: Currency[]
   selectedCurrency?: Currency | null
   onCurrencySelect: (currency: Currency) => void
   otherCurrency?: Currency | null
   fixedListRef?: MutableRefObject<FixedSizeList | undefined>
-  showETH: boolean
 }) {
-  const itemData = useMemo(() => (showETH ? [Currency.ETHER, ...currencies] : [...currencies]), [currencies, showETH])
-
-  const Row = useCallback(
-    ({ data, index, style }) => {
-      const currency: Currency = data[index]
-      const isSelected = Boolean(selectedCurrency && currencyEquals(selectedCurrency, currency))
-      const otherSelected = Boolean(otherCurrency && currencyEquals(otherCurrency, currency))
-      const handleSelect = () => onCurrencySelect(currency)
-      return (
-        <CurrencyRow
-          style={style}
-          currency={currency}
-          isSelected={isSelected}
-          onSelect={handleSelect}
-          otherSelected={otherSelected}
-        />
-      )
-    },
-    [onCurrencySelect, otherCurrency, selectedCurrency]
-  )
-
-  const itemKey = useCallback((index: number, data: any) => currencyKey(data[index]), [])
 
   return (
     <Box height="auto">
       {
-        itemData.map((item) => {
+        currencies.map((item) => {
           const currency = item;
           return <CurrencyRow
             style={{}}
@@ -209,16 +182,5 @@ export default function CurrencyList({
         })
       }
     </Box>
-    // <FixedSizeList
-    //   height={height}
-    //   ref={fixedListRef as any}
-    //   width="100%"
-    //   itemData={itemData}
-    //   itemCount={itemData.length}
-    //   itemSize={56}
-    //   itemKey={itemKey}
-    // >
-    //   {Row}
-    // </FixedSizeList>
   )
 }

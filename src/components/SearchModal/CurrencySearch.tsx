@@ -1,35 +1,21 @@
 import { Currency, ETHER, Token } from 'definixswap-sdk'
-import React, { KeyboardEvent, RefObject, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
+import React, { KeyboardEvent, RefObject, useCallback, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import AutoSizer from 'react-virtualized-auto-sizer'
 import { FixedSizeList } from 'react-window'
-import styled, { ThemeContext } from 'styled-components'
-import { CloseIcon, Heading, IconButton, Text, Flex, Box } from 'definixswap-uikit'
-import searchIcon from '../../assets/svg/search.svg'
-import { useActiveWeb3React } from '../../hooks'
+import styled from 'styled-components'
+import { Flex, SearchIcon } from 'definixswap-uikit'
 import { useAllTokens, useToken } from '../../hooks/Tokens'
-import { useSelectedListInfo } from '../../state/lists/hooks'
 import { isAddress } from '../../utils'
-import { TranslateString } from '../../utils/translateTextHelpers'
-import Card from '../Card'
-import ListLogo from '../ListLogo'
-import QuestionHelper from '../QuestionHelper'
-import Row, { RowBetween } from '../Row'
-import { LinkStyledButton } from '../Shared'
-import TranslatedText from '../TranslatedText'
-import CommonBases from './CommonBases'
 import CurrencyList from './CurrencyList'
 import { filterTokens } from './filtering'
 import { useTokenComparator } from './sorting'
-import { SearchInput, Separator } from './styleds'
+import { SearchInput } from './styleds'
 
 interface CurrencySearchProps {
-  onDismiss?: () => void
+  onDismiss: () => void
   selectedCurrency?: Currency | null
   onCurrencySelect: (currency: Currency) => void
   otherSelectedCurrency?: Currency | null
-  showCommonBases?: boolean
-  onChangeList: () => void
 }
 
 const SearchInputWithIcon = styled.div`
@@ -38,11 +24,11 @@ const SearchInputWithIcon = styled.div`
   justify-content: flex-end;
   align-items: center;
 
-  img {
+  svg {
     position: absolute;
+    right: 12px;
     width: 16px;
     height: 16px;
-    margin-right: 12px;
   }
 
   input {
@@ -50,21 +36,31 @@ const SearchInputWithIcon = styled.div`
   }
 `
 
+const WrapCurrencyList = styled(Flex)<{ listLength: number }>`
+  flex-direction: column;
+  height: ${({ listLength }) => listLength * 60}px;
+  margin-top: 20px;
+
+  ${({ theme }) => theme.mediaQueries.mobile} {
+    height: auto;
+    flex: 1;
+  }
+`
+
+const StyledSearchIcon = styled(SearchIcon)`
+
+`
+
 export function CurrencySearch({
   selectedCurrency,
   onCurrencySelect,
   otherSelectedCurrency,
-  showCommonBases,
   onDismiss,
-  onChangeList,
 }: CurrencySearchProps) {
   const { t } = useTranslation()
-  const { chainId } = useActiveWeb3React()
-  const theme = useContext(ThemeContext)
 
   const fixedList = useRef<FixedSizeList>()
   const [searchQuery, setSearchQuery] = useState<string>('')
-  const [invertSearchOrder, setInvertSearchOrder] = useState<boolean>(false)
   const allTokens = useAllTokens()
 
   // if they input an address, use it
@@ -73,12 +69,11 @@ export function CurrencySearch({
 
   const showETH: boolean = useMemo(() => {
     const s = searchQuery.toLowerCase().trim()
-    return s === '' || s === 'e' || s === 'et' || s === 'eth'
+    return s === '' || s === 'k' || s === 'kl' || s === 'kla' || s === 'klay'
+    // return s === '' || s === 'e' || s === 'et' || s === 'eth'
   }, [searchQuery])
 
-  const tokenComparator = useTokenComparator(invertSearchOrder)
-
-  // const audioPlay = useSelector<AppState, AppState['user']['audioPlay']>((state) => state.user.audioPlay)
+  const tokenComparator = useTokenComparator(false)
 
   const filteredTokens: Token[] = useMemo(() => {
     if (isAddressSearch) return searchToken ? [searchToken] : []
@@ -106,20 +101,9 @@ export function CurrencySearch({
     (currency: Currency) => {
       onCurrencySelect(currency)
       onDismiss()
-      // if (audioPlay) {
-      //   const audio = document.getElementById('bgMusic') as HTMLAudioElement
-      //   if (audio) {
-      //     audio.play()
-      //   }
-      // }
     },
     [onDismiss, onCurrencySelect] // , audioPlay]
   )
-
-  // clear the input on open
-  // useEffect(() => {
-  //   if (isOpen) setSearchQuery('')
-  // }, [isOpen])
 
   // manage focus on modal show
   const inputRef = useRef<HTMLInputElement>()
@@ -149,40 +133,34 @@ export function CurrencySearch({
     [filteredSortedTokens, handleCurrencySelect, searchQuery]
   )
 
-  const selectedListInfo = useSelectedListInfo()
+  const currencies = useMemo(() => (showETH ? [Currency.ETHER, ...filteredSortedTokens] : [...filteredSortedTokens]), [filteredSortedTokens, showETH])
 
   return (
-    <Flex flex="1 1 0" flexDirection="column">
-      <Flex flexDirection="column" mb="20px">
+    <Flex flex="1 1 0" flexDirection="column" height="100%">
+      <Flex flexDirection="column">
         <SearchInputWithIcon>
           <SearchInput
             type="text"
             id="token-search-input"
-            placeholder={t('Search Token name or address')}
+            placeholder={t('Search token name or address')}
             value={searchQuery}
             ref={inputRef as RefObject<HTMLInputElement>}
             onChange={handleInput}
             onKeyDown={handleEnter}
           />
-          <img src={searchIcon} alt="" />
+          <StyledSearchIcon />
         </SearchInputWithIcon>
-
-        {showCommonBases && (
-          <CommonBases chainId={chainId} onSelect={handleCurrencySelect} selectedCurrency={selectedCurrency} />
-        )}
       </Flex>
 
-      <Flex flexDirection="column" flex="1 1 0">
-        <CurrencyList
-          height={500}
-          showETH={showETH}
-          currencies={filteredSortedTokens}
+      <WrapCurrencyList listLength={Object.keys(allTokens).length + 1}>
+        {currencies.length > 0 ? <CurrencyList
+          currencies={currencies}
           onCurrencySelect={handleCurrencySelect}
           otherCurrency={otherSelectedCurrency}
           selectedCurrency={selectedCurrency}
           fixedListRef={fixedList}
-        />
-      </Flex>
+        /> : <Flex mt="-20px" height="100%" alignItems="center" justifyContent="center">{t('No search results')}</Flex>}
+      </WrapCurrencyList>
     </Flex>
   )
 }
