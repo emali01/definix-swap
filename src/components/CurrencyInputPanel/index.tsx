@@ -2,7 +2,7 @@ import { Currency, Pair } from 'definixswap-sdk'
 import React, { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
-import { Text, Flex, AnountButton, SmallDownIcon, ColorStyles, Noti, NotiType, UnSelectTokenIcon } from 'definixswap-uikit'
+import { Text, Flex, AnountButton, SmallDownIcon, ColorStyles, Noti, NotiType, UnSelectTokenIcon, useModal } from 'definixswap-uikit'
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
 import { TranslateString } from '../../utils/translateTextHelpers'
@@ -10,6 +10,7 @@ import CurrencyLogo from '../CurrencyLogo'
 import DoubleCurrencyLogo from '../DoubleLogo'
 import { Input as NumericalInput } from '../NumericalInput'
 import CurrencySearchModal from '../SearchModal/CurrencySearchModal'
+import { CurrencySearch } from '../SearchModal/CurrencySearch'
 
 const Container = styled.div<{ hideInput: boolean }>``;
 
@@ -80,10 +81,20 @@ export default function CurrencyInputPanel({
   const [modalOpen, setModalOpen] = useState(false)
   const { account } = useActiveWeb3React()
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
-
   const handleDismissSearch = useCallback(() => {
-    setModalOpen(false)
-  }, [setModalOpen])
+    // setModalOpen(false)
+  }, [])
+
+  const [onPresentCurrencySearchModal] = useModal(<CurrencySearchModal
+    // onChangeList={() => {
+    //   console.log('onChangeList')
+    // }}
+    onCurrencySelect={onCurrencySelect}
+    selectedCurrency={currency}
+    otherSelectedCurrency={otherCurrency}
+    showCommonBases={false}
+  />, false)
+
 
   return (
     <>
@@ -133,7 +144,7 @@ export default function CurrencyInputPanel({
             className="open-currency-select-button"
             onClick={() => {
               if (!disableCurrencySelect) {
-                setModalOpen(true)
+                onPresentCurrencySearchModal();
               }
             }}
           >
@@ -192,7 +203,7 @@ export default function CurrencyInputPanel({
 
       </Container>
 
-      {!disableCurrencySelect && onCurrencySelect && (
+      {/* {!disableCurrencySelect && onCurrencySelect && (
         <CurrencySearchModal
           isOpen={modalOpen}
           onDismiss={handleDismissSearch}
@@ -201,7 +212,7 @@ export default function CurrencyInputPanel({
           otherSelectedCurrency={otherCurrency}
           showCommonBases={showCommonBases}
         />
-      )}
+      )} */}
     </>
   )
 }

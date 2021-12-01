@@ -2,14 +2,13 @@ import { Currency, CurrencyAmount, currencyEquals, ETHER, Token } from 'definixs
 import React, { CSSProperties, MutableRefObject, useCallback, useMemo } from 'react'
 import { FixedSizeList } from 'react-window'
 import styled from 'styled-components'
-import { Text, Flex } from 'definixswap-uikit'
+import { Text, Flex, Box } from 'definixswap-uikit'
 import { useActiveWeb3React } from '../../hooks'
 import { useSelectedTokenList, WrappedTokenInfo } from '../../state/lists/hooks'
 import { useAddUserToken, useRemoveUserAddedToken } from '../../state/user/hooks'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
 import { LinkStyledButton } from '../Shared'
 import { useIsUserAddedToken } from '../../hooks/Tokens'
-import { RowFixed } from '../Row'
 import CurrencyLogo from '../CurrencyLogo'
 import { MouseoverTooltip } from '../Tooltip'
 import { FadedSpan, MenuItem } from './styleds'
@@ -155,56 +154,33 @@ function CurrencyRow({
 }
 
 export default function CurrencyList({
-  height,
   currencies,
   selectedCurrency,
   onCurrencySelect,
   otherCurrency,
   fixedListRef,
-  showETH,
 }: {
-  height: number
   currencies: Currency[]
   selectedCurrency?: Currency | null
   onCurrencySelect: (currency: Currency) => void
   otherCurrency?: Currency | null
   fixedListRef?: MutableRefObject<FixedSizeList | undefined>
-  showETH: boolean
 }) {
-  const itemData = useMemo(() => (showETH ? [Currency.ETHER, ...currencies] : [...currencies]), [currencies, showETH])
-
-  const Row = useCallback(
-    ({ data, index, style }) => {
-      const currency: Currency = data[index]
-      const isSelected = Boolean(selectedCurrency && currencyEquals(selectedCurrency, currency))
-      const otherSelected = Boolean(otherCurrency && currencyEquals(otherCurrency, currency))
-      const handleSelect = () => onCurrencySelect(currency)
-      return (
-        <CurrencyRow
-          style={style}
-          currency={currency}
-          isSelected={isSelected}
-          onSelect={handleSelect}
-          otherSelected={otherSelected}
-        />
-      )
-    },
-    [onCurrencySelect, otherCurrency, selectedCurrency]
-  )
-
-  const itemKey = useCallback((index: number, data: any) => currencyKey(data[index]), [])
 
   return (
-    <FixedSizeList
-      height={height}
-      ref={fixedListRef as any}
-      width="100%"
-      itemData={itemData}
-      itemCount={itemData.length}
-      itemSize={56}
-      itemKey={itemKey}
-    >
-      {Row}
-    </FixedSizeList>
+    <Box height="auto">
+      {
+        currencies.map((item) => {
+          const currency = item;
+          return <CurrencyRow
+            style={{}}
+            currency={currency}
+            isSelected={Boolean(selectedCurrency && currencyEquals(selectedCurrency, currency))}
+            onSelect={() => onCurrencySelect(currency)}
+            otherSelected={Boolean(otherCurrency && currencyEquals(otherCurrency, currency))}
+          />
+        })
+      }
+    </Box>
   )
 }

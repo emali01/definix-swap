@@ -9,17 +9,17 @@ import { dark as darkModal } from '../widgets/Modal/theme'
 import base from './base'
 import { darkColors } from './colors'
 
-const darkTheme: DefaultTheme = {
-  ...base,
-  isDark: true,
-  alert: darkAlert,
-  button: darkButton,
-  colors: darkColors,
-  card: darkCard,
-  toggle: darkToggle,
-  nav: darkNav,
-  modal: darkModal,
-  radio: darkRadio,
-}
+// const darkTheme: DefaultTheme = {
+//   ...base,
+//   isDark: true,
+//   // alert: darkAlert,
+//   // button: darkButton,
+//   // colors: darkColors,
+//   // card: darkCard,
+//   toggle: darkToggle,
+//   nav: darkNav,
+//   modal: darkModal,
+//   // radio: darkRadio,
+// }
 
-export default darkTheme
+// export default darkTheme

@@ -11,8 +11,6 @@ export const MaxWidthLeft = styled.div`
 export const SwapContainer = styled.div<{isMobile?: boolean}>`
   width: ${({isMobile}) => isMobile ? '100%' : '629px'};
   max-width: 629px;
-
-  margin-top: 28px;
 `
 
 export const CardContainer = styled.div<{isMobile?: boolean}>`
