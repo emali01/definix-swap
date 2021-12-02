@@ -1,12 +1,18 @@
 import { Price } from 'definixswap-sdk'
 import React from 'react'
 import { ColorStyles, Box, Flex, Text } from 'definixswap-uikit'
+import styled from 'styled-components'
 
 interface TradePriceProps {
   price?: Price
   showInverted?: boolean
   setShowInverted?: (showInverted: boolean) => void
 }
+
+const StyledText = styled(Text)`
+  ${({ theme }) => theme.textStyle.R_14M}
+  color: ${({ theme }) => theme.colors.deepgrey};
+`
 
 export default function TradePrice({ price, showInverted, setShowInverted }: TradePriceProps) {
   const show = Boolean(price?.baseCurrency && price?.quoteCurrency)
@@ -16,32 +22,32 @@ export default function TradePrice({ price, showInverted, setShowInverted }: Tra
       {show ? (
         <Box>
           <Flex justifyContent="flex-end">
-            <Text textStyle="R_14M" color={ColorStyles.DEEPGREY}>
+            <StyledText>
               1 {price?.baseCurrency?.symbol}
-            </Text>
-            <Text textStyle="R_14M" color={ColorStyles.DEEPGREY} ml="2px" mr="2px">
+            </StyledText>
+            <StyledText ml="2px" mr="2px">
               =
-            </Text>
-            <Text textStyle="R_14M" color={ColorStyles.DEEPGREY} mr="2px">
+            </StyledText>
+            <StyledText mr="2px">
               {price?.toSignificant(6) ?? '-'}
-            </Text>
-            <Text textStyle="R_14M" color={ColorStyles.DEEPGREY}>
+            </StyledText>
+            <StyledText>
               {price?.quoteCurrency?.symbol}
-            </Text>
+            </StyledText>
           </Flex>
           <Flex justifyContent="flex-end">
-            <Text textStyle="R_14M" color={ColorStyles.DEEPGREY}>
+            <StyledText>
               1 {price?.quoteCurrency?.symbol}
-            </Text>
-            <Text textStyle="R_14M" color={ColorStyles.DEEPGREY} ml="2px" mr="2px">
+            </StyledText>
+            <StyledText ml="2px" mr="2px">
               =
-            </Text>
-            <Text textStyle="R_14M" color={ColorStyles.DEEPGREY} mr="2px">
+            </StyledText>
+            <StyledText mr="2px">
               {price?.invert()?.toSignificant(6) ?? '-'}
-            </Text>
-            <Text textStyle="R_14M" color={ColorStyles.DEEPGREY}>
+            </StyledText>
+            <StyledText>
               {price?.baseCurrency?.symbol}
-            </Text>
+            </StyledText>
           </Flex>
         </Box>
       ) : (
