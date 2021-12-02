@@ -2,8 +2,21 @@ import { Currency, Pair } from 'definixswap-sdk'
 import React, { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
-import { Text, Flex, AnountButton, SmallDownIcon, ColorStyles, Noti, NotiType, UnSelectTokenIcon, useModal } from 'definixswap-uikit'
+import { 
+  Text,
+  Flex,
+  Box,
+  AnountButton,
+  SmallDownIcon,
+  ColorStyles,
+  Noti,
+  NotiType,
+  UnSelectTokenIcon,
+  useModal,
+  textStyle
+} from 'definixswap-uikit'
 import { useWallet } from '@sixnetwork/klaytn-use-wallet'
+import { escapeRegExp } from 'utils'
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
 import { TranslateString } from '../../utils/translateTextHelpers'
@@ -12,6 +25,7 @@ import DoubleCurrencyLogo from '../DoubleLogo'
 import { Input as NumericalInput } from '../NumericalInput'
 import CurrencySearchModal from '../SearchModal/CurrencySearchModal'
 import { CurrencySearch } from '../SearchModal/CurrencySearch'
+import { Field } from '../../state/burn/actions'
 
 interface CurrencyInputPanelProps {
   isMobile: boolean;
@@ -50,6 +64,83 @@ const CurrencySelect = styled.button<{ selected: boolean }>`
   user-select: none;
   border: none;
 `
+const Input = styled.input`
+  border: none;
+  ${textStyle.R_14M}
+  ${ColorStyles.BLACK}
+`;
+
+const inputRegex = RegExp(`^\\d*(?:\\\\[.])?\\d*$`) // match escaped "." characters via in a non-capturing group
+export const CurrencyInputPanelOnRemoveLP: React.FC<any> = ({
+  onMax,
+  onHalf,
+  onQuarter,
+  onUserInput,
+  value,
+  currency,
+  currencyA,
+  currencyB
+}) => {
+  const enforcer = (nextUserInput: string) => {
+    if (nextUserInput === '' || inputRegex.test(escapeRegExp(nextUserInput))) {
+      onUserInput(nextUserInput)
+    }
+  };
+
+  return (
+    <Flex flexDirection="column">
+      <Flex alignItems="center" mb="16px">
+        {currencyA && currencyB && (
+          <>
+            <Box mr="10px">
+              <DoubleCurrencyLogo size={32} currency0={currencyA} currency1={currencyB}/>
+            </Box>
+            <Text textStyle="R_16M" color={ColorStyles.DEEPGREY}>
+              {currencyA?.symbol}-{currencyB?.symbol}
+            </Text>
+          </>
+        )}
+        {currency && (
+          <>
+            <Box mr="10px">
+              <CurrencyLogo size="32px" currency={currency}/>
+            </Box>
+            <Text textStyle="R_16M" color={ColorStyles.DEEPGREY}>
+              {currencyA?.symbol}-{currencyB?.symbol}
+            </Text>
+          </>
+        )}
+      </Flex>
+      <Flex
+        width="100%"
+        borderRadius="8px"
+        border="solid 1px #e0e0e0"
+        p="14px 12px 14px 16px"
+        justifyContent="space-between"
+        alignItems="center"
+      >
+        <Input
+          value={value}
+          onChange={(event) => {
+            // replace commas with periods, because uniswap exclusively uses period as the decimal separator
+            enforcer(event.target.value.replace(/,/g, '.'))
+          }}
+        />
+        <Flex>
+          <AnountButton onClick={onQuarter} mr="6px">
+            25%
+          </AnountButton>
+          <AnountButton onClick={onHalf} mr="6px">
+            50%
+          </AnountButton>
+          <AnountButton onClick={onMax}>
+            MAX
+          </AnountButton>
+        </Flex>
+      </Flex>
+    </Flex>
+  );
+}
 
 export default function CurrencyInputPanel({
   isMobile,

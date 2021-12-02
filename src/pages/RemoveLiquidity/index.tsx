@@ -22,7 +22,7 @@ import { AnountButton, Button, CardBody, ColorStyles, Flex, Text, Box, ButtonSca
 import UseDeParam from 'hooks/useDeParam'
 import { useTranslation } from 'react-i18next'
 import { AutoColumn } from '../../components/Column'
-import CurrencyInputPanel from '../../components/CurrencyInputPanel'
+import CurrencyInputPanel, { CurrencyInputPanelOnRemoveLP } from '../../components/CurrencyInputPanel'
 import CurrencyLogo from '../../components/CurrencyLogo'
 import DoubleCurrencyLogo from '../../components/DoubleLogo'
 import { RowBetween, RowFixed } from '../../components/Row'
@@ -698,39 +698,24 @@ export default function RemoveLiquidity({
             {showDetailed && (
               <>
                 <Flex flexDirection="column">
-                  <Flex alignItems="center" mb="16px">
-                    <Box mr="10px">
-                      <DoubleCurrencyLogo size={32} currency0={currencyA} currency1={currencyB}/>
-                    </Box>
-                    <Text textStyle="R_16M" color={ColorStyles.DEEPGREY}>
-                      {currencyA?.symbol}-{currencyB?.symbol}
-                    </Text>
-                  </Flex>
-
-                  <Flex
-                    width="100%"
-                    borderRadius="8px"
-                    border="solid 1px #e0e0e0"
-                    p="14px 12px 14px 16px"
-                    justifyContent="space-between"
-                    alignItems="center"
-                  >
-                    <Text textStyle="R_14M" color={ColorStyles.BLACK}>
-                      {formattedAmounts[Field.LIQUIDITY].length > 0 ? formattedAmounts[Field.LIQUIDITY] : 0}
-                    </Text>
-                    <Flex>
-                      <AnountButton onClick={() => onUserInput(Field.LIQUIDITY_PERCENT, '25')} mr="6px">
-                        25%
-                      </AnountButton>
-                      <AnountButton onClick={() => onUserInput(Field.LIQUIDITY_PERCENT, '50')} mr="6px">
-                        50%
-                      </AnountButton>
-                      <AnountButton onClick={() =>onUserInput(Field.LIQUIDITY_PERCENT, '100')}>
-                        MAX
-                      </AnountButton>
-                    </Flex>
-                  </Flex>
+                  <CurrencyInputPanelOnRemoveLP
+                    value={formattedAmounts[Field.LIQUIDITY].length > 0 ? formattedAmounts[Field.LIQUIDITY] : 0}
+                    onUserInput={onLiquidityInput}
+                    onMax={() => {
+                      onUserInput(Field.LIQUIDITY_PERCENT, '100')
+                    }}
+                    onQuarter={() => {
+                      onUserInput(Field.LIQUIDITY_PERCENT, '25')
+                    }}
+                    onHalf={() => {
+                      onUserInput(Field.LIQUIDITY_PERCENT, '50')
+                    }}
+                    // currency={currency}
+                    currencyA={currencyA}
+                    currencyB={currencyB}
+                  />
                 </Flex>
+
 
                 {/* <CurrencyInputPanel
                   value={formattedAmounts[Field.LIQUIDITY]}
@@ -755,7 +740,9 @@ export default function RemoveLiquidity({
                   <ArrowDown size="16"/>
                 </Flex>
 
-                <CurrencyInputPanel
+                
+
+                {/* <CurrencyInputPanel
                   isMobile={isMobile}
                   hideBalance
                   value={formattedAmounts[Field.CURRENCY_A]}
@@ -769,13 +756,13 @@ export default function RemoveLiquidity({
                   onCurrencySelect={handleSelectCurrencyA}
                   id="remove-liquidity-tokena"
                   className="mb-4"
-                />
+                /> */}
 
                 <Flex justifyContent="center">
                   <Plus size="16"/>
                 </Flex>
 
-                <CurrencyInputPanel
+                {/* <CurrencyInputPanel
                   isMobile={isMobile}
                   hideBalance
                   value={formattedAmounts[Field.CURRENCY_B]}
@@ -786,7 +773,7 @@ export default function RemoveLiquidity({
                   label="Output"
                   onCurrencySelect={handleSelectCurrencyB}
                   id="remove-liquidity-tokenb"
-                />
+                /> */}
               </>
             )}
 
