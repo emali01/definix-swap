@@ -1,27 +1,26 @@
 import { Trade } from 'definixswap-sdk'
 import React, { Fragment, memo } from 'react'
-import { ArrowRight } from 'react-feather'
-import { Text } from 'uikit-dev'
+import { Text, Flex, ArrowDoubleArrowIcon } from 'definixswap-uikit'
 import CurrencyLogo from '../CurrencyLogo'
 
-export default memo(function SwapRoute({ trade }: { trade: Trade }) {
+export default memo(function SwapRoute({ trade, isMobile }: { trade: Trade; isMobile: boolean; }) {
   return (
-    <div className="flex align-center flex-wrap">
+    <Flex alignItems="center" justifyContent="flex-end" flexWrap="wrap" alignContent="">
       {trade.route.path.map((token, i, path) => {
         const isLastItem: boolean = i === path.length - 1
         return (
           // eslint-disable-next-line react/no-array-index-key
           <Fragment key={i}>
-            <div className="flex flex-column align-center">
-              <CurrencyLogo currency={token} size="1.5rem" />
-              <Text fontSize="12px" textAlign="center" className="mt-1">
+            <Flex alignItems="center" ml="10px" mb="6px">
+              <CurrencyLogo currency={token} size={isMobile ? "20px" : "22px"} />
+              <Text textStyle="R_14M" color="deepgrey" ml="6px">
                 {token.symbol}
               </Text>
-            </div>
-            {isLastItem ? null : <ArrowRight size="20" className="mx-3" style={{ marginTop: '-24px' }} />}
+              {isLastItem ? <></> : <Flex ml="10px"><ArrowDoubleArrowIcon/></Flex>}
+            </Flex>
           </Fragment>
         )
       })}
-    </div>
+    </Flex>
   )
 })

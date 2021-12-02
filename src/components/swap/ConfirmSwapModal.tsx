@@ -1,7 +1,8 @@
 import { currencyEquals, Trade } from 'definixswap-sdk'
 import { useActiveWeb3React } from 'hooks'
 import React, { useCallback, useEffect, useMemo } from 'react'
-import { Button } from 'definixswap-uikit'
+import { useTranslation } from 'react-i18next'
+import { Button, Modal } from 'definixswap-uikit'
 import { useHistory } from 'react-router'
 import TransactionConfirmationModal, {
   ConfirmationModalContent,
@@ -35,12 +36,10 @@ export default function ConfirmSwapModal({
   onDismiss,
   recipient,
   swapErrorMessage,
-  isOpen,
   attemptingTxn,
   txHash,
   initSwapData,
 }: {
-  isOpen: boolean
   trade: Trade | undefined
   originalTrade: Trade | undefined
   attemptingTxn: boolean
@@ -53,6 +52,7 @@ export default function ConfirmSwapModal({
   onDismiss: () => void
   initSwapData: () => void
 }) {
+  const { t } = useTranslation();
   const history = useHistory();
   const { chainId } = useActiveWeb3React()
 
@@ -163,16 +163,43 @@ export default function ConfirmSwapModal({
   }, [swapErrorMessage, initSwapData])
 
   return (
-    <TransactionConfirmationModal
-      isOpen={isOpen}
-      isPending={attemptingTxn}
-      isSubmitted={!!txHash}
-      isError={!!swapErrorMessage}
-      confirmContent={confirmContent}
-      // pendingIcon={swap}
-      // submittedContent={submittedContent}
-      // errorContent={errorContent}
-      onDismiss={onDismiss}
-    />
+    <Modal title={t('Confirm Swap')} mobileFull onDismiss={onDismiss}>
+      {!txHash && !swapErrorMessage && trade && (
+        <>
+          <SwapModalHeader
+            trade={trade}
+            allowedSlippage={allowedSlippage}
+            recipient={recipient}
+            showAcceptChanges={showAcceptChanges}
+            onAcceptChanges={onAcceptChanges}
+          />
+          <SwapModalFooter
+            onConfirm={onConfirm}
+            trade={trade}
+            disabledConfirm={showAcceptChanges}
+            swapErrorMessage={swapErrorMessage}
+            allowedSlippage={allowedSlippage}
+            isPending={attemptingTxn}
+          />
+        </>
+        // <ConfirmationModalContent
+        //   mainTitle="Confirm Swap"
+        //   title=""
+        //   topContent={modalHeader}
+        //   bottomContent={modalBottom}
+        // />
+      )}
+    </Modal>
+    // <TransactionConfirmationModal
+    //   isOpen={true}
+    //   isPending={attemptingTxn}
+    //   isSubmitted={!!txHash}
+    //   isError={!!swapErrorMessage}
+    //   confirmContent={confirmContent}
+    //   // pendingIcon={swap}
+    //   // submittedContent={submittedContent}
+    //   // errorContent={errorContent}
+    //   onDismiss={onDismiss}
+    // />
   )
 }

@@ -49,7 +49,6 @@ import {
 // import { Overlay } from 'uikit-dev/components/Overlay'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { computeTradePriceBreakdown, warningSeverity } from 'utils/prices'
-import { TranslateString } from 'utils/translateTextHelpers'
 import { isTransactionRecent, useAllTransactions } from 'state/transactions/hooks'
 import { useTranslation } from 'react-i18next'
 import { TransactionDetails } from 'state/transactions/reducer'
@@ -85,7 +84,6 @@ const WrapCardContainer = styled(CardContainer)`
   }
 `
 
-
 export default function Swap({
   match: {
     params: { currencyIdA, currencyIdB },
@@ -93,21 +91,9 @@ export default function Swap({
   history,
 }: RouteComponentProps<{ currencyIdA?: string; currencyIdB?: string }>) {
   const { t } = useTranslation();
-  const loadedUrlParams = useDefaultsFromURLSearch()
   const { isXl, isXxl } = useMatchBreakpoints()
   const isMobile = useMemo(() => !isXl && !isXxl, [isXl, isXxl])
-
-  const allTransactions = useAllTransactions()
-  const allTokens = useAllTokens()
-
-  // Logic taken from Web3Status/index.tsx line 175
-  const sortedRecentTransactions = useMemo(() => {
-    const txs = Object.values(allTransactions)
-    return txs
-      .filter(isTransactionRecent)
-      .filter((tx) => tx.type === 'swap')
-      .sort(newTransactionsFirst)
-  }, [allTransactions])
+  const loadedUrlParams = useDefaultsFromURLSearch()
 
   // token warning stuff
   const [loadedInputCurrency, loadedOutputCurrency] = [
@@ -146,14 +132,6 @@ export default function Swap({
   }, [currentTime, phrase2TimeStamp])
 
   const { account, chainId = '' } = useActiveWeb3React()
-  const wklay = new Token(
-    chainId || parseInt(process.env.REACT_APP_CHAIN_ID || '0'),
-    WKLAY_ADDRESS[chainId || parseInt(process.env.REACT_APP_CHAIN_ID || '0')],
-    18,
-    'WKLAY',
-    'Wrapped KLAY'
-  )
-  const theme = useContext(ThemeContext)
 
   const [isExpertMode] = useExpertModeManager()
 
@@ -280,8 +258,6 @@ export default function Swap({
       })
   }, [priceImpactWithoutFee, swapCallback, setSwapState])
 
-  // errors
-  const [showInverted, setShowInverted] = useState<boolean>(false)
 
   // warnings on slippage
   const priceImpactSeverity = warningSeverity(priceImpactWithoutFee)
@@ -365,6 +341,7 @@ export default function Swap({
     },
     [onCurrencySelection, checkForSyrup]
   )
+  
 
   const initSwapData = useCallback(() => {
     setSwapState({
@@ -380,10 +357,25 @@ export default function Swap({
     onCurrencySelection(Field.OUTPUT, '')
   }, [onCurrencySelection, onUserInput])
 
+  const [onPresentConfirmModal] = useModal(<ConfirmSwapModal
+    trade={trade}
+    originalTrade={tradeToConfirm}
+    onAcceptChanges={handleAcceptChanges}
+    attemptingTxn={attemptingTxn}
+    txHash={txHash}
+    recipient={recipient}
+    allowedSlippage={allowedSlippage}
+    onConfirm={handleSwap}
+    swapErrorMessage={swapErrorMessage}
+    onDismiss={handleConfirmDismiss}
+    initSwapData={initSwapData}
+  />, false)
+
   const onClickSwapButton = useCallback(() => {
     if (isExpertMode) {
       handleSwap()
     } else {
+      onPresentConfirmModal();
       setSwapState({
         tradeToConfirm: trade,
         attemptingTxn: false,
@@ -392,7 +384,7 @@ export default function Swap({
         txHash: undefined,
       })
     }
-  }, [handleSwap, isExpertMode, trade])
+  }, [handleSwap, isExpertMode, trade, onPresentConfirmModal])
 
   const renderNoti = useCallback(() => {
     if (isExpertMode) return <></>;
@@ -408,7 +400,7 @@ export default function Swap({
       </Noti>
     }
     return <></>
-  }, [priceImpactSeverity, isExpertMode, t])
+  }, [priceImpactSeverity, isExpertMode, t]);
 
   return (
     <TimerWrapper isPhrase2={!(currentTime < phrase2TimeStamp && isPhrase2 === false)} date={phrase2TimeStamp}>
@@ -587,10 +579,6 @@ export default function Swap({
                       variant={isValid && priceImpactSeverity > 2 && !swapCallbackError ? 'danger' : 'primary'}
                     >
                       {t('Swap')}
-                      {/* {swapInputError ||
-                        (priceImpactSeverity > 3 && !isExpertMode
-                          ? `Price Impact Too High`
-                          : `Swap${priceImpactSeverity > 2 ? ' Anyway' : ''}`)} */}
                     </Button>
                     {renderNoti()}
                   </Flex>
@@ -606,7 +594,7 @@ export default function Swap({
               {trade && (
                 <Flex flexDirection="column" mt="24px">
                   {/* Price Rate 화면 */}
-                  <Text textStyle="R_16M" color={ColorStyles.DEEPGREY} mb="12px">{t('Estimated Returns')}</Text>
+                  <Text textStyle={isMobile ? "R_14M" : "R_16M"} color={ColorStyles.DEEPGREY} mb="12px">{t('Estimated Returns')}</Text>
 
                   {Boolean(trade) && (
                     <Flex flex="1 1 0" justifyContent="space-between" mb="12px">
@@ -615,12 +603,10 @@ export default function Swap({
                       </Text>
                       <TradePrice
                         price={trade?.executionPrice}
-                        // showInverted={showInverted}
-                        // setShowInverted={setShowInverted}
                       />
                     </Flex>
                   )}
-                  <AdvancedSwapDetailsDropdown trade={trade} />
+                  <AdvancedSwapDetailsDropdown trade={trade} isMobile={isMobile} />
                 </Flex>
               )}
 
@@ -629,7 +615,7 @@ export default function Swap({
         </SwapContainer>
       </Flex>
 
-      {showConfirm && (
+      {/* {showConfirm && (
         <ConfirmSwapModal
           isOpen={showConfirm}
           trade={trade}
@@ -644,7 +630,7 @@ export default function Swap({
           onDismiss={handleConfirmDismiss}
           initSwapData={initSwapData}
         />
-      )}
+      )} */}
 
       {/* 스왑 히스토리 화면 */}
       {/* <SwapHistory 
