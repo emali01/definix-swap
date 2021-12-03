@@ -631,7 +631,7 @@ export default function Liquidity({
   ];
 
   return (
-    <>
+    <Flex width="100%" justifyContent="center">
       <Flex flexDirection="column" width="629px">
         <Flex mb="40px">
           <TitleSet
@@ -666,7 +666,7 @@ export default function Liquidity({
           onDismiss={handleDismissConfirmation}
         />
       )}
-    </>
+    </Flex>
   )
 }
 
