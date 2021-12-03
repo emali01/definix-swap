@@ -25,7 +25,7 @@ import React, { useCallback, useContext, useEffect, useMemo, useState } from 're
 import { Field } from 'state/swap/actions'
 import { SWAP_STATE, useDefaultsFromURLSearch, useDerivedSwapInfo, useSwapActionHandlers, useSwapState } from 'state/swap/hooks'
 import { useExpertModeManager, useUserDeadline, useUserSlippageTolerance } from 'state/user/hooks'
-import styled, { ThemeContext } from 'styled-components'
+import styled from 'styled-components'
 
 import {
   Button,
@@ -33,10 +33,7 @@ import {
   Text,
   useMatchBreakpoints,
   useModal,
-  Modal,
-  Link,
   Flex,
-  Box,
   TitleSet,
   ButtonScales,
   ColorStyles,
@@ -51,7 +48,6 @@ import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { computeTradePriceBreakdown, warningSeverity } from 'utils/prices'
 import { isTransactionRecent, useAllTransactions } from 'state/transactions/hooks'
 import { useTranslation } from 'react-i18next'
-import { TransactionDetails } from 'state/transactions/reducer'
 import { RouteComponentProps } from 'react-router-dom'
 import { SwapContainer, CardContainer } from 'components/Layout'
 import CurrencyLogo from 'components/CurrencyLogo'
@@ -68,8 +64,6 @@ import {
   KWBTC_ADDRESS,
 } from '../../constants'
 import TimerWrapper from './TimerWrapper'
-
-const newTransactionsFirst = (a: TransactionDetails, b: TransactionDetails) => b.addedTime - a.addedTime
 
 const WrapTop = styled(Flex)`
   flex-direction: column;
@@ -231,34 +225,6 @@ export default function Swap({
 
   const { priceImpactWithoutFee } = computeTradePriceBreakdown(trade)
 
-  const handleSwap = useCallback(() => {
-    if (priceImpactWithoutFee && !confirmPriceImpactWithoutFee(priceImpactWithoutFee)) {
-      return
-    }
-    if (!swapCallback) {
-      return
-    }
-    setSwapState((prevState) => ({ ...prevState, attemptingTxn: true, swapErrorMessage: undefined, txHash: undefined }))
-    swapCallback()
-      .then((hash) => {
-        setSwapState((prevState) => ({
-          ...prevState,
-          attemptingTxn: false,
-          swapErrorMessage: undefined,
-          txHash: hash,
-        }))
-      })
-      .catch((error) => {
-        setSwapState((prevState) => ({
-          ...prevState,
-          attemptingTxn: false,
-          swapErrorMessage: error.message,
-          txHash: undefined,
-        }))
-      })
-  }, [priceImpactWithoutFee, swapCallback, setSwapState])
-
-
   // warnings on slippage
   const priceImpactSeverity = warningSeverity(priceImpactWithoutFee)
 
@@ -279,11 +245,6 @@ export default function Swap({
       onUserInput(Field.INPUT, '')
     }
   }, [onUserInput, txHash, setSwapState])
-
-  const handleAcceptChanges = () => {
-    setSwapState((prevState) => ({ ...prevState, tradeToConfirm: trade }))
-    onPresentConfirmModal();
-  }
 
   // This will check to see if the user has selected Syrup to either buy or sell.
   // If so, they will be alerted with a warning message.
@@ -335,7 +296,6 @@ export default function Swap({
 
   const handleOutputSelect = useCallback(
     (outputCurrency) => {
-      console.log('outputCurrency', outputCurrency)
       onCurrencySelection(Field.OUTPUT, outputCurrency)
       if (outputCurrency.symbol.toLowerCase() === 'syrup') {
         checkForSyrup(outputCurrency.symbol.toLowerCase(), 'Buying')
@@ -345,13 +305,14 @@ export default function Swap({
   )
   
 
-  const initSwapData = useCallback(() => {
+  const initSwapData = useCallback((props = {}) => {
     setSwapState({
       showConfirm: false,
       tradeToConfirm: undefined,
       attemptingTxn: false,
       swapErrorMessage: undefined,
       txHash: undefined,
+      ...props,
     });
     onUserInput(Field.INPUT, '')
     onUserInput(Field.OUTPUT, '')
@@ -359,19 +320,65 @@ export default function Swap({
     onCurrencySelection(Field.OUTPUT, '')
   }, [onCurrencySelection, onUserInput])
 
-  const [onPresentConfirmModal] = useModal(<ConfirmSwapModal
+  const [onPresentConfirmModal, onDismissConfirmModal] = useModal(<ConfirmSwapModal
     trade={trade}
     originalTrade={tradeToConfirm}
-    onAcceptChanges={handleAcceptChanges}
+    onAcceptChanges={() => {
+      return true;
+    }}
     attemptingTxn={attemptingTxn}
     txHash={txHash}
     recipient={recipient}
     allowedSlippage={allowedSlippage}
-    onConfirm={handleSwap}
+    onConfirm={() => {
+      return true;
+    }}
     swapErrorMessage={swapErrorMessage}
     onDismiss={handleConfirmDismiss}
     initSwapData={initSwapData}
   />, false)
+
+  const handleSwap = useCallback(() => {
+    if (priceImpactWithoutFee && !confirmPriceImpactWithoutFee(priceImpactWithoutFee)) {
+      return
+    }
+    if (!swapCallback) {
+      return
+    }
+    setSwapState((prevState) => ({ ...prevState, attemptingTxn: true, swapErrorMessage: undefined, txHash: undefined }))
+    swapCallback()
+      .then((hash) => {
+        onDismissConfirmModal();
+        initSwapData({
+          txHash: hash,
+        });
+        // setSwapState((prevState) => ({
+        //   ...prevState,
+        //   attemptingTxn: false,
+        //   swapErrorMessage: undefined,
+        //   txHash: hash,
+        // }))
+      })
+      .catch((error) => {
+        initSwapData({
+          swapErrorMessage: error.message,
+        });
+        // setSwapState((prevState) => ({
+        //   ...prevState,
+        //   attemptingTxn: false,
+        //   swapErrorMessage: error.message,
+        //   txHash: undefined,
+        // }))
+      })
+  }, [priceImpactWithoutFee, swapCallback, setSwapState, onDismissConfirmModal, initSwapData])
+
+  const handleAcceptChanges = useCallback(() => {
+    setSwapState((prevState) => ({ ...prevState, tradeToConfirm: trade }))
+    onPresentConfirmModal({
+      trade,
+      originalTrade: trade
+    });
+  }, [onPresentConfirmModal, trade])
 
   const onClickSwapButton = useCallback(() => {
     if (isExpertMode) {
@@ -384,9 +391,21 @@ export default function Swap({
         showConfirm: true,
         txHash: undefined,
       })
-      onPresentConfirmModal();
+      onPresentConfirmModal({
+        trade,
+        originalTrade: trade,
+        onAcceptChanges: handleAcceptChanges,
+        attemptingTxn: false,
+        txHash: undefined,
+        recipient,
+        allowedSlippage,
+        onConfirm: handleSwap,
+        swapErrorMessage: undefined,
+        onDismiss: handleConfirmDismiss,
+        initSwapData
+      });
     }
-  }, [handleSwap, isExpertMode, trade, onPresentConfirmModal])
+  }, [isExpertMode, handleSwap, trade, onPresentConfirmModal, handleAcceptChanges, recipient, allowedSlippage, handleConfirmDismiss, initSwapData])
 
   const renderNoti = useCallback(() => {
     if (isExpertMode) return <></>;
@@ -512,9 +531,20 @@ export default function Swap({
                       (wrapType === WrapType.WRAP ? 'Wrap' : wrapType === WrapType.UNWRAP ? 'Unwrap' : null)}
                   </Button>
                 ) : noRoute && userHasSpecifiedInputOutput ? (
-                  <GreyCard style={{ textAlign: 'center' }}>
-                    <Text>Insufficient liquidity for this trade.</Text>
-                  </GreyCard>
+                  <Button
+                    width="100%"
+                    lg
+                    onClick={onClickSwapButton}
+                    id="swap-button"
+                    disabled={!isValid || (priceImpactSeverity > 3 && !isExpertMode) || !!swapCallbackError}
+                    variant={isValid && priceImpactSeverity > 2 && !swapCallbackError ? 'danger' : 'primary'}
+                    isLoading={Boolean(noRoute && userHasSpecifiedInputOutput)}
+                  >
+                    {t('Swap')}
+                  </Button>
+                  // <GreyCard style={{ textAlign: 'center' }}>
+                  //   <Text>Insufficient liquidity for this trade.</Text>
+                  // </GreyCard>
                 ) : showApproveFlow ? (
                   <RowBetween className="mb-3">
 

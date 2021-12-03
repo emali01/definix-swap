@@ -8,6 +8,7 @@ import Menu from '../components/Menu'
 import Popups from '../components/Popups'
 import Web3ReactManager from '../components/Web3ReactManager'
 import { AppWrapper } from '../components/Layout'
+import ToastListener from '../components/ToastListener'
 import { allLanguages, EN } from '../constants/localisation/languageCodes'
 import { LanguageContext } from '../hooks/LanguageContext'
 import { TranslationsContext } from '../hooks/TranslationsContext'
@@ -64,6 +65,7 @@ export default function App() {
               </Web3ReactManager>
             </Suspense>
           </Menu>
+          <ToastListener />
         </AppWrapper>
       </HashRouter>
     </Suspense>

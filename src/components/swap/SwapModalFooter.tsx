@@ -59,12 +59,14 @@ export default function SwapModalFooter({
           scale={ButtonScales.LG}
           width="100%"
           onClick={onConfirm}
+          isLoading={isPending}
           disabled={disabledConfirm}
-          variant={severity > 2 ? 'danger' : 'primary'}
+          variant="red"
           id="confirm-swap-or-send"
         >
           <Text textStyle="R_16B">
-            {isPending ? 'Pending...' : severity > 2 ? 'Swap Anyway' : 'Swap'}
+            {/* {isPending ? 'Pending...' : severity > 2 ? 'Swap Anyway' : 'Swap'} */}
+            {t('Swap')}
           </Text>
         </Button>
 
