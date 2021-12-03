@@ -1,10 +1,11 @@
+import { ColorStyles } from 'definixswap-uikit'
 import React, { useCallback } from 'react'
 import styled from 'styled-components'
 
 const StyledRangeInput = styled.input<{ size: number }>`
-  -webkit-appearance: none; /* Hides the slider so that custom slider can be made */
-  width: 100%; /* Specific width is required for Firefox. */
-  background: transparent; /* Otherwise white in Chrome */
+  -webkit-appearance: none;
+  width: 100%;
+  background: transparent;
   cursor: pointer;
 
   &:focus {
@@ -19,79 +20,49 @@ const StyledRangeInput = styled.input<{ size: number }>`
     -webkit-appearance: none;
     height: ${({ size }) => size}px;
     width: ${({ size }) => size}px;
-    background-color: #565a69;
-    border-radius: 100%;
-    border: none;
+    border-radius: 50%;
     transform: translateY(-50%);
-    color: ${({ theme }) => theme.colors.invertedContrast};
-
-    &:hover,
-    &:focus {
-      box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.1), 0px 4px 8px rgba(0, 0, 0, 0.08), 0px 16px 24px rgba(0, 0, 0, 0.06),
-        0px 24px 32px rgba(0, 0, 0, 0.04);
-    }
+    background-color: ${ColorStyles.WHITE};
+    border: 7px solid #ff6828;
   }
 
   &::-moz-range-thumb {
     height: ${({ size }) => size}px;
     width: ${({ size }) => size}px;
-    background-color: #565a69;
-    border-radius: 100%;
-    border: none;
-    color: ${({ theme }) => theme.colors.invertedContrast};
-
-    &:hover,
-    &:focus {
-      box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.1), 0px 4px 8px rgba(0, 0, 0, 0.08), 0px 16px 24px rgba(0, 0, 0, 0.06),
-        0px 24px 32px rgba(0, 0, 0, 0.04);
-    }
+    border-radius: 50%;
   }
 
   &::-ms-thumb {
     height: ${({ size }) => size}px;
     width: ${({ size }) => size}px;
-    background-color: #565a69;
-    border-radius: 100%;
-    color: ${({ theme }) => theme.colors.invertedContrast};
-
-    &:hover,
-    &:focus {
-      box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.1), 0px 4px 8px rgba(0, 0, 0, 0.08), 0px 16px 24px rgba(0, 0, 0, 0.06),
-        0px 24px 32px rgba(0, 0, 0, 0.04);
-    }
+    border-radius: 50%;
   }
 
   &::-webkit-slider-runnable-track {
-    background: linear-gradient(
-      90deg,
-      ${({ theme }) => theme.colors.primaryDark},
-      ${({ theme }) => theme.colors.tertiary}
-    );
-    height: 2px;
+    background-color: #ff6828;
+    height: 5px;
+    border-radius: 2.5px;
   }
 
   &::-moz-range-track {
-    background: linear-gradient(
-      90deg,
-      ${({ theme }) => theme.colors.primaryDark},
-      ${({ theme }) => theme.colors.tertiary}
-    );
-    height: 2px;
+    background-color: #ff6828;
+    height: 5px;
+    border-radius: 2.5px;
   }
 
   &::-ms-track {
     width: 100%;
     border-color: transparent;
     color: transparent;
-
-    background: ${({ theme }) => theme.colors.primaryDark};
-    height: 2px;
+    background-color: #ff6828;
+    height: 5px;
+    border-radius: 2.5px;
   }
   &::-ms-fill-lower {
-    background: ${({ theme }) => theme.colors.primaryDark};
+    background-color: #e0e0e0;
   }
   &::-ms-fill-upper {
-    background: ${({ theme }) => theme.colors.tertiary};
+    background-color: #e0e0e0;
   }
 `
 
@@ -117,9 +88,8 @@ export default function Slider({ value, onChange, min = 0, step = 1, max = 100, 
       size={size}
       type="range"
       value={value}
-      style={{ width: '90%', marginLeft: 15, marginRight: 15, padding: '15px 0' }}
       onChange={changeCallback}
-      aria-labelledby="input slider"
+      // aria-labelledby="input slider"
       step={step}
       min={min}
       max={max}

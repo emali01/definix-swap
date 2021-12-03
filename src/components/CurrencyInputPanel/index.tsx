@@ -80,6 +80,7 @@ export const CurrencyInputPanelOnRemoveLP: React.FC<any> = ({
   currencyA,
   currencyB
 }) => {
+  const { t } = useTranslation();
   const enforcer = (nextUserInput: string) => {
     if (nextUserInput === '' || inputRegex.test(escapeRegExp(nextUserInput))) {
       onUserInput(nextUserInput)
@@ -119,6 +120,7 @@ export const CurrencyInputPanelOnRemoveLP: React.FC<any> = ({
         alignItems="center"
       >
         <Input
+          placeholder="0"
           value={value}
           onChange={(event) => {
             // replace commas with periods, because uniswap exclusively uses period as the decimal separator
@@ -126,14 +128,14 @@ export const CurrencyInputPanelOnRemoveLP: React.FC<any> = ({
           }}
         />
         <Flex>
-          <AnountButton onClick={onQuarter} mr="6px">
-            25%
+          <AnountButton onClick={onQuarter} mr="6px" backgroundColor="rgba(224, 224, 224, 0.3)">
+            {t('25%')}
           </AnountButton>
-          <AnountButton onClick={onHalf} mr="6px">
-            50%
+          <AnountButton onClick={onHalf} mr="6px" backgroundColor="rgba(224, 224, 224, 0.3)">
+            {t('50%')}
           </AnountButton>
-          <AnountButton onClick={onMax}>
-            MAX
+          <AnountButton onClick={onMax} backgroundColor="rgba(224, 224, 224, 0.3)">
+            {t('MAX')}
           </AnountButton>
         </Flex>
       </Flex>
@@ -206,13 +208,13 @@ export default function CurrencyInputPanel({
                 <>
                   <Flex mt="8px">
                     <AnountButton onClick={onQuarter} mr="6px">
-                      25%
+                      {t('25%')}
                     </AnountButton>
                     <AnountButton onClick={onHalf} mr="6px">
-                      50%
+                      {t('50%')}
                     </AnountButton>
                     <AnountButton onClick={onMax}>
-                      MAX
+                      {t('MAX')}
                     </AnountButton>
                   </Flex>
                   {isInsufficientBalance && <Noti type={NotiType.ALERT} mt="12px">
