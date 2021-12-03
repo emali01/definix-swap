@@ -17,15 +17,12 @@ import {
 } from 'definixswap-uikit'
 import { useWallet } from '@sixnetwork/klaytn-use-wallet'
 import { escapeRegExp } from 'utils'
-import { useActiveWeb3React } from '../../hooks'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
 import { TranslateString } from '../../utils/translateTextHelpers'
 import CurrencyLogo from '../CurrencyLogo'
 import DoubleCurrencyLogo from '../DoubleLogo'
 import { Input as NumericalInput } from '../NumericalInput'
 import CurrencySearchModal from '../SearchModal/CurrencySearchModal'
-import { CurrencySearch } from '../SearchModal/CurrencySearch'
-import { Field } from '../../state/burn/actions'
 
 interface CurrencyInputPanelProps {
   isMobile: boolean;
@@ -65,7 +62,9 @@ const CurrencySelect = styled.button<{ selected: boolean }>`
   border: none;
 `
 const Input = styled.input`
+  width: 100%;
   border: none;
+  outline: none;
   ${textStyle.R_14M}
   ${ColorStyles.BLACK}
 `;
@@ -106,7 +105,7 @@ export const CurrencyInputPanelOnRemoveLP: React.FC<any> = ({
               <CurrencyLogo size="32px" currency={currency}/>
             </Box>
             <Text textStyle="R_16M" color={ColorStyles.DEEPGREY}>
-              {currencyA?.symbol}-{currencyB?.symbol}
+              {currency?.symbol}
             </Text>
           </>
         )}
