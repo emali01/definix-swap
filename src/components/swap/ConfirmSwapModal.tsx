@@ -1,8 +1,9 @@
 import { currencyEquals, Trade } from 'definixswap-sdk'
+import styled from 'styled-components'
 import { useActiveWeb3React } from 'hooks'
 import React, { useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Button, Modal } from 'definixswap-uikit'
+import { Button, Modal, Box, Divider } from 'definixswap-uikit'
 import { useHistory } from 'react-router'
 import TransactionConfirmationModal, {
   ConfirmationModalContent,
@@ -11,6 +12,20 @@ import TransactionConfirmationModal, {
 } from '../TransactionConfirmationModal'
 import SwapModalFooter from './SwapModalFooter'
 import SwapModalHeader from './SwapModalHeader'
+
+const Wrap = styled(Box)`
+  width: calc(100vw - 48px);
+  height: 100%;
+
+  @media screen and (min-width: 464px) {
+    width: 416px;
+  }
+`
+
+const StyledDivider = styled(Divider)`
+  margin-top: 20px;
+  margin-bottom: 24px;
+`
 
 /**
  * Returns true if the trade requires a confirmation of details before we can submit it
@@ -55,11 +70,8 @@ export default function ConfirmSwapModal({
   const { t } = useTranslation();
   const history = useHistory();
   const { chainId } = useActiveWeb3React()
-
-  const showAcceptChanges = useMemo(
-    () => Boolean(trade && originalTrade && tradeMeaningfullyDiffers(trade, originalTrade)),
-    [originalTrade, trade]
-  )
+  
+  const showAcceptChanges = Boolean(trade && originalTrade && tradeMeaningfullyDiffers(trade, originalTrade))
 
   const modalHeader = useCallback(() => {
     return trade ? (
@@ -164,31 +176,28 @@ export default function ConfirmSwapModal({
 
   return (
     <Modal title={t('Confirm Swap')} mobileFull onDismiss={onDismiss}>
-      {!txHash && !swapErrorMessage && trade && (
-        <>
-          <SwapModalHeader
-            trade={trade}
-            allowedSlippage={allowedSlippage}
-            recipient={recipient}
-            showAcceptChanges={showAcceptChanges}
-            onAcceptChanges={onAcceptChanges}
-          />
-          <SwapModalFooter
-            onConfirm={onConfirm}
-            trade={trade}
-            disabledConfirm={showAcceptChanges}
-            swapErrorMessage={swapErrorMessage}
-            allowedSlippage={allowedSlippage}
-            isPending={attemptingTxn}
-          />
-        </>
-        // <ConfirmationModalContent
-        //   mainTitle="Confirm Swap"
-        //   title=""
-        //   topContent={modalHeader}
-        //   bottomContent={modalBottom}
-        // />
-      )}
+      <Wrap>
+        {!txHash && !swapErrorMessage && trade && (
+          <>
+            <SwapModalHeader
+              trade={trade}
+              allowedSlippage={allowedSlippage}
+              recipient={recipient}
+              showAcceptChanges={showAcceptChanges}
+              onAcceptChanges={onAcceptChanges}
+            />
+            <StyledDivider />
+            <SwapModalFooter
+              onConfirm={onConfirm}
+              trade={trade}
+              disabledConfirm={showAcceptChanges}
+              swapErrorMessage={swapErrorMessage}
+              allowedSlippage={allowedSlippage}
+              isPending={attemptingTxn}
+            />
+          </>
+        )}
+      </Wrap>
     </Modal>
     // <TransactionConfirmationModal
     //   isOpen={true}

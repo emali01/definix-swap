@@ -1,8 +1,9 @@
 import { Trade, TradeType } from 'definixswap-sdk'
+import { useTranslation } from 'react-i18next'
 import React, { useContext, useMemo } from 'react'
 import { ArrowDown } from 'react-feather'
 import styled, { DefaultTheme, ThemeContext } from 'styled-components'
-import { Button, Text, Flex, Box, ArrowBottomGIcon } from 'definixswap-uikit'
+import { Button, Text, Flex, Box, ChangeBottomIcon, Noti, NotiType } from 'definixswap-uikit'
 import { Field } from '../../state/swap/actions'
 import { isAddress, shortenAddress } from '../../utils'
 import { computeSlippageAdjustedAmounts, computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
@@ -10,30 +11,44 @@ import { AutoColumn } from '../Column'
 import CurrencyLogo from '../CurrencyLogo'
 import { RowBetween, RowFixed } from '../Row'
 
-const PriceInfoText = styled(Text)`
-  span {
-    font-weight: 600;
-  }
+const BalanceText = styled(Text)<{ isAcceptChange: boolean }>`
+  ${({ theme }) => theme.textStyle.R_16R}
+  color: ${({ isAcceptChange, theme }) => isAcceptChange ? theme.colors.red : theme.colors.black};
+`
+
+const WrapIcon = styled(Flex)`
+  margin-top: -30px;
+  transform: translateY(20px);
+  justify-content: center;
+` 
+
+const WrapPriceUpdate = styled(Flex)`
+  margin-top: 20px;
+  align-items: center;
+  padding: 16px;
+  border-radius: 8px;
+  border: solid 1px ${({ theme }) => theme.colors.lightGrey50};
+  background-color: ${({ theme }) => theme.colors.lightGrey10};
+}
 `
 
 const SwapTokenInfo = ({
   isInput,
   trade,
-  theme,
   showAcceptChanges,
   priceImpactSeverity}: {
     isInput: boolean
     trade: Trade
-    theme: DefaultTheme
     showAcceptChanges?: boolean
     priceImpactSeverity?: 0 | 1 | 2 | 3 | 4
   }) => {
+
   return (
-    <Flex justifyContent="space-between" alignItems="center" p="15px 0">
+    <Flex justifyContent="space-between" alignItems="center" height="60px">
       <Flex alignItems="center">
         <Box mr="12px" mt="2px">
-          {isInput && <CurrencyLogo currency={trade.inputAmount.currency} size="30px" />}
-          {!isInput && <CurrencyLogo currency={trade.outputAmount.currency} size="30px" />}
+          {isInput && <CurrencyLogo currency={trade.inputAmount.currency} size="32px" />}
+          {!isInput && <CurrencyLogo currency={trade.outputAmount.currency} size="32px" />}
         </Box>
         <Text textStyle="R_16M">
           {isInput && trade.inputAmount.currency.symbol}
@@ -41,20 +56,18 @@ const SwapTokenInfo = ({
         </Text>
       </Flex>
       {isInput && (
-        <Text
-          textStyle="R_16R"
-          color={showAcceptChanges && trade.tradeType === TradeType.EXACT_OUTPUT ? theme.colors.primary : 'text'}
+        <BalanceText
+          isAcceptChange={showAcceptChanges && trade.tradeType === TradeType.EXACT_OUTPUT}
         >
           {trade.inputAmount.toSignificant(6)}
-        </Text>
+        </BalanceText>
       )}
-      {!isInput && priceImpactSeverity && (
-        <Text 
-          textStyle="R_16R"
-          color={priceImpactSeverity > 2 ? theme.colors.failure : 'text'}
+      {!isInput && (
+        <BalanceText 
+          isAcceptChange={priceImpactSeverity > 2}
         >
           {trade.outputAmount.toSignificant(6)}
-        </Text>
+        </BalanceText>
       )}
     </Flex>
   )
@@ -75,6 +88,7 @@ export default function SwapModalHeader({
   onlyCurrency?: boolean
   onAcceptChanges?: () => void
 }) {
+  const { t } = useTranslation();
   const slippageAdjustedAmounts = useMemo(() => computeSlippageAdjustedAmounts(trade, allowedSlippage), [
     trade,
     allowedSlippage,
@@ -82,28 +96,35 @@ export default function SwapModalHeader({
   const { priceImpactWithoutFee } = useMemo(() => computeTradePriceBreakdown(trade), [trade])
   const priceImpactSeverity = warningSeverity(priceImpactWithoutFee)
 
-  const theme = useContext(ThemeContext)
-
   return (
     <Flex flexDirection="column">
       <Flex flexDirection="column">
-
         <SwapTokenInfo 
           isInput
           trade={trade}
-          theme={theme}
           showAcceptChanges={showAcceptChanges}
         />
-
+        <WrapIcon>
+          <ChangeBottomIcon />
+        </WrapIcon>
         <SwapTokenInfo
           isInput={false}
           trade={trade}
-          theme={theme}
           priceImpactSeverity={priceImpactSeverity}
         />
       </Flex>
-    {/* 
-      {!onlyCurrency && (
+
+      {
+        // true && <WrapPriceUpdate>
+        !onlyCurrency && showAcceptChanges && <WrapPriceUpdate>
+          <Noti type={NotiType.ALERT}>
+            {t('Price update')}
+          </Noti>
+          <Button xs variant="red" minWidth="107px" onClick={onAcceptChanges}>{t('Accept')}</Button>
+        </WrapPriceUpdate>
+      }
+    
+      {/* {!onlyCurrency && (
         <>
           {showAcceptChanges ? (
             <RowBetween>

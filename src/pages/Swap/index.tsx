@@ -280,9 +280,10 @@ export default function Swap({
     }
   }, [onUserInput, txHash, setSwapState])
 
-  const handleAcceptChanges = useCallback(() => {
+  const handleAcceptChanges = () => {
     setSwapState((prevState) => ({ ...prevState, tradeToConfirm: trade }))
-  }, [trade])
+    onPresentConfirmModal();
+  }
 
   // This will check to see if the user has selected Syrup to either buy or sell.
   // If so, they will be alerted with a warning message.
@@ -334,6 +335,7 @@ export default function Swap({
 
   const handleOutputSelect = useCallback(
     (outputCurrency) => {
+      console.log('outputCurrency', outputCurrency)
       onCurrencySelection(Field.OUTPUT, outputCurrency)
       if (outputCurrency.symbol.toLowerCase() === 'syrup') {
         checkForSyrup(outputCurrency.symbol.toLowerCase(), 'Buying')
@@ -375,7 +377,6 @@ export default function Swap({
     if (isExpertMode) {
       handleSwap()
     } else {
-      onPresentConfirmModal();
       setSwapState({
         tradeToConfirm: trade,
         attemptingTxn: false,
@@ -383,6 +384,7 @@ export default function Swap({
         showConfirm: true,
         txHash: undefined,
       })
+      onPresentConfirmModal();
     }
   }, [handleSwap, isExpertMode, trade, onPresentConfirmModal])
 

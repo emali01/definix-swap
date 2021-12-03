@@ -72,13 +72,14 @@ function TradeSummary({
 export interface AdvancedSwapDetailsProps {
   trade?: Trade;
   isMobile?: boolean;
+  isRoute?: boolean;
 }
 
-export function AdvancedSwapDetails({ trade, isMobile }: AdvancedSwapDetailsProps) {
+export function AdvancedSwapDetails({ trade, isMobile, isRoute = true }: AdvancedSwapDetailsProps) {
   const [allowedSlippage] = useUserSlippageTolerance()
   const { t } = useTranslation();
 
-  const showRoute = Boolean(trade && trade.route.path.length > 2)
+  const showRoute = Boolean(trade && trade.route.path.length > 2 && isRoute)
 
   return trade ? (
     <Flex flexDirection="column">
