@@ -2,7 +2,8 @@ import React, { HTMLProps, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import styled, { keyframes } from 'styled-components'
 import { darken } from 'polished'
-import { ArrowLeft, X } from 'react-feather'
+import { X } from 'react-feather'
+import { Flex, Box, ArrowChangeIcon } from 'definixswap-uikit'
 
 export const Button = styled.button.attrs<{ warning: boolean }, { backgroundColor: string }>(({ warning, theme }) => ({
   backgroundColor: warning ? theme.colors.failure : theme.colors.primary,
@@ -15,7 +16,7 @@ export const Button = styled.button.attrs<{ warning: boolean }, { backgroundColo
   border: none;
   outline: none;
   background-color: ${({ backgroundColor }) => backgroundColor};
-  #FFFFFFwidth: 100%;
+  width: 100%;
 
   :hover,
   :focus {
@@ -59,20 +60,27 @@ export const LinkStyledButton = styled.button<{ disabled?: boolean }>`
   :active {
     text-decoration: none;
   }
-`
+`;
 
 // An internal link from the react-router-dom library that is correctly styled
 export const StyledInternalLink = styled(Link)`
   cursor: pointer;
-  color: ${({ theme }) => theme.colors.primary};
   font-weight: bold;
-  text-decoration: underline;
-`
+
+  // R_14R MediumGrey
+  font-family: Roboto;
+  font-size: 14px;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.43;
+  letter-spacing: normal;
+  color: #999999;
+`;
 
 const StyledLink = styled.a`
   text-decoration: none;
   cursor: pointer;
-  color: ${({ theme }) => theme.colors.primary};
   font-weight: 500;
 
   :hover {
@@ -106,7 +114,14 @@ export function ExternalLink({
     },
     [target]
   )
-  return <StyledLink target={target} rel={rel} href={href} onClick={handleClick} {...rest} />
+  return (
+    <Flex>
+      <StyledLink target={target} rel={rel} href={href} onClick={handleClick} {...rest} />
+      <Box ml="4px">
+        <ArrowChangeIcon />
+      </Box>
+    </Flex>
+  )
 }
 
 const rotate = keyframes`

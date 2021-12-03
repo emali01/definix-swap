@@ -155,7 +155,7 @@ export default function FullPositionCard({ pair, isLastCard = false }: PositionC
           </Text>
           <Box width="130px">
             <Text textStyle="R_14M" color={ColorStyles.DEEPGREY}>
-              100,000,000.123456
+              {userPoolBalance ? userPoolBalance.toSignificant(4) : '-'}
             </Text>
           </Box>
         </Flex>

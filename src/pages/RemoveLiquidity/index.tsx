@@ -20,6 +20,7 @@ import { RouteComponentProps } from 'react-router'
 import { ThemeContext } from 'styled-components'
 import { AnountButton, Button, CardBody, ColorStyles, Flex, Text, Box, ButtonScales, ChangeIcon, Noti, NotiType, TitleSet, BalanceInput, useMatchBreakpoints } from 'definixswap-uikit'
 import UseDeParam from 'hooks/useDeParam'
+import { useTokenBalance } from 'state/wallet/hooks'
 import { useTranslation } from 'react-i18next'
 import { AutoColumn } from '../../components/Column'
 import CurrencyInputPanel, { CurrencyInputPanelOnRemoveLP } from '../../components/CurrencyInputPanel'
@@ -593,6 +594,8 @@ export default function RemoveLiquidity({
     }
   }, [account, history]);
 
+  const userPoolBalance = useTokenBalance(account ?? undefined, pair?.liquidityToken)
+
   return (
     <Flex width="100%" flexDirection="column" alignItems="center">
       <Box mb="40px">
@@ -614,7 +617,7 @@ export default function RemoveLiquidity({
           <Flex flexDirection="column" width="100%">
             <CardBody>
               <Flex flexDirection="column" mb="20px">
-                <Flex justifyContent="space-between" mb="20px">
+                <Flex justifyContent="space-between" mb="20px" alignItems="center">
                   <Flex alignItems="center">
                     <Box mr="10px">
                       <DoubleCurrencyLogo size={40} currency0={currencyA} currency1={currencyB}/>
@@ -623,6 +626,15 @@ export default function RemoveLiquidity({
                       {currencyA?.symbol}-{currencyB?.symbol}
                     </Text>
                   </Flex>
+                  <Flex alignItems="center">
+                    <Text textStyle="R_14R" color={ColorStyles.DEEPGREY} mr="5px">
+                      {t('Balance')}
+                    </Text>
+                    <Text textStyle="R_14B" color={ColorStyles.DEEPGREY}>
+                      {userPoolBalance ? userPoolBalance.toSignificant(4) : '-'}
+                    </Text>
+                  </Flex>
+                  
                 </Flex>
 
 
@@ -646,9 +658,11 @@ export default function RemoveLiquidity({
                         {showDetailed ? 'Simple' : 'Detail'}
                       </Text>
                     </Box>
-
                   </Flex>
-                  <Slider value={innerLiquidityPercentage} onChange={setInnerLiquidityPercentage} />
+
+                  <Box mt="15px" mb="15px">
+                    <Slider value={innerLiquidityPercentage} onChange={setInnerLiquidityPercentage} />
+                  </Box>
                 </Flex>
               </Flex>
 
@@ -666,14 +680,14 @@ export default function RemoveLiquidity({
                               to={`/remove/${currencyA === ETHER ? WETH(chainId).address : currencyIdA}/${currencyB === ETHER ? WETH(chainId).address : currencyIdB
                                 }`}
                             >
-                              Receive WKLAY
+                              {t('Receive')} WKLAY
                             </StyledInternalLink>
                           ) : oneCurrencyIsWETH ? (
                             <StyledInternalLink
                               to={`/remove/${currencyA && currencyEquals(currencyA, WETH(chainId)) ? 'KLAY' : currencyIdA
                                 }/${currencyB && currencyEquals(currencyB, WETH(chainId)) ? 'KLAY' : currencyIdB}`}
                             >
-                              Receive KLAY
+                              {t('Receive')} KLAY
                             </StyledInternalLink>
                           ) : null}
                         </Flex>
@@ -786,7 +800,7 @@ export default function RemoveLiquidity({
                         ) : approval === ApprovalState.APPROVED || signatureData !== null ? (
                           t('Approved to LP')
                         ) : (
-                          'Approve'
+                          t('Approve')
                         )}
                       </Button>
                     </Flex>
@@ -800,11 +814,11 @@ export default function RemoveLiquidity({
                       width="100%"
                       textStyle="R_16B"
                     >
-                      {error || 'Remove'}
+                      {t('Remove')}
                     </Button>
 
                     <Noti type={NotiType.ALERT} mt="12px">
-                      Error message
+                      {t('Error message')}
                     </Noti>
                   </Flex>
                 )}
