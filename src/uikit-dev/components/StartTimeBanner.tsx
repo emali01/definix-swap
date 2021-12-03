@@ -91,6 +91,7 @@ const StartTimeBanner = ({ logo, title, detail, topTitle, topValue, endTime, but
 
   useEffect(() => {
     const interval = setInterval(() => {
+      console.log('setInterval StartTimeBanner')
       const d = calculateCountdown()
       if (d) {
         setTime(d)

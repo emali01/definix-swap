@@ -117,6 +117,7 @@ const CountDownBanner = ({
 
   useEffect(() => {
     const interval = setInterval(() => {
+      console.log('setInterval CountDownBanner')
       const d = calculateCountdown(endTime)
 
       if (d) {

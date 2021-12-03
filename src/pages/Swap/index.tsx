@@ -45,6 +45,7 @@ import {
 
 // import { Overlay } from 'uikit-dev/components/Overlay'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
+import { tradeMeaningfullyDiffers } from 'utils'
 import { computeTradePriceBreakdown, warningSeverity } from 'utils/prices'
 import { isTransactionRecent, useAllTransactions } from 'state/transactions/hooks'
 import { useTranslation } from 'react-i18next'
@@ -303,7 +304,6 @@ export default function Swap({
     },
     [onCurrencySelection, checkForSyrup]
   )
-  
 
   const initSwapData = useCallback((props = {}) => {
     setSwapState({
@@ -337,6 +337,15 @@ export default function Swap({
     onDismiss={handleConfirmDismiss}
     initSwapData={initSwapData}
   />, false)
+
+  console.log('render!!')
+  // useEffect(() => {
+  //   if (showConfirm && tradeMeaningfullyDiffers(trade, tradeToConfirm)) {
+  //     onPresentConfirmModal({
+  //       trade,
+  //     });
+  //   }
+  // }, [showConfirm, trade, tradeToConfirm, onPresentConfirmModal])
 
   const handleSwap = useCallback(() => {
     if (priceImpactWithoutFee && !confirmPriceImpactWithoutFee(priceImpactWithoutFee)) {
@@ -374,11 +383,7 @@ export default function Swap({
 
   const handleAcceptChanges = useCallback(() => {
     setSwapState((prevState) => ({ ...prevState, tradeToConfirm: trade }))
-    onPresentConfirmModal({
-      trade,
-      originalTrade: trade
-    });
-  }, [onPresentConfirmModal, trade])
+  }, [trade])
 
   const onClickSwapButton = useCallback(() => {
     if (isExpertMode) {

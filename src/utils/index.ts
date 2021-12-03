@@ -4,7 +4,7 @@ import { AddressZero } from '@ethersproject/constants'
 import { JsonRpcSigner, CaverProvider } from 'finix-caver-providers'
 import { BigNumber } from '@ethersproject/bignumber'
 import { abi as IUniswapV2Router02ABI } from '@uniswap/v2-periphery/build/IUniswapV2Router02.json'
-import { JSBI, Percent, Token, CurrencyAmount, Currency, ETHER } from 'definixswap-sdk'
+import { JSBI, Percent, Token, CurrencyAmount, Currency, Trade, ETHER, currencyEquals } from 'definixswap-sdk'
 import { ChainId, ROUTER_ADDRESS } from '../constants'
 import { TokenAddressMap } from '../state/lists/hooks'
 
@@ -99,4 +99,14 @@ export function escapeRegExp(string: string): string {
 export function isTokenOnList(defaultTokens: TokenAddressMap, currency?: Currency): boolean {
   if (currency === ETHER) return true
   return Boolean(currency instanceof Token && defaultTokens[currency.chainId]?.[currency.address])
+}
+
+export function tradeMeaningfullyDiffers(tradeA: Trade, tradeB: Trade): boolean {
+  return (
+    tradeA.tradeType !== tradeB.tradeType ||
+    !currencyEquals(tradeA.inputAmount.currency, tradeB.inputAmount.currency) ||
+    !tradeA.inputAmount.equalTo(tradeB.inputAmount) ||
+    !currencyEquals(tradeA.outputAmount.currency, tradeB.outputAmount.currency) ||
+    !tradeA.outputAmount.equalTo(tradeB.outputAmount)
+  )
 }

@@ -212,6 +212,7 @@ const Flip = ({ date, small = false, smallBg = false, color = '#ffffff' }) => {
 
   useEffect(() => {
     const interval = setInterval(() => {
+      console.log('setInterval Flip')
       const d = calculateCountdown(date)
 
       if (d) {
