@@ -1,7 +1,8 @@
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useToast } from 'state/toasts/hooks'
 import { useActiveWeb3React } from '../../hooks'
-import { useAddPopup, useBlockNumber } from '../application/hooks'
+import { useBlockNumber } from '../application/hooks'
 import { AppDispatch, AppState } from '../index'
 import { checkedTransaction, finalizeTransaction } from './actions'
 import caver from '../../klaytn/caver'
@@ -39,7 +40,7 @@ export default function Updater(): null {
   const transactions = chainId ? state[chainId] ?? {} : {}
 
   // show popup on confirm
-  const addPopup = useAddPopup()
+  const { toastSuccess, toastError } = useToast();
 
   useEffect(() => {
     if (!chainId || !library || !lastBlockNumber) return
@@ -68,25 +69,28 @@ export default function Updater(): null {
                 })
               )
 
-              addPopup(
-                {
-                  txn: {
-                    hash,
-                    success: receipt.status,
-                    summary: transactions[hash]?.summary,
-                  },
-                },
-                hash
-              )
+              toastSuccess(transactions[hash]?.summary)
+              // addPopup(
+              //   {
+              //     txn: {
+              //       hash,
+              //       success: receipt.status,
+              //       summary: transactions[hash]?.summary,
+              //     },
+              //   },
+              //   hash
+              // )
             } else {
               dispatch(checkedTransaction({ chainId, hash, blockNumber: lastBlockNumber }))
             }
           })
           .catch((error) => {
+            toastError(transactions[hash]?.summary)
             console.error(`failed to check transaction hash: ${hash}`, error)
           })
       })
-  }, [chainId, library, transactions, lastBlockNumber, dispatch, addPopup])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chainId, library, transactions, lastBlockNumber, dispatch])
 
   return null
 }
