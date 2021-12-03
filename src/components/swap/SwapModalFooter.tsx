@@ -1,12 +1,9 @@
-import { Trade, TradeType } from 'definixswap-sdk'
 import React, { useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { Trade } from 'definixswap-sdk'
 import { Button, Text, Flex, ColorStyles, ButtonScales } from 'definixswap-uikit'
-import { Field } from '../../state/swap/actions'
+import AdvancedSwapDetailsDropdown from 'components/swap/AdvancedSwapDetailsDropdown'
 import { computeSlippageAdjustedAmounts, computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
-import { AutoColumn } from '../Column'
-import QuestionHelper from '../QuestionHelper'
-import { AutoRow, RowBetween, RowFixed } from '../Row'
-import FormattedPriceImpact from './FormattedPriceImpact'
 import { SwapCallbackError } from './styleds'
 import TradePrice from './TradePrice'
 
@@ -25,6 +22,7 @@ export default function SwapModalFooter({
   disabledConfirm: boolean
   isPending: boolean
 }) {
+  const { t } = useTranslation();
   const [showInverted, setShowInverted] = useState<boolean>(false)
   const slippageAdjustedAmounts = useMemo(() => computeSlippageAdjustedAmounts(trade, allowedSlippage), [
     allowedSlippage,
@@ -40,13 +38,13 @@ export default function SwapModalFooter({
         color={ColorStyles.DEEPGREY}
         mb="12px"
       >
-        Estimated Returns
+        {t('Estimated Returns')}
       </Text>
 
-      <Flex flexDirection="column" mb="32px">
+      <Flex flexDirection="column" mb="24px">
         <Flex justifyContent="space-between" mb="8px">
           <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>
-            Price Rate
+            {t('Price Rate')}
           </Text>
           <TradePrice 
             price={trade?.executionPrice} 
@@ -54,56 +52,8 @@ export default function SwapModalFooter({
             setShowInverted={setShowInverted} 
           />
         </Flex>
-
-        <Flex justifyContent="space-between" mb="8px">
-          <Flex>
-            <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY} mr="5px">
-              {trade.tradeType === TradeType.EXACT_INPUT ? 'Minimum received' : 'Maximum sold'}
-            </Text>
-            <QuestionHelper 
-              text="Your transaction will revert if there is a large, unfavorable price movement before it is confirmed." 
-            />
-          </Flex>
-          <Flex>
-            <Text textStyle="R_14M" color={ColorStyles.DEEPGREY} mr="4px">
-              {trade.tradeType === TradeType.EXACT_INPUT
-                ? slippageAdjustedAmounts[Field.OUTPUT]?.toSignificant(4) ?? '-'
-                : slippageAdjustedAmounts[Field.INPUT]?.toSignificant(4) ?? '-'}
-            </Text>
-            <Text textStyle="R_14M" color={ColorStyles.DEEPGREY}>
-              {trade.tradeType === TradeType.EXACT_INPUT
-                ? trade.outputAmount.currency.symbol
-                : trade.inputAmount.currency.symbol}
-            </Text>
-          </Flex>
-        </Flex>
-
-        <Flex justifyContent="space-between" mb="8px">
-          <RowFixed mb="0 !important">
-            <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>
-              Price Impact
-            </Text>
-            <QuestionHelper text="The difference between the market price and your price due to trade size." />
-          </RowFixed>
-          <FormattedPriceImpact priceImpact={priceImpactWithoutFee} />
-        </Flex>
-
-        <Flex justifyContent="space-between">
-          <RowFixed mb="0 !important">
-            <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>
-              Liquidity Provider Fee
-            </Text>
-            <QuestionHelper
-              text="For each trade a 0.2% fee is paid.
-0.15% goes to liquidity providers and 0.05% goes to the Definix Swap treasury"
-            />
-          </RowFixed>
-          <Text textStyle="R_14M" color={ColorStyles.DEEPGREY}>
-            {realizedLPFee ? `${realizedLPFee?.toSignificant(6)} ${trade.inputAmount.currency.symbol}` : '-'}
-          </Text>
-        </Flex>
+        <AdvancedSwapDetailsDropdown isRoute={false} trade={trade} isMobile={false} />
       </Flex>
-
       <Flex>
         <Button
           scale={ButtonScales.LG}
