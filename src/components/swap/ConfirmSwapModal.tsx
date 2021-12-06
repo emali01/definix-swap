@@ -1,17 +1,16 @@
+import React, { useCallback, useState } from 'react'
 import { currencyEquals, Trade } from 'definixswap-sdk'
+import { Text, Modal, Box, Divider, ArrowRightGIcon } from 'definixswap-uikit'
 import styled from 'styled-components'
-import { useActiveWeb3React } from 'hooks'
-import React, { useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Button, Modal, Box, Divider } from 'definixswap-uikit'
-import { useHistory } from 'react-router'
-import TransactionConfirmationModal, {
-  ConfirmationModalContent,
-  TransactionErrorContent,
-  TransactionSubmittedContent,
-} from '../TransactionConfirmationModal'
+import { computeTradePriceBreakdown } from 'utils/prices'
+import { useDerivedSwapInfo } from 'state/swap/hooks'
+import { useToast } from 'state/toasts/hooks'
+import { useSwapCallback } from 'hooks/useSwapCallback'
+import { useUserDeadline, useUserSlippageTolerance } from 'state/user/hooks'
 import SwapModalFooter from './SwapModalFooter'
 import SwapModalHeader from './SwapModalHeader'
+import confirmPriceImpactWithoutFee from './confirmPriceImpactWithoutFee'
 
 const Wrap = styled(Box)`
   width: calc(100vw - 48px);
@@ -25,6 +24,16 @@ const Wrap = styled(Box)`
 const StyledDivider = styled(Divider)`
   margin-top: 20px;
   margin-bottom: 24px;
+`
+
+const WrapLink = styled.a`
+  display: flex;
+  align-items: center;
+`
+
+const LinkText = styled(Text)`
+  ${({ theme }) => theme.textStyle.R_12R}
+  color: ${({ theme }) => theme.colors.mediumgrey};
 `
 
 /**
@@ -43,141 +52,65 @@ function tradeMeaningfullyDiffers(tradeA: Trade, tradeB: Trade): boolean {
 }
 
 export default function ConfirmSwapModal({
-  trade,
-  originalTrade,
-  onAcceptChanges,
-  allowedSlippage,
-  onConfirm,
-  onDismiss,
   recipient,
-  swapErrorMessage,
-  attemptingTxn,
-  txHash,
-  initSwapData,
+  onDismiss = () => null,
+  onDismissModal,
 }: {
-  trade: Trade | undefined
-  originalTrade: Trade | undefined
-  attemptingTxn: boolean
-  txHash: string | undefined
   recipient: string | null
-  allowedSlippage: number
-  onAcceptChanges: () => void
-  onConfirm: () => void
-  swapErrorMessage: string | undefined
-  onDismiss: () => void
-  initSwapData: () => void
+  onDismiss?: () => void
+  onDismissModal: () => void
 }) {
   const { t } = useTranslation();
-  const history = useHistory();
-  const { chainId } = useActiveWeb3React()
-  
+  const { v2Trade: trade } = useDerivedSwapInfo()
+  const [originalTrade, setOriginalTrade] = useState(trade);
+  const [isPending, setIsPending] = useState(false);
+  const [txHash, setTxHash] = useState(undefined);
+  const [errorMessage, setErrorMessage] = useState(undefined);
+  const { priceImpactWithoutFee } = computeTradePriceBreakdown(trade)
+  const [deadline] = useUserDeadline()
+  const [allowedSlippage] = useUserSlippageTolerance()
+  const { toastSuccess, toastError } = useToast();
+  const { callback: swapCallback, error: swapCallbackError } = useSwapCallback(
+    trade,
+    allowedSlippage,
+    deadline,
+    recipient
+  )
+
   const showAcceptChanges = Boolean(trade && originalTrade && tradeMeaningfullyDiffers(trade, originalTrade))
 
-  const modalHeader = useCallback(() => {
-    return trade ? (
-      <SwapModalHeader
-        trade={trade}
-        allowedSlippage={allowedSlippage}
-        recipient={recipient}
-        showAcceptChanges={showAcceptChanges}
-        onAcceptChanges={onAcceptChanges}
-      />
-    ) : null
-  }, [allowedSlippage, onAcceptChanges, recipient, showAcceptChanges, trade])
-
-  const modalHeaderWithoutAction = useCallback(() => {
-    return trade ? <SwapModalHeader trade={trade} onlyCurrency /> : null
+  const onAcceptChanges = useCallback(() => {
+    setOriginalTrade(trade);
   }, [trade])
 
-  const modalBottom = useCallback(() => {
-    return trade ? (
-      <SwapModalFooter
-        onConfirm={onConfirm}
-        trade={trade}
-        disabledConfirm={showAcceptChanges}
-        swapErrorMessage={swapErrorMessage}
-        allowedSlippage={allowedSlippage}
-        isPending={attemptingTxn}
-      />
-    ) : null
-  }, [allowedSlippage, onConfirm, showAcceptChanges, swapErrorMessage, trade, attemptingTxn])
-
-  const confirmContent = useCallback(
-    () => (
-      <ConfirmationModalContent
-        mainTitle="Confirm Swap"
-        title=""
-        topContent={modalHeader}
-        bottomContent={modalBottom}
-      />
-    ),
-    [modalBottom, modalHeader]
-  )
-
-  const submittedContent = useCallback(
-    () => {
-      return (
-        <TransactionSubmittedContent
-          title="Swap Complete"
-          date={`${new Date().toDateString()}, ${new Date().toTimeString().split(" ")[0]}`}
-          chainId={chainId}
-          hash={txHash}
-          content={modalHeaderWithoutAction}
-          button={
-            <Button onClick={onDismiss}>
-              Back to Swap
-            </Button>
-          }
-        />
-      )
-    },
-    [chainId, modalHeaderWithoutAction, onDismiss, txHash]
-  )
-
-  const errorContent = useCallback(
-    () => (
-      <TransactionErrorContent
-        title="Swap Failed"
-        date={`${new Date().toDateString()}, ${new Date().toTimeString().split(" ")[0]}`}
-        chainId={chainId}
-        hash={txHash}
-        content={modalHeaderWithoutAction}
-        button={
-          <Button onClick={onDismiss}>
-            Back to Swap
-          </Button>
-        }
-      />
-    ),
-    [chainId, modalHeaderWithoutAction, onDismiss, txHash]
-  )
-
-  useEffect(() => {
-    if(attemptingTxn){
-      console.log('~~~isPending', attemptingTxn)
+  const handleSwap = useCallback(() => {
+    if (priceImpactWithoutFee && !confirmPriceImpactWithoutFee(priceImpactWithoutFee)) {
+      return
     }
-  }, [attemptingTxn, history])
-
-  useEffect(() => {
-    // 성공
-    if(txHash) {
-      console.log('~~~isSubmitted', txHash)
-      initSwapData();
+    if (!swapCallback) {
+      return
     }
-  }, [txHash, initSwapData])
-
-  useEffect(() => {
-    // 실패
-    if(swapErrorMessage) {
-      console.log('~~~isError', swapErrorMessage)
-      initSwapData();
-    }
-  }, [swapErrorMessage, initSwapData])
+    setIsPending(true);
+    setTxHash(undefined);
+    swapCallback()
+      .then((hash) => {
+        setTxHash(hash);
+        toastSuccess(t('Swap Complete'), <WrapLink href={`https://scope.klaytn.com/tx/${hash}`}><LinkText>{t('View on KlaytnScope')}</LinkText><ArrowRightGIcon /></WrapLink>)
+        onDismiss();
+        onDismissModal();
+      })
+      .catch((error) => {
+        setErrorMessage(error.message);
+        toastError(t('Swap Failed'))
+        onDismiss();
+        onDismissModal();
+      })
+  }, [priceImpactWithoutFee, swapCallback, onDismiss, onDismissModal, toastSuccess, toastError, t])
 
   return (
     <Modal title={t('Confirm Swap')} mobileFull onDismiss={onDismiss}>
       <Wrap>
-        {!txHash && !swapErrorMessage && trade && (
+        {!txHash && trade && (
           <>
             <SwapModalHeader
               trade={trade}
@@ -188,27 +121,15 @@ export default function ConfirmSwapModal({
             />
             <StyledDivider />
             <SwapModalFooter
-              onConfirm={onConfirm}
+              onConfirm={handleSwap}
               trade={trade}
               disabledConfirm={showAcceptChanges}
-              swapErrorMessage={swapErrorMessage}
-              allowedSlippage={allowedSlippage}
-              isPending={attemptingTxn}
+              swapErrorMessage={errorMessage}
+              isPending={isPending}
             />
           </>
         )}
       </Wrap>
     </Modal>
-    // <TransactionConfirmationModal
-    //   isOpen={true}
-    //   isPending={attemptingTxn}
-    //   isSubmitted={!!txHash}
-    //   isError={!!swapErrorMessage}
-    //   confirmContent={confirmContent}
-    //   // pendingIcon={swap}
-    //   // submittedContent={submittedContent}
-    //   // errorContent={errorContent}
-    //   onDismiss={onDismiss}
-    // />
   )
 }

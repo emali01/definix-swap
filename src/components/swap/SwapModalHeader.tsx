@@ -64,7 +64,8 @@ const SwapTokenInfo = ({
       )}
       {!isInput && (
         <BalanceText 
-          isAcceptChange={priceImpactSeverity > 2}
+          // isAcceptChange={priceImpactSeverity > 2}
+          isAcceptChange={showAcceptChanges}
         >
           {trade.outputAmount.toSignificant(6)}
         </BalanceText>
@@ -110,6 +111,7 @@ export default function SwapModalHeader({
         <SwapTokenInfo
           isInput={false}
           trade={trade}
+          showAcceptChanges={showAcceptChanges}
           priceImpactSeverity={priceImpactSeverity}
         />
       </Flex>
