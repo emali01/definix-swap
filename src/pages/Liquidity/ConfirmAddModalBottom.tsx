@@ -1,9 +1,7 @@
-import { AutoColumn } from 'components/Column'
 import { Currency, CurrencyAmount, Fraction, Percent } from 'definixswap-sdk'
 import React from 'react'
-import { Button, Text } from 'definixswap-uikit'
-import CurrencyLogo from '../../components/CurrencyLogo'
-import { RowBetween } from '../../components/Row'
+import { Flex, Button, Text, ColorStyles, ButtonScales, NotiIcon } from 'definixswap-uikit'
+import { useTranslation } from 'react-i18next'
 import { Field } from '../../state/mint/actions'
 
 export function ConfirmAddModalBottom({
@@ -13,6 +11,7 @@ export function ConfirmAddModalBottom({
   parsedAmounts,
   poolTokenPercentage,
   onAdd,
+  allowedSlippage,
 }: {
   noLiquidity?: boolean
   price?: Fraction
@@ -20,69 +19,59 @@ export function ConfirmAddModalBottom({
   parsedAmounts: { [field in Field]?: CurrencyAmount }
   poolTokenPercentage?: Percent
   onAdd: () => void
+  allowedSlippage: number;
 }) {
+  const { t } = useTranslation();
+
   return (
     <>
-      <AutoColumn gap="16px">
-        <RowBetween>
-          <div className="flex align-center">
-            <CurrencyLogo currency={currencies[Field.CURRENCY_A]} style={{ marginRight: '8px' }} />
-            <div className="flex">
-              <Text className="mr-1" bold>
-                {currencies[Field.CURRENCY_A]?.symbol}
-              </Text>
-              <Text color="textSubtle">Deposited</Text>
-            </div>
-          </div>
-          <div className="flex justify-end">
-            <Text bold className="mr-1">
-              {parsedAmounts[Field.CURRENCY_A]?.toSignificant(6)}
-            </Text>
-            <Text bold>{currencies[Field.CURRENCY_A]?.symbol}</Text>
-          </div>
-        </RowBetween>
+      <Flex flexDirection="column">
+        <Text textStyle="R_16M" color={ColorStyles.DEEPGREY} mb="12px">{t('Estimated Returns')}</Text>
 
-        <RowBetween>
-          <div className="flex align-center">
-            <CurrencyLogo currency={currencies[Field.CURRENCY_B]} style={{ marginRight: '8px' }} />
-            <div className="flex">
-              <Text className="mr-1" bold>
-                {currencies[Field.CURRENCY_B]?.symbol}
-              </Text>
-              <Text color="textSubtle">Deposited</Text>
-            </div>
-          </div>
-          <div className="flex justify-end">
-            <Text bold className="mr-1">
-              {parsedAmounts[Field.CURRENCY_B]?.toSignificant(6)}
+        <Flex justifyContent="space-between" mb="8px">
+          <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>Deposited</Text>
+          <Flex flexDirection="column" alignItems="flex-end">
+            <Text textStyle="R_14M" color={ColorStyles.DEEPGREY}>
+              {parsedAmounts[Field.CURRENCY_A]?.toSignificant(6)} {currencies[Field.CURRENCY_A]?.symbol}
             </Text>
-            <Text bold>{currencies[Field.CURRENCY_B]?.symbol}</Text>
-          </div>
-        </RowBetween>
-
-        <RowBetween align="baseline">
-          <Text color="textSubtle">Price Rate</Text>
-
-          <div className="flex flex-column align-end">
-            <Text bold>
-              {`1 ${currencies[Field.CURRENCY_A]?.symbol} = ${price?.toSignificant(4)} ${
-                currencies[Field.CURRENCY_B]?.symbol
-              }`}
+            <Text textStyle="R_14M" color={ColorStyles.DEEPGREY}>
+              {parsedAmounts[Field.CURRENCY_B]?.toSignificant(6)} {currencies[Field.CURRENCY_B]?.symbol}
             </Text>
-            <Text bold>
+          </Flex>
+        </Flex>
+
+        <Flex justifyContent="space-between" mb="8px">
+          <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>Price Rate</Text>
+          <Flex flexDirection="column">
+            <Text textStyle="R_14M" color={ColorStyles.DEEPGREY}>
+                {`1 ${currencies[Field.CURRENCY_A]?.symbol} = ${price?.toSignificant(4)} ${
+                  currencies[Field.CURRENCY_B]?.symbol
+                }`}
+            </Text>
+            <Text textStyle="R_14M" color={ColorStyles.DEEPGREY}>
               {`1 ${currencies[Field.CURRENCY_B]?.symbol} = ${price?.invert().toSignificant(4)} ${
                 currencies[Field.CURRENCY_A]?.symbol
               }`}
             </Text>
-          </div>
-        </RowBetween>
+          </Flex>
+        </Flex>
 
-        <RowBetween>
-          <Text color="textSubtle">Share of Pool</Text>
-          <Text bold>{noLiquidity ? '100' : poolTokenPercentage?.toSignificant(4)}%</Text>
-        </RowBetween>
-      </AutoColumn>
-      <Button className="mt-6" onClick={onAdd} width="100%">
+        <Flex justifyContent="space-between" mb="20px">
+          <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>{t('Share of Pool')}</Text>
+          <Text textStyle="R_14M" color={ColorStyles.DEEPGREY}>
+            {noLiquidity ? '100' : poolTokenPercentage?.toSignificant(4)}%
+          </Text>
+        </Flex>
+      </Flex>
+
+      <Flex>
+        <NotiIcon />
+        <Text ml="4px" textStyle="R_12R" color={ColorStyles.MEDIUMGREY} mb="32px">
+          Output is estimated. If the price changes by more than {allowedSlippage / 100}% your transaction will revert.
+        </Text>
+      </Flex>
+
+      <Button onClick={onAdd} width="100%" scale={ButtonScales.LG}>
         {noLiquidity ? 'Create Pool & Supply' : 'Confirm Supply'}
       </Button>
     </>

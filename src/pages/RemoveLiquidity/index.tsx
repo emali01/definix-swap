@@ -55,6 +55,7 @@ export default function RemoveLiquidity({
 }: RouteComponentProps<{ currencyIdA: string; currencyIdB: string }>) {
   const { isXl, isXxl } = useMatchBreakpoints()
   const isMobile = useMemo(() => !isXl && !isXxl, [isXl, isXxl])
+
   const { t } = useTranslation();
   const [currencyA, currencyB] = [useCurrency(currencyIdA) ?? undefined, useCurrency(currencyIdB) ?? undefined]
   const { account, chainId, library } = useActiveWeb3React()
@@ -422,74 +423,83 @@ export default function RemoveLiquidity({
 
   const modalHeader = useCallback(() => {
     return (
-      <div>
-        <AutoColumn gap="24px">
-          <AutoColumn gap="16px">
-            <RowBetween align="flex-end">
-              <Text>{parsedAmounts[Field.CURRENCY_A]?.toSignificant(6)}</Text>
-              <RowFixed mb="0 !important">
-                <CurrencyLogo currency={currencyA} size="24px" />
-                <Text>
-                  {currencyA?.symbol}
-                </Text>
-              </RowFixed>
-            </RowBetween>
-            <RowFixed>
-              <Plus size="16" color={theme.colors.textSubtle} />
-            </RowFixed>
-            <RowBetween align="flex-end">
-              <Text>{parsedAmounts[Field.CURRENCY_B]?.toSignificant(6)}</Text>
-              <RowFixed mb="0 !important">
-                <CurrencyLogo currency={currencyB} size="24px" />
-                <Text>
-                  {currencyB?.symbol}
-                </Text>
-              </RowFixed>
-            </RowBetween>
-          </AutoColumn>
+      <Flex flexDirection="column">
+        <Flex flexDirection="column" mb="20px">
+          <Text textStyle="R_16M" color={ColorStyles.DEEPGREY}>{t('LP amount before removal')}</Text>
 
-          <Text>
-            {`Output is estimated. If the price changes by more than ${allowedSlippage / 100
-              }% your transaction will revert.`}
-          </Text>
-        </AutoColumn>
-      </div>
+          <Flex justifyContent="space-between" alignItems="center" p="14px 0px" mb="20px">
+            <Flex alignItems="center">
+              <DoubleCurrencyLogo currency0={currencyA} currency1={currencyB} size={32} />
+              <Text ml="10px" textStyle="R_16M" color={ColorStyles.BLACK}>{currencyA?.symbol}-{currencyB?.symbol}</Text>
+            </Flex>
+            <Text textStyle="R_16R" color={ColorStyles.BLACK}>
+              {parsedAmounts[Field.LIQUIDITY]?.toSignificant(6)}
+            </Text>
+          </Flex>
+
+          <Text textStyle="R_16M" color={ColorStyles.DEEPGREY}>{t('You will receive')}</Text>
+          <Flex justifyContent="space-between" alignItems="center" p="14px 0px">
+            <Flex alignItems="center">
+              <CurrencyLogo currency={currencyA} size="32px" />
+              <Text textStyle="R_16M" color={ColorStyles.BLACK} ml="10px">
+                {currencyA?.symbol}
+              </Text>
+            </Flex>
+            <Text textStyle="R_16R" color={ColorStyles.BLACK}>
+              {parsedAmounts[Field.CURRENCY_A]?.toSignificant(6)}
+            </Text>
+          </Flex>
+
+          <Flex justifyContent="space-between" alignItems="center" p="14px 0px">
+            <Flex alignItems="center">
+              <CurrencyLogo currency={currencyB} size="32px" />
+              <Text textStyle="R_16M" color={ColorStyles.BLACK} ml="10px">
+                {currencyB?.symbol}
+              </Text>
+            </Flex>
+            <Text textStyle="R_16R" color={ColorStyles.BLACK}>
+              {parsedAmounts[Field.CURRENCY_B]?.toSignificant(6)}
+            </Text>
+          </Flex>
+        </Flex>
+      </Flex>
     )
-  }, [allowedSlippage, currencyA, currencyB, parsedAmounts, theme.colors.textSubtle])
+  }, [currencyA, currencyB, parsedAmounts, t])
 
   const modalBottom = () => {
     return (
-      <AutoColumn gap="16px">
-        <RowBetween>
-          <Text color="textSubtle">{`FLIP ${currencyA?.symbol}/${currencyB?.symbol}`} Burned</Text>
-          <RowFixed>
-            <DoubleCurrencyLogo currency0={currencyA} currency1={currencyB} margin />
-            <Text>{parsedAmounts[Field.LIQUIDITY]?.toSignificant(6)}</Text>
-          </RowFixed>
-        </RowBetween>
+      <Flex flexDirection="column">
+        <Flex>
+          <Text textStyle="R_16M" color={ColorStyles.DEEPGREY}>Estimated Returns</Text>
+        </Flex>
         {pair && (
-          <>
-            <RowBetween>
-              <Text color="textSubtle">Price</Text>
-              <Text>
+          <Flex justifyContent="space-between">
+            <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>{t('Price Rate')}</Text>
+            <Flex flexDirection="column">
+              <Text textStyle="R_14M" color={ColorStyles.DEEPGREY}>
                 1 {currencyA?.symbol} = {tokenA ? pair.priceOf(tokenA).toSignificant(6) : '-'} {currencyB?.symbol}
               </Text>
-            </RowBetween>
-            <RowBetween>
-              <div />
-              <Text>
+              <Text textStyle="R_14M" color={ColorStyles.DEEPGREY}>
                 1 {currencyB?.symbol} = {tokenB ? pair.priceOf(tokenB).toSignificant(6) : '-'} {currencyA?.symbol}
               </Text>
-            </RowBetween>
-          </>
+            </Flex>
+          </Flex>
         )}
+        <Flex>
+          <Text mt="20px" textStyle="R_12R" color={ColorStyles.MEDIUMGREY}>
+            {`Output is estimated. If the price changes by more than ${allowedSlippage / 100
+              }% your transaction will revert.`}
+          </Text>
+        </Flex>
         <Button
+          mt="32px"
           disabled={!(approval === ApprovalState.APPROVED || signatureData !== null)}
           onClick={onRemove}
+          scale={ButtonScales.LG}
         >
-          Confirm
+          {t('Remove')}
         </Button>
-      </AutoColumn>
+      </Flex>
     )
   }
 
@@ -610,7 +620,7 @@ export default function RemoveLiquidity({
         <Flex 
           backgroundColor={ColorStyles.WHITE}
           borderRadius="16px"
-          width="629px"
+          width={isMobile ? "100%" : "629px"}
           border="solid 1px #ffe5c9"
           style={{boxShadow: '0 12px 12px 0 rgba(227, 132, 0, 0.1)'}}
         >
@@ -860,15 +870,18 @@ export default function RemoveLiquidity({
         isError={!!errorMsg}
         confirmContent={() => (
           <ConfirmationModalContent
-            mainTitle="Confirm Liquidity"
+            mainTitle={t("Confirm Remove Liquidity")}
             title="You will receive"
             topContent={modalHeader}
             bottomContent={modalBottom}
           />
         )}
-        submittedContent={() => <div />}
+        submittedContent={() => <></>}
         errorContent={errorContent}
         onDismiss={handleDismissConfirmation}
+        
+        setShowConfirm={setShowConfirm}
+        setTxHash={setTxHash}
       />
     </Flex>
   )
