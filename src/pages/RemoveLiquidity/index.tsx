@@ -55,6 +55,7 @@ export default function RemoveLiquidity({
 }: RouteComponentProps<{ currencyIdA: string; currencyIdB: string }>) {
   const { isXl, isXxl } = useMatchBreakpoints()
   const isMobile = useMemo(() => !isXl && !isXxl, [isXl, isXxl])
+
   const { t } = useTranslation();
   const [currencyA, currencyB] = [useCurrency(currencyIdA) ?? undefined, useCurrency(currencyIdB) ?? undefined]
   const { account, chainId, library } = useActiveWeb3React()
@@ -619,7 +620,7 @@ export default function RemoveLiquidity({
         <Flex 
           backgroundColor={ColorStyles.WHITE}
           borderRadius="16px"
-          width="629px"
+          width={isMobile ? "100%" : "629px"}
           border="solid 1px #ffe5c9"
           style={{boxShadow: '0 12px 12px 0 rgba(227, 132, 0, 0.1)'}}
         >

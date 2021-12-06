@@ -18,7 +18,7 @@ import { Currency, currencyEquals, ETHER, TokenAmount, WETH } from 'definixswap-
 import { useActiveWeb3React } from 'hooks'
 import { useCurrency } from 'hooks/Tokens'
 import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
-import React, { useCallback, useState, useContext } from 'react'
+import React, { useCallback, useState, useContext, useEffect, useMemo } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Field } from 'state/mint/actions'
@@ -26,7 +26,7 @@ import { useDerivedMintInfo, useMintActionHandlers, useMintState } from 'state/m
 import { useTransactionAdder } from 'state/transactions/hooks'
 import { KlaytnTransactionResponse } from 'state/transactions/actions'
 import { useIsExpertMode, useUserDeadline, useUserSlippageTolerance } from 'state/user/hooks'
-import { TabBox, Box, Flex, Button, Text, TitleSet, ColorStyles } from 'definixswap-uikit'
+import { TabBox, Box, Flex, Button, Text, TitleSet, ColorStyles, useMatchBreakpoints } from 'definixswap-uikit'
 import { calculateGasMargin, calculateSlippageAmount, getRouterContract } from 'utils'
 import { currencyId } from 'utils/currencyId'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
@@ -48,6 +48,9 @@ export default function Liquidity({
   },
   history
 }: RouteComponentProps<{ currencyIdA?: string; currencyIdB?: string }>) {
+  const { isXl, isXxl } = useMatchBreakpoints()
+  const isMobile = useMemo(() => !isXl && !isXxl, [isXl, isXxl])
+
   const { account, chainId, library } = useActiveWeb3React()
   const { connector } = useCaverJsReact()
   const { setShowModal } = useContext(KlipModalContext())
@@ -629,7 +632,7 @@ export default function Liquidity({
 
   return (
     <Flex width="100%" justifyContent="center">
-      <Flex flexDirection="column" width="629px">
+      <Flex flexDirection="column" width={isMobile ? "100%" : "629px"}>
         <Flex mb="40px">
           <TitleSet
             title={t("Liquidity")}
