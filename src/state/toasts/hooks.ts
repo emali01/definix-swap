@@ -1,5 +1,5 @@
 import { Toast, toastTypes } from "definixswap-uikit"
-import { useMemo } from "react"
+import React, { useMemo } from "react"
 import { useDispatch } from "react-redux"
 import {
   push as pushToast,
@@ -16,16 +16,16 @@ export const useToast = () => {
     const push = (toast: Toast) => dispatch(pushToast(toast))
 
     return {
-      toastError: (title: string, description?: string) => {
+      toastError: (title: string, description?: string | React.ReactElement) => {
         return push({ id: new Date().toString(), type: toastTypes.DANGER, title, description })
       },
-      toastInfo: (title: string, description?: string) => {
+      toastInfo: (title: string, description?: string | React.ReactElement) => {
         return push({ id: new Date().toString(), type: toastTypes.INFO, title, description })
       },
-      toastSuccess: (title: string, description?: string) => {
+      toastSuccess: (title: string, description?: string | React.ReactElement) => {
         return push({ id: new Date().toString(), type: toastTypes.SUCCESS, title, description })
       },
-      toastWarning: (title: string, description?: string) => {
+      toastWarning: (title: string, description?: string | React.ReactElement) => {
         return push({ id: new Date().toString(), type: toastTypes.WARNING, title, description })
       },
       push,

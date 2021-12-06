@@ -1,35 +1,25 @@
-import React, { useMemo, useState } from 'react'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Trade } from 'definixswap-sdk'
 import { Button, Text, Flex, ColorStyles, ButtonScales } from 'definixswap-uikit'
 import AdvancedSwapDetailsDropdown from 'components/swap/AdvancedSwapDetailsDropdown'
-import { computeSlippageAdjustedAmounts, computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
 import { SwapCallbackError } from './styleds'
 import TradePrice from './TradePrice'
 
 export default function SwapModalFooter({
   trade,
   onConfirm,
-  allowedSlippage,
   swapErrorMessage,
   disabledConfirm,
   isPending,
 }: {
   trade: Trade
-  allowedSlippage: number
   onConfirm: () => void
   swapErrorMessage: string | undefined
   disabledConfirm: boolean
   isPending: boolean
 }) {
   const { t } = useTranslation();
-  const [showInverted, setShowInverted] = useState<boolean>(false)
-  const slippageAdjustedAmounts = useMemo(() => computeSlippageAdjustedAmounts(trade, allowedSlippage), [
-    allowedSlippage,
-    trade,
-  ])
-  const { priceImpactWithoutFee, realizedLPFee } = useMemo(() => computeTradePriceBreakdown(trade), [trade])
-  const severity = warningSeverity(priceImpactWithoutFee)
 
   return (
     <Flex flexDirection="column">
@@ -48,8 +38,6 @@ export default function SwapModalFooter({
           </Text>
           <TradePrice 
             price={trade?.executionPrice} 
-            showInverted={showInverted} 
-            setShowInverted={setShowInverted} 
           />
         </Flex>
         <AdvancedSwapDetailsDropdown isRoute={false} trade={trade} isMobile={false} />

@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useToast } from 'state/toasts/hooks'
 import { useActiveWeb3React } from '../../hooks'
 import { useBlockNumber } from '../application/hooks'
 import { AppDispatch, AppState } from '../index'
@@ -39,9 +38,6 @@ export default function Updater(): null {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const transactions = chainId ? state[chainId] ?? {} : {}
 
-  // show popup on confirm
-  const { toastSuccess, toastError } = useToast();
-
   useEffect(() => {
     if (!chainId || !library || !lastBlockNumber) return
 
@@ -69,7 +65,7 @@ export default function Updater(): null {
                 })
               )
 
-              toastSuccess(transactions[hash]?.summary)
+              // toastSuccess(transactions[hash]?.summary)
               // addPopup(
               //   {
               //     txn: {
@@ -85,7 +81,7 @@ export default function Updater(): null {
             }
           })
           .catch((error) => {
-            toastError(transactions[hash]?.summary)
+            // toastError(transactions[hash]?.summary)
             console.error(`failed to check transaction hash: ${hash}`, error)
           })
       })
