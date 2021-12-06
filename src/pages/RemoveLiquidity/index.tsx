@@ -628,6 +628,7 @@ export default function RemoveLiquidity({
             <CardBody>
               <Flex flexDirection="column" mb="20px">
                 <Flex justifyContent="space-between" mb="20px" alignItems="center">
+
                   <Flex alignItems="center">
                     <Box mr="10px">
                       <DoubleCurrencyLogo size={40} currency0={currencyA} currency1={currencyB}/>
@@ -644,7 +645,6 @@ export default function RemoveLiquidity({
                       {userPoolBalance ? userPoolBalance.toSignificant(4) : '-'}
                     </Text>
                   </Flex>
-                  
                 </Flex>
 
 

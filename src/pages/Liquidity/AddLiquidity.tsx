@@ -160,7 +160,12 @@ const AddLiquidity: React.FC<IProps> = ({
                     approvalB === ApprovalState.PENDING) &&
                     isValid && (
                       <Flex flexDirection="column" mb="16px">
-                        <Flex justifyContent="space-between" alignItems="center" mb="8px">
+                        <Flex 
+                          flexDirection={isMobile ? "column" : "row"}
+                          justifyContent="space-between"
+                          alignItems={isMobile ? "flex-start" : "center"}
+                          mb="8px"
+                        >
                             <Flex alignItems="center">
                               <CurrencyLogo currency={currencies[Field.CURRENCY_A]} size="32px" />
                               <Text ml="12px" textStyle="R_16M" color={ColorStyles.MEDIUMGREY}>{currencies[Field.CURRENCY_A]?.symbol}</Text>
@@ -197,7 +202,11 @@ const AddLiquidity: React.FC<IProps> = ({
                             </Button>)}
                         </Flex>
 
-                        <Flex justifyContent="space-between" alignItems="center">
+                        <Flex 
+                          flexDirection={isMobile ? "column" : "row"}
+                          justifyContent="space-between"
+                          alignItems={isMobile ? "flex-start" : "center"}
+                        >
                             <Flex alignItems="center">
                               <CurrencyLogo currency={currencies[Field.CURRENCY_B]} size="32px" />
                               <Text ml="12px" textStyle="R_16M" color={ColorStyles.MEDIUMGREY}>{currencies[Field.CURRENCY_B]?.symbol}</Text>

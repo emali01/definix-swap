@@ -5,10 +5,13 @@ import { useTokenBalancesWithLoadingIndicator } from "state/wallet/hooks";
 import { usePairs } from "data/Reserves";
 import { Pair } from "definixswap-sdk";
 import { useActiveWeb3React } from "hooks";
-import { Flex, Box, Text, ColorStyles, ImgEmptyStateWallet, ImgEmptyStateLiquidity } from "definixswap-uikit";
+import { Flex, Box, Text, ColorStyles, ImgEmptyStateWallet, ImgEmptyStateLiquidity, useMatchBreakpoints } from "definixswap-uikit";
 import ConnectWalletButton from "components/ConnectWalletButton";
 
 const LiquidityList: React.FC = () => {
+  const { isXl, isXxl } = useMatchBreakpoints()
+  const isMobile = useMemo(() => !isXl && !isXxl, [isXl, isXxl])
+
   const { account } = useActiveWeb3React()
   const trackedTokenPairs = useTrackedTokenPairs()
   const tokenPairsWithLiquidityTokens = useMemo(
@@ -35,8 +38,8 @@ const LiquidityList: React.FC = () => {
   return (
     <>
       {account && allV2PairsWithLiquidity.length > 0 && (
-        <Box 
-          p="24px 40px"
+        <Box
+          p={isMobile ? "0px 20px" : "24px 40px"}
           backgroundColor={ColorStyles.WHITE}
           borderRadius="16px"
           style={{boxShadow: '0 12px 12px 0 rgba(227, 132, 0, 0.1)'}}

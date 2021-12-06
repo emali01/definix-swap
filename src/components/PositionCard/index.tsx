@@ -1,9 +1,9 @@
 import { JSBI, Pair, Percent } from 'definixswap-sdk'
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { ChevronDown, ChevronUp } from 'react-feather'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
-import { Button, Text, CardBody, Flex, Box, ColorStyles, ButtonScales, ButtonVariants } from 'definixswap-uikit'
+import { Button, Text, CardBody, Flex, Box, ColorStyles, ButtonScales, ButtonVariants, useMatchBreakpoints } from 'definixswap-uikit'
 import { useTotalSupply } from '../../data/TotalSupply'
 import { useActiveWeb3React } from '../../hooks'
 import { useTokenBalance } from '../../state/wallet/hooks'
@@ -114,6 +114,9 @@ export function MinimalPositionCard({ pair, showUnwrapped = false, isLastCard = 
 }
 
 export default function FullPositionCard({ pair, isLastCard = false }: PositionCardProps) {
+  const { isXl, isXxl } = useMatchBreakpoints()
+  const isMobile = useMemo(() => !isXl && !isXxl, [isXl, isXxl])
+
   const { account } = useActiveWeb3React()
 
   const currency0 = unwrappedToken(pair.token0)
@@ -142,25 +145,42 @@ export default function FullPositionCard({ pair, isLastCard = false }: PositionC
       : [undefined, undefined]
 
   return (
-    <Flex p="16px 0" style={{borderBottom: `${!isLastCard ? '1px solid #e0e0e0' : ''}`}}>
-      <Flex alignItems="center">
-        <Box mr="12px">
-          <DoubleCurrencyLogo currency0={currency0} currency1={currency1} size={32} />
-        </Box>
-
-        <Flex flexDirection="column" mr="20px" justifyContent="center">
-          <Text mb="6px" textStyle="R_12R" color={ColorStyles.MEDIUMGREY}>LP</Text>
-          <Text mb="4px" textStyle="R_14M" color={ColorStyles.BLACK}>
-            {!currency0 || !currency1 ? <Dots>Loading</Dots> : `${currency0.symbol}-${currency1.symbol}`}
-          </Text>
-          <Box width="130px">
-            <Text textStyle="R_14M" color={ColorStyles.DEEPGREY}>
-              {userPoolBalance ? userPoolBalance.toSignificant(4) : '-'}
-            </Text>
+    <Flex p={isMobile ? "24px 0" : "16px 0"} style={{borderBottom: `${!isLastCard ? '1px solid #e0e0e0' : ''}`}}>
+      <Flex 
+        width={isMobile ? "100%" : "auto"}
+        flexDirection={isMobile ? "column" : "row"} 
+        alignItems={isMobile ? "flex-start" : "center"}
+      >
+        <Flex alignItems="center" mb={isMobile ? "20px" : "0px"}>
+          <Box mr="12px">
+            <DoubleCurrencyLogo currency0={currency0} currency1={currency1} size={32} />
           </Box>
+
+          <Flex flexDirection="column" mr="20px" justifyContent="center">
+            {!isMobile && <Text mb="6px" textStyle="R_12R" color={ColorStyles.MEDIUMGREY}>LP</Text>}
+            <Text
+              mb={isMobile ? "0px" : "4px"}
+              textStyle={isMobile ? "R_16M" : "R_14M"}
+              color={ColorStyles.BLACK}
+            >
+              {!currency0 || !currency1 ? <Dots>Loading</Dots> : `${currency0.symbol}-${currency1.symbol}`}
+            </Text>
+            <Box 
+              width={isMobile ? "100%" : "130px"}
+            >
+              <Text textStyle="R_14M" color={ColorStyles.DEEPGREY}>
+                {userPoolBalance ? userPoolBalance.toSignificant(4) : '-'}
+              </Text>
+            </Box>
+          </Flex>
         </Flex>
 
-        <Flex flexDirection="column" mr="27px" justifyContent="center">
+        <Flex
+          flexDirection="column"
+          justifyContent="center"
+          mr={isMobile ? "0px" : "27px"}
+          mb={isMobile ? "24px" : "0px"}
+        >
           <Text mb="4px" textStyle="R_12R" color={ColorStyles.MEDIUMGREY}>Pooled</Text>
           <Flex mb="4px" alignItems="center">
             <Box
@@ -174,7 +194,7 @@ export default function FullPositionCard({ pair, isLastCard = false }: PositionC
             </Box>
             <Box width="140px">
               {token0Deposited ? (
-                <Text textStyle="R_14M" color={ColorStyles.BLACK}>{token0Deposited?.toSignificant(6)}</Text>
+                <Text textStyle={isMobile ? "R_16M" : "R_14M"} color={ColorStyles.BLACK}>{token0Deposited?.toSignificant(6)}</Text>
               ) : (
                 '-'
               )}
@@ -193,7 +213,7 @@ export default function FullPositionCard({ pair, isLastCard = false }: PositionC
             </Box>
             <Box width="140px">
               {token1Deposited ? (
-                <Text textStyle="R_14M" color={ColorStyles.BLACK}>{token1Deposited?.toSignificant(6)}</Text>
+                <Text textStyle={isMobile ? "R_16M" : "R_14M"} color={ColorStyles.BLACK}>{token1Deposited?.toSignificant(6)}</Text>
               ) : (
                 '-'
               )}
@@ -204,8 +224,8 @@ export default function FullPositionCard({ pair, isLastCard = false }: PositionC
         <Button
           as={Link}
           to={`/remove/${currencyId(currency0)}/${currencyId(currency1)}`}
-          width="100px"
-          scale={ButtonScales.MD}
+          width={isMobile ? "100%" : "100px"}
+          scale={isMobile ? ButtonScales.LG : ButtonScales.MD}
           variant={ButtonVariants.LINE}
           textStyle="R_14B"
           color={ColorStyles.DEEPGREY}
