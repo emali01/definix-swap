@@ -10,13 +10,12 @@ type ConfirmationModalContentProps = {
 
 const ConfirmationModalContent = ({ 
   mainTitle, 
-  title, 
+  title,
   topContent, 
   bottomContent 
 }: ConfirmationModalContentProps) => {
   return (
-    <Flex width="464px" flexDirection="column">
-
+    <Flex width={`${464 - (24 * 2)}px`} flexDirection="column">
       <Flex justifyContent="space-between" p="22px 0">
         <Text textStyle="R_18B" color={ColorStyles.BLACK}>
           {mainTitle}
@@ -24,7 +23,7 @@ const ConfirmationModalContent = ({
         <CloseIcon />
       </Flex>
 
-      <Flex flexDirection="column" mb="20px">
+      <Flex flexDirection="column" mb="20px" mt="16px">
         {topContent()}
       </Flex>
       <Flex flexDirection="column">

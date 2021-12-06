@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import { Modal } from 'definixswap-uikit'
+import { useHistory } from 'react-router'
 import { useActiveWeb3React } from '../../hooks'
-// import ConfirmationPendingContent from './ConfirmationPendingContent'
 
 interface ConfirmationModalProps {
   isOpen: boolean
@@ -14,6 +14,11 @@ interface ConfirmationModalProps {
   submittedContent?: () => React.ReactNode
   errorContent?: () => React.ReactNode
   onDismiss: () => void
+
+  setShowConfirm: any
+  setTxHash: any
+  onFieldAInput?: any
+  onFieldBInput?: any
 }
 
 const ModalWrapper = styled.div`
@@ -39,29 +44,46 @@ const TransactionConfirmationModal = ({
   onDismiss,
   pendingIcon,
   submittedContent,
-  errorContent
+  errorContent,
+  setShowConfirm,
+  setTxHash,
+  onFieldAInput,
+  onFieldBInput
 }: ConfirmationModalProps) => {
+  const history = useHistory();
+
   const { chainId } = useActiveWeb3React()
+
+  useEffect(() => {
+    if(isSubmitted){
+      setShowConfirm(false);
+      setTxHash('');
+      if(onFieldAInput && onFieldBInput){
+        onFieldAInput('');
+        onFieldBInput('');
+        // history.replace('/liquidity')
+      }
+    }
+  }, [history, isSubmitted, onFieldAInput, onFieldBInput, setShowConfirm, setTxHash])
 
   if (!chainId) return null
 
-  // confirmation screen
-  return isOpen ? (
-    <ModalWrapper>
-      <Modal
-        // title=""
-        // onBack={!isPending ? onDismiss : undefined}
-        onDismiss={onDismiss}
-        hideHeader
-        hideCloseButton
-      >
-        {!isSubmitted && !isError && (
-          confirmContent()
-        )}
-      </Modal>
-    </ModalWrapper>
-  ) : (
-    <></>
+  return (
+    <>
+      {isOpen && (
+        <ModalWrapper>
+          <Modal
+            onDismiss={onDismiss}
+            hideHeader
+            hideCloseButton
+          >
+            {/* {!isSubmitted && !isError && ( */}
+              {confirmContent()}
+            {/* )} */}
+          </Modal>
+        </ModalWrapper>
+      )}
+    </>
   )
 }
 

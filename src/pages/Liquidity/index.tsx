@@ -3,11 +3,9 @@ import { ethers } from 'ethers'
 import { BigNumber } from '@ethersproject/bignumber'
 import { abi as IUniswapV2Router02ABI } from '@uniswap/v2-periphery/build/IUniswapV2Router02.json'
 import BigNumberJs from 'bignumber.js'
-import { AutoColumn } from 'components/Column'
 import DoubleCurrencyLogo from 'components/DoubleLogo'
 import { KlipModalContext } from '@sixnetwork/klaytn-use-wallet'
 import { useCaverJsReact } from '@sixnetwork/caverjs-react-core'
-import { RowBetween, RowFixed } from 'components/Row'
 import { KlipConnector } from "@sixnetwork/klip-connector"
 import tp from 'tp-js-sdk'
 import {sendAnalyticsData} from 'utils/definixAnalytics'
@@ -28,7 +26,7 @@ import { useDerivedMintInfo, useMintActionHandlers, useMintState } from 'state/m
 import { useTransactionAdder } from 'state/transactions/hooks'
 import { KlaytnTransactionResponse } from 'state/transactions/actions'
 import { useIsExpertMode, useUserDeadline, useUserSlippageTolerance } from 'state/user/hooks'
-import { TabBox, Box, Flex, Button, Text as UIKitText, TitleSet, ColorStyles } from 'definixswap-uikit'
+import { TabBox, Box, Flex, Button, Text, TitleSet, ColorStyles } from 'definixswap-uikit'
 import { calculateGasMargin, calculateSlippageAmount, getRouterContract } from 'utils'
 import { currencyId } from 'utils/currencyId'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
@@ -352,47 +350,45 @@ export default function Liquidity({
   }
 
   const modalHeader = useCallback(() => {
+    const { t } = useTranslation();
+
     return (
-      <div>
+      <>
         {noLiquidity ? (
-          <RowFixed mb="0 !important">
+          <Flex>
             <DoubleCurrencyLogo
               currency0={currencies[Field.CURRENCY_A]}
               currency1={currencies[Field.CURRENCY_B]}
-              size={40}
+              size={32}
             />
-            <UIKitText fontSize="24px" ml="3" fontWeight="500">
+            <Text>
               {`${currencies[Field.CURRENCY_A]?.symbol}/${currencies[Field.CURRENCY_B]?.symbol}`}
-            </UIKitText>
-          </RowFixed>
+            </Text>
+          </Flex>
         ) : (
-          <AutoColumn gap="24px">
-            <RowBetween align="center">
-              <RowFixed mb="0 !important">
+          <Flex flexDirection="column">
+            <Text textStyle="R_16M" color={ColorStyles.DEEPGREY}>{t('You are creating a pool')}</Text>
+            <Flex justifyContent="space-between" alignItems="center" p="14px 0px" mb="20px">
+              <Flex alignItems="center">
                 <DoubleCurrencyLogo
                   currency0={currencies[Field.CURRENCY_A]}
                   currency1={currencies[Field.CURRENCY_B]}
-                  size={40}
+                  size={32}
                 />
-                <UIKitText fontSize="24px" ml="3" fontWeight="500">
-                  {`${currencies[Field.CURRENCY_A]?.symbol}/${currencies[Field.CURRENCY_B]?.symbol}`}
-                </UIKitText>
-              </RowFixed>
+                <Text ml="10px" textStyle="R_16M" color={ColorStyles.BLACK}>
+                  {`${currencies[Field.CURRENCY_A]?.symbol}-${currencies[Field.CURRENCY_B]?.symbol}`}
+                </Text>
+              </Flex>
 
-              <UIKitText fontSize="24px" fontWeight="500">
+              <Text textStyle="R_16R" color={ColorStyles.BLACK}>
                 {liquidityMinted?.toSignificant(6)}
-              </UIKitText>
-            </RowBetween>
-
-            <UIKitText>
-              Output is estimated. If the price changes by more than
-              <strong className="mx-1">{allowedSlippage / 100}%</strong>your transaction will revert.
-            </UIKitText>
-          </AutoColumn>
+              </Text>
+            </Flex>
+          </Flex>
         )}
-      </div>
+      </>
     )
-  }, [allowedSlippage, currencies, liquidityMinted, noLiquidity])
+  }, [currencies, liquidityMinted, noLiquidity])
 
   const modalBottom = () => {
     return (
@@ -403,6 +399,7 @@ export default function Liquidity({
         noLiquidity={noLiquidity}
         onAdd={onAdd}
         poolTokenPercentage={poolTokenPercentage}
+        allowedSlippage={allowedSlippage}
       />
     )
   }
@@ -599,11 +596,11 @@ export default function Liquidity({
           <AddLiquidity 
             noLiquidity={noLiquidity}
             formattedAmounts={formattedAmounts}
-            onFieldAInput={onFieldAInput}
             maxAmounts={maxAmounts}
             handleCurrencyASelect={handleCurrencyASelect}
             atMaxAmounts={atMaxAmounts}
             currencies={currencies}
+            onFieldAInput={onFieldAInput}
             onFieldBInput={onFieldBInput}
             handleCurrencyBSelect={handleCurrencyBSelect}
             approvalA={approvalA}
@@ -645,27 +642,30 @@ export default function Liquidity({
           <TabBox tabs={tabs} />
         </Box>
       </Flex>
-      
-      {showConfirm && (
-        <TransactionConfirmationModal
-          isOpen={showConfirm}
-          isPending={!!attemptingTxn}
-          isSubmitted={!!txHash}
-          isError={!!errorMsg}
-          confirmContent={() => (
-            <ConfirmationModalContent
-              mainTitle="Confirm Liquidity"
-              title={noLiquidity ? 'You are creating a pool' : 'You will receive'}
-              topContent={modalHeader}
-              bottomContent={modalBottom}
-            />
-          )}
-          pendingIcon={null}
-          submittedContent={submittedContent}
-          errorContent={errorContent}
-          onDismiss={handleDismissConfirmation}
-        />
-      )}
+
+      <TransactionConfirmationModal
+        isOpen={showConfirm}
+        isPending={!!attemptingTxn}
+        isSubmitted={!!txHash}
+        isError={!!errorMsg}
+        confirmContent={() => (
+          <ConfirmationModalContent
+            mainTitle={t("Confirm Add liquidity")}
+            title={noLiquidity ? t('You are creating a pool') : t('You will receive')}
+            topContent={modalHeader}
+            bottomContent={modalBottom}
+          />
+        )}
+        pendingIcon={null}
+        submittedContent={submittedContent}
+        errorContent={errorContent}
+        onDismiss={handleDismissConfirmation}
+
+        setShowConfirm={setShowConfirm}
+        setTxHash={setTxHash}
+        onFieldAInput={onFieldAInput}
+        onFieldBInput={onFieldBInput}
+      />
     </Flex>
   )
 }
