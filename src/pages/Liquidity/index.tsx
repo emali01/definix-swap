@@ -1,4 +1,5 @@
 import React, { useCallback, useState, useContext, useMemo } from 'react'
+import { useParams } from 'react-router';
 import Caver from 'caver-js'
 import { ethers } from 'ethers'
 import { BigNumber } from '@ethersproject/bignumber'
@@ -11,20 +12,18 @@ import {sendAnalyticsData} from 'utils/definixAnalytics'
 import TransactionConfirmationModal, {
   ConfirmationModalContent,
 } from 'components/TransactionConfirmationModal'
-import { Currency, currencyEquals, ETHER, TokenAmount, WETH } from 'definixswap-sdk'
+import { ETHER } from 'definixswap-sdk'
 import { useActiveWeb3React } from 'hooks'
 import { useCurrency } from 'hooks/Tokens'
 import { useApproveCallback } from 'hooks/useApproveCallback'
-import { RouteComponentProps } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Field } from 'state/mint/actions'
-import { useDerivedMintInfo, useMintActionHandlers, useMintState } from 'state/mint/hooks'
+import { useDerivedMintInfo, useMintActionHandlers } from 'state/mint/hooks'
 import { useTransactionAdder } from 'state/transactions/hooks'
 import { KlaytnTransactionResponse } from 'state/transactions/actions'
 import { useUserDeadline, useUserSlippageTolerance } from 'state/user/hooks'
-import { TabBox, Box, Flex, TitleSet, useMatchBreakpoints, Tabs, ColorStyles, useModal } from 'definixswap-uikit'
+import { Box, Flex, TitleSet, useMatchBreakpoints, Tabs, ColorStyles } from 'definixswap-uikit'
 import { calculateGasMargin, calculateSlippageAmount, getRouterContract } from 'utils'
-import { currencyId } from 'utils/currencyId'
 import { wrappedCurrency } from 'utils/wrappedCurrency'
 import UseDeParam from 'hooks/useDeParam'
 import { ROUTER_ADDRESS, HERODOTUS_ADDRESS } from '../../constants'
@@ -37,16 +36,14 @@ import ModalBottom from './ModalBottom'
 import ModalHeader from './ModalHeader'
 import ErrorContent from './ErrorContent'
 import SubmittedContent from './SubmittedContent'
-import ConfirmAddModal from './ConfirmAddModal'
 
-export default function Liquidity({
-  match: {
-    params: { currencyIdA, currencyIdB }
-  },
-  history
-}: RouteComponentProps<{ currencyIdA?: string; currencyIdB?: string }>) {
+const isKlipConnector = (connector) => connector instanceof KlipConnector;
+
+const Liquidity: React.FC = () => {
+  const { currencyIdA, currencyIdB } = useParams<{currencyIdA?: string; currencyIdB?: string;}>();
   const { isXl, isXxl } = useMatchBreakpoints()
   const isMobile = useMemo(() => !isXl && !isXxl, [isXl, isXxl])
+  const { t } = useTranslation();
 
   const { account, chainId, library } = useActiveWeb3React()
   const { connector } = useCaverJsReact()
@@ -55,12 +52,6 @@ export default function Liquidity({
   const currencyB = useCurrency(currencyIdB)
 
   const herodotusAddress = useMemo(() => HERODOTUS_ADDRESS[chainId || ''], [chainId]);
-
-  const oneCurrencyIsWETH = Boolean(
-    chainId &&
-    ((currencyA && currencyEquals(currencyA, WETH(chainId))) ||
-      (currencyB && currencyEquals(currencyB, WETH(chainId))))
-  )
 
   const {
     currencies,
@@ -77,6 +68,9 @@ export default function Liquidity({
   const [attemptingTxn, setAttemptingTxn] = useState<boolean>(false) // clicked confirm
   const [errorMsg, setErrorMsg] = useState<string>('')
 
+  const tabNames = useMemo(() => [t('Add'), t('Remove')], [t]);
+  const [curTab, setCurTab] = useState<string>(tabNames[0]);
+
   // txn values
   const [deadline] = useUserDeadline() // custom from users settings
   const [allowedSlippage] = useUserSlippageTolerance() // custom from users
@@ -84,7 +78,7 @@ export default function Liquidity({
 
   const [approvalLP, approveLPCallback] = useApproveCallback(liquidityMinted, herodotusAddress)
 
-  const addTransaction = useTransactionAdder()
+  const addTransaction = useTransactionAdder();
 
   const sendDefinixAnalytics = useCallback(() =>{
     if (tp.isConnected()) {
@@ -108,12 +102,13 @@ export default function Liquidity({
 
   const onAdd = useCallback(async () => {
     if (!chainId || !library || !account) return
-    const router = getRouterContract(chainId, library, account)
-
-    const { [Field.CURRENCY_A]: parsedAmountA, [Field.CURRENCY_B]: parsedAmountB } = parsedAmounts
+    
+    const { [Field.CURRENCY_A]: parsedAmountA, [Field.CURRENCY_B]: parsedAmountB } = parsedAmounts;
     if (!parsedAmountA || !parsedAmountB || !currencyA || !currencyB) {
       return
     }
+
+    const router = getRouterContract(chainId, library, account)
 
     const amountsMin = {
       [Field.CURRENCY_A]: calculateSlippageAmount(parsedAmountA, noLiquidity ? 0 : allowedSlippage)[0],
@@ -233,7 +228,6 @@ export default function Liquidity({
                     })
                   }).catch(e => {
                     setAttemptingTxn(false)
-                    // we only care if the error is something _other_ than the user rejected the tx
                     if (e?.code !== 4001) {
                       console.error(e)
                       setErrorMsg(e)
@@ -275,7 +269,6 @@ export default function Liquidity({
         })
         .catch(e => {
           setAttemptingTxn(false)
-          // we only care if the error is something _other_ than the user rejected the tx
           if (e?.code !== 4001) {
             console.error(e)
             setErrorMsg(e)
@@ -296,86 +289,18 @@ export default function Liquidity({
     noLiquidity,
     parsedAmounts,
     sendDefinixAnalytics,
-    setShowModal
+    setShowModal,
   ]);
-
-  const handleCurrencyASelect = useCallback(
-    (currA: Currency) => {
-      const newCurrencyIdA = currencyId(currA)
-      if (newCurrencyIdA === currencyIdB) {
-        history.push(`/liquidity/add/${currencyIdB}/${currencyIdA}`)
-      } else {
-        history.push(`/liquidity/add/${newCurrencyIdA}/${currencyIdB}`)
-      }
-    },
-    [currencyIdB, history, currencyIdA]
-  )
-  const handleCurrencyBSelect = useCallback(
-    (currB: Currency) => {
-      const newCurrencyIdB = currencyId(currB)
-      if (currencyIdA === newCurrencyIdB) {
-        if (currencyIdB) {
-          history.push(`/liquidity/add/${currencyIdB}/${newCurrencyIdB}`)
-        } else {
-          history.push(`/liquidity/add/${newCurrencyIdB}`)
-        }
-      } else {
-        history.push(`/liquidity/add/${currencyIdA || 'KLAY'}/${newCurrencyIdB}`)
-      }
-    },
-    [currencyIdA, history, currencyIdB]
-  )
 
   const handleDismissConfirmation = useCallback(() => {
     setShowConfirm(false)
-    // if there was a tx hash, we want to clear the input
     if (txHash) {
       onFieldAInput('')
     }
     setTxHash('')
     setErrorMsg('')
   }, [onFieldAInput, txHash])
-
-  const { t } = useTranslation();
-
   
-  const tabs = useMemo(() => [
-    {
-      name: "Add",
-      component: (
-        <AddLiquidity 
-          currencyA={currencyA}
-          currencyB={currencyB}
-          onFieldAInput={onFieldAInput}
-          onFieldBInput={onFieldBInput}
-          handleCurrencyASelect={handleCurrencyASelect}
-          handleCurrencyBSelect={handleCurrencyBSelect}
-          onAdd={onAdd}
-          setShowConfirm={setShowConfirm}
-          oneCurrencyIsWETH={oneCurrencyIsWETH}
-        />
-      ),
-    },
-    {
-      name: "Remove",
-      component: <LiquidityList />
-    },
-  ], [
-    currencyA,
-    currencyB,
-    onFieldAInput,
-    onFieldBInput,
-    handleCurrencyASelect,
-    handleCurrencyBSelect,
-    onAdd,
-    setShowConfirm,
-    oneCurrencyIsWETH
-  ]);
-  const tabNames = useMemo(() => tabs.map(({ name }) => name), [tabs]);
-  const [curTab, setCurTab] = useState<string>(tabNames[0]);
-
-  console.log('~~~', curTab);
-
   return (
     <Flex width="100%" justifyContent="center">
       <Flex flexDirection="column" width={isMobile ? "100%" : "629px"}>
@@ -389,23 +314,31 @@ export default function Liquidity({
         </Flex>
         <Flex
           flexDirection="column"
-          borderRadius="16px"
         >
           <Box
             backgroundColor={ColorStyles.WHITE}
+            borderTopLeftRadius="16px"
+            borderTopRightRadius="16px"
           >
             <Tabs 
               tabs={tabNames}
               curTab={curTab}
               setCurTab={setCurTab}
               small={isMobile}
-              width={isMobile ? "50%" : "auto"}
+              equal={isMobile}
             />
           </Box>
           <Box>
-            {tabs.map(({ name, component }) => (curTab === name ? component : null))}
+            {curTab === tabNames[0] && (
+              <AddLiquidity
+                onAdd={onAdd}
+                setShowConfirm={setShowConfirm}
+              />
+            )}
+            {curTab === tabNames[1] && (
+              <LiquidityList />
+            )}
           </Box>
-          {/* <TabBox tabs={tabs} /> */}
         </Flex>
       </Flex>
 
@@ -476,4 +409,4 @@ export default function Liquidity({
   )
 }
 
-const isKlipConnector = (connector) => connector instanceof KlipConnector
+export default React.memo(Liquidity);
