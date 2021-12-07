@@ -68,6 +68,9 @@ const Liquidity: React.FC = () => {
   const [attemptingTxn, setAttemptingTxn] = useState<boolean>(false) // clicked confirm
   const [errorMsg, setErrorMsg] = useState<string>('')
 
+  const tabNames = useMemo(() => [t('Add'), t('Remove')], [t]);
+  const [curTab, setCurTab] = useState<string>(tabNames[0]);
+
   // txn values
   const [deadline] = useUserDeadline() // custom from users settings
   const [allowedSlippage] = useUserSlippageTolerance() // custom from users
@@ -297,29 +300,7 @@ const Liquidity: React.FC = () => {
     setTxHash('')
     setErrorMsg('')
   }, [onFieldAInput, txHash])
-
-  const tabs = useMemo(() => [
-    {
-      name: "Add",
-      component: (
-        <AddLiquidity
-          onAdd={onAdd}
-          setShowConfirm={setShowConfirm}
-        />
-      ),
-    },
-    {
-      name: "Remove",
-      component: <LiquidityList />
-    },
-  ], [
-    onAdd,
-    setShowConfirm,
-  ]);
   
-  const tabNames = useMemo(() => tabs.map(({ name }) => name), [tabs]);
-  const [curTab, setCurTab] = useState<string>(tabNames[0]);
-
   return (
     <Flex width="100%" justifyContent="center">
       <Flex flexDirection="column" width={isMobile ? "100%" : "629px"}>
@@ -343,13 +324,20 @@ const Liquidity: React.FC = () => {
               curTab={curTab}
               setCurTab={setCurTab}
               small={isMobile}
-              width={isMobile ? "50%" : "auto"}
+              equal={isMobile}
             />
           </Box>
           <Box>
-            {tabs.map(({ name, component }) => (curTab === name ? component : null))}
+            {curTab === tabNames[0] && (
+              <AddLiquidity
+                onAdd={onAdd}
+                setShowConfirm={setShowConfirm}
+              />
+            )}
+            {curTab === tabNames[1] && (
+              <LiquidityList />
+            )}
           </Box>
-          {/* <TabBox tabs={tabs} /> */}
         </Flex>
       </Flex>
 

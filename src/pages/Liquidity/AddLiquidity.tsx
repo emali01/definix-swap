@@ -242,7 +242,7 @@ const AddLiquidity: React.FC<IProps> = ({
                               <CheckBIcon />
                             </Box>
                             <Text ml="6px">
-                              Approved to {currencies[Field.CURRENCY_A]?.symbol}
+                              {t('Approved to')} {currencies[Field.CURRENCY_A]?.symbol}
                             </Text>
                           </Button> )}
 
@@ -253,9 +253,9 @@ const AddLiquidity: React.FC<IProps> = ({
                             width="186px"
                           >
                             {approvalA === ApprovalState.PENDING ? (
-                              <Dots>Approving {currencies[Field.CURRENCY_A]?.symbol}</Dots>
+                              <Dots>{t('Approving')} {currencies[Field.CURRENCY_A]?.symbol}</Dots>
                             ) : (
-                              `Approve ${currencies[Field.CURRENCY_A]?.symbol}`
+                              `${t('Approve')} ${currencies[Field.CURRENCY_A]?.symbol}`
                             )}
                           </Button>)}
                       </Flex>
@@ -283,7 +283,7 @@ const AddLiquidity: React.FC<IProps> = ({
                               <CheckBIcon />
                             </Box>
                             <Text ml="6px">
-                              Approved to {currencies[Field.CURRENCY_B]?.symbol}
+                              {t('Approved to')} {currencies[Field.CURRENCY_B]?.symbol}
                             </Text>
                           </Button> )}
 
@@ -296,7 +296,7 @@ const AddLiquidity: React.FC<IProps> = ({
                             {approvalB === ApprovalState.PENDING ? (
                               <Dots>Approving {currencies[Field.CURRENCY_B]?.symbol}</Dots>
                             ) : (
-                              `Approve to ${currencies[Field.CURRENCY_B]?.symbol}`
+                              `${t('Approve to')} ${currencies[Field.CURRENCY_B]?.symbol}`
                             )}
                           </Button>)}
                       </Flex>
@@ -321,15 +321,17 @@ const AddLiquidity: React.FC<IProps> = ({
                   width="100%"
                   scale={ButtonScales.LG}
                 >
-                  {error ?? 'Supply'}
+                  {error ?? t('Supply')}
                 </Button>
               </Flex>
             )}
           </Box>
 
-          <Noti type={NotiType.ALERT} mt="12px">
-            Error message
-          </Noti>
+          {error && (
+            <Noti type={NotiType.ALERT} mt="12px">
+              {t('Error message')}
+            </Noti>)
+          }
 
           <Box mt="24px">
             {currencies[Field.CURRENCY_A] && currencies[Field.CURRENCY_B] && pairState !== PairState.INVALID && (

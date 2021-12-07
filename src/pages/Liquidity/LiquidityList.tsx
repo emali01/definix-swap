@@ -8,8 +8,10 @@ import { useActiveWeb3React } from "hooks";
 import { Flex, Box, Text, ColorStyles, ImgEmptyStateWallet, ImgEmptyStateLiquidity, useMatchBreakpoints } from "definixswap-uikit";
 import ConnectWalletButton from "components/ConnectWalletButton";
 import { useHistory } from "react-router";
+import { useTranslation } from "react-i18next";
 
 const LiquidityList: React.FC = () => {
+  const { t } = useTranslation();
   const history = useHistory();
   const { isXl, isXxl } = useMatchBreakpoints()
   const isMobile = useMemo(() => !isXl && !isXxl, [isXl, isXxl])
@@ -65,7 +67,9 @@ const LiquidityList: React.FC = () => {
           <Box mb="24px">
             <ImgEmptyStateLiquidity />
           </Box>
-          <Text textStyle="R_16M" color={ColorStyles.DEEPGREY}>No liquidity found.</Text>
+          <Text textStyle="R_16M" color={ColorStyles.DEEPGREY}>
+            {t('No liquidity found.')}
+          </Text>
         </Flex>
       )}
       {!account && (
@@ -73,7 +77,9 @@ const LiquidityList: React.FC = () => {
           <Box mb="24px">
             <ImgEmptyStateWallet />
           </Box>
-          <Text mb="60px" textStyle="R_16M" color={ColorStyles.DEEPGREY}>Connect to a wallet to view your liquidity.</Text>
+          <Text mb="60px" textStyle="R_16M" color={ColorStyles.DEEPGREY}>
+            {t('Connect to a wallet to view your liquidity.')}
+          </Text>
           <ConnectWalletButton />
         </Flex>
       )}
