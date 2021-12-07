@@ -12,7 +12,8 @@ import {
   CheckBIcon,
   NotiType,
   Noti,
-  useMatchBreakpoints
+  useMatchBreakpoints,
+  useModal
 } from 'definixswap-uikit';
 import { Currency, TokenAmount } from 'definixswap-sdk';
 import { Field } from 'state/mint/actions'
@@ -23,7 +24,7 @@ import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
 import { PairState } from 'data/Reserves'
 import { MinimalPositionCard } from 'components/PositionCard';
 import { useActiveWeb3React } from 'hooks';
-import { useIsExpertMode } from 'state/user/hooks';
+import { useIsExpertMode, useUserSlippageTolerance } from 'state/user/hooks';
 import { useDerivedMintInfo, useMintState } from 'state/mint/hooks';
 import { ROUTER_ADDRESS } from 'constants/index';
 
@@ -34,6 +35,7 @@ import CurrencyInputPanel from 'components/CurrencyInputPanel';
 
 import NoLiquidity from './NoLiquidity';
 import { PoolPriceBar } from './PoolPriceBar';
+import ConfirmAddModal from './ConfirmAddModal';
 
 interface IProps {
   currencyA: Currency;
@@ -63,6 +65,7 @@ const AddLiquidity: React.FC<IProps> = ({
   const { isXl, isXxl } = useMatchBreakpoints()
   const isMobile = useMemo(() => !isXl && !isXxl, [isXl, isXxl])
   const { t } = useTranslation(); 
+  const [allowedSlippage] = useUserSlippageTolerance()
 
   const {
     currencyBalances,
@@ -74,6 +77,7 @@ const AddLiquidity: React.FC<IProps> = ({
     price,
     noLiquidity,
     poolTokenPercentage,
+    liquidityMinted,
     error
   } = useDerivedMintInfo(currencyA ?? undefined, currencyB ?? undefined)
   const isValid = useMemo(() => !error, [error]);
@@ -110,6 +114,16 @@ const AddLiquidity: React.FC<IProps> = ({
     },
     {}
   )
+
+  const [onPresentConfirmAddModal] = useModal(<ConfirmAddModal
+    noLiquidity={noLiquidity}
+    currencies={currencies}
+    liquidityMinted={liquidityMinted}
+    price={price}
+    parsedAmounts={parsedAmounts}
+    onAdd={onAdd}
+    poolTokenPercentage={poolTokenPercentage}
+    allowedSlippage={allowedSlippage} />);
 
   return (
     <>
@@ -280,7 +294,8 @@ const AddLiquidity: React.FC<IProps> = ({
                     if (expertMode) {
                       onAdd()
                     } else {
-                      setShowConfirm(true)
+                      onPresentConfirmAddModal();
+                      // setShowConfirm(true)
                     }
                   }}
                   disabled={

@@ -22,7 +22,7 @@ import { useDerivedMintInfo, useMintActionHandlers, useMintState } from 'state/m
 import { useTransactionAdder } from 'state/transactions/hooks'
 import { KlaytnTransactionResponse } from 'state/transactions/actions'
 import { useUserDeadline, useUserSlippageTolerance } from 'state/user/hooks'
-import { TabBox, Box, Flex, TitleSet, useMatchBreakpoints, Tabs, ColorStyles } from 'definixswap-uikit'
+import { TabBox, Box, Flex, TitleSet, useMatchBreakpoints, Tabs, ColorStyles, useModal } from 'definixswap-uikit'
 import { calculateGasMargin, calculateSlippageAmount, getRouterContract } from 'utils'
 import { currencyId } from 'utils/currencyId'
 import { wrappedCurrency } from 'utils/wrappedCurrency'
@@ -37,6 +37,7 @@ import ModalBottom from './ModalBottom'
 import ModalHeader from './ModalHeader'
 import ErrorContent from './ErrorContent'
 import SubmittedContent from './SubmittedContent'
+import ConfirmAddModal from './ConfirmAddModal'
 
 export default function Liquidity({
   match: {

@@ -2,10 +2,8 @@ import React, { StrictMode } from 'react'
 import ReactDOM from 'react-dom'
 import ReactGA from 'react-ga';
 import TagManager from 'react-gtm-module';
-import { ResetCSS } from 'uikit-dev'
 import { Config } from 'definixswap-sdk'
 import { KlipModalProvider } from "@sixnetwork/klaytn-use-wallet"
-import GlobalStyle from './style/Global'
 import App from './pages/App'
 import ApplicationUpdater from './state/application/updater'
 import ListsUpdater from './state/lists/updater'

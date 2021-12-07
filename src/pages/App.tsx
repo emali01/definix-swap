@@ -20,18 +20,15 @@ import { RedirectPathToSwapOnly, RedirectToSwap } from './Swap/redirects'
 
 export default function App() {
   const { account } = useCaverJsReact()
-  const { login, logout } = useCaverJsReactForWallet()
+  const { login } = useCaverJsReactForWallet()
 
   // wallet
   const checkConnector = (connector: string) => window.localStorage.getItem('connector') === connector
   useEffect(() => {
-    console.log(window.localStorage.getItem('accountStatus'), window.localStorage.getItem('connector'))
     if (!account && window.localStorage.getItem('accountStatus') && checkConnector("injected")) {
       login('injected');
-      // activate(injected)
     }else if (!account && window.localStorage.getItem('accountStatus') && window.localStorage.getItem('userAccount') && checkConnector("klip")){
       login('klip');
-      // activate(klip(()=>{setShowModal(true)}, ()=>{setShowModal(false)}))
     }
 
   }, [account, login])

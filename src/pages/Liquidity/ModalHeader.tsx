@@ -22,14 +22,14 @@ const ModalHeader: React.FC<IProps> = ({
   const { t } = useTranslation();
   return (
     <>
-      {noLiquidity ? (
-        <Flex>
+      {!noLiquidity ? (
+        <Flex alignItems="center">
           <DoubleCurrencyLogo
             currency0={currencies[Field.CURRENCY_A]}
             currency1={currencies[Field.CURRENCY_B]}
             size={32}
           />
-          <Text>
+          <Text textStyle="R_16M" color={ColorStyles.BLACK}>
             {`${currencies[Field.CURRENCY_A]?.symbol}/${currencies[Field.CURRENCY_B]?.symbol}`}
           </Text>
         </Flex>
