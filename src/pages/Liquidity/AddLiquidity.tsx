@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { 
   ColorStyles,
@@ -14,9 +14,10 @@ import {
   Noti,
   useMatchBreakpoints
 } from 'definixswap-uikit';
-import { Currency, TokenAmount } from 'definixswap-sdk';
+import { Currency, currencyEquals, TokenAmount, WETH } from 'definixswap-sdk';
 import { Field } from 'state/mint/actions'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
+import { currencyId } from 'utils/currencyId';
 
 import numeral from 'numeral'
 import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
@@ -24,8 +25,10 @@ import { PairState } from 'data/Reserves'
 import { MinimalPositionCard } from 'components/PositionCard';
 import { useActiveWeb3React } from 'hooks';
 import { useIsExpertMode } from 'state/user/hooks';
-import { useDerivedMintInfo, useMintState } from 'state/mint/hooks';
+import { useDerivedMintInfo, useMintActionHandlers, useMintState } from 'state/mint/hooks';
 import { ROUTER_ADDRESS } from 'constants/index';
+import { useHistory, useParams } from 'react-router';
+import { useCurrency } from 'hooks/Tokens';
 
 import CurrencyLogo from 'components/CurrencyLogo';
 import { Dots } from 'components/swap/styleds'
@@ -35,29 +38,20 @@ import CurrencyInputPanel from 'components/CurrencyInputPanel';
 import NoLiquidity from './NoLiquidity';
 import { PoolPriceBar } from './PoolPriceBar';
 
+
 interface IProps {
-  currencyA: Currency;
-  currencyB: Currency;
-  onFieldAInput: (typedValue: string) => void
-  onFieldBInput: (typedValue: string) => void
-  handleCurrencyASelect: (currA: Currency) => void
-  handleCurrencyBSelect: (currB: Currency) => void
   onAdd: () => Promise<void>
   setShowConfirm: React.Dispatch<React.SetStateAction<boolean>>
-  oneCurrencyIsWETH: boolean
 }
 
 const AddLiquidity: React.FC<IProps> = ({
-  onFieldAInput,
-  handleCurrencyASelect,
-  onFieldBInput,
-  handleCurrencyBSelect,
   onAdd,
   setShowConfirm,
-  oneCurrencyIsWETH,
-  currencyA,
-  currencyB,
 }) => {
+  const history = useHistory();
+  const { currencyIdA, currencyIdB } = useParams<{currencyIdA: string; currencyIdB: string;}>();
+  const currencyA = useCurrency(currencyIdA)
+  const currencyB = useCurrency(currencyIdB)
   const { chainId, account } = useActiveWeb3React()
   const expertMode = useIsExpertMode()
   const { isXl, isXxl } = useMatchBreakpoints()
@@ -76,6 +70,7 @@ const AddLiquidity: React.FC<IProps> = ({
     poolTokenPercentage,
     error
   } = useDerivedMintInfo(currencyA ?? undefined, currencyB ?? undefined)
+  const { onFieldAInput, onFieldBInput } = useMintActionHandlers(noLiquidity)
   const isValid = useMemo(() => !error, [error]);
 
   const { independentField, typedValue, otherTypedValue } = useMintState()
@@ -111,6 +106,38 @@ const AddLiquidity: React.FC<IProps> = ({
     {}
   )
 
+  const handleCurrencyASelect = useCallback(
+    (currA: Currency) => {
+      const newCurrencyIdA = currencyId(currA)
+      if (newCurrencyIdA === currencyIdB) {
+        history.push(`/liquidity/add/${currencyIdB}/${currencyIdA}`)
+      } else {
+        history.push(`/liquidity/add/${newCurrencyIdA}/${currencyIdB}`)
+      }
+    },
+    [currencyIdB, history, currencyIdA]
+  )
+  const handleCurrencyBSelect = useCallback(
+    (currB: Currency) => {
+      const newCurrencyIdB = currencyId(currB)
+      if (currencyIdA === newCurrencyIdB) {
+        if (currencyIdB) {
+          history.push(`/liquidity/add/${currencyIdB}/${newCurrencyIdB}`)
+        } else {
+          history.push(`/liquidity/add/${newCurrencyIdB}`)
+        }
+      } else {
+        history.push(`/liquidity/add/${currencyIdA || 'KLAY'}/${newCurrencyIdB}`)
+      }
+    },
+    [currencyIdA, history, currencyIdB]
+  )
+
+  const oneCurrencyIsWETH = Boolean(
+    chainId &&
+    ((currencyA && currencyEquals(currencyA, WETH(chainId))) ||
+      (currencyB && currencyEquals(currencyB, WETH(chainId))))
+  )
   return (
     <>
       <Flex 
