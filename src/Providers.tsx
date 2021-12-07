@@ -1,6 +1,6 @@
 import React from 'react'
 import { createCaverJsReactRoot, CaverJsReactProvider } from '@sixnetwork/caverjs-react-core'
-import injected, { UseWalletProvider, KlipModalContext } from '@sixnetwork/klaytn-use-wallet'
+import { KlipModalContext } from '@sixnetwork/klaytn-use-wallet'
 import { Provider } from 'react-redux'
 import { ModalProvider } from 'definixswap-uikit'
 import { ModalProvider as OldModalProvider } from 'uikit-dev'
@@ -13,9 +13,6 @@ const Web3ProviderNetwork = createCaverJsReactRoot(NetworkContextName)
 
 const Providers: React.FC = ({ children }) => {
   const { setShowModal } = React.useContext(KlipModalContext())
-  const onPresent = () => {
-    setShowModal(true)
-  }
   const onHiddenModal = () => {
     setShowModal(false)
   }
@@ -26,13 +23,13 @@ const Providers: React.FC = ({ children }) => {
   }
   return (
     <Provider store={store}>
-      <UseWalletProvider
+      {/* <UseWalletProvider
           chainId={parseInt(process.env.REACT_APP_CHAIN_ID)}
           connectors={{
             injected,
             klip: { showModal: onPresent, closeModal: onHiddenModal },
           }}
-        >
+        > */}
         <CaverJsReactProvider getLibrary={getLibrary}>
           <Web3ProviderNetwork getLibrary={getLibrary}>
             {/* <Provider store={store}> */}
@@ -44,7 +41,7 @@ const Providers: React.FC = ({ children }) => {
             {/* </Provider> */}
           </Web3ProviderNetwork>
         </CaverJsReactProvider>
-      </UseWalletProvider>
+      {/* </UseWalletProvider> */}
     </Provider>
   )
 }
