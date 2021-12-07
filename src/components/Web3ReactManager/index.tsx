@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useCaverJsReact } from '@sixnetwork/caverjs-react-core'
 import styled from 'styled-components'
-import { useTranslation } from 'react-i18next'
 
 import { network } from '../../connectors'
 import { useEagerConnect, useInactiveListener } from '../../hooks'
@@ -20,7 +19,6 @@ const Message = styled.h2`
 `
 
 export default function Web3ReactManager({ children }: { children: JSX.Element }) {
-  const { t } = useTranslation()
   const { active } = useCaverJsReact()
   const { active: networkActive, error: networkError, activate: activateNetwork } = useCaverJsReact(NetworkContextName)
 
