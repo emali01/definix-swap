@@ -1,5 +1,5 @@
 import { Currency, CurrencyAmount, currencyEquals, ETHER, Token } from 'definixswap-sdk'
-import React, { CSSProperties, MutableRefObject, useCallback, useMemo } from 'react'
+import React, { CSSProperties, MutableRefObject } from 'react'
 import { FixedSizeList } from 'react-window'
 import styled from 'styled-components'
 import { Text, Flex, Box } from 'definixswap-uikit'
@@ -173,6 +173,7 @@ export default function CurrencyList({
         currencies.map((item) => {
           const currency = item;
           return <CurrencyRow
+            key={item.symbol}
             style={{}}
             currency={currency}
             isSelected={Boolean(selectedCurrency && currencyEquals(selectedCurrency, currency))}
