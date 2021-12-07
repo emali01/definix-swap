@@ -42,7 +42,7 @@ function ConfirmAddModalBottom({
         <TitleText color={ColorStyles.DEEPGREY} mb="12px">{t('Estimated Returns')}</TitleText>
 
         <Flex justifyContent="space-between" mb="8px">
-          <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>Deposited</Text>
+          <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>{t('Deposited')}</Text>
           <Flex flexDirection="column" alignItems="flex-end">
             <Text textStyle="R_14M" color={ColorStyles.DEEPGREY}>
               {parsedAmounts[Field.CURRENCY_A]?.toSignificant(6)} {currencies[Field.CURRENCY_A]?.symbol}
@@ -54,7 +54,7 @@ function ConfirmAddModalBottom({
         </Flex>
 
         <Flex justifyContent="space-between" mb="8px">
-          <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>Price Rate</Text>
+          <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>{t('Price Rate')}</Text>
           <Flex flexDirection="column" alignItems="flex-end">
             <Text textStyle="R_14M" color={ColorStyles.DEEPGREY}>
                 {`1 ${currencies[Field.CURRENCY_A]?.symbol} = ${price?.toSignificant(4)} ${
@@ -86,7 +86,7 @@ function ConfirmAddModalBottom({
       </Flex>
 
       <Button onClick={onAdd} width="100%" scale={ButtonScales.LG}>
-        {noLiquidity ? 'Create Pool & Supply' : 'Confirm Supply'}
+        {t(noLiquidity ? 'Create Pool & Supply' : 'Add Liquidity')}
       </Button>
     </>
   )
