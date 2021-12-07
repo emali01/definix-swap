@@ -2,9 +2,9 @@ import { Currency, CurrencyAmount, Fraction, Percent } from 'definixswap-sdk'
 import React from 'react'
 import { Flex, Button, Text, ColorStyles, ButtonScales, NotiIcon } from 'definixswap-uikit'
 import { useTranslation } from 'react-i18next'
-import { Field } from '../../state/mint/actions'
+import { Field } from 'state/mint/actions'
 
-export function ConfirmAddModalBottom({
+function ConfirmAddModalBottom({
   noLiquidity,
   price,
   currencies,
