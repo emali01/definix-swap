@@ -1,5 +1,5 @@
-import { Currency, CurrencyAmount, Fraction, Percent } from 'definixswap-sdk'
 import React from 'react'
+import { Currency, CurrencyAmount, Fraction, Percent } from 'definixswap-sdk'
 import styled from 'styled-components'
 import { Flex, Button, Text, ColorStyles, ButtonScales, NotiIcon } from 'definixswap-uikit'
 import { useTranslation } from 'react-i18next'
@@ -25,6 +25,7 @@ function ConfirmAddModalBottom({
   poolTokenPercentage,
   onAdd,
   allowedSlippage,
+  isPending,
 }: {
   noLiquidity?: boolean
   price?: Fraction
@@ -33,6 +34,7 @@ function ConfirmAddModalBottom({
   poolTokenPercentage?: Percent
   onAdd: () => void
   allowedSlippage: number;
+  isPending: boolean;
 }) {
   const { t } = useTranslation();
 
@@ -85,7 +87,7 @@ function ConfirmAddModalBottom({
         </Text>
       </Flex>
 
-      <Button onClick={onAdd} width="100%" scale={ButtonScales.LG}>
+      <Button onClick={onAdd} width="100%" scale={ButtonScales.LG} isLoading={isPending}>
         {t(noLiquidity ? 'Create Pool & Supply' : 'Add Liquidity')}
       </Button>
     </>

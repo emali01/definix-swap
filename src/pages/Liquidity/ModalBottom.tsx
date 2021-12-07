@@ -28,15 +28,16 @@ const ModalBottom: React.FC<IProps> = ({
   allowedSlippage
 }) => {
   return (
-    <ConfirmAddModalBottom
-      price={price}
-      currencies={currencies}
-      parsedAmounts={parsedAmounts}
-      noLiquidity={noLiquidity}
-      onAdd={onAdd}
-      poolTokenPercentage={poolTokenPercentage}
-      allowedSlippage={allowedSlippage}
-    />
+    <></>
+    // <ConfirmAddModalBottom
+    //   price={price}
+    //   currencies={currencies}
+    //   parsedAmounts={parsedAmounts}
+    //   noLiquidity={noLiquidity}
+    //   onAdd={onAdd}
+    //   poolTokenPercentage={poolTokenPercentage}
+    //   allowedSlippage={allowedSlippage}
+    // />
   )
 }
 

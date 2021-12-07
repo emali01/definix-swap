@@ -35,18 +35,10 @@ import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
 import { PairState } from 'data/Reserves'
 import { MinimalPositionCard } from 'components/PositionCard';
 import { useActiveWeb3React } from 'hooks';
-import UseDeParam from 'hooks/useDeParam'
-import { KlaytnTransactionResponse } from 'state/transactions/actions'
-import { useIsExpertMode, useUserDeadline, useUserSlippageTolerance } from 'state/user/hooks';
 import { useDerivedMintInfo, useMintActionHandlers, useMintState } from 'state/mint/hooks';
 import { ROUTER_ADDRESS } from 'constants/index';
-import farms from 'constants/farm'
 import { useHistory, useParams } from 'react-router';
-import { calculateGasMargin, calculateSlippageAmount, getRouterContract } from 'utils';
-import { wrappedCurrency } from 'utils/wrappedCurrency'
 import { useCurrency } from 'hooks/Tokens';
-import * as klipProvider from 'hooks/KlipProvider'
-import { getAbiByName } from 'hooks/HookHelper';
 
 import CurrencyLogo from 'components/CurrencyLogo';
 import { Dots } from 'components/swap/styleds'
@@ -58,26 +50,17 @@ import { PoolPriceBar } from './PoolPriceBar';
 import ConfirmAddModal from './ConfirmAddModal';
 
 
-const isKlipConnector = (connector) => connector instanceof KlipConnector;
-
 const AddLiquidity: React.FC = () => {
-  const [attemptingTxn, setAttemptingTxn] = useState<boolean>(false) // clicked confirm
   const [txHash, setTxHash] = useState<string>('')
   const [errorMsg, setErrorMsg] = useState<string>('')
-  const { setShowModal } = useContext(KlipModalContext())
   const history = useHistory();
   const { currencyIdA, currencyIdB } = useParams<{currencyIdA: string; currencyIdB: string;}>();
-  const { connector } = useCaverJsReact()
   const currencyA = useCurrency(currencyIdA)
   const currencyB = useCurrency(currencyIdB)
-  const { chainId, account, library } = useActiveWeb3React()
-  const expertMode = useIsExpertMode()
+  const { chainId, account } = useActiveWeb3React()
   const { isXl, isXxl } = useMatchBreakpoints()
   const isMobile = useMemo(() => !isXl && !isXxl, [isXl, isXxl])
   const { t } = useTranslation(); 
-  const [deadline] = useUserDeadline()
-  const [allowedSlippage] = useUserSlippageTolerance()
-  const addTransaction = useTransactionAdder();
 
   const {
     currencyBalances,
@@ -128,26 +111,6 @@ const AddLiquidity: React.FC = () => {
     {}
   )
 
-  const sendDefinixAnalytics = useCallback(() =>{
-    if (tp.isConnected()) {
-      const firstToken = currencies[Field.CURRENCY_A]
-      const secondToken = currencies[Field.CURRENCY_B]
-      const farm = farms.find(
-        x =>
-          x.pid !== 0 &&
-          x.pid !== 1 &&
-          ((x.tokenSymbol === firstToken?.symbol && x.quoteTokenSymbol === secondToken?.symbol) ||
-            (x.tokenSymbol === secondToken?.symbol && x.quoteTokenSymbol === firstToken?.symbol))
-      )
-      if(farm && account ){
-        tp.getDeviceId().then(res=>{
-          sendAnalyticsData(farm.pid,account,res.device_id)
-        })
-        
-      }
-    }
-  }, [account, currencies]);
-
   const handleDismissConfirmation = useCallback(() => {
     if (txHash) {
       onFieldAInput('')
@@ -156,207 +119,16 @@ const AddLiquidity: React.FC = () => {
     setErrorMsg('')
   }, [onFieldAInput, txHash])
 
-  const onAdd = useCallback(async () => {
-    if (!chainId || !library || !account) return
-    
-    const { [Field.CURRENCY_A]: parsedAmountA, [Field.CURRENCY_B]: parsedAmountB } = parsedAmounts;
-    if (!parsedAmountA || !parsedAmountB || !currencyA || !currencyB) {
-      return
-    }
-
-    const router = getRouterContract(chainId, library, account)
-
-    const amountsMin = {
-      [Field.CURRENCY_A]: calculateSlippageAmount(parsedAmountA, noLiquidity ? 0 : allowedSlippage)[0],
-      [Field.CURRENCY_B]: calculateSlippageAmount(parsedAmountB, noLiquidity ? 0 : allowedSlippage)[0]
-    }
-
-    const deadlineFromNow = Math.ceil(Date.now() / 1000) + deadline
-
-    let estimate
-    let method: (...args: any) => Promise<KlaytnTransactionResponse>
-    let args: Array<string | string[] | number>
-    let value: BigNumber | null
-    let methodName
-
-    if (currencyA === ETHER || currencyB === ETHER) {
-      const tokenBIsETH = currencyB === ETHER
-      estimate = router.estimateGas.addLiquidityETH
-      method = router.addLiquidityETH
-      methodName = "addLiquidityETH"
-      args = [
-        wrappedCurrency(tokenBIsETH ? currencyA : currencyB, chainId)?.address ?? '', // token
-        (tokenBIsETH ? parsedAmountA : parsedAmountB).raw.toString(), // token desired
-        amountsMin[tokenBIsETH ? Field.CURRENCY_A : Field.CURRENCY_B].toString(), // token min
-        amountsMin[tokenBIsETH ? Field.CURRENCY_B : Field.CURRENCY_A].toString(), // eth min
-        account,
-        deadlineFromNow
-      ]
-      value = BigNumber.from((tokenBIsETH ? parsedAmountB : parsedAmountA).raw.toString())
-    } else {
-      estimate = router.estimateGas.addLiquidity
-      method = router.addLiquidity
-      methodName = "addLiquidity"
-      args = [
-        wrappedCurrency(currencyA, chainId)?.address ?? '',
-        wrappedCurrency(currencyB, chainId)?.address ?? '',
-        parsedAmountA.raw.toString(),
-        parsedAmountB.raw.toString(),
-        amountsMin[Field.CURRENCY_A].toString(),
-        amountsMin[Field.CURRENCY_B].toString(),
-        account,
-        deadlineFromNow
-      ]
-      value = null
-    }
-
-    setAttemptingTxn(true)
-    const valueNumber = (Number(value ? (+value).toString() : "0") / (10 ** 18)).toString()
-    const valueklip = Number.parseFloat(valueNumber).toFixed(6)
-
-    if (isKlipConnector(connector)) {
-      setShowModal(true)
-      klipProvider.genQRcodeContactInteract(
-        router.address,
-        JSON.stringify(getAbiByName(methodName)),
-        JSON.stringify(args),
-        +valueklip !==0 ? `${Math.ceil(+valueklip)}000000000000000000` : "0",
-        setShowModal
-      )
-      const tx = await klipProvider.checkResponse()
-      setTxHash(tx)
-      setAttemptingTxn(false)
-      setShowModal(false)
-     
-      addTransaction(undefined, {
-        type: 'removeLiquidity',
-        klipTx: tx,
-        data: {
-          firstToken: currencyA?.symbol,
-          firstTokenAmount: parsedAmounts[Field.CURRENCY_A]?.toSignificant(3),
-          secondToken: currencyB?.symbol,
-          secondTokenAmount: parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)
-        },
-        summary: `Remove ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${currencyA?.symbol
-          } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencyB?.symbol}`
-      })
-
-    } else {
-      const iface = new ethers.utils.Interface(IUniswapV2Router02ABI)
-      const flagFeeDelegate = await UseDeParam(chainId, 'KLAYTN_FEE_DELEGATE', 'N')
-      const flagDefinixAnalaytics = await UseDeParam(chainId, 'GA_TP', 'N')
-
-      await estimate(...args, value ? { value } : {})
-        .then(estimatedGasLimit => {
-          if (flagFeeDelegate === "Y") {
-            const caverFeeDelegate = new Caver(process.env.REACT_APP_SIX_KLAYTN_EN_URL)
-            const feePayerAddress = process.env.REACT_APP_FEE_PAYER_ADDRESS
-            // @ts-ignore
-            const caver = new Caver(window.caver)
-            caver.klay.signTransaction({
-              type: 'FEE_DELEGATED_SMART_CONTRACT_EXECUTION',
-              from: account,
-              to: ROUTER_ADDRESS[chainId],
-              gas: calculateGasMargin(estimatedGasLimit),
-              value,
-              data: iface.encodeFunctionData(methodName, [...args]),
-            })
-              .then(function (userSignTx) {
-                const userSigned = caver.transaction.decode(userSignTx.rawTransaction)
-                userSigned.feePayer = feePayerAddress
-                caverFeeDelegate.rpc.klay.signTransactionAsFeePayer(userSigned).then(function (feePayerSigningResult) {
-                  if(flagDefinixAnalaytics==='Y'){
-                    sendDefinixAnalytics()
-                  }
-                  caver.rpc.klay.sendRawTransaction(feePayerSigningResult.raw).then((response: KlaytnTransactionResponse) => {
-                    setAttemptingTxn(false)
-                    setTxHash(response.transactionHash)
-                    addTransaction(response, {
-                      type: 'addLiquidity',
-                      data: {
-                        firstToken: currencies[Field.CURRENCY_A]?.symbol,
-                        firstTokenAmount: parsedAmounts[Field.CURRENCY_A]?.toSignificant(3),
-                        secondToken: currencies[Field.CURRENCY_B]?.symbol,
-                        secondTokenAmount: parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)
-                      },
-                      summary: `Add ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${currencies[Field.CURRENCY_A]?.symbol
-                        } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencies[Field.CURRENCY_B]?.symbol}`
-                    })
-                  }).catch(e => {
-                    setAttemptingTxn(false)
-                    if (e?.code !== 4001) {
-                      console.error(e)
-                      setErrorMsg(e)
-                    }
-                  })
-                })
-              })
-              .catch(e => {
-                setAttemptingTxn(false)
-                alert(`err ${e}`)
-                if (e?.code !== 4001) {
-                  console.error(e)
-                  setErrorMsg(e)
-                }
-              })
-          } else {
-            method(...args, {
-              ...(value ? { value } : {}),
-              gasLimit: calculateGasMargin(estimatedGasLimit)
-            }).then(response => {
-              if(flagDefinixAnalaytics==='Y'){
-                sendDefinixAnalytics()
-              }
-              setAttemptingTxn(false)
-              addTransaction(response, {
-                type: 'addLiquidity',
-                data: {
-                  firstToken: currencies[Field.CURRENCY_A]?.symbol,
-                  firstTokenAmount: parsedAmounts[Field.CURRENCY_A]?.toSignificant(3),
-                  secondToken: currencies[Field.CURRENCY_B]?.symbol,
-                  secondTokenAmount: parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)
-                },
-                summary: `Add ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${currencies[Field.CURRENCY_A]?.symbol
-                  } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencies[Field.CURRENCY_B]?.symbol}`
-              })
-              setTxHash(response.hash)
-            })
-          }
-        })
-        .catch(e => {
-          setAttemptingTxn(false)
-          if (e?.code !== 4001) {
-            console.error(e)
-            setErrorMsg(e)
-          }
-        })
-    }
-  }, [
-    account,
-    chainId,
-    connector,
-    addTransaction,
-    allowedSlippage,
-    currencies,
-    currencyA,
-    currencyB,
-    deadline,
-    library,
-    noLiquidity,
-    parsedAmounts,
-    sendDefinixAnalytics,
-    setShowModal,
-  ]);
-
   const [onPresentConfirmAddModal] = useModal(<ConfirmAddModal
     noLiquidity={noLiquidity}
     currencies={currencies}
     liquidityMinted={liquidityMinted}
     price={price}
     parsedAmounts={parsedAmounts}
-    onAdd={onAdd}
     poolTokenPercentage={poolTokenPercentage}
-    allowedSlippage={allowedSlippage} />);
+    currencyA={currencyA}
+    currencyB={currencyB}
+    onDismissModal={handleDismissConfirmation} />);
 
   const handleCurrencyASelect = useCallback(
     (currA: Currency) => {
@@ -557,11 +329,7 @@ const AddLiquidity: React.FC = () => {
                   )}
                 <Button
                   onClick={() => {
-                    if (expertMode) {
-                      onAdd()
-                    } else {
-                      onPresentConfirmAddModal();
-                    }
+                    onPresentConfirmAddModal();
                   }}
                   disabled={
                     !isValid || approvalA !== ApprovalState.APPROVED || approvalB !== ApprovalState.APPROVED

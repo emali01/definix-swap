@@ -1,12 +1,13 @@
 import React, { useCallback, useState } from 'react'
 import { currencyEquals, Trade } from 'definixswap-sdk'
-import { Text, Modal, Box, Divider, ArrowRightGIcon } from 'definixswap-uikit'
+import { Modal, Box, Divider } from 'definixswap-uikit'
 import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
 import { computeTradePriceBreakdown } from 'utils/prices'
 import { useDerivedSwapInfo } from 'state/swap/hooks'
 import { useToast } from 'state/toasts/hooks'
 import { useSwapCallback } from 'hooks/useSwapCallback'
+import KlaytnScopeLink from 'components/KlaytnScopeLink'
 import { useUserDeadline, useUserSlippageTolerance } from 'state/user/hooks'
 import SwapModalFooter from './SwapModalFooter'
 import SwapModalHeader from './SwapModalHeader'
@@ -24,16 +25,6 @@ const Wrap = styled(Box)`
 const StyledDivider = styled(Divider)`
   margin-top: 20px;
   margin-bottom: 24px;
-`
-
-const WrapLink = styled.a`
-  display: flex;
-  align-items: center;
-`
-
-const LinkText = styled(Text)`
-  ${({ theme }) => theme.textStyle.R_12R}
-  color: ${({ theme }) => theme.colors.mediumgrey};
 `
 
 /**
@@ -95,7 +86,7 @@ export default function ConfirmSwapModal({
     swapCallback()
       .then((hash) => {
         setTxHash(hash);
-        toastSuccess(t('Swap Complete'), <WrapLink href={`https://scope.klaytn.com/tx/${hash}`}><LinkText>{t('View on KlaytnScope')}</LinkText><ArrowRightGIcon /></WrapLink>)
+        toastSuccess(t('Swap Complete'), <KlaytnScopeLink hash={hash} />)
         onDismiss();
         onDismissModal();
       })
