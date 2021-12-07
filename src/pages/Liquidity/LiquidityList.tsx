@@ -51,8 +51,9 @@ const LiquidityList: React.FC = () => {
         <Box
           p={isMobile ? "0px 20px" : "24px 40px"}
           backgroundColor={ColorStyles.WHITE}
-          borderRadius="16px"
           style={{boxShadow: '0 12px 12px 0 rgba(227, 132, 0, 0.1)'}}
+          borderBottomLeftRadius="16px"
+          borderBottomRightRadius="16px"
         >
         {allV2PairsWithLiquidity?.map((v2Pair, i) => (
           <FullPositionCard 
@@ -63,7 +64,15 @@ const LiquidityList: React.FC = () => {
         ))}
       </Box>)}
       {account && allV2PairsWithLiquidity.length <= 0 && (
-        <Flex flexDirection="column" justifyContent="center" alignItems="center" p="60px">
+        <Flex 
+          backgroundColor={ColorStyles.WHITE}
+          flexDirection="column" 
+          justifyContent="center" 
+          alignItems="center" 
+          p="60px"
+          borderBottomLeftRadius="16px"
+          borderBottomRightRadius="16px"
+        >
           <Box mb="24px">
             <ImgEmptyStateLiquidity />
           </Box>
@@ -73,7 +82,15 @@ const LiquidityList: React.FC = () => {
         </Flex>
       )}
       {!account && (
-        <Flex flexDirection="column" justifyContent="center" alignItems="center" p="40px">
+        <Flex 
+          flexDirection="column"
+          justifyContent="center"
+          alignItems="center"
+          p="40px"
+          backgroundColor={ColorStyles.WHITE}
+          borderBottomLeftRadius="16px"
+          borderBottomRightRadius="16px"
+        >
           <Box mb="24px">
             <ImgEmptyStateWallet />
           </Box>

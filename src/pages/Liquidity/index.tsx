@@ -314,10 +314,11 @@ const Liquidity: React.FC = () => {
         </Flex>
         <Flex
           flexDirection="column"
-          borderRadius="16px"
         >
           <Box
             backgroundColor={ColorStyles.WHITE}
+            borderTopLeftRadius="16px"
+            borderTopRightRadius="16px"
           >
             <Tabs 
               tabs={tabNames}
