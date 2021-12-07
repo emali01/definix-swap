@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { 
   ColorStyles,
   Flex,
@@ -15,18 +16,22 @@ import {
 } from 'definixswap-uikit';
 import { Currency, TokenAmount } from 'definixswap-sdk';
 import { Field } from 'state/mint/actions'
-import CurrencyInputPanel from 'components/CurrencyInputPanel';
+import { maxAmountSpend } from 'utils/maxAmountSpend'
+
 import numeral from 'numeral'
-import ConnectWalletButton from 'components/ConnectWalletButton'
-import CurrencyLogo from 'components/CurrencyLogo';
-import { Dots } from 'components/swap/styleds'
-import { ApprovalState } from 'hooks/useApproveCallback'
+import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
 import { PairState } from 'data/Reserves'
 import { MinimalPositionCard } from 'components/PositionCard';
 import { useActiveWeb3React } from 'hooks';
 import { useIsExpertMode } from 'state/user/hooks';
-import { useTranslation } from 'react-i18next';
 import { useDerivedMintInfo, useMintState } from 'state/mint/hooks';
+import { ROUTER_ADDRESS } from 'constants/index';
+
+import CurrencyLogo from 'components/CurrencyLogo';
+import { Dots } from 'components/swap/styleds'
+import ConnectWalletButton from 'components/ConnectWalletButton'
+import CurrencyInputPanel from 'components/CurrencyInputPanel';
+
 import NoLiquidity from './NoLiquidity';
 import { PoolPriceBar } from './PoolPriceBar';
 
@@ -35,21 +40,8 @@ interface IProps {
   currencyB: Currency;
   onFieldAInput: (typedValue: string) => void
   onFieldBInput: (typedValue: string) => void
-  maxAmounts: {
-    CURRENCY_A?: TokenAmount;
-    CURRENCY_B?: TokenAmount;
-  }
-  atMaxAmounts: {
-    CURRENCY_A?: TokenAmount;
-    CURRENCY_B?: TokenAmount;
-  }
   handleCurrencyASelect: (currA: Currency) => void
   handleCurrencyBSelect: (currB: Currency) => void
-  approvalA: ApprovalState
-  approvalB: ApprovalState
-  isValid: boolean
-  approveACallback: () => Promise<void>
-  approveBCallback: () => Promise<void>
   onAdd: () => Promise<void>
   setShowConfirm: React.Dispatch<React.SetStateAction<boolean>>
   oneCurrencyIsWETH: boolean
@@ -57,29 +49,23 @@ interface IProps {
 
 const AddLiquidity: React.FC<IProps> = ({
   onFieldAInput,
-  maxAmounts,
   handleCurrencyASelect,
-  atMaxAmounts,
   onFieldBInput,
   handleCurrencyBSelect,
-  approvalA,
-  approvalB,
-  isValid,
-  approveACallback,
-  approveBCallback,
   onAdd,
   setShowConfirm,
   oneCurrencyIsWETH,
   currencyA,
   currencyB,
 }) => {
-  const { account } = useActiveWeb3React()
+  const { chainId, account } = useActiveWeb3React()
   const expertMode = useIsExpertMode()
   const { isXl, isXxl } = useMatchBreakpoints()
   const isMobile = useMemo(() => !isXl && !isXxl, [isXl, isXxl])
   const { t } = useTranslation(); 
 
   const {
+    currencyBalances,
     dependentField,
     currencies,
     pair,
@@ -90,13 +76,40 @@ const AddLiquidity: React.FC<IProps> = ({
     poolTokenPercentage,
     error
   } = useDerivedMintInfo(currencyA ?? undefined, currencyB ?? undefined)
+  const isValid = useMemo(() => !error, [error]);
+
   const { independentField, typedValue, otherTypedValue } = useMintState()
 
-  // get formatted amounts
-  const formattedAmounts = {
-    [independentField]: typedValue,
-    [dependentField]: noLiquidity ? otherTypedValue : parsedAmounts[dependentField]?.toSignificant(6) ?? ''
-  }
+  const [approvalA, approveACallback] = useApproveCallback(parsedAmounts[Field.CURRENCY_A], ROUTER_ADDRESS[chainId || parseInt(process.env.REACT_APP_CHAIN_ID || '0')])
+  const [approvalB, approveBCallback] = useApproveCallback(parsedAmounts[Field.CURRENCY_B], ROUTER_ADDRESS[chainId || parseInt(process.env.REACT_APP_CHAIN_ID || '0')])
+  const formattedAmounts = useMemo(() => {
+    return (
+      {
+        [independentField]: typedValue,
+        [dependentField]: noLiquidity ? otherTypedValue : parsedAmounts[dependentField]?.toSignificant(6) ?? ''
+      }
+    )
+  }, [noLiquidity, independentField, dependentField, typedValue, parsedAmounts, otherTypedValue]);
+
+  const maxAmounts: { [field in Field]?: TokenAmount } = [Field.CURRENCY_A, Field.CURRENCY_B].reduce(
+    (accumulator, field) => {
+      return {
+        ...accumulator,
+        [field]: maxAmountSpend(currencyBalances[field])
+      }
+    },
+    {}
+  )
+
+  const atMaxAmounts: { [field in Field]?: TokenAmount } = [Field.CURRENCY_A, Field.CURRENCY_B].reduce(
+    (accumulator, field) => {
+      return {
+        ...accumulator,
+        [field]: maxAmounts[field]?.equalTo(parsedAmounts[field] ?? '0')
+      }
+    },
+    {}
+  )
 
   return (
     <>

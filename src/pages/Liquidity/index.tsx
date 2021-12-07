@@ -22,10 +22,9 @@ import { useDerivedMintInfo, useMintActionHandlers, useMintState } from 'state/m
 import { useTransactionAdder } from 'state/transactions/hooks'
 import { KlaytnTransactionResponse } from 'state/transactions/actions'
 import { useUserDeadline, useUserSlippageTolerance } from 'state/user/hooks'
-import { TabBox, Box, Flex, TitleSet, useMatchBreakpoints } from 'definixswap-uikit'
+import { TabBox, Box, Flex, TitleSet, useMatchBreakpoints, Tabs, ColorStyles } from 'definixswap-uikit'
 import { calculateGasMargin, calculateSlippageAmount, getRouterContract } from 'utils'
 import { currencyId } from 'utils/currencyId'
-import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { wrappedCurrency } from 'utils/wrappedCurrency'
 import UseDeParam from 'hooks/useDeParam'
 import { ROUTER_ADDRESS, HERODOTUS_ADDRESS } from '../../constants'
@@ -54,7 +53,7 @@ export default function Liquidity({
   const currencyA = useCurrency(currencyIdA)
   const currencyB = useCurrency(currencyIdB)
 
-  const herodotusAddress = HERODOTUS_ADDRESS[chainId || '']
+  const herodotusAddress = useMemo(() => HERODOTUS_ADDRESS[chainId || ''], [chainId]);
 
   const oneCurrencyIsWETH = Boolean(
     chainId &&
@@ -64,17 +63,13 @@ export default function Liquidity({
 
   const {
     currencies,
-    currencyBalances,
     parsedAmounts,
     price,
     noLiquidity,
     liquidityMinted,
     poolTokenPercentage,
-    error
   } = useDerivedMintInfo(currencyA ?? undefined, currencyB ?? undefined)
   const { onFieldAInput, onFieldBInput } = useMintActionHandlers(noLiquidity)
-
-  const isValid = !error
 
   // modal, loading, error
   const [showConfirm, setShowConfirm] = useState<boolean>(false)
@@ -86,37 +81,11 @@ export default function Liquidity({
   const [allowedSlippage] = useUserSlippageTolerance() // custom from users
   const [txHash, setTxHash] = useState<string>('')
 
-  
-
-  // get the max amounts user can add
-  const maxAmounts: { [field in Field]?: TokenAmount } = [Field.CURRENCY_A, Field.CURRENCY_B].reduce(
-    (accumulator, field) => {
-      return {
-        ...accumulator,
-        [field]: maxAmountSpend(currencyBalances[field])
-      }
-    },
-    {}
-  )
-
-  const atMaxAmounts: { [field in Field]?: TokenAmount } = [Field.CURRENCY_A, Field.CURRENCY_B].reduce(
-    (accumulator, field) => {
-      return {
-        ...accumulator,
-        [field]: maxAmounts[field]?.equalTo(parsedAmounts[field] ?? '0')
-      }
-    },
-    {}
-  )
-
-  // check whether the user has approved the router on the tokens
-  const [approvalA, approveACallback] = useApproveCallback(parsedAmounts[Field.CURRENCY_A], ROUTER_ADDRESS[chainId || parseInt(process.env.REACT_APP_CHAIN_ID || '0')])
-  const [approvalB, approveBCallback] = useApproveCallback(parsedAmounts[Field.CURRENCY_B], ROUTER_ADDRESS[chainId || parseInt(process.env.REACT_APP_CHAIN_ID || '0')])
   const [approvalLP, approveLPCallback] = useApproveCallback(liquidityMinted, herodotusAddress)
 
   const addTransaction = useTransactionAdder()
 
-  const sendDefinixAnalytics = () =>{
+  const sendDefinixAnalytics = useCallback(() =>{
     if (tp.isConnected()) {
       const firstToken = currencies[Field.CURRENCY_A]
       const secondToken = currencies[Field.CURRENCY_B]
@@ -134,9 +103,9 @@ export default function Liquidity({
         
       }
     }
-  }
+  }, [account, currencies]);
 
-  async function onAdd() {
+  const onAdd = useCallback(async () => {
     if (!chainId || !library || !account) return
     const router = getRouterContract(chainId, library, account)
 
@@ -192,10 +161,6 @@ export default function Liquidity({
     setAttemptingTxn(true)
     const valueNumber = (Number(value ? (+value).toString() : "0") / (10 ** 18)).toString()
     const valueklip = Number.parseFloat(valueNumber).toFixed(6)
-    // let expectValue = (`${(Number(valueklip) + 0.00001) / (10 ** 18)}`)
-    // expectValue = expectValue.slice(0, -13)
-    // valueklip*(10**18).slice(0, -13)+"0000000000000"
-    // Number(klipValue)
 
     if (isKlipConnector(connector)) {
       setShowModal(true)
@@ -226,7 +191,6 @@ export default function Liquidity({
 
     } else {
       const iface = new ethers.utils.Interface(IUniswapV2Router02ABI)
-      
       const flagFeeDelegate = await UseDeParam(chainId, 'KLAYTN_FEE_DELEGATE', 'N')
       const flagDefinixAnalaytics = await UseDeParam(chainId, 'GA_TP', 'N')
 
@@ -235,7 +199,6 @@ export default function Liquidity({
           if (flagFeeDelegate === "Y") {
             const caverFeeDelegate = new Caver(process.env.REACT_APP_SIX_KLAYTN_EN_URL)
             const feePayerAddress = process.env.REACT_APP_FEE_PAYER_ADDRESS
-
             // @ts-ignore
             const caver = new Caver(window.caver)
             caver.klay.signTransaction({
@@ -247,23 +210,13 @@ export default function Liquidity({
               data: iface.encodeFunctionData(methodName, [...args]),
             })
               .then(function (userSignTx) {
-                // console.log('userSignTx tx = ', userSignTx)
                 const userSigned = caver.transaction.decode(userSignTx.rawTransaction)
-                // console.log('userSigned tx = ', userSigned)
                 userSigned.feePayer = feePayerAddress
-                // console.log('userSigned After add feePayer tx = ', userSigned)
-
                 caverFeeDelegate.rpc.klay.signTransactionAsFeePayer(userSigned).then(function (feePayerSigningResult) {
-                  // console.log('feePayerSigningResult tx = ', feePayerSigningResult)
                   if(flagDefinixAnalaytics==='Y'){
                     sendDefinixAnalytics()
                   }
-                  
-                  // console.log("feePayerSigningResult",flagDefinixAnalaytics)
                   caver.rpc.klay.sendRawTransaction(feePayerSigningResult.raw).then((response: KlaytnTransactionResponse) => {
-                    // document.write(JSON.stringify(response.transactionHash))
-
-                    // console.log(methodName, ' tx = ', response)
                     setAttemptingTxn(false)
                     setTxHash(response.transactionHash)
                     addTransaction(response, {
@@ -277,7 +230,6 @@ export default function Liquidity({
                       summary: `Add ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${currencies[Field.CURRENCY_A]?.symbol
                         } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencies[Field.CURRENCY_B]?.symbol}`
                     })
-
                   }).catch(e => {
                     setAttemptingTxn(false)
                     // we only care if the error is something _other_ than the user rejected the tx
@@ -286,22 +238,17 @@ export default function Liquidity({
                       setErrorMsg(e)
                     }
                   })
-                  
-                  
                 })
-                
               })
               .catch(e => {
                 setAttemptingTxn(false)
                 alert(`err ${e}`)
-                // we only care if the error is something _other_ than the user rejected the tx
                 if (e?.code !== 4001) {
                   console.error(e)
                   setErrorMsg(e)
                 }
               })
           } else {
-            
             method(...args, {
               ...(value ? { value } : {}),
               gasLimit: calculateGasMargin(estimatedGasLimit)
@@ -309,9 +256,7 @@ export default function Liquidity({
               if(flagDefinixAnalaytics==='Y'){
                 sendDefinixAnalytics()
               }
-              
               setAttemptingTxn(false)
-
               addTransaction(response, {
                 type: 'addLiquidity',
                 data: {
@@ -323,14 +268,12 @@ export default function Liquidity({
                 summary: `Add ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${currencies[Field.CURRENCY_A]?.symbol
                   } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencies[Field.CURRENCY_B]?.symbol}`
               })
-
               setTxHash(response.hash)
             })
           }
         })
         .catch(e => {
           setAttemptingTxn(false)
-
           // we only care if the error is something _other_ than the user rejected the tx
           if (e?.code !== 4001) {
             console.error(e)
@@ -338,15 +281,30 @@ export default function Liquidity({
           }
         })
     }
-  }
+  }, [
+    account,
+    chainId,
+    connector,
+    addTransaction,
+    allowedSlippage,
+    currencies,
+    currencyA,
+    currencyB,
+    deadline,
+    library,
+    noLiquidity,
+    parsedAmounts,
+    sendDefinixAnalytics,
+    setShowModal
+  ]);
 
   const handleCurrencyASelect = useCallback(
     (currA: Currency) => {
       const newCurrencyIdA = currencyId(currA)
       if (newCurrencyIdA === currencyIdB) {
-        history.push(`/add/${currencyIdB}/${currencyIdA}`)
+        history.push(`/liquidity/add/${currencyIdB}/${currencyIdA}`)
       } else {
-        history.push(`/add/${newCurrencyIdA}/${currencyIdB}`)
+        history.push(`/liquidity/add/${newCurrencyIdA}/${currencyIdB}`)
       }
     },
     [currencyIdB, history, currencyIdA]
@@ -356,12 +314,12 @@ export default function Liquidity({
       const newCurrencyIdB = currencyId(currB)
       if (currencyIdA === newCurrencyIdB) {
         if (currencyIdB) {
-          history.push(`/add/${currencyIdB}/${newCurrencyIdB}`)
+          history.push(`/liquidity/add/${currencyIdB}/${newCurrencyIdB}`)
         } else {
-          history.push(`/add/${newCurrencyIdB}`)
+          history.push(`/liquidity/add/${newCurrencyIdB}`)
         }
       } else {
-        history.push(`/add/${currencyIdA || 'KLAY'}/${newCurrencyIdB}`)
+        history.push(`/liquidity/add/${currencyIdA || 'KLAY'}/${newCurrencyIdB}`)
       }
     },
     [currencyIdA, history, currencyIdB]
@@ -379,24 +337,18 @@ export default function Liquidity({
 
   const { t } = useTranslation();
 
-  const tabs = [
+  
+  const tabs = useMemo(() => [
     {
       name: "Add",
       component: (
         <AddLiquidity 
           currencyA={currencyA}
           currencyB={currencyB}
-          maxAmounts={maxAmounts}
-          atMaxAmounts={atMaxAmounts}
           onFieldAInput={onFieldAInput}
           onFieldBInput={onFieldBInput}
           handleCurrencyASelect={handleCurrencyASelect}
           handleCurrencyBSelect={handleCurrencyBSelect}
-          approvalA={approvalA}
-          approvalB={approvalB}
-          isValid={isValid}
-          approveACallback={approveACallback}
-          approveBCallback={approveBCallback}
           onAdd={onAdd}
           setShowConfirm={setShowConfirm}
           oneCurrencyIsWETH={oneCurrencyIsWETH}
@@ -407,7 +359,21 @@ export default function Liquidity({
       name: "Remove",
       component: <LiquidityList />
     },
-  ];
+  ], [
+    currencyA,
+    currencyB,
+    onFieldAInput,
+    onFieldBInput,
+    handleCurrencyASelect,
+    handleCurrencyBSelect,
+    onAdd,
+    setShowConfirm,
+    oneCurrencyIsWETH
+  ]);
+  const tabNames = useMemo(() => tabs.map(({ name }) => name), [tabs]);
+  const [curTab, setCurTab] = useState<string>(tabNames[0]);
+
+  console.log('~~~', curTab);
 
   return (
     <Flex width="100%" justifyContent="center">
@@ -420,9 +386,26 @@ export default function Liquidity({
             linkLabel={t("Learn to swap.")}
           />
         </Flex>
-        <Box borderRadius="16px">
-          <TabBox tabs={tabs} />
-        </Box>
+        <Flex
+          flexDirection="column"
+          borderRadius="16px"
+        >
+          <Box
+            backgroundColor={ColorStyles.WHITE}
+          >
+            <Tabs 
+              tabs={tabNames}
+              curTab={curTab}
+              setCurTab={setCurTab}
+              small={isMobile}
+              width={isMobile ? "50%" : "auto"}
+            />
+          </Box>
+          <Box>
+            {tabs.map(({ name, component }) => (curTab === name ? component : null))}
+          </Box>
+          {/* <TabBox tabs={tabs} /> */}
+        </Flex>
       </Flex>
 
       <TransactionConfirmationModal
