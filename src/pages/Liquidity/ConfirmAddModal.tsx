@@ -56,7 +56,7 @@ export default function ConfirmAddModal({
             liquidityMinted={liquidityMinted}
           />
         </Flex>
-        <Divider />
+        <Divider mb="24px" mt="35px" />
         <Flex flexDirection="column">
           <ModalBottom 
             price={price}

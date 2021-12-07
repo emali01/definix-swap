@@ -1,8 +1,21 @@
 import { Currency, CurrencyAmount, Fraction, Percent } from 'definixswap-sdk'
 import React from 'react'
+import styled from 'styled-components'
 import { Flex, Button, Text, ColorStyles, ButtonScales, NotiIcon } from 'definixswap-uikit'
 import { useTranslation } from 'react-i18next'
 import { Field } from 'state/mint/actions'
+
+const TitleText = styled(Text)`
+  ${({ theme }) => theme.textStyle.R_16M}
+  margin-bottom: 12px;
+  ${({ theme }) => theme.mediaQueries.mobileSwap} {
+    ${({ theme }) => theme.textStyle.R_16M}
+  }
+`
+
+const StyledNotiIcon = styled(NotiIcon)`
+  flex-shrink: 0;
+`
 
 function ConfirmAddModalBottom({
   noLiquidity,
@@ -26,7 +39,7 @@ function ConfirmAddModalBottom({
   return (
     <>
       <Flex flexDirection="column">
-        <Text textStyle="R_16M" color={ColorStyles.DEEPGREY} mb="12px">{t('Estimated Returns')}</Text>
+        <TitleText color={ColorStyles.DEEPGREY} mb="12px">{t('Estimated Returns')}</TitleText>
 
         <Flex justifyContent="space-between" mb="8px">
           <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>Deposited</Text>
@@ -42,7 +55,7 @@ function ConfirmAddModalBottom({
 
         <Flex justifyContent="space-between" mb="8px">
           <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>Price Rate</Text>
-          <Flex flexDirection="column">
+          <Flex flexDirection="column" alignItems="flex-end">
             <Text textStyle="R_14M" color={ColorStyles.DEEPGREY}>
                 {`1 ${currencies[Field.CURRENCY_A]?.symbol} = ${price?.toSignificant(4)} ${
                   currencies[Field.CURRENCY_B]?.symbol
@@ -64,10 +77,11 @@ function ConfirmAddModalBottom({
         </Flex>
       </Flex>
 
-      <Flex>
-        <NotiIcon />
+      <Flex alignItems="flex-start">
+        <StyledNotiIcon />
         <Text ml="4px" textStyle="R_12R" color={ColorStyles.MEDIUMGREY} mb="32px">
-          Output is estimated. If the price changes by more than {allowedSlippage / 100}% your transaction will revert.
+          {t('Output is estimated')}
+          {/* Output is estimated. If the price changes by more than {allowedSlippage / 100}% your transaction will revert. */}
         </Text>
       </Flex>
 
