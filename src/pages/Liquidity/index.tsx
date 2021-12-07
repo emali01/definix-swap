@@ -1,9 +1,8 @@
+import React, { useCallback, useState, useContext, useMemo } from 'react'
 import Caver from 'caver-js'
 import { ethers } from 'ethers'
 import { BigNumber } from '@ethersproject/bignumber'
 import { abi as IUniswapV2Router02ABI } from '@uniswap/v2-periphery/build/IUniswapV2Router02.json'
-import BigNumberJs from 'bignumber.js'
-import DoubleCurrencyLogo from 'components/DoubleLogo'
 import { KlipModalContext } from '@sixnetwork/klaytn-use-wallet'
 import { useCaverJsReact } from '@sixnetwork/caverjs-react-core'
 import { KlipConnector } from "@sixnetwork/klip-connector"
@@ -11,36 +10,34 @@ import tp from 'tp-js-sdk'
 import {sendAnalyticsData} from 'utils/definixAnalytics'
 import TransactionConfirmationModal, {
   ConfirmationModalContent,
-  TransactionErrorContent,
-  TransactionSubmittedContent
 } from 'components/TransactionConfirmationModal'
 import { Currency, currencyEquals, ETHER, TokenAmount, WETH } from 'definixswap-sdk'
 import { useActiveWeb3React } from 'hooks'
 import { useCurrency } from 'hooks/Tokens'
-import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
-import React, { useCallback, useState, useContext, useEffect, useMemo } from 'react'
+import { useApproveCallback } from 'hooks/useApproveCallback'
 import { RouteComponentProps } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Field } from 'state/mint/actions'
 import { useDerivedMintInfo, useMintActionHandlers, useMintState } from 'state/mint/hooks'
 import { useTransactionAdder } from 'state/transactions/hooks'
 import { KlaytnTransactionResponse } from 'state/transactions/actions'
-import { useIsExpertMode, useUserDeadline, useUserSlippageTolerance } from 'state/user/hooks'
-import { TabBox, Box, Flex, Button, Text, TitleSet, ColorStyles, useMatchBreakpoints } from 'definixswap-uikit'
+import { useUserDeadline, useUserSlippageTolerance } from 'state/user/hooks'
+import { TabBox, Box, Flex, TitleSet, useMatchBreakpoints } from 'definixswap-uikit'
 import { calculateGasMargin, calculateSlippageAmount, getRouterContract } from 'utils'
 import { currencyId } from 'utils/currencyId'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { wrappedCurrency } from 'utils/wrappedCurrency'
 import UseDeParam from 'hooks/useDeParam'
 import { ROUTER_ADDRESS, HERODOTUS_ADDRESS } from '../../constants'
-import { ConfirmAddModalBottom } from './ConfirmAddModalBottom'
 import farms from '../../constants/farm'
-import { useHerodotusContract } from '../../hooks/useContract'
 import * as klipProvider from '../../hooks/KlipProvider'
 import { getAbiByName } from '../../hooks/HookHelper'
-import HERODOTUS_ABI from '../../constants/abis/herodotus.json'
 import LiquidityList from './LiquidityList'
 import AddLiquidity from './AddLiquidity'
+import ModalBottom from './ModalBottom'
+import ModalHeader from './ModalHeader'
+import ErrorContent from './ErrorContent'
+import SubmittedContent from './SubmittedContent'
 
 export default function Liquidity({
   match: {
@@ -57,7 +54,6 @@ export default function Liquidity({
   const currencyA = useCurrency(currencyIdA)
   const currencyB = useCurrency(currencyIdB)
 
-  const herodotusContract = useHerodotusContract()
   const herodotusAddress = HERODOTUS_ADDRESS[chainId || '']
 
   const oneCurrencyIsWETH = Boolean(
@@ -65,15 +61,9 @@ export default function Liquidity({
     ((currencyA && currencyEquals(currencyA, WETH(chainId))) ||
       (currencyB && currencyEquals(currencyB, WETH(chainId))))
   )
-  const expertMode = useIsExpertMode()
 
-  // mint state
-  const { independentField, typedValue, otherTypedValue } = useMintState()
   const {
-    dependentField,
     currencies,
-    pair,
-    pairState,
     currencyBalances,
     parsedAmounts,
     price,
@@ -96,11 +86,7 @@ export default function Liquidity({
   const [allowedSlippage] = useUserSlippageTolerance() // custom from users
   const [txHash, setTxHash] = useState<string>('')
 
-  // get formatted amounts
-  const formattedAmounts = {
-    [independentField]: typedValue,
-    [dependentField]: noLiquidity ? otherTypedValue : parsedAmounts[dependentField]?.toSignificant(6) ?? ''
-  }
+  
 
   // get the max amounts user can add
   const maxAmounts: { [field in Field]?: TokenAmount } = [Field.CURRENCY_A, Field.CURRENCY_B].reduce(
@@ -129,6 +115,7 @@ export default function Liquidity({
   const [approvalLP, approveLPCallback] = useApproveCallback(liquidityMinted, herodotusAddress)
 
   const addTransaction = useTransactionAdder()
+
   const sendDefinixAnalytics = () =>{
     if (tp.isConnected()) {
       const firstToken = currencies[Field.CURRENCY_A]
@@ -148,6 +135,7 @@ export default function Liquidity({
       }
     }
   }
+
   async function onAdd() {
     if (!chainId || !library || !account) return
     const router = getRouterContract(chainId, library, account)
@@ -352,61 +340,6 @@ export default function Liquidity({
     }
   }
 
-  const modalHeader = useCallback(() => {
-    const { t } = useTranslation();
-
-    return (
-      <>
-        {noLiquidity ? (
-          <Flex>
-            <DoubleCurrencyLogo
-              currency0={currencies[Field.CURRENCY_A]}
-              currency1={currencies[Field.CURRENCY_B]}
-              size={32}
-            />
-            <Text>
-              {`${currencies[Field.CURRENCY_A]?.symbol}/${currencies[Field.CURRENCY_B]?.symbol}`}
-            </Text>
-          </Flex>
-        ) : (
-          <Flex flexDirection="column">
-            <Text textStyle="R_16M" color={ColorStyles.DEEPGREY}>{t('You are creating a pool')}</Text>
-            <Flex justifyContent="space-between" alignItems="center" p="14px 0px" mb="20px">
-              <Flex alignItems="center">
-                <DoubleCurrencyLogo
-                  currency0={currencies[Field.CURRENCY_A]}
-                  currency1={currencies[Field.CURRENCY_B]}
-                  size={32}
-                />
-                <Text ml="10px" textStyle="R_16M" color={ColorStyles.BLACK}>
-                  {`${currencies[Field.CURRENCY_A]?.symbol}-${currencies[Field.CURRENCY_B]?.symbol}`}
-                </Text>
-              </Flex>
-
-              <Text textStyle="R_16R" color={ColorStyles.BLACK}>
-                {liquidityMinted?.toSignificant(6)}
-              </Text>
-            </Flex>
-          </Flex>
-        )}
-      </>
-    )
-  }, [currencies, liquidityMinted, noLiquidity])
-
-  const modalBottom = () => {
-    return (
-      <ConfirmAddModalBottom
-        price={price}
-        currencies={currencies}
-        parsedAmounts={parsedAmounts}
-        noLiquidity={noLiquidity}
-        onAdd={onAdd}
-        poolTokenPercentage={poolTokenPercentage}
-        allowedSlippage={allowedSlippage}
-      />
-    )
-  }
-
   const handleCurrencyASelect = useCallback(
     (currA: Currency) => {
       const newCurrencyIdA = currencyId(currA)
@@ -434,151 +367,6 @@ export default function Liquidity({
     [currencyIdA, history, currencyIdB]
   )
 
-  const submittedContent = useCallback(
-    () => (
-      <TransactionSubmittedContent
-        title="Add Liquidity Complete"
-        date={`${new Date().toDateString()}, ${new Date().toTimeString().split(" ")[0]}`}
-        chainId={chainId}
-        hash={txHash}
-        content={modalHeader}
-        button={
-          <Button
-            onClick={() => {
-              const firstToken = currencies[Field.CURRENCY_A]
-              const secondToken = currencies[Field.CURRENCY_B]
-              const farm = farms.find(
-                x =>
-                  x.pid !== 0 &&
-                  x.pid !== 1 &&
-                  ((x.firstSymbol === firstToken?.symbol && x.secondSymbol === secondToken?.symbol) ||
-                    (x.firstSymbol === secondToken?.symbol && x.secondSymbol === firstToken?.symbol))
-              )
-
-              if (farm && farm.pid !== 1 && farm.pid !== 0 && liquidityMinted) {
-                return new Promise((resolve, reject) => {
-                  setAttemptingTxn(true)
-                  if (approvalLP !== ApprovalState.APPROVED) {
-                    approveLPCallback()
-                      .then(() => {
-                        resolve(true)
-                      })
-                      .catch(err => {
-                        reject(err)
-                      })
-                  } else {
-                    resolve(true)
-                  }
-                })
-                  .then(() => {
-                    const args = [
-                      farm.pid,
-                      new BigNumberJs(liquidityMinted.toExact()).times(new BigNumberJs(10).pow(18)).toString()
-                    ]
-                    return herodotusContract?.estimateGas.deposit(...args)
-                  })
-                  .then(estimatedGasLimit => {
-                    if (estimatedGasLimit) {
-                      const args = [
-                        farm.pid,
-                        new BigNumberJs(liquidityMinted.toExact()).times(new BigNumberJs(10).pow(18)).toString()
-                      ]
-
-                      const iface = new ethers.utils.Interface(HERODOTUS_ABI)
-
-                      return UseDeParam(chainId, 'KLAYTN_FEE_DELEGATE', 'N').then((flagFeeDelegate) => {
-                        if (flagFeeDelegate === 'Y') {
-                          const caverFeeDelegate = new Caver(process.env.REACT_APP_SIX_KLAYTN_EN_URL)
-                          const feePayerAddress = process.env.REACT_APP_FEE_PAYER_ADDRESS
-
-                          // @ts-ignore
-                          const caver = new Caver(window.caver)
-
-                          return caver.klay
-                            .signTransaction({
-                              type: 'FEE_DELEGATED_SMART_CONTRACT_EXECUTION',
-                              from: account,
-                              to: herodotusAddress,
-                              gas: calculateGasMargin(estimatedGasLimit),
-                              data: iface.encodeFunctionData('deposit', [...args]),
-                            })
-                            .then(function (userSignTx) {
-                              // console.log('userSignTx tx = ', userSignTx)
-                              const userSigned = caver.transaction.decode(userSignTx.rawTransaction)
-                              // console.log('userSigned tx = ', userSigned)
-                              userSigned.feePayer = feePayerAddress
-                              // console.log('userSigned After add feePayer tx = ', userSigned)
-
-                              return caverFeeDelegate.rpc.klay
-                                .signTransactionAsFeePayer(userSigned)
-                                .then(function (feePayerSigningResult) {
-                                  // console.log('feePayerSigningResult tx = ', feePayerSigningResult)
-                                  return caverFeeDelegate.rpc.klay
-                                    .sendRawTransaction(feePayerSigningResult.raw)
-                                    .on('transactionHash', (depositTx) => {
-                                      console.log('deposit tx = ', depositTx)
-                                      return depositTx.transactionHash
-                                    })
-                                })
-                            })
-                            .catch(function (tx) {
-                              console.log('deposit error tx = ', tx)
-                              return tx.transactionHash
-                            })
-                        }
-
-                        return herodotusContract?.deposit(...args, {
-                          gasLimit: calculateGasMargin(estimatedGasLimit)
-                        })
-                      })
-                    }
-                    return true
-                  })
-                  .then(function (tx) {
-                    window.location.href = `${process.env.REACT_APP_FRONTEND_URL}/farm`
-                    return true
-                  })
-                  .catch(function (tx) {
-                    window.location.href = `${process.env.REACT_APP_FRONTEND_URL}/farm`
-                    return true
-                  })
-              }
-              window.location.href = `${process.env.REACT_APP_FRONTEND_URL}/farm`
-              return true
-            }}
-            width="100%"
-          >
-            Add this Liquidity to Farm
-          </Button>
-        }
-      />
-    ),
-    [chainId, modalHeader, txHash, currencies, herodotusContract, herodotusAddress, liquidityMinted, approvalLP, approveLPCallback, account]
-  )
-
-  const errorContent = useCallback(
-    () => (
-      <TransactionErrorContent
-        title="Add Liquidity Failed"
-        date={`${new Date().toDateString()}, ${new Date().toTimeString().split(" ")[0]}`}
-        chainId={chainId}
-        hash={txHash}
-        content={modalHeader}
-        button={
-          <Button
-            onClick={() => {
-              console.log('Add Liquidity Again')
-            }}
-            width="100%"
-          >
-            Add Liquidity Again
-          </Button>
-        }
-      />
-    ),
-    [chainId, modalHeader, txHash]
-  )
-
   const handleDismissConfirmation = useCallback(() => {
     setShowConfirm(false)
     // if there was a tx hash, we want to clear the input
@@ -595,38 +383,29 @@ export default function Liquidity({
     {
       name: "Add",
       component: (
-        <>
-          <AddLiquidity 
-            noLiquidity={noLiquidity}
-            formattedAmounts={formattedAmounts}
-            maxAmounts={maxAmounts}
-            handleCurrencyASelect={handleCurrencyASelect}
-            atMaxAmounts={atMaxAmounts}
-            currencies={currencies}
-            onFieldAInput={onFieldAInput}
-            onFieldBInput={onFieldBInput}
-            handleCurrencyBSelect={handleCurrencyBSelect}
-            approvalA={approvalA}
-            approvalB={approvalB}
-            isValid={isValid}
-            approveACallback={approveACallback}
-            approveBCallback={approveBCallback}
-            onAdd={onAdd}
-            setShowConfirm={setShowConfirm}
-            parsedAmounts={parsedAmounts}
-            error={error}
-            pairState={pairState}
-            poolTokenPercentage={poolTokenPercentage}
-            price={price}
-            pair={pair}
-            oneCurrencyIsWETH={oneCurrencyIsWETH}
-          />
-        </>
+        <AddLiquidity 
+          currencyA={currencyA}
+          currencyB={currencyB}
+          maxAmounts={maxAmounts}
+          atMaxAmounts={atMaxAmounts}
+          onFieldAInput={onFieldAInput}
+          onFieldBInput={onFieldBInput}
+          handleCurrencyASelect={handleCurrencyASelect}
+          handleCurrencyBSelect={handleCurrencyBSelect}
+          approvalA={approvalA}
+          approvalB={approvalB}
+          isValid={isValid}
+          approveACallback={approveACallback}
+          approveBCallback={approveBCallback}
+          onAdd={onAdd}
+          setShowConfirm={setShowConfirm}
+          oneCurrencyIsWETH={oneCurrencyIsWETH}
+        />
       ),
     },
     {
       name: "Remove",
-      component: <><LiquidityList /></>,
+      component: <LiquidityList />
     },
   ];
 
@@ -641,7 +420,7 @@ export default function Liquidity({
             linkLabel={t("Learn to swap.")}
           />
         </Flex>
-        <Box backgroundColor={ColorStyles.WHITE} borderRadius="16px">
+        <Box borderRadius="16px">
           <TabBox tabs={tabs} />
         </Box>
       </Flex>
@@ -655,13 +434,53 @@ export default function Liquidity({
           <ConfirmationModalContent
             mainTitle={t("Confirm Add liquidity")}
             title={noLiquidity ? t('You are creating a pool') : t('You will receive')}
-            topContent={modalHeader}
-            bottomContent={modalBottom}
+            topContent={() => 
+              <ModalHeader
+                noLiquidity={noLiquidity}
+                currencies={currencies}
+                liquidityMinted={liquidityMinted}
+              />
+            }
+            bottomContent={() =>
+              <ModalBottom 
+                price={price}
+                currencies={currencies}
+                parsedAmounts={parsedAmounts}
+                noLiquidity={noLiquidity}
+                onAdd={onAdd}
+                poolTokenPercentage={poolTokenPercentage}
+                allowedSlippage={allowedSlippage}
+              />}
           />
         )}
         pendingIcon={null}
-        submittedContent={submittedContent}
-        errorContent={errorContent}
+        submittedContent={() => 
+          <SubmittedContent
+            txHash={txHash}
+            currencies={currencies}
+            liquidityMinted={liquidityMinted}
+            setAttemptingTxn={setAttemptingTxn}
+            approvalLP={approvalLP}
+            approveLPCallback={approveLPCallback}
+            content={() => 
+              <ModalHeader
+                noLiquidity={noLiquidity}
+                currencies={currencies}
+                liquidityMinted={liquidityMinted}
+              />}
+          />
+        }
+        errorContent={() => 
+          <ErrorContent
+            txHash={txHash}
+            content={() => 
+              <ModalHeader
+                noLiquidity={noLiquidity}
+                currencies={currencies}
+                liquidityMinted={liquidityMinted}
+              />}
+          />
+        }
         onDismiss={handleDismissConfirmation}
 
         setShowConfirm={setShowConfirm}
