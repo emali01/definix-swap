@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { RouteComponentProps } from 'react-router-dom'
 import numeral from 'numeral'
 import { CurrencyAmount, JSBI, Trade, Token } from 'definixswap-sdk'
+import { useWallet } from '@sixnetwork/klaytn-use-wallet'
 import { AutoColumn } from 'components/Column'
 import ConnectWalletButton from 'components/ConnectWalletButton'
 import CurrencyInputPanel from 'components/CurrencyInputPanel'
@@ -226,7 +227,6 @@ export default function Swap({
     }, [onCurrencySelection, onUserInput])
 
   const handleConfirmDismiss = useCallback(() => {
-    console.log('~~~handleConfirmDismiss')
     onUserInput(Field.INPUT, '')
     initSwapData();
   }, [onUserInput, initSwapData])
@@ -289,7 +289,7 @@ export default function Swap({
     [onCurrencySelection, checkForSyrup]
   )
 
-  const [onPresentConfirmModal, onDismissConfirmModal] = useModal(<ConfirmSwapModal
+  const [onPresentConfirmModal] = useModal(<ConfirmSwapModal
     recipient={recipient}
     onDismissModal={handleConfirmDismiss}
   />, false)
@@ -535,23 +535,6 @@ export default function Swap({
           </WrapCardContainer>
         </SwapContainer>
       </Flex>
-
-      {/* {showConfirm && (
-        <ConfirmSwapModal
-          isOpen={showConfirm}
-          trade={trade}
-          originalTrade={tradeToConfirm}
-          onAcceptChanges={handleAcceptChanges}
-          attemptingTxn={attemptingTxn}
-          txHash={txHash}
-          recipient={recipient}
-          allowedSlippage={allowedSlippage}
-          onConfirm={handleSwap}
-          swapErrorMessage={swapErrorMessage}
-          onDismiss={handleConfirmDismiss}
-          initSwapData={initSwapData}
-        />
-      )} */}
 
       {/* 스왑 히스토리 화면 */}
       {/* <SwapHistory 

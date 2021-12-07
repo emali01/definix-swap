@@ -25,25 +25,27 @@ const Providers: React.FC = ({ children }) => {
     }
   }
   return (
-    <UseWalletProvider
-        chainId={parseInt(process.env.REACT_APP_CHAIN_ID)}
-        connectors={{
-          injected,
-          klip: { showModal: onPresent, closeModal: onHiddenModal },
-        }}
-      >
-      <CaverJsReactProvider getLibrary={getLibrary}>
-        <Web3ProviderNetwork getLibrary={getLibrary}>
-          <Provider store={store}>
-            <ThemeContextProvider>
-              <OldModalProvider>
-                <ModalProvider>{children}</ModalProvider>
-              </OldModalProvider>
-            </ThemeContextProvider>
-          </Provider>
-        </Web3ProviderNetwork>
-      </CaverJsReactProvider>
-    </UseWalletProvider>
+    <Provider store={store}>
+      <UseWalletProvider
+          chainId={parseInt(process.env.REACT_APP_CHAIN_ID)}
+          connectors={{
+            injected,
+            klip: { showModal: onPresent, closeModal: onHiddenModal },
+          }}
+        >
+        <CaverJsReactProvider getLibrary={getLibrary}>
+          <Web3ProviderNetwork getLibrary={getLibrary}>
+            {/* <Provider store={store}> */}
+              <ThemeContextProvider>
+                <OldModalProvider>
+                  <ModalProvider>{children}</ModalProvider>
+                </OldModalProvider>
+              </ThemeContextProvider>
+            {/* </Provider> */}
+          </Web3ProviderNetwork>
+        </CaverJsReactProvider>
+      </UseWalletProvider>
+    </Provider>
   )
 }
 

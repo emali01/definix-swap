@@ -1,5 +1,5 @@
 import { Currency, Pair } from 'definixswap-sdk'
-import React, { useCallback, useState } from 'react'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import { 
@@ -15,10 +15,9 @@ import {
   useModal,
   textStyle
 } from 'definixswap-uikit'
-import { useWallet } from '@sixnetwork/klaytn-use-wallet'
+import { useCaverJsReact } from '@sixnetwork/caverjs-react-core'
 import { escapeRegExp } from 'utils'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
-import { TranslateString } from '../../utils/translateTextHelpers'
 import CurrencyLogo from '../CurrencyLogo'
 import DoubleCurrencyLogo from '../DoubleLogo'
 import { Input as NumericalInput } from '../NumericalInput'
@@ -147,7 +146,7 @@ export default function CurrencyInputPanel({
   isMobile,
   value,
   showMaxButton,
-  label = TranslateString(132, 'Input'),
+  label,
   currency,
   disableCurrencySelect = false,
   hideBalance = false,
@@ -165,11 +164,8 @@ export default function CurrencyInputPanel({
   isInsufficientBalance,
 }: CurrencyInputPanelProps) {
   const { t } = useTranslation();
-  const { account } = useWallet()
+  const { account } = useCaverJsReact()
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
-  const handleDismissSearch = useCallback(() => {
-    // setModalOpen(false)
-  }, [])
 
   const [onPresentCurrencySearchModal] = useModal(<CurrencySearchModal
     // onChangeList={() => {
@@ -178,7 +174,6 @@ export default function CurrencyInputPanel({
     onCurrencySelect={onCurrencySelect}
     selectedCurrency={currency}
     otherSelectedCurrency={otherCurrency}
-    showCommonBases={false}
   />, false)
 
 
@@ -272,17 +267,6 @@ export default function CurrencyInputPanel({
           </CurrencySelect>
         </InputBox>
       </Container>
-
-      {/* {!disableCurrencySelect && onCurrencySelect && (
-        <CurrencySearchModal
-          isOpen={modalOpen}
-          onDismiss={handleDismissSearch}
-          onCurrencySelect={onCurrencySelect}
-          selectedCurrency={currency}
-          otherSelectedCurrency={otherCurrency}
-          showCommonBases={showCommonBases}
-        />
-      )} */}
     </>
   )
 }
