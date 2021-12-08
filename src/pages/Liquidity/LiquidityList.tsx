@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useMemo } from "react";
 import FullPositionCard from "components/PositionCard";
 import { toV2LiquidityToken, useTrackedTokenPairs } from "state/user/hooks";
 import { useTokenBalancesWithLoadingIndicator } from "state/wallet/hooks";
@@ -7,12 +7,10 @@ import { Pair } from "definixswap-sdk";
 import { useActiveWeb3React } from "hooks";
 import { Flex, Box, Text, ColorStyles, ImgEmptyStateWallet, ImgEmptyStateLiquidity, useMatchBreakpoints } from "definixswap-uikit";
 import ConnectWalletButton from "components/ConnectWalletButton";
-import { useHistory } from "react-router";
 import { useTranslation } from "react-i18next";
 
 const LiquidityList: React.FC = () => {
   const { t } = useTranslation();
-  const history = useHistory();
   const { isXl, isXxl } = useMatchBreakpoints()
   const isMobile = useMemo(() => !isXl && !isXxl, [isXl, isXxl])
 
@@ -38,12 +36,6 @@ const LiquidityList: React.FC = () => {
   )
   const v2Pairs = usePairs(liquidityTokensWithBalances.map(({ tokens }) => tokens))
   const allV2PairsWithLiquidity = v2Pairs.map(([, pair]) => pair).filter((v2Pair): v2Pair is Pair => Boolean(v2Pair))
-
-  useEffect(() => {
-    history.replace('/liquidity');
-
-    return () => history.replace('/liquidity');
-  }, [history]);
 
   return (
     <>

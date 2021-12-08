@@ -18,6 +18,14 @@ export function useMintState(): AppState['mint'] {
   return useSelector<AppState, AppState['mint']>((state) => state.mint)
 }
 
+export enum DerivedMintInfoError {
+  CONNECT_WALLET = 'Connect Wallet',
+  INVALID_PAIR = 'Invalid pair',
+  ENTER_AN_AMOUNT = 'Enter an amount',
+  INSUFFICIENT_A_BALANCE = 'Insufficient A balance',
+  INSUFFICIENT_B_BALANCE = 'Insufficient B balance',
+}
+
 export function useDerivedMintInfo(
   currencyA: Currency | undefined,
   currencyB: Currency | undefined
@@ -129,27 +137,27 @@ export function useDerivedMintInfo(
     return undefined
   }, [liquidityMinted, totalSupply])
 
-  let error: string | undefined
+  let error: DerivedMintInfoError | string | undefined
   if (!account) {
-    error = 'Connect Wallet'
+    error = DerivedMintInfoError.CONNECT_WALLET
   }
 
   if (pairState === PairState.INVALID) {
-    error = error ?? TranslateString(136, 'Invalid pair')
+    error = error ?? DerivedMintInfoError.INVALID_PAIR
   }
 
   if (!parsedAmounts[Field.CURRENCY_A] || !parsedAmounts[Field.CURRENCY_B]) {
-    error = error ?? TranslateString(84, 'Enter an amount')
+    error = error ?? DerivedMintInfoError.ENTER_AN_AMOUNT
   }
 
   const { [Field.CURRENCY_A]: currencyAAmount, [Field.CURRENCY_B]: currencyBAmount } = parsedAmounts
 
   if (currencyAAmount && currencyBalances?.[Field.CURRENCY_A]?.lessThan(currencyAAmount)) {
-    error = `Insufficient ${currencies[Field.CURRENCY_A]?.symbol} balance`
+    error = DerivedMintInfoError.INSUFFICIENT_A_BALANCE
   }
 
   if (currencyBAmount && currencyBalances?.[Field.CURRENCY_B]?.lessThan(currencyBAmount)) {
-    error = `Insufficient ${currencies[Field.CURRENCY_B]?.symbol} balance`
+    error = DerivedMintInfoError.INSUFFICIENT_B_BALANCE
   }
 
   return {

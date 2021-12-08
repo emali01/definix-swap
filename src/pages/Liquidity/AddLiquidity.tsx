@@ -18,7 +18,8 @@ import {
   NotiType,
   Noti,
   useMatchBreakpoints,
-  useModal
+  useModal,
+  Divider
 } from 'definixswap-uikit';
 import tp from 'tp-js-sdk'
 import { Currency, currencyEquals, TokenAmount, WETH, ETHER } from 'definixswap-sdk';
@@ -35,7 +36,7 @@ import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
 import { PairState } from 'data/Reserves'
 import { MinimalPositionCard } from 'components/PositionCard';
 import { useActiveWeb3React } from 'hooks';
-import { useDerivedMintInfo, useMintActionHandlers, useMintState } from 'state/mint/hooks';
+import { DerivedMintInfoError, useDerivedMintInfo, useMintActionHandlers, useMintState } from 'state/mint/hooks';
 import { ROUTER_ADDRESS } from 'constants/index';
 import { useHistory, useParams } from 'react-router';
 import { useCurrency } from 'hooks/Tokens';
@@ -176,6 +177,8 @@ const AddLiquidity: React.FC = () => {
     return () => initFieldInput();
   }, [initFieldInput]);
 
+  console.log('~~~error', error)
+
   return (
     <>
       <Flex 
@@ -211,6 +214,7 @@ const AddLiquidity: React.FC = () => {
               currency={currencies[Field.CURRENCY_A]}
               id="add-liquidity-input-tokena"
               showCommonBases={false}
+              isInsufficientBalance={error === DerivedMintInfoError.INSUFFICIENT_A_BALANCE}
             />
             
             <Flex width="100%" justifyContent="center">
@@ -241,10 +245,11 @@ const AddLiquidity: React.FC = () => {
               currency={currencies[Field.CURRENCY_B]}
               id="add-liquidity-input-tokenb"
               showCommonBases={false}
+              isInsufficientBalance={error === DerivedMintInfoError.INSUFFICIENT_B_BALANCE}
             />
           </Flex>
 
-          <Box width="100%" height="1px" m="32px 0" backgroundColor={ColorStyles.LIGHTGREY} />
+          <Divider m="32px 0" />
 
           <Box>
             {!account ? (
@@ -353,17 +358,26 @@ const AddLiquidity: React.FC = () => {
                   width="100%"
                   scale={ButtonScales.LG}
                 >
-                  {error ?? t('Add')}
+                  {t('Add Liquidity')}
                 </Button>
               </Flex>
             )}
           </Box>
 
           {error && (
-            <Noti type={NotiType.ALERT} mt={isMobile ? "10px" : "12px"}>
-              {t('Error message')}
-            </Noti>)
-          }
+            <>
+              {error === DerivedMintInfoError.ENTER_AN_AMOUNT && (
+                <Noti type={NotiType.ALERT} mt={isMobile ? "10px" : "12px"}>
+                  {t(DerivedMintInfoError.ENTER_AN_AMOUNT)}
+                </Noti>
+              )}
+              {error === DerivedMintInfoError.INVALID_PAIR && (
+                <Noti type={NotiType.ALERT} mt={isMobile ? "10px" : "12px"}>
+                  {t(DerivedMintInfoError.INVALID_PAIR)}
+                </Noti>
+              )}
+            </>
+          )}
 
           <Box mt="24px">
             {currencies[Field.CURRENCY_A] && currencies[Field.CURRENCY_B] && pairState !== PairState.INVALID && (
@@ -383,11 +397,11 @@ const AddLiquidity: React.FC = () => {
         </CardBody>
       </Flex>
 
-      {pair && !noLiquidity && pairState !== PairState.INVALID ? (
+      {pair && !noLiquidity && pairState !== PairState.INVALID && (
         <Box mb={isMobile ? "40px" : "80px"}>
           <MinimalPositionCard showUnwrapped={oneCurrencyIsWETH} pair={pair} />
         </Box>
-      ) : null}
+      )}
     </>
   )
 }

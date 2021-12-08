@@ -225,7 +225,7 @@ export default function FullPositionCard({ pair, isLastCard = false }: PositionC
         
         <Button
           as={Link}
-          to={`/remove/${currencyId(currency0)}/${currencyId(currency1)}`}
+          to={`/liquidity/remove/${currencyId(currency0)}/${currencyId(currency1)}`}
           width={isMobile ? "100%" : "100px"}
           scale={isMobile ? ButtonScales.LG : ButtonScales.MD}
           variant={ButtonVariants.LINE}

@@ -167,10 +167,8 @@ export default function CurrencyInputPanel({
   const { account } = useCaverJsReact()
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
 
-  const [onPresentCurrencySearchModal] = useModal(<CurrencySearchModal
-    // onChangeList={() => {
-    //   console.log('onChangeList')
-    // }}
+  const [onPresentCurrencySearchModal] = useModal(
+  <CurrencySearchModal
     onCurrencySelect={onCurrencySelect}
     selectedCurrency={currency}
     otherSelectedCurrency={otherCurrency}
@@ -212,9 +210,11 @@ export default function CurrencyInputPanel({
                       {t('MAX')}
                     </AnountButton>
                   </Flex>
-                  {isInsufficientBalance && <Noti type={NotiType.ALERT} mt="12px">
-                    {t('Insufficient balance')}
-                  </Noti>}
+                  {isInsufficientBalance && 
+                    <Noti type={NotiType.ALERT} mt="12px">
+                      {t('Insufficient balance')}
+                    </Noti>
+                  }
                 </>
               }
             </Flex>
