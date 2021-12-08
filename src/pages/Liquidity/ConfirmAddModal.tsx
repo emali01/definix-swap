@@ -48,6 +48,7 @@ interface Props extends InjectedModalProps {
   onDismissModal: () => void;
   currencyA: Currency;
   currencyB: Currency;
+  initFieldInput: () => void;
 }
 
 const Wrap = styled(Box)`
@@ -71,7 +72,8 @@ export default function ConfirmAddModal({
   onDismiss = () => null,
   onDismissModal = () => null,
   currencyA,
-  currencyB
+  currencyB,
+  initFieldInput,
 }: Props) {
   const { t } = useTranslation()
   const { chainId, account, library } = useActiveWeb3React()
@@ -307,6 +309,10 @@ export default function ConfirmAddModal({
       onDismiss();
     }
   }, [txHash, t, toastSuccess, onDismissModal, onDismiss])
+
+  useEffect(() => {
+    return () => initFieldInput();
+  }, [initFieldInput])
 
   return (
     <Modal title={t('Confirm Add Liquidity')} mobileFull onDismiss={onDismiss}>

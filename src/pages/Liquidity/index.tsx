@@ -17,9 +17,9 @@ const Liquidity: React.FC = () => {
         <Flex mb="40px">
           <TitleSet
             title={t("Liquidity")}
-            description={t("Pair your tokens and deposit in a liquidity pool to get high interest profit.")}
+            description={t("Pair tokens and add to liquidity to earn high interest profit")}
             link="/"
-            linkLabel={t("Learn to swap.")}
+            linkLabel={t("Learn how to add Liquidity")}
           />
         </Flex>
         <Flex

@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState, useContext } from 'react';
+import React, { useCallback, useMemo, useState, useContext, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import Caver from 'caver-js'
 import { BigNumber } from '@ethersproject/bignumber'
@@ -78,6 +78,11 @@ const AddLiquidity: React.FC = () => {
   const { onFieldAInput, onFieldBInput } = useMintActionHandlers(noLiquidity)
   const isValid = useMemo(() => !error, [error]);
 
+  const initFieldInput = useCallback(() => {
+    onFieldAInput('');
+    onFieldBInput('');
+  }, [onFieldAInput, onFieldBInput]);
+
   const { independentField, typedValue, otherTypedValue } = useMintState()
 
   const [approvalA, approveACallback] = useApproveCallback(parsedAmounts[Field.CURRENCY_A], ROUTER_ADDRESS[chainId || parseInt(process.env.REACT_APP_CHAIN_ID || '0')])
@@ -119,16 +124,20 @@ const AddLiquidity: React.FC = () => {
     setErrorMsg('')
   }, [onFieldAInput, txHash])
 
-  const [onPresentConfirmAddModal] = useModal(<ConfirmAddModal
-    noLiquidity={noLiquidity}
-    currencies={currencies}
-    liquidityMinted={liquidityMinted}
-    price={price}
-    parsedAmounts={parsedAmounts}
-    poolTokenPercentage={poolTokenPercentage}
-    currencyA={currencyA}
-    currencyB={currencyB}
-    onDismissModal={handleDismissConfirmation} />);
+  const [onPresentConfirmAddModal] = useModal(
+    <ConfirmAddModal
+      noLiquidity={noLiquidity}
+      currencies={currencies}
+      liquidityMinted={liquidityMinted}
+      price={price}
+      parsedAmounts={parsedAmounts}
+      poolTokenPercentage={poolTokenPercentage}
+      currencyA={currencyA}
+      currencyB={currencyB}
+      onDismissModal={handleDismissConfirmation}
+      initFieldInput={initFieldInput}
+    />
+  );
 
   const handleCurrencyASelect = useCallback(
     (currA: Currency) => {
@@ -161,7 +170,11 @@ const AddLiquidity: React.FC = () => {
     chainId &&
     ((currencyA && currencyEquals(currencyA, WETH(chainId))) ||
       (currencyB && currencyEquals(currencyB, WETH(chainId))))
-  )
+  );
+
+  useEffect(() => {
+    return () => initFieldInput();
+  }, [initFieldInput]);
 
   return (
     <>
@@ -171,7 +184,7 @@ const AddLiquidity: React.FC = () => {
         borderRadius="16px"
         mb="12px"
       >
-        {!noLiquidity && (
+        {noLiquidity && (
           <NoLiquidity />
         )}
         <CardBody>
@@ -199,11 +212,12 @@ const AddLiquidity: React.FC = () => {
               id="add-liquidity-input-tokena"
               showCommonBases={false}
             />
-              <Flex width="100%" justifyContent="center">
-                <Box p="14px">
-                  <PlusIcon />
-                </Box>
-              </Flex>
+            
+            <Flex width="100%" justifyContent="center">
+              <Box p="14px">
+                <PlusIcon />
+              </Box>
+            </Flex>
 
             <CurrencyInputPanel
               isMobile={isMobile}
@@ -242,47 +256,49 @@ const AddLiquidity: React.FC = () => {
                   approvalB === ApprovalState.NOT_APPROVED ||
                   approvalB === ApprovalState.PENDING) &&
                   isValid && (
-                    <Flex flexDirection="column" mb="16px">
+                    <Flex flexDirection="column" mb={isMobile ? "32px" : "16px"}>
                       <Flex 
                         flexDirection={isMobile ? "column" : "row"}
                         justifyContent="space-between"
                         alignItems={isMobile ? "flex-start" : "center"}
-                        mb="8px"
+                        mb={isMobile ? "24px" : "8px"}
                       >
-                          <Flex alignItems="center">
+                          <Flex alignItems="center" mb={isMobile ? "8px" : "0px"}>
                             <CurrencyLogo currency={currencies[Field.CURRENCY_A]} size="32px" />
-                            <Text ml="12px" textStyle="R_16M" color={ColorStyles.MEDIUMGREY}>{currencies[Field.CURRENCY_A]?.symbol}</Text>
+                            <Text ml={isMobile ? "10px" : "12px"} textStyle="R_16M" color={ColorStyles.MEDIUMGREY}>
+                              {currencies[Field.CURRENCY_A]?.symbol}
+                            </Text>
                           </Flex>
 
-                          {approvalA === ApprovalState.APPROVED && ( <Button
-                            scale={ButtonScales.LG}
-                            onClick={approveBCallback}
-                            disabled
-                            width="186px"
-                            textStyle="R_14B"
-                            color={ColorStyles.MEDIUMGREY}
-                            variant="line"
-                          >
-                            <Box style={{opacity: 0.5}} mt="4px">
-                              <CheckBIcon />
-                            </Box>
-                            <Text ml="6px">
-                              {t('Approved to')} {currencies[Field.CURRENCY_A]?.symbol}
-                            </Text>
-                          </Button> )}
+                          {approvalA === ApprovalState.APPROVED && (
+                            <Button
+                              scale={ButtonScales.LG}
+                              onClick={approveBCallback}
+                              disabled
+                              width={isMobile ? "100%" : "186px"}
+                              textStyle="R_14B"
+                              color={ColorStyles.MEDIUMGREY}
+                            >
+                              <Box style={{opacity: 0.5}} mt="4px">
+                                <CheckBIcon />
+                              </Box>
+                              <Text ml="6px">
+                                {t('Approve')} {currencies[Field.CURRENCY_A]?.symbol}
+                              </Text>
+                            </Button>
+                          )}
 
-                          {approvalA !== ApprovalState.APPROVED && (<Button
-                            scale={ButtonScales.LG}
-                            onClick={approveACallback}
-                            disabled={approvalA === ApprovalState.PENDING}
-                            width="186px"
-                          >
-                            {approvalA === ApprovalState.PENDING ? (
-                              <Dots>{t('Approving')} {currencies[Field.CURRENCY_A]?.symbol}</Dots>
-                            ) : (
-                              `${t('Approve')} ${currencies[Field.CURRENCY_A]?.symbol}`
-                            )}
-                          </Button>)}
+                          {approvalA !== ApprovalState.APPROVED && (
+                            <Button
+                              scale={ButtonScales.LG}
+                              onClick={approveACallback}
+                              disabled={approvalA === ApprovalState.PENDING}
+                              isLoading={approvalA === ApprovalState.PENDING}
+                              width={isMobile ? "100%" : "186px"}
+                            >
+                              {t('Approve')} {currencies[Field.CURRENCY_A]?.symbol}
+                            </Button>
+                          )}
                       </Flex>
 
                       <Flex 
@@ -290,66 +306,61 @@ const AddLiquidity: React.FC = () => {
                         justifyContent="space-between"
                         alignItems={isMobile ? "flex-start" : "center"}
                       >
-                          <Flex alignItems="center">
+                          <Flex alignItems="center" mb={isMobile ? "8px" : "0px"}>
                             <CurrencyLogo currency={currencies[Field.CURRENCY_B]} size="32px" />
-                            <Text ml="12px" textStyle="R_16M" color={ColorStyles.MEDIUMGREY}>{currencies[Field.CURRENCY_B]?.symbol}</Text>
+                            <Text ml={isMobile ? "10px" : "12px"} textStyle="R_16M" color={ColorStyles.MEDIUMGREY}>
+                              {currencies[Field.CURRENCY_B]?.symbol}
+                            </Text>
                           </Flex>
                           
-                          {approvalB === ApprovalState.APPROVED && ( <Button
-                            scale={ButtonScales.LG}
-                            onClick={approveBCallback}
-                            disabled
-                            width="186px"
-                            textStyle="R_14B"
-                            color={ColorStyles.MEDIUMGREY}
-                            variant="line"
-                          >
-                            <Box style={{opacity: 0.5}} mt="4px">
-                              <CheckBIcon />
-                            </Box>
-                            <Text ml="6px">
-                              {t('Approved to')} {currencies[Field.CURRENCY_B]?.symbol}
-                            </Text>
-                          </Button> )}
+                          {approvalB === ApprovalState.APPROVED && (
+                            <Button
+                              scale={ButtonScales.LG}
+                              onClick={approveBCallback}
+                              disabled
+                              width={isMobile ? "100%" : "186px"}
+                              textStyle="R_14B"
+                              color={ColorStyles.MEDIUMGREY}
+                            >
+                              <Box style={{opacity: 0.5}} mt="4px">
+                                <CheckBIcon />
+                              </Box>
+                              <Text ml="6px">
+                                {t('Approve')} {currencies[Field.CURRENCY_B]?.symbol}
+                              </Text>
+                            </Button>
+                          )}
 
-                          {approvalB !== ApprovalState.APPROVED && ( <Button
-                            scale={ButtonScales.LG}
-                            onClick={approveBCallback}
-                            disabled={approvalB === ApprovalState.PENDING}
-                            width="186px"
-                          >
-                            {approvalB === ApprovalState.PENDING ? (
-                              <Dots>Approving {currencies[Field.CURRENCY_B]?.symbol}</Dots>
-                            ) : (
-                              `${t('Approve to')} ${currencies[Field.CURRENCY_B]?.symbol}`
-                            )}
-                          </Button>)}
+                          {approvalB !== ApprovalState.APPROVED && (
+                            <Button
+                              scale={ButtonScales.LG}
+                              onClick={approveBCallback}
+                              disabled={approvalB === ApprovalState.PENDING}
+                              isLoading={approvalB === ApprovalState.PENDING}
+                              width={isMobile ? "100%" : "186px"}
+                            >
+                              {t('Approve')} {currencies[Field.CURRENCY_B]?.symbol}
+                            </Button>
+                          )}
                       </Flex>
                     </Flex>
                   )}
                 <Button
-                  onClick={() => {
-                    onPresentConfirmAddModal();
-                  }}
+                  onClick={() => onPresentConfirmAddModal()}
                   disabled={
                     !isValid || approvalA !== ApprovalState.APPROVED || approvalB !== ApprovalState.APPROVED
-                  }
-                  variant={
-                    !isValid && !!parsedAmounts[Field.CURRENCY_A] && !!parsedAmounts[Field.CURRENCY_B]
-                      ? 'danger'
-                      : 'primary'
                   }
                   width="100%"
                   scale={ButtonScales.LG}
                 >
-                  {error ?? t('Supply')}
+                  {error ?? t('Add')}
                 </Button>
               </Flex>
             )}
           </Box>
 
           {error && (
-            <Noti type={NotiType.ALERT} mt="12px">
+            <Noti type={NotiType.ALERT} mt={isMobile ? "10px" : "12px"}>
               {t('Error message')}
             </Noti>)
           }
