@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, ButtonProps, useWalletModal } from 'definixswap-uikit'
+import { Button, ButtonProps, ButtonScales, useWalletModal } from 'definixswap-uikit'
 import { useCaverJsReact } from '@sixnetwork/caverjs-react-core'
 import { Trans, useTranslation } from 'react-i18next'
 import useCaverJsReactForWallet from 'hooks/useCaverJsReactForWallet'
@@ -12,7 +12,12 @@ const UnlockButton: React.FC<ButtonProps> = props => {
   const { onPresentConnectModal } = useWalletModal(Trans, login, logout, account)
 
   return (
-    <Button lg width="100%" onClick={onPresentConnectModal} {...props}>
+    <Button 
+      scale={ButtonScales.LG}
+      width="100%"
+      onClick={onPresentConnectModal}
+      {...props}
+    >
       {t('Unlock Wallet')}
     </Button>
   )

@@ -1,5 +1,5 @@
 import { Currency, Pair } from 'definixswap-sdk'
-import React from 'react'
+import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import { 
@@ -13,7 +13,8 @@ import {
   NotiType,
   UnSelectTokenIcon,
   useModal,
-  textStyle
+  textStyle,
+  useMatchBreakpoints
 } from 'definixswap-uikit'
 import { useCaverJsReact } from '@sixnetwork/caverjs-react-core'
 import { escapeRegExp } from 'utils'
@@ -79,6 +80,8 @@ export const CurrencyInputPanelOnRemoveLP: React.FC<any> = ({
   currencyA,
   currencyB
 }) => {
+  const { isXl, isXxl } = useMatchBreakpoints()
+  const isMobile = useMemo(() => !isXl && !isXxl, [isXl, isXxl])
   const { t } = useTranslation();
   const enforcer = (nextUserInput: string) => {
     if (nextUserInput === '' || inputRegex.test(escapeRegExp(nextUserInput))) {
@@ -91,7 +94,7 @@ export const CurrencyInputPanelOnRemoveLP: React.FC<any> = ({
       <Flex alignItems="center" mb="16px">
         {currencyA && currencyB && (
           <>
-            <Box mr="10px">
+            <Box mr={isMobile ? "0px" : "10px"}>
               <DoubleCurrencyLogo size={32} currency0={currencyA} currency1={currencyB}/>
             </Box>
             <Text textStyle="R_16M" color={ColorStyles.DEEPGREY}>

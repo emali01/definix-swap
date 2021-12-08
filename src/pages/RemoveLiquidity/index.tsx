@@ -5,7 +5,7 @@ import { Currency, currencyEquals, ETHER, Percent, WETH } from 'definixswap-sdk'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { ArrowDown, Plus } from 'react-feather'
 import { RouteComponentProps } from 'react-router'
-import { Button, CardBody, ColorStyles, Flex, Text, Box, ButtonScales, Noti, NotiType, TitleSet, useMatchBreakpoints, useModal } from 'definixswap-uikit'
+import { Button, CardBody, ColorStyles, Flex, Text, Box, ButtonScales, TitleSet, useMatchBreakpoints, useModal, Divider } from 'definixswap-uikit'
 import { useTokenBalance } from 'state/wallet/hooks'
 import { useTranslation } from 'react-i18next'
 import { CurrencyInputPanelOnRemoveLP } from '../../components/CurrencyInputPanel'
@@ -251,23 +251,38 @@ export default function RemoveLiquidity({
           <Flex flexDirection="column" width="100%">
             <CardBody>
               <Flex flexDirection="column" mb="20px">
-                <Flex justifyContent="space-between" mb="20px" alignItems="center">
-
-                  <Flex alignItems="center">
-                    <Box mr="10px">
-                      <DoubleCurrencyLogo size={40} currency0={currencyA} currency1={currencyB}/>
+                <Flex 
+                  justifyContent={isMobile ? "flex-start" : "space-between"}
+                  alignItems="center"
+                  mb="20px"
+                >
+                  <Flex 
+                    alignItems="center"
+                    mr={isMobile ? "0px" : "10px"}
+                  >
+                    <Box>
+                      <DoubleCurrencyLogo size={isMobile ? 36 : 40} currency0={currencyA} currency1={currencyB}/>
                     </Box>
-                    <Text textStyle="R_18M" color={ColorStyles.BLACK}>
+                  </Flex>
+                  <Flex 
+                    flexDirection={isMobile ? "column" : "row"}
+                    justifyContent={isMobile ? "flex-start" : "space-between"}
+                    width={isMobile ? "auto" : "100%"}
+                  >
+                    <Text 
+                      textStyle={isMobile ? "R_16M" : "R_18M"}
+                      color={ColorStyles.BLACK}
+                    >
                       {currencyA?.symbol}-{currencyB?.symbol}
                     </Text>
-                  </Flex>
-                  <Flex alignItems="center">
-                    <Text textStyle="R_14R" color={ColorStyles.DEEPGREY} mr="5px">
-                      {t('Balance')}
-                    </Text>
-                    <Text textStyle="R_14B" color={ColorStyles.DEEPGREY}>
-                      {userPoolBalance ? userPoolBalance.toSignificant(4) : '-'}
-                    </Text>
+                    <Flex alignItems="center">
+                      <Text textStyle="R_14R" color={ColorStyles.DEEPGREY} mr="5px">
+                        {t('Balance')}
+                      </Text>
+                      <Text textStyle="R_14B" color={ColorStyles.DEEPGREY}>
+                        {userPoolBalance ? userPoolBalance.toSignificant(4) : '-'}
+                      </Text>
+                    </Flex>
                   </Flex>
                 </Flex>
 
@@ -328,19 +343,38 @@ export default function RemoveLiquidity({
                       ) : null}
                     </Flex>
 
-                    <Flex alignItems="center" justifyContent="space-between" mb="32px">
+                    <Flex 
+                      alignItems="center"
+                      justifyContent="space-between"
+                      mb={isMobile ? "10px" : "0"}
+                      p={isMobile ? "5px 0" : "14px 0"}
+                    >
                       <Flex alignItems="center">
-                        <CurrencyLogo size="32px" currency={currencyA}/>
-                        <Text textStyle="R_16R" color={ColorStyles.BLACK} ml="10px" id="remove-liquidity-tokena-symbol">
+                        <CurrencyLogo size={isMobile ? "30px" : "32px"} currency={currencyA}/>
+                        <Text
+                          textStyle={isMobile ? "R_14M" : "R_16M"}
+                          color={ColorStyles.BLACK}
+                          ml="10px"
+                          id="remove-liquidity-tokena-symbol"
+                        >
                           {currencyA?.symbol}
                         </Text>
                       </Flex>
                       <Text>{formattedAmounts[Field.CURRENCY_A] || '-'}</Text>
                     </Flex>
-                    <Flex alignItems="center" justifyContent="space-between">
+                    <Flex
+                      alignItems="center"
+                      justifyContent="space-between"
+                      p={isMobile ? "5px 0" : "14px 0"}
+                    >
                       <Flex alignItems="center">
-                        <CurrencyLogo size="32px" currency={currencyB}/>
-                        <Text textStyle="R_16R" color={ColorStyles.BLACK} ml="10px" id="remove-liquidity-tokenb-symbol">
+                        <CurrencyLogo size={isMobile ? "30px" : "32px"} currency={currencyB}/>
+                        <Text
+                          textStyle={isMobile ? "R_14M" : "R_16M"}
+                          color={ColorStyles.BLACK}
+                          ml="10px"
+                          id="remove-liquidity-tokenb-symbol"
+                        >
                           {currencyB?.symbol}
                         </Text>
                       </Flex>
@@ -408,11 +442,13 @@ export default function RemoveLiquidity({
                 </Flex>
               )}
 
+              <Divider mt="20px" mb="32px" />
+
               <Flex>
                 {!account ? (
                   <ConnectWalletButton />
                 ) : (
-                  <Flex flexDirection="column" width="100%" mt="32px">
+                  <Flex flexDirection="column" width="100%">
                     <Flex 
                       flexDirection={isMobile ? "column" : "row"}
                       justifyContent="space-between"
