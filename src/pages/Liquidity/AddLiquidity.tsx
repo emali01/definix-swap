@@ -1,10 +1,5 @@
-import React, { useCallback, useMemo, useState, useContext, useEffect } from 'react';
+import React, { useCallback, useMemo, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import Caver from 'caver-js'
-import { BigNumber } from '@ethersproject/bignumber'
-import { KlipModalContext } from '@sixnetwork/klaytn-use-wallet'
-import { abi as IUniswapV2Router02ABI } from '@uniswap/v2-periphery/build/IUniswapV2Router02.json'
-import { ethers } from 'ethers'
 import { 
   ColorStyles,
   Flex,
@@ -21,15 +16,10 @@ import {
   useModal,
   Divider
 } from 'definixswap-uikit';
-import tp from 'tp-js-sdk'
-import { Currency, currencyEquals, TokenAmount, WETH, ETHER } from 'definixswap-sdk';
+import { Currency, currencyEquals, TokenAmount, WETH } from 'definixswap-sdk';
 import { Field } from 'state/mint/actions'
-import { useTransactionAdder } from 'state/transactions/hooks'
-import { KlipConnector } from "@sixnetwork/klip-connector"
-import { useCaverJsReact } from '@sixnetwork/caverjs-react-core';
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { currencyId } from 'utils/currencyId';
-import {sendAnalyticsData} from 'utils/definixAnalytics'
 
 import numeral from 'numeral'
 import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
@@ -42,7 +32,6 @@ import { useHistory, useParams } from 'react-router';
 import { useCurrency } from 'hooks/Tokens';
 
 import CurrencyLogo from 'components/CurrencyLogo';
-import { Dots } from 'components/swap/styleds'
 import ConnectWalletButton from 'components/ConnectWalletButton'
 import CurrencyInputPanel from 'components/CurrencyInputPanel';
 
@@ -52,17 +41,10 @@ import ConfirmAddModal from './ConfirmAddModal';
 
 
 const AddLiquidity: React.FC = () => {
-  const [txHash, setTxHash] = useState<string>('')
-  const [errorMsg, setErrorMsg] = useState<string>('')
-  const history = useHistory();
+  const { t } = useTranslation();
   const { currencyIdA, currencyIdB } = useParams<{currencyIdA: string; currencyIdB: string;}>();
   const currencyA = useCurrency(currencyIdA)
   const currencyB = useCurrency(currencyIdB)
-  const { chainId, account } = useActiveWeb3React()
-  const { isXl, isXxl } = useMatchBreakpoints()
-  const isMobile = useMemo(() => !isXl && !isXxl, [isXl, isXxl])
-  const { t } = useTranslation(); 
-
   const {
     currencyBalances,
     dependentField,
@@ -77,17 +59,17 @@ const AddLiquidity: React.FC = () => {
     error
   } = useDerivedMintInfo(currencyA ?? undefined, currencyB ?? undefined)
   const { onFieldAInput, onFieldBInput } = useMintActionHandlers(noLiquidity)
-  const isValid = useMemo(() => !error, [error]);
-
-  const initFieldInput = useCallback(() => {
-    onFieldAInput('');
-    onFieldBInput('');
-  }, [onFieldAInput, onFieldBInput]);
+  const history = useHistory();
+  const { chainId, account } = useActiveWeb3React()
+  const { isXl, isXxl } = useMatchBreakpoints()
 
   const { independentField, typedValue, otherTypedValue } = useMintState()
 
   const [approvalA, approveACallback] = useApproveCallback(parsedAmounts[Field.CURRENCY_A], ROUTER_ADDRESS[chainId || parseInt(process.env.REACT_APP_CHAIN_ID || '0')])
   const [approvalB, approveBCallback] = useApproveCallback(parsedAmounts[Field.CURRENCY_B], ROUTER_ADDRESS[chainId || parseInt(process.env.REACT_APP_CHAIN_ID || '0')])
+
+  const isMobile = useMemo(() => !isXl && !isXxl, [isXl, isXxl])
+  const isValid = useMemo(() => !error, [error]);
   const formattedAmounts = useMemo(() => {
     return (
       {
@@ -118,12 +100,10 @@ const AddLiquidity: React.FC = () => {
   )
 
   const handleDismissConfirmation = useCallback(() => {
-    if (txHash) {
-      onFieldAInput('')
-    }
-    setTxHash('')
-    setErrorMsg('')
-  }, [onFieldAInput, txHash])
+    onFieldAInput('');
+    onFieldBInput('');
+  }, [onFieldAInput, onFieldBInput]);
+
 
   const [onPresentConfirmAddModal] = useModal(
     <ConfirmAddModal
@@ -136,7 +116,6 @@ const AddLiquidity: React.FC = () => {
       currencyA={currencyA}
       currencyB={currencyB}
       onDismissModal={handleDismissConfirmation}
-      initFieldInput={initFieldInput}
     />
   );
 
@@ -174,8 +153,8 @@ const AddLiquidity: React.FC = () => {
   );
 
   useEffect(() => {
-    return () => initFieldInput();
-  }, [initFieldInput]);
+    return () => handleDismissConfirmation();
+  }, [handleDismissConfirmation]);
 
   console.log('~~~error', error)
 
@@ -364,7 +343,7 @@ const AddLiquidity: React.FC = () => {
             )}
           </Box>
 
-          {error && (
+          {/* {error && (
             <>
               {error === DerivedMintInfoError.ENTER_AN_AMOUNT && (
                 <Noti type={NotiType.ALERT} mt={isMobile ? "10px" : "12px"}>
@@ -377,7 +356,7 @@ const AddLiquidity: React.FC = () => {
                 </Noti>
               )}
             </>
-          )}
+          )} */}
 
           <Box mt="24px">
             {currencies[Field.CURRENCY_A] && currencies[Field.CURRENCY_B] && pairState !== PairState.INVALID && (
@@ -406,4 +385,4 @@ const AddLiquidity: React.FC = () => {
   )
 }
 
-export default React.memo(AddLiquidity);
+export default AddLiquidity;

@@ -5,7 +5,6 @@ import { PairState, usePair } from '../../data/Reserves'
 import { useTotalSupply } from '../../data/TotalSupply'
 
 import { useActiveWeb3React } from '../../hooks'
-import { TranslateString } from '../../utils/translateTextHelpers'
 import { wrappedCurrency, wrappedCurrencyAmount } from '../../utils/wrappedCurrency'
 import { AppDispatch, AppState } from '../index'
 import { tryParseAmount } from '../swap/hooks'
@@ -40,7 +39,7 @@ export function useDerivedMintInfo(
   noLiquidity?: boolean
   liquidityMinted?: TokenAmount
   poolTokenPercentage?: Percent
-  error?: string
+  error?: DerivedMintInfoError | string | undefined
 } {
   const { account, chainId } = useActiveWeb3React()
 
