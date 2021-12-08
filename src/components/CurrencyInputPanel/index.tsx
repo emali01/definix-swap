@@ -14,7 +14,7 @@ import {
   UnSelectTokenIcon,
   useModal,
   textStyle,
-  useMatchBreakpoints
+  useMatchBreakpoints,
 } from 'definixswap-uikit'
 import { useCaverJsReact } from '@sixnetwork/caverjs-react-core'
 import { escapeRegExp } from 'utils'
@@ -91,10 +91,10 @@ export const CurrencyInputPanelOnRemoveLP: React.FC<any> = ({
 
   return (
     <Flex flexDirection="column">
-      <Flex alignItems="center" mb="16px">
+      <Flex alignItems="center" mb={isMobile ? "8px" : "16px"}>
         {currencyA && currencyB && (
           <>
-            <Box mr={isMobile ? "0px" : "10px"}>
+            <Box mr={isMobile ? "12px" : "10px"}>
               <DoubleCurrencyLogo size={32} currency0={currencyA} currency1={currencyB}/>
             </Box>
             <Text textStyle="R_16M" color={ColorStyles.DEEPGREY}>
@@ -104,10 +104,13 @@ export const CurrencyInputPanelOnRemoveLP: React.FC<any> = ({
         )}
         {currency && (
           <>
-            <Box mr="10px">
+            <Box mr={isMobile ? "12px" : "10px"}>
               <CurrencyLogo size="32px" currency={currency}/>
             </Box>
-            <Text textStyle="R_16M" color={ColorStyles.DEEPGREY}>
+            <Text
+              textStyle="R_16M"
+              color={ColorStyles.DEEPGREY}
+            >
               {currency?.symbol}
             </Text>
           </>
@@ -130,13 +133,24 @@ export const CurrencyInputPanelOnRemoveLP: React.FC<any> = ({
           }}
         />
         <Flex>
-          <AnountButton onClick={onQuarter} mr="6px" backgroundColor="rgba(224, 224, 224, 0.3)">
+          <AnountButton 
+            onClick={onQuarter} 
+            mr="6px" 
+            backgroundColor="rgba(224, 224, 224, 0.3)"
+          >
             {t('25%')}
           </AnountButton>
-          <AnountButton onClick={onHalf} mr="6px" backgroundColor="rgba(224, 224, 224, 0.3)">
+          <AnountButton 
+            onClick={onHalf}
+            mr="6px"
+            backgroundColor="rgba(224, 224, 224, 0.3)"
+          >
             {t('50%')}
           </AnountButton>
-          <AnountButton onClick={onMax} backgroundColor="rgba(224, 224, 224, 0.3)">
+          <AnountButton 
+            onClick={onMax}
+            backgroundColor="rgba(224, 224, 224, 0.3)"
+          >
             {t('MAX')}
           </AnountButton>
         </Flex>
