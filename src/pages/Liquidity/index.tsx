@@ -11,6 +11,7 @@ const Liquidity: React.FC = () => {
 
   const tabNames = useMemo(() => [t('Add'), t('Remove')], [t]);
   const [curTab, setCurTab] = useState<string>(tabNames[0]);
+
   return (
     <Flex width="100%" justifyContent="center">
       <Flex flexDirection="column" width={isMobile ? "100%" : "629px"}>
@@ -29,6 +30,10 @@ const Liquidity: React.FC = () => {
             backgroundColor={ColorStyles.WHITE}
             borderTopLeftRadius="16px"
             borderTopRightRadius="16px"
+            borderTop="1px solid #ffe5c9"
+            borderLeft="1px solid #ffe5c9"
+            borderRight="1px solid #ffe5c9"
+            style={{boxShadow: "0 12px 12px 0 rgba(227, 132, 0, 0.1)"}}
           >
             <Tabs 
               tabs={tabNames}

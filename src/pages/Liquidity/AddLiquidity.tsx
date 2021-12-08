@@ -10,8 +10,6 @@ import {
   Button,
   ButtonScales,
   CheckBIcon,
-  NotiType,
-  Noti,
   useMatchBreakpoints,
   useModal,
   Divider
@@ -156,15 +154,18 @@ const AddLiquidity: React.FC = () => {
     return () => handleDismissConfirmation();
   }, [handleDismissConfirmation]);
 
-  console.log('~~~error', error)
-
   return (
     <>
       <Flex 
         flexDirection="column"
         backgroundColor={ColorStyles.WHITE}
-        borderRadius="16px"
+        borderBottomLeftRadius="16px"
+        borderBottomRightRadius="16px"
+        borderLeft="1px solid #ffe5c9"
+        borderRight="1px solid #ffe5c9"
+        borderBottom="1px solid #ffe5c9"
         mb="12px"
+        style={{boxShadow: "0 12px 12px 0 rgba(227, 132, 0, 0.1)"}}
       >
         {noLiquidity && (
           <NoLiquidity />
@@ -343,21 +344,6 @@ const AddLiquidity: React.FC = () => {
             )}
           </Box>
 
-          {/* {error && (
-            <>
-              {error === DerivedMintInfoError.ENTER_AN_AMOUNT && (
-                <Noti type={NotiType.ALERT} mt={isMobile ? "10px" : "12px"}>
-                  {t(DerivedMintInfoError.ENTER_AN_AMOUNT)}
-                </Noti>
-              )}
-              {error === DerivedMintInfoError.INVALID_PAIR && (
-                <Noti type={NotiType.ALERT} mt={isMobile ? "10px" : "12px"}>
-                  {t(DerivedMintInfoError.INVALID_PAIR)}
-                </Noti>
-              )}
-            </>
-          )} */}
-
           <Box mt="24px">
             {currencies[Field.CURRENCY_A] && currencies[Field.CURRENCY_B] && pairState !== PairState.INVALID && (
               <Box>
@@ -377,7 +363,12 @@ const AddLiquidity: React.FC = () => {
       </Flex>
 
       {pair && !noLiquidity && pairState !== PairState.INVALID && (
-        <Box mb={isMobile ? "40px" : "80px"}>
+        <Box 
+          mb={isMobile ? "40px" : "80px"} 
+          border="1px solid #ffe5c9"
+          borderRadius="16px"
+          style={{boxShadow: "0 12px 12px 0 rgba(227, 132, 0, 0.1)"}}
+        >
           <MinimalPositionCard showUnwrapped={oneCurrencyIsWETH} pair={pair} />
         </Box>
       )}
