@@ -604,25 +604,34 @@ export default function RemoveLiquidity({
     }
   }, [account, history]);
 
+  useEffect(() => {
+    return () => {
+      onUserInput(Field.LIQUIDITY_PERCENT, '0')
+      onCurrencyAInput('0')
+      onCurrencyBInput('0')
+    }
+  }, [onUserInput, onCurrencyAInput, onCurrencyBInput])
+
   const userPoolBalance = useTokenBalance(account ?? undefined, pair?.liquidityToken)
 
   return (
     <Flex width="100%" flexDirection="column" alignItems="center">
-      <Box mb="40px">
+      <Flex width={isMobile ? "100%" : "629px"} mb="40px">
         <TitleSet
           title={t("Liquidity")}
-          description={t("Pair your tokens and deposit in a liquidity pool to get high interest profit.")}
+          description={t("Remove LP and take back tokens")}
           link="https://sixnetwork.gitbook.io/definix-on-klaytn-en/exchange/how-to-trade-on-definix-exchange"
-          linkLabel={t("Learn how to Liquidity.")}
+          linkLabel={t("Learn how to add Liquidity")}
         />
-      </Box>
+      </Flex>
       {account && (
         <Flex 
           backgroundColor={ColorStyles.WHITE}
           borderRadius="16px"
           width={isMobile ? "100%" : "629px"}
-          border="solid 1px #ffe5c9"
+          border="1px solid #ffe5c9"
           style={{boxShadow: '0 12px 12px 0 rgba(227, 132, 0, 0.1)'}}
+          mb={isMobile ? "40px" : "80px"}
         >
           <Flex flexDirection="column" width="100%">
             <CardBody>
@@ -665,7 +674,7 @@ export default function RemoveLiquidity({
                       style={{cursor: 'pointer'}}
                     >
                       <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>
-                        {showDetailed ? 'Simple' : 'Detail'}
+                        {showDetailed ? t('Simple') : t('Detail')}
                       </Text>
                     </Box>
                   </Flex>
@@ -687,14 +696,14 @@ export default function RemoveLiquidity({
                         <Flex>
                           {oneCurrencyIsETH ? (
                             <StyledInternalLink
-                              to={`/remove/${currencyA === ETHER ? WETH(chainId).address : currencyIdA}/${currencyB === ETHER ? WETH(chainId).address : currencyIdB
+                              to={`/liquidity/remove/${currencyA === ETHER ? WETH(chainId).address : currencyIdA}/${currencyB === ETHER ? WETH(chainId).address : currencyIdB
                                 }`}
                             >
                               {t('Receive')} WKLAY
                             </StyledInternalLink>
                           ) : oneCurrencyIsWETH ? (
                             <StyledInternalLink
-                              to={`/remove/${currencyA && currencyEquals(currencyA, WETH(chainId)) ? 'KLAY' : currencyIdA
+                              to={`/liquidity/remove/${currencyA && currencyEquals(currencyA, WETH(chainId)) ? 'KLAY' : currencyIdA
                                 }/${currencyB && currencyEquals(currencyB, WETH(chainId)) ? 'KLAY' : currencyIdB}`}
                             >
                               {t('Receive')} KLAY
@@ -789,29 +798,28 @@ export default function RemoveLiquidity({
                   <ConnectWalletButton />
                 ) : (
                   <Flex flexDirection="column" width="100%" mt="32px">
-                    <Flex justifyContent="space-between" mb="16px">
-                      <Flex alignItems="center">
-                        <Box mr="10px">
+                    <Flex 
+                      flexDirection={isMobile ? "column" : "row"}
+                      justifyContent="space-between"
+                      mb={isMobile ? "32px" : "16px"}
+                    >
+                      <Flex alignItems="center" mb={isMobile ? "8px" : "0px"}>
+                        <Box mr={isMobile ? "0" : "10px"}>
                           <DoubleCurrencyLogo size={32} currency0={currencyA} currency1={currencyB}/>
                         </Box>
-                        <Text textStyle="R_18M" color={ColorStyles.BLACK}>
+                        <Text textStyle="R_18M" color={ColorStyles.MEDIUMGREY}>
                           {currencyA?.symbol}-{currencyB?.symbol}
                         </Text>
                       </Flex>
                       <Button
                         onClick={onAttemptToApprove}
-                        disabled={approval !== ApprovalState.NOT_APPROVED || signatureData !== null}
                         textStyle="R_14B"
                         scale={ButtonScales.LG}
-                        width="186px"
+                        width={isMobile ? "100%" : "186px"}
+                        disabled={approval !== ApprovalState.NOT_APPROVED || signatureData !== null}
+                        isLoading={approval === ApprovalState.PENDING}
                       >
-                        {approval === ApprovalState.PENDING ? (
-                          <Dots>Approving</Dots>
-                        ) : approval === ApprovalState.APPROVED || signatureData !== null ? (
-                          t('Approved to LP')
-                        ) : (
-                          t('Approve')
-                        )}
+                        {t('Approve')}
                       </Button>
                     </Flex>
                     
@@ -826,10 +834,13 @@ export default function RemoveLiquidity({
                     >
                       {t('Remove')}
                     </Button>
+                    
+                    {/* {error && (
+                      <Noti type={NotiType.ALERT} mt="12px">
+                        {t(`${error}`)}
+                      </Noti>
+                    )} */}
 
-                    <Noti type={NotiType.ALERT} mt="12px">
-                      {t('Error message')}
-                    </Noti>
                   </Flex>
                 )}
               </Flex>
