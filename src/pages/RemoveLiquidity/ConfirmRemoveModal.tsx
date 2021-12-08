@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { ethers } from 'ethers'
 import styled from 'styled-components'
 import { BigNumber } from '@ethersproject/bignumber'
-import { Flex, Text, Modal, Box, Divider, InjectedModalProps, ColorStyles, Button, ButtonScales } from 'definixswap-uikit'
+import { Flex, Text, Modal, Box, Divider, InjectedModalProps, ColorStyles, Button, ButtonScales, NotiIcon } from 'definixswap-uikit'
 import { Currency, Percent, TokenAmount, CurrencyAmount, Pair, Token, ETHER } from 'definixswap-sdk'
 import { abi as IUniswapV2Router02ABI } from '@uniswap/v2-periphery/build/IUniswapV2Router02.json'
 
@@ -16,6 +16,7 @@ import { useTransactionAdder } from 'state/transactions/hooks'
 import { Field } from 'state/burn/actions'
 import { useUserDeadline, useUserSlippageTolerance } from 'state/user/hooks'
 import { KlaytnTransactionResponse } from 'state/transactions/actions'
+import { useToast } from 'state/toasts/hooks'
 
 import { useActiveWeb3React } from 'hooks'
 import * as klipProvider from 'hooks/KlipProvider'
@@ -27,6 +28,7 @@ import { ROUTER_ADDRESS } from 'constants/index'
 
 import DoubleCurrencyLogo from 'components/DoubleLogo'
 import CurrencyLogo from 'components/CurrencyLogo'
+import KlaytnScopeLink from 'components/KlaytnScopeLink'
 
 import { calculateGasMargin, calculateSlippageAmount, getRouterContract } from 'utils'
 
@@ -43,6 +45,7 @@ interface Props extends InjectedModalProps {
   tokenA: Token;
   tokenB: Token;
   signatureData: { v: number; r: string; s: string; deadline: number }
+  onDismissModal: () => void;
 }
 
 const Wrap = styled(Box)`
@@ -52,6 +55,10 @@ const Wrap = styled(Box)`
   @media screen and (min-width: 464px) {
     width: 416px;
   }
+`
+
+const StyledNotiIcon = styled(NotiIcon)`
+  flex-shrink: 0;
 `
 
 const isKlipConnector = (connector) => connector instanceof KlipConnector
@@ -64,15 +71,17 @@ export default function ConfirmRemoveModal({
   pair,
   tokenA,
   tokenB,
-  signatureData
+  signatureData,
+  onDismissModal
 
 }: Props) {
   const { t } = useTranslation();
   const addTransaction = useTransactionAdder()
   const { account, chainId, library } = useActiveWeb3React()
-  const [approval, approveCallback] = useApproveCallback(parsedAmounts[Field.LIQUIDITY], ROUTER_ADDRESS[chainId || parseInt(process.env.REACT_APP_CHAIN_ID || '0')])
+  const [approval] = useApproveCallback(parsedAmounts[Field.LIQUIDITY], ROUTER_ADDRESS[chainId || parseInt(process.env.REACT_APP_CHAIN_ID || '0')])
   const { connector } = useCaverJsReact()
   const { setShowModal } = useContext(KlipModalContext())
+  const { toastSuccess, toastError } = useToast();
 
   const [attemptingTxn, setAttemptingTxn] = useState(false)
   const [txHash, setTxHash] = useState<string>('')
@@ -251,7 +260,6 @@ export default function ConfirmRemoveModal({
               caverFeeDelegate.rpc.klay.signTransactionAsFeePayer(userSigned).then(function (feePayerSigningResult) {
                 // console.log('feePayerSigningResult tx = ', feePayerSigningResult)
                 caver.rpc.klay.sendRawTransaction(feePayerSigningResult.raw).then((response: KlaytnTransactionResponse) => {
-                  console.log(methodName, ' tx = ', response)
                   setAttemptingTxn(false)
 
                   addTransaction(response, {
@@ -313,8 +321,26 @@ export default function ConfirmRemoveModal({
     }
   }, [account, addTransaction, allowedSlippage, approval, chainId, connector, currencyA, currencyB, deadline, library, parsedAmounts, setShowModal, signatureData, tokenA, tokenB]);
 
+  useEffect(() => {
+    if (txHash) {
+      toastSuccess(t('{{Action}} Complete', {
+        Action: t('Remove Liquidity')
+      }), <KlaytnScopeLink hash={txHash} />)
+      onDismiss();
+    }
+  }, [txHash, t, toastSuccess, onDismissModal, onDismiss])
+
+  useEffect(() => {
+    if (errorMsg) {
+      toastError(t('{{Action}} Failed', {
+        Action: t('Remove Liquidity')
+      }))
+      onDismiss();
+    }
+  }, [errorMsg, t, onDismissModal, onDismiss, toastError])
+
   return (
-    <Modal title={t('Confirm Add Liquidity')} mobileFull onDismiss={onDismiss}>
+    <Modal title={t('Confirm Remove Liquidity')} mobileFull onDismiss={onDismiss}>
       <Wrap>
         <Flex flexDirection="column" mb="20px" mt="16px">
           <Text textStyle="R_16M" color={ColorStyles.DEEPGREY}>{t('LP amount before removal')}</Text>
@@ -357,12 +383,12 @@ export default function ConfirmRemoveModal({
         <Divider mb="24px" mt="35px" />
         <Flex flexDirection="column">
           <Flex>
-            <Text textStyle="R_16M" color={ColorStyles.DEEPGREY}>Estimated Returns</Text>
+            <Text textStyle="R_16M" color={ColorStyles.DEEPGREY}>{t('Estimated Returns')}</Text>
           </Flex>
           {pair && (
-            <Flex justifyContent="space-between">
+            <Flex justifyContent="space-between" mt="12px">
               <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>{t('Price Rate')}</Text>
-              <Flex flexDirection="column">
+              <Flex flexDirection="column" alignItems="flex-end">
                 <Text textStyle="R_14M" color={ColorStyles.DEEPGREY}>
                   1 {currencyA?.symbol} = {tokenA ? pair.priceOf(tokenA).toSignificant(6) : '-'} {currencyB?.symbol}
                 </Text>
@@ -372,10 +398,12 @@ export default function ConfirmRemoveModal({
               </Flex>
             </Flex>
           )}
-          <Flex>
-            <Text mt="20px" textStyle="R_12R" color={ColorStyles.MEDIUMGREY}>
-              {`Output is estimated. If the price changes by more than ${allowedSlippage / 100
-                }% your transaction will revert.`}
+          <Flex alignItems="flex-start" mt="20px">
+            <StyledNotiIcon />
+            <Text ml="4px" textStyle="R_12R" color={ColorStyles.MEDIUMGREY}>
+              {t('Output is estimated')}
+              {/* {`Output is estimated. If the price changes by more than ${allowedSlippage / 100
+                }% your transaction will revert.`} */}
             </Text>
           </Flex>
           <Button
@@ -383,6 +411,7 @@ export default function ConfirmRemoveModal({
             disabled={!(approval === ApprovalState.APPROVED || signatureData !== null)}
             onClick={onRemove}
             scale={ButtonScales.LG}
+            isLoading={attemptingTxn}
           >
             {t('Remove')}
           </Button>

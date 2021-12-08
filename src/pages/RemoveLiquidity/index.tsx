@@ -216,7 +216,8 @@ export default function RemoveLiquidity({
       pair,
       tokenA,
       tokenB,
-      signatureData
+      signatureData,
+      onDismissModal: handleDismissConfirmation
     }
   } />)
 
