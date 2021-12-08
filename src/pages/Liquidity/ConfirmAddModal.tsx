@@ -48,7 +48,6 @@ interface Props extends InjectedModalProps {
   onDismissModal: () => void;
   currencyA: Currency;
   currencyB: Currency;
-  initFieldInput: () => void;
 }
 
 const Wrap = styled(Box)`
@@ -73,14 +72,13 @@ export default function ConfirmAddModal({
   onDismissModal = () => null,
   currencyA,
   currencyB,
-  initFieldInput,
 }: Props) {
   const { t } = useTranslation()
   const { chainId, account, library } = useActiveWeb3React()
   const { setShowModal } = useContext(KlipModalContext())
   const [attemptingTxn, setAttemptingTxn] = useState<boolean>(false) // clicked confirm
   const [txHash, setTxHash] = useState<string>('')
-  const [errorMsg, setErrorMsg] = useState<string>('')
+  const [errorMsg, setErrorMsg] = useState<string>(undefined)
   const [deadline] = useUserDeadline()
   const [allowedSlippage] = useUserSlippageTolerance()
   const addTransaction = useTransactionAdder();
@@ -163,6 +161,7 @@ export default function ConfirmAddModal({
     }
 
     setAttemptingTxn(true)
+    setErrorMsg(undefined)
     const valueNumber = (Number(value ? (+value).toString() : "0") / (10 ** 18)).toString()
     const valueklip = Number.parseFloat(valueNumber).toFixed(6)
 
@@ -272,6 +271,10 @@ export default function ConfirmAddModal({
                   } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencies[Field.CURRENCY_B]?.symbol}`
               })
               setTxHash(response.hash)
+            }).catch((e) => {
+              setAttemptingTxn(false)
+              setErrorMsg(e)
+              console.error(e)
             })
           }
         })
@@ -305,14 +308,18 @@ export default function ConfirmAddModal({
       toastSuccess(t('{{Action}} Complete', {
         Action: t('Add Liquidity')
       }), <KlaytnScopeLink hash={txHash} />)
-      onDismissModal();
       onDismiss();
     }
   }, [txHash, t, toastSuccess, onDismissModal, onDismiss])
 
   useEffect(() => {
-    return () => initFieldInput();
-  }, [initFieldInput])
+    if (errorMsg) {
+      toastError(t('{{Action}} Failed', {
+        Action: t('Add Liquidity')
+      }))
+      onDismiss();
+    }
+  }, [errorMsg, t, onDismissModal, onDismiss, toastError])
 
   return (
     <Modal title={t('Confirm Add Liquidity')} mobileFull onDismiss={onDismiss}>

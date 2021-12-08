@@ -5,7 +5,6 @@ import { PairState, usePair } from '../../data/Reserves'
 import { useTotalSupply } from '../../data/TotalSupply'
 
 import { useActiveWeb3React } from '../../hooks'
-import { TranslateString } from '../../utils/translateTextHelpers'
 import { wrappedCurrency, wrappedCurrencyAmount } from '../../utils/wrappedCurrency'
 import { AppDispatch, AppState } from '../index'
 import { tryParseAmount } from '../swap/hooks'
@@ -32,7 +31,7 @@ export function useDerivedMintInfo(
   noLiquidity?: boolean
   liquidityMinted?: TokenAmount
   poolTokenPercentage?: Percent
-  error?: string
+  error?: boolean
 } {
   const { account, chainId } = useActiveWeb3React()
 
@@ -129,28 +128,8 @@ export function useDerivedMintInfo(
     return undefined
   }, [liquidityMinted, totalSupply])
 
-  let error: string | undefined
-  if (!account) {
-    error = 'Connect Wallet'
-  }
-
-  if (pairState === PairState.INVALID) {
-    error = error ?? TranslateString(136, 'Invalid pair')
-  }
-
-  if (!parsedAmounts[Field.CURRENCY_A] || !parsedAmounts[Field.CURRENCY_B]) {
-    error = error ?? TranslateString(84, 'Enter an amount')
-  }
-
   const { [Field.CURRENCY_A]: currencyAAmount, [Field.CURRENCY_B]: currencyBAmount } = parsedAmounts
-
-  if (currencyAAmount && currencyBalances?.[Field.CURRENCY_A]?.lessThan(currencyAAmount)) {
-    error = `Insufficient ${currencies[Field.CURRENCY_A]?.symbol} balance`
-  }
-
-  if (currencyBAmount && currencyBalances?.[Field.CURRENCY_B]?.lessThan(currencyBAmount)) {
-    error = `Insufficient ${currencies[Field.CURRENCY_B]?.symbol} balance`
-  }
+  const error = Boolean(!account || (pairState === PairState.INVALID) || (!parsedAmounts[Field.CURRENCY_A] || !parsedAmounts[Field.CURRENCY_B]) || (currencyAAmount && currencyBalances?.[Field.CURRENCY_A]?.lessThan(currencyAAmount)) || (currencyBAmount && currencyBalances?.[Field.CURRENCY_B]?.lessThan(currencyBAmount)))
 
   return {
     dependentField,
