@@ -47,6 +47,7 @@ import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { computeTradePriceBreakdown, warningSeverity } from 'utils/prices'
 import { SwapContainer, CardContainer } from 'components/Layout'
 import CurrencyLogo from 'components/CurrencyLogo'
+import { useToast } from 'state/toasts/hooks'
 import {
   SIX_ADDRESS,
   FINIX_ADDRESS,
@@ -181,10 +182,11 @@ export default function Swap({
   const noRoute = !route
 
   // check whether the user has approved the router on the input token
-  const [approval, approveCallback] = useApproveCallbackFromTrade(chainId, trade, allowedSlippage)
+  const [approval, approveCallback, approveErr, setApproveErr] = useApproveCallbackFromTrade(chainId, trade, allowedSlippage)
 
   // check if user has gone through approval process, used to show two step buttons, reset on token change
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
+  const { toastError } = useToast();
 
   // mark when a user has submitted an approval, reset onTokenSelection for input field
   useEffect(() => {
@@ -192,6 +194,15 @@ export default function Swap({
       setApprovalSubmitted(true)
     }
   }, [approval, approvalSubmitted])
+
+  useEffect(() => {
+    if(approveErr){
+      toastError(t('{{Action}} Failed', {
+        Action: t('Approve')
+      }));
+      setApproveErr('');
+    }
+  }, [approveErr, setApproveErr, t, toastError])
 
   const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances[Field.INPUT])
   const atMaxAmountInput = Boolean(maxAmountInput && parsedAmounts[Field.INPUT]?.equalTo(maxAmountInput))
@@ -211,12 +222,12 @@ export default function Swap({
 
   // show approve flow when: no error on inputs, not approved or pending, or approved in current session
   // never show if price impact is above threshold in non expert mode
-  const showApproveFlow =
-    !swapInputError &&
+  const showApproveFlow = useMemo(() => !swapInputError &&
     (approval === ApprovalState.NOT_APPROVED ||
       approval === ApprovalState.PENDING ||
       (approvalSubmitted && approval === ApprovalState.APPROVED)) &&
-    !(priceImpactSeverity > 3 && !isExpertMode)
+    !(priceImpactSeverity > 3 && !isExpertMode), 
+    [approval, approvalSubmitted, isExpertMode, priceImpactSeverity, swapInputError]);
 
     const initSwapData = useCallback(() => {
       onUserInput(Field.INPUT, '')

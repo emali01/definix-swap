@@ -22,6 +22,7 @@ import {
 } from 'definixswap-uikit-v2'
 import { useTokenBalance } from 'state/wallet/hooks'
 import { useTranslation } from 'react-i18next'
+import { useToast } from 'state/toasts/hooks'
 import { CurrencyInputPanelOnRemoveLP } from '../../components/CurrencyInputPanel'
 import CurrencyLogo from '../../components/CurrencyLogo'
 import DoubleCurrencyLogo from '../../components/DoubleLogo'
@@ -51,7 +52,7 @@ export default function RemoveLiquidity({
 
   const { t } = useTranslation();
   const [currencyA, currencyB] = [useCurrency(currencyIdA) ?? undefined, useCurrency(currencyIdB) ?? undefined]
-  const { account, chainId, library } = useActiveWeb3React()
+  const { account, chainId } = useActiveWeb3React()
   const [tokenA, tokenB] = useMemo(() => [wrappedCurrency(currencyA, chainId), wrappedCurrency(currencyB, chainId)], [
     currencyA,
     currencyB,
@@ -67,91 +68,108 @@ export default function RemoveLiquidity({
   // modal, loading, error
   const [showDetailed, setShowDetailed] = useState<boolean>(false)
 
-  const [deadline] = useUserDeadline()
+  // const [deadline] = useUserDeadline()
 
-  const formattedAmounts = {
-    [Field.LIQUIDITY_PERCENT]: parsedAmounts[Field.LIQUIDITY_PERCENT].equalTo('0')
-      ? '0'
-      : parsedAmounts[Field.LIQUIDITY_PERCENT].lessThan(new Percent('1', '100'))
-        ? '<1'
-        : parsedAmounts[Field.LIQUIDITY_PERCENT].toFixed(0),
-    [Field.LIQUIDITY]:
-      independentField === Field.LIQUIDITY ? typedValue : parsedAmounts[Field.LIQUIDITY]?.toSignificant(6) ?? '',
-    [Field.CURRENCY_A]:
-      independentField === Field.CURRENCY_A ? typedValue : parsedAmounts[Field.CURRENCY_A]?.toSignificant(6) ?? '',
-    [Field.CURRENCY_B]:
-      independentField === Field.CURRENCY_B ? typedValue : parsedAmounts[Field.CURRENCY_B]?.toSignificant(6) ?? ''
-  }
+  const formattedAmounts = useMemo(() => {
+    return (
+      {
+        [Field.LIQUIDITY_PERCENT]: parsedAmounts[Field.LIQUIDITY_PERCENT].equalTo('0')
+          ? '0'
+          : parsedAmounts[Field.LIQUIDITY_PERCENT].lessThan(new Percent('1', '100'))
+            ? '<1'
+            : parsedAmounts[Field.LIQUIDITY_PERCENT].toFixed(0),
+        [Field.LIQUIDITY]:
+          independentField === Field.LIQUIDITY ? typedValue : parsedAmounts[Field.LIQUIDITY]?.toSignificant(6) ?? '',
+        [Field.CURRENCY_A]:
+          independentField === Field.CURRENCY_A ? typedValue : parsedAmounts[Field.CURRENCY_A]?.toSignificant(6) ?? '',
+        [Field.CURRENCY_B]:
+          independentField === Field.CURRENCY_B ? typedValue : parsedAmounts[Field.CURRENCY_B]?.toSignificant(6) ?? ''
+      }
+    )
+  }, [independentField, parsedAmounts, typedValue]);
 
   // pair contract
-  const pairContract: Contract | null = usePairContract(pair?.liquidityToken?.address)
+  // const pairContract: Contract | null = usePairContract(pair?.liquidityToken?.address)
 
   // allowance handling
   const [signatureData, setSignatureData] = useState<{ v: number; r: string; s: string; deadline: number } | null>(null)
-  const [approval, approveCallback] = useApproveCallback(parsedAmounts[Field.LIQUIDITY], ROUTER_ADDRESS[chainId || parseInt(process.env.REACT_APP_CHAIN_ID || '0')])
-  async function onAttemptToApprove() {
-    if (!pairContract || !pair || !library) throw new Error('missing dependencies')
-    const liquidityAmount = parsedAmounts[Field.LIQUIDITY]
-    if (!liquidityAmount) throw new Error('missing liquidity amount')
-    // try to gather a signature for permission
-    const nonce = await pairContract.nonces(account)
+  const [approval, approveCallback, approveErr, setApproveErr] = useApproveCallback(
+    parsedAmounts[Field.LIQUIDITY],
+    ROUTER_ADDRESS[chainId || parseInt(process.env.REACT_APP_CHAIN_ID || '0')]
+  );
+  const { toastError } = useToast();
 
-    const deadlineForSignature: number = Math.ceil(Date.now() / 1000) + deadline
+  
+  // const onAttemptToApprove = useCallback(async () => {
+  //   if (!pairContract || !pair || !library) throw new Error('missing dependencies')
 
-    const EIP712Domain = [
-      { name: 'name', type: 'string' },
-      { name: 'version', type: 'string' },
-      { name: 'chainId', type: 'uint256' },
-      { name: 'verifyingContract', type: 'address' }
-    ]
-    const domain = {
-      name: 'Definix LPs',
-      version: '1',
-      chainId,
-      verifyingContract: pair.liquidityToken.address
-    }
-    const Permit = [
-      { name: 'owner', type: 'address' },
-      { name: 'spender', type: 'address' },
-      { name: 'value', type: 'uint256' },
-      { name: 'nonce', type: 'uint256' },
-      { name: 'deadline', type: 'uint256' }
-    ]
-    const message = {
-      owner: account,
-      spender: ROUTER_ADDRESS[chainId || parseInt(process.env.REACT_APP_CHAIN_ID || '0')],
-      value: liquidityAmount.raw.toString(),
-      nonce: nonce.toHexString(),
-      deadline: deadlineForSignature
-    }
-    const data = JSON.stringify({
-      types: {
-        EIP712Domain,
-        Permit
-      },
-      domain,
-      primaryType: 'Permit',
-      message
-    })
+  //   const liquidityAmount = parsedAmounts[Field.LIQUIDITY]
+  //   if (!liquidityAmount) throw new Error('missing liquidity amount')
 
-    library
-      .send('eth_signTypedData_v4', [account, data])
-      .then(splitSignature)
-      .then(signature => {
-        setSignatureData({
-          v: signature.v,
-          r: signature.r,
-          s: signature.s,
-          deadline: deadlineForSignature
-        })
-      })
-      .catch(e => {
-        // for all errors other than 4001 (EIP-1193 user rejected request), fall back to manual approve
-        if (e?.code !== 4001) {
-          approveCallback()
-        }
-      })
-  }
+  //   // try to gather a signature for permission
+  //   const nonce = await pairContract.nonces(account)
+  //   const deadlineForSignature: number = Math.ceil(Date.now() / 1000) + deadline
+
+  //   const EIP712Domain = [
+  //     { name: 'name', type: 'string' },
+  //     { name: 'version', type: 'string' },
+  //     { name: 'chainId', type: 'uint256' },
+  //     { name: 'verifyingContract', type: 'address' }
+  //   ]
+  //   const domain = {
+  //     name: 'Definix LPs',
+  //     version: '1',
+  //     chainId,
+  //     verifyingContract: pair.liquidityToken.address
+  //   }
+  //   const Permit = [
+  //     { name: 'owner', type: 'address' },
+  //     { name: 'spender', type: 'address' },
+  //     { name: 'value', type: 'uint256' },
+  //     { name: 'nonce', type: 'uint256' },
+  //     { name: 'deadline', type: 'uint256' }
+  //   ]
+  //   const message = {
+  //     owner: account,
+  //     spender: ROUTER_ADDRESS[chainId || parseInt(process.env.REACT_APP_CHAIN_ID || '0')],
+  //     value: liquidityAmount.raw.toString(),
+  //     nonce: nonce.toHexString(),
+  //     deadline: deadlineForSignature
+  //   }
+  //   const data = JSON.stringify({
+  //     types: {
+  //       EIP712Domain,
+  //       Permit
+  //     },
+  //     domain,
+  //     primaryType: 'Permit',
+  //     message
+  //   })
+
+  //   try {
+  //     library
+  //       .send('eth_signTypedData_v4', [account, data])
+  //       .then(splitSignature)
+  //       .then(signature => {
+  //         setSignatureData({
+  //           v: signature.v,
+  //           r: signature.r,
+  //           s: signature.s,
+  //           deadline: deadlineForSignature
+  //         })
+  //       })
+  //       .catch(e => {
+  //         setErrorMsg(e)
+  //         // for all errors other than 4001 (EIP-1193 user rejected request), fall back to manual approve
+  //         if (e?.code !== 4001) {
+  //           approveCallback();
+  //         }
+  //       })
+  //   } catch (err) {
+  //     setErrorMsg(String(err))
+  //   }
+    
+  // }, [account, approveCallback, chainId, deadline, library, pair, pairContract, parsedAmounts]);
 
   // wrapped onUserInput to clear signatures
   const onUserInput = useCallback(
@@ -173,33 +191,12 @@ export default function RemoveLiquidity({
     [onUserInput]
   )
 
-  const oneCurrencyIsETH = currencyA === ETHER || currencyB === ETHER
-  const oneCurrencyIsWETH = Boolean(
+  const oneCurrencyIsETH = useMemo(() => currencyA === ETHER || currencyB === ETHER, [currencyA, currencyB])
+  const oneCurrencyIsWETH = useMemo(() => Boolean(
     chainId &&
     ((currencyA && currencyEquals(WETH(chainId), currencyA)) ||
       (currencyB && currencyEquals(WETH(chainId), currencyB)))
-  )
-
-  const handleSelectCurrencyA = useCallback(
-    (currency: Currency) => {
-      if (currencyIdB && currencyId(currency) === currencyIdB) {
-        history.push(`/liquidity/remove/${currencyId(currency)}/${currencyIdA}`)
-      } else {
-        history.push(`/liquidity/remove/${currencyId(currency)}/${currencyIdB}`)
-      }
-    },
-    [currencyIdA, currencyIdB, history]
-  )
-  const handleSelectCurrencyB = useCallback(
-    (currency: Currency) => {
-      if (currencyIdA && currencyId(currency) === currencyIdA) {
-        history.push(`/liquidity/remove/${currencyIdB}/${currencyId(currency)}`)
-      } else {
-        history.push(`/liquidity/remove/${currencyIdA}/${currencyId(currency)}`)
-      }
-    },
-    [currencyIdA, currencyIdB, history]
-  )
+  ), [chainId, currencyA, currencyB]);
 
   const handleDismissConfirmation = useCallback(() => {
     setSignatureData(null) // important that we clear signature data to avoid bad sigs
@@ -242,6 +239,15 @@ export default function RemoveLiquidity({
       onUserInput
     }
   } />)
+
+  useEffect(() => {
+    if(approveErr){
+      toastError(t('{{Action}} Failed', {
+        Action: t('Approve')
+      }));
+      setApproveErr('');
+    }
+  }, [approveErr, toastError, t, setApproveErr])
 
   return (
     <Flex width="100%" flexDirection="column" alignItems="center">
@@ -484,7 +490,8 @@ export default function RemoveLiquidity({
                         </Text>
                       </Flex>
                       <Button
-                        onClick={onAttemptToApprove}
+                        // onClick={onAttemptToApprove}
+                        onClick={approveCallback}
                         textStyle="R_14B"
                         scale={ButtonScales.LG}
                         width={isMobile ? "100%" : "186px"}

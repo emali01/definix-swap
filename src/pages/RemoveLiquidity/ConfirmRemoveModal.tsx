@@ -4,8 +4,28 @@ import { useTranslation } from 'react-i18next'
 import { ethers } from 'ethers'
 import styled from 'styled-components'
 import { BigNumber } from '@ethersproject/bignumber'
-import { Flex, Text, Modal, Box, Divider, InjectedModalProps, ColorStyles, Button, ButtonScales, NotiIcon, ModalBody } from 'definixswap-uikit-v2'
-import { Currency, Percent, TokenAmount, CurrencyAmount, Pair, Token, ETHER } from 'definixswap-sdk'
+import { 
+  Flex,
+  Text,
+  Modal,
+  Box,
+  Divider,
+  InjectedModalProps,
+  ColorStyles,
+  Button,
+  ButtonScales,
+  NotiIcon,
+  ModalBody
+} from 'definixswap-uikit-v2'
+import { 
+  Currency,
+  Percent,
+  TokenAmount,
+  CurrencyAmount,
+  Pair,
+  Token,
+  ETHER
+} from 'definixswap-sdk'
 import { abi as IUniswapV2Router02ABI } from '@uniswap/v2-periphery/build/IUniswapV2Router02.json'
 
 import { KlipConnector } from "@sixnetwork/klip-connector"
@@ -320,7 +340,23 @@ export default function ConfirmRemoveModal({
         }
       }
     }
-  }, [account, addTransaction, allowedSlippage, approval, chainId, connector, currencyA, currencyB, deadline, library, parsedAmounts, setShowModal, signatureData, tokenA, tokenB]);
+  }, [
+    account,
+    addTransaction,
+    allowedSlippage,
+    approval,
+    chainId,
+    connector,
+    currencyA,
+    currencyB,
+    deadline,
+    library,
+    parsedAmounts,
+    setShowModal,
+    signatureData,
+    tokenA,
+    tokenB
+  ]);
 
   useEffect(() => {
     if (txHash) {

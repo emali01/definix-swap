@@ -4,7 +4,7 @@ import { MaxUint256 } from '@ethersproject/constants'
 import { Trade, TokenAmount, CurrencyAmount, ETHER } from 'definixswap-sdk'
 import { KlipConnector } from "@sixnetwork/klip-connector"
 import { KlipModalContext } from "@sixnetwork/klaytn-use-wallet"
-import { useCallback, useMemo, useContext } from 'react'
+import { useCallback, useMemo, useContext, useState } from 'react'
 import UseDeParam from 'hooks/useDeParam'
 import { useCaverJsReact } from '@sixnetwork/caverjs-react-core'
 import { ROUTER_ADDRESS } from '../constants'
@@ -33,14 +33,13 @@ export enum ApprovalState {
 export function useApproveCallback(
   amountToApprove?: CurrencyAmount,
   spender?: string,
-
-): [ApprovalState, () => Promise<void>] {
+): [ApprovalState, () => Promise<void>, string, React.Dispatch<React.SetStateAction<string>>] {
   const { account, chainId } = useActiveWeb3React()
   const { setShowModal } = useContext(KlipModalContext())
-  // console.log("account approve : ", account)
   const token = amountToApprove instanceof TokenAmount ? amountToApprove.token : undefined
   const currentAllowance = useTokenAllowance(token, account ?? undefined, spender)
   const pendingApproval = useHasPendingApproval(token?.address, spender)
+
   const { connector } = useCaverJsReact()
   // const { setShowModal } = useContext(KlipModalContext())
   // check the current approval status
@@ -57,33 +56,34 @@ export function useApproveCallback(
         : ApprovalState.NOT_APPROVED
       : ApprovalState.APPROVED
   }, [amountToApprove, currentAllowance, pendingApproval, spender])
-
   const tokenContract = useTokenContract(token?.address)
   const addTransaction = useTransactionAdder()
 
-  const approve = useCallback(async (): Promise<void> => {
+  const [errMsg, setErrMsg] = useState<string>();
 
+  const approve = useCallback(async (): Promise<void> => {
     if (approvalState !== ApprovalState.NOT_APPROVED) {
-      console.error('approve was called unnecessarily')
+      console.error('Approve was called unnecessarily')
       return
     }
+
     if (!token) {
-      console.error('no token')
+      console.error('No token')
       return
     }
 
     if (!tokenContract) {
-      console.error('tokenContract is null')
+      console.error('TokenContract is null')
       return
     }
 
     if (!amountToApprove) {
-      console.error('missing amount to approve')
+      console.error('Missing amount to approve')
       return
     }
 
     if (!spender) {
-      console.error('no spender')
+      console.error('No spender')
       return
     }
 
@@ -110,10 +110,8 @@ export function useApproveCallback(
     if (flagFeeDelegate === "Y") {
       const caverFeeDelegate = new Caver(process.env.REACT_APP_SIX_KLAYTN_EN_URL)
       const feePayerAddress = process.env.REACT_APP_FEE_PAYER_ADDRESS
-
       // @ts-ignore
       const caver = new Caver(window.caver)
-
       // eslint-disable-next-line consistent-return
       return caver.klay
         .signTransaction({
@@ -123,29 +121,22 @@ export function useApproveCallback(
           gas: calculateGasMargin(estimatedGas),
           data: iface.encodeFunctionData("approve", [spender, useExact ? amountToApprove.raw.toString() : MaxUint256]),
         })
-        .then(function (userSignTx) {
-          // console.log('userSignTx tx = ', userSignTx)
+        .then((userSignTx) => {
           const userSigned = caver.transaction.decode(userSignTx.rawTransaction)
-          // console.log('userSigned tx = ', userSigned)
           userSigned.feePayer = feePayerAddress
-          // console.log('userSigned After add feePayer tx = ', userSigned)
 
-          return caverFeeDelegate.rpc.klay.signTransactionAsFeePayer(userSigned).then(function (feePayerSigningResult) {
-            // console.log('feePayerSigningResult tx = ', feePayerSigningResult)
+          return caverFeeDelegate.rpc.klay.signTransactionAsFeePayer(userSigned).then((feePayerSigningResult) => {
             return caver.rpc.klay.sendRawTransaction(feePayerSigningResult.raw).then((tx: KlaytnTransactionResponse) => {
-              console.log('approve tx = ', tx)
               addTransaction(tx, {
                 summary: `Approve ${amountToApprove.currency.symbol}`,
                 approval: { tokenAddress: token.address, spender },
               })
             }).catch((error: Error) => {
               console.error('Failed to approve token', error)
-              throw error
             })
           })
         })
-        .catch(function (tx) {
-          console.log('approve error tx = ', tx)
+        .catch((tx) => {
           return tx.transactionHash
         })
     }
@@ -162,13 +153,24 @@ export function useApproveCallback(
         })
       })
       .catch((error: Error) => {
+        setErrMsg(error.toString());
         console.error('Failed to approve token', error)
-        throw error
       })
     }
-  }, [chainId, approvalState, token, account, tokenContract, amountToApprove, spender, addTransaction,connector,setShowModal])
+  }, [
+    chainId,
+    approvalState,
+    token,
+    account,
+    tokenContract,
+    amountToApprove,
+    spender,
+    addTransaction,
+    connector,
+    setShowModal
+  ])
 
-  return [approvalState, approve]
+  return [approvalState, approve, errMsg, setErrMsg]
 }
 // wraps useApproveCallback in the context of a swap
 export function useApproveCallbackFromTrade(chainId, trade?: Trade, allowedSlippage = 0) {
