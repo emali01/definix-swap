@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react'
 import styled from 'styled-components'
-import { Text } from 'uikit-dev'
+import { Text } from 'definixswap-uikit-v2'
 import useENS from '../../hooks/useENS'
 import { useActiveWeb3React } from '../../hooks'
 import { ExternalLink } from '../Shared'

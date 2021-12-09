@@ -1,18 +1,14 @@
-import React, { Suspense, useEffect, useState } from 'react'
+import React, { Suspense, useEffect } from 'react'
 import { HashRouter, Route, Switch } from 'react-router-dom'
 import { useCaverJsReact } from '@sixnetwork/caverjs-react-core'
-import { injected, klip } from 'connectors'
-import { KlipModalContext } from "@sixnetwork/klaytn-use-wallet"
 import { GlobalStyle, Loading } from 'definixswap-uikit-v2'
 import useCaverJsReactForWallet from 'hooks/useCaverJsReactForWallet'
 import Menu from '../components/Menu'
-import Popups from '../components/Popups'
 import Web3ReactManager from '../components/Web3ReactManager'
 import { AppWrapper } from '../components/Layout'
 import ToastListener from '../components/ToastListener'
 import Liquidity from './Liquidity'
 import { RedirectDuplicateTokenIds, RedirectOldAddLiquidityPathStructure } from './Liquidity/redirects'
-import PoolFinder from './PoolFinder'
 import RemoveLiquidity from './RemoveLiquidity'
 import { RedirectOldRemoveLiquidityPathStructure } from './RemoveLiquidity/redirects'
 import Swap from './Swap'
@@ -38,7 +34,6 @@ export default function App() {
       <GlobalStyle />
       <HashRouter>
         <AppWrapper>
-          <Popups />
           <Menu>
             <Suspense fallback={<Loading />}>
               <Web3ReactManager>
@@ -46,7 +41,6 @@ export default function App() {
                   <Route exact strict path="/swap" component={Swap} />
                   <Route exact path="/swap/:currencyIdA/:currencyIdB" component={RedirectToSwap} />
                   <Route exact path="/swap/:currencyIdA" component={RedirectToSwap} />
-                  <Route exact strict path="/find" component={PoolFinder} />
                   <Route exact strict path="/liquidity" component={Liquidity} />
                   <Route exact strict path="/liquidity/remove/:currencyIdA/:currencyIdB" component={RemoveLiquidity} />
                   <Route exact path="/liquidity/add/:currencyIdA" component={RedirectOldAddLiquidityPathStructure} />
