@@ -1,7 +1,7 @@
 import React from 'react'
 import Lottie from 'react-lottie'
 import styled from 'styled-components'
-import { Text } from 'definixswap-uikit'
+import { Text } from 'definixswap-uikit-v2'
 import loading from 'uikit-dev/animation/loading.json'
 
 const TextCenter = styled(Text)`

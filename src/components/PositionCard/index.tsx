@@ -1,7 +1,7 @@
 import { JSBI, Pair, Percent } from 'definixswap-sdk'
 import React, { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Button, Text, CardBody, Flex, Box, ColorStyles, ButtonScales, ButtonVariants, useMatchBreakpoints } from 'definixswap-uikit'
+import { Button, Text, CardBody, Flex, Box, ColorStyles, ButtonScales, ButtonVariants, useMatchBreakpoints } from 'definixswap-uikit-v2'
 import { useTranslation } from 'react-i18next'
 import { useTotalSupply } from '../../data/TotalSupply'
 import { useActiveWeb3React } from '../../hooks'

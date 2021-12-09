@@ -13,7 +13,7 @@ import {
   useMatchBreakpoints,
   useModal,
   Divider
-} from 'definixswap-uikit';
+} from 'definixswap-uikit-v2';
 import { Currency, currencyEquals, TokenAmount, WETH } from 'definixswap-sdk';
 import { Field } from 'state/mint/actions'
 import { maxAmountSpend } from 'utils/maxAmountSpend'

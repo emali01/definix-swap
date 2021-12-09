@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { ethers } from 'ethers'
 import styled from 'styled-components'
 import { BigNumber } from '@ethersproject/bignumber'
-import { Flex, Text, Modal, Box, Divider, InjectedModalProps, ColorStyles, Button, ButtonScales, NotiIcon, ModalBody } from 'definixswap-uikit'
+import { Flex, Text, Modal, Box, Divider, InjectedModalProps, ColorStyles, Button, ButtonScales, NotiIcon, ModalBody } from 'definixswap-uikit-v2'
 import { Currency, Percent, TokenAmount, CurrencyAmount, Pair, Token, ETHER } from 'definixswap-sdk'
 import { abi as IUniswapV2Router02ABI } from '@uniswap/v2-periphery/build/IUniswapV2Router02.json'
 

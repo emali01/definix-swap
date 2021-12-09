@@ -1,4 +1,4 @@
-import { ColorStyles } from 'definixswap-uikit'
+import { ColorStyles } from 'definixswap-uikit-v2'
 import React, { useCallback } from 'react'
 import styled from 'styled-components'
 

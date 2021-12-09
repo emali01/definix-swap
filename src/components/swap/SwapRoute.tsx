@@ -1,6 +1,6 @@
 import { Trade } from 'definixswap-sdk'
 import React, { Fragment, memo } from 'react'
-import { Text, Flex, ArrowDoubleArrowIcon } from 'definixswap-uikit'
+import { Text, Flex, ArrowDoubleArrowIcon } from 'definixswap-uikit-v2'
 import CurrencyLogo from '../CurrencyLogo'
 
 export default memo(function SwapRoute({ trade, isMobile }: { trade: Trade; isMobile: boolean; }) {

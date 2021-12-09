@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { DefaultTheme, ThemeProvider as SCThemeProvider } from 'styled-components'
-import { light, dark } from 'definixswap-uikit';
+import { light, dark } from 'definixswap-uikit-v2';
 
 const CACHE_KEY = 'IS_DARK'
 

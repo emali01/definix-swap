@@ -5,7 +5,7 @@ import {
   Card,
   Heading,
   Text,
-} from 'definixswap-uikit'
+} from 'definixswap-uikit-v2'
 import { ETHER, Token } from 'definixswap-sdk'
 import { getBscScanLink } from 'utils'
 import { TransactionDetails } from 'state/transactions/reducer'

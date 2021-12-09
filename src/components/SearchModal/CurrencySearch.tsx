@@ -3,7 +3,7 @@ import React, { KeyboardEvent, RefObject, useCallback, useMemo, useRef, useState
 import { useTranslation } from 'react-i18next'
 import { FixedSizeList } from 'react-window'
 import styled from 'styled-components'
-import { Flex, SearchIcon } from 'definixswap-uikit'
+import { Flex, SearchIcon } from 'definixswap-uikit-v2'
 import { useAllTokens, useToken } from '../../hooks/Tokens'
 import { isAddress } from '../../utils'
 import CurrencyList from './CurrencyList'

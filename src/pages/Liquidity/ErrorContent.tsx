@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { TransactionErrorContent } from 'components/TransactionConfirmationModal';
-import { Button } from 'definixswap-uikit';
+import { Button } from 'definixswap-uikit-v2';
 import { useHistory } from 'react-router';
 import { useActiveWeb3React } from 'hooks';
 

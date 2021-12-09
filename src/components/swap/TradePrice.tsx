@@ -1,6 +1,6 @@
 import { Price } from 'definixswap-sdk'
 import React from 'react'
-import { ColorStyles, Box, Flex, Text } from 'definixswap-uikit'
+import { ColorStyles, Box, Flex, Text } from 'definixswap-uikit-v2'
 import styled from 'styled-components'
 
 interface TradePriceProps {

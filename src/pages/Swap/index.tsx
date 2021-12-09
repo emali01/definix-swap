@@ -40,7 +40,7 @@ import {
   ButtonVariants,
   Noti,
   NotiType,
-} from 'definixswap-uikit'
+} from 'definixswap-uikit-v2'
 
 // import { Overlay } from 'uikit-dev/components/Overlay'
 import { maxAmountSpend } from 'utils/maxAmountSpend'

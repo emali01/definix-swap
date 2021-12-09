@@ -15,7 +15,7 @@ import {
   useModal,
   textStyle,
   useMatchBreakpoints,
-} from 'definixswap-uikit'
+} from 'definixswap-uikit-v2'
 import { useCaverJsReact } from '@sixnetwork/caverjs-react-core'
 import { escapeRegExp } from 'utils'
 import { useCurrencyBalance } from '../../state/wallet/hooks'

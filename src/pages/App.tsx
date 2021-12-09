@@ -3,7 +3,7 @@ import { HashRouter, Route, Switch } from 'react-router-dom'
 import { useCaverJsReact } from '@sixnetwork/caverjs-react-core'
 import { injected, klip } from 'connectors'
 import { KlipModalContext } from "@sixnetwork/klaytn-use-wallet"
-import { GlobalStyle, Loading } from 'definixswap-uikit'
+import { GlobalStyle, Loading } from 'definixswap-uikit-v2'
 import useCaverJsReactForWallet from 'hooks/useCaverJsReactForWallet'
 import Menu from '../components/Menu'
 import Popups from '../components/Popups'

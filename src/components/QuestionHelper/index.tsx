@@ -1,4 +1,3 @@
-import { ColorStyles } from 'definixswap-uikit'
 import React, { useCallback, useState } from 'react'
 import { HelpCircle as Question } from 'react-feather'
 import styled from 'styled-components'

@@ -1103,6 +1103,13 @@
   dependencies:
     regenerator-runtime "^0.13.4"
 
+"@babel/runtime@^7.14.0":
+  version "7.16.3"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.16.3.tgz#b86f0db02a04187a3c17caa77de69840165d42d5"
+  integrity sha512-WBwekcqacdY2e9AF/Q7WLFUWmdJGJTkbjqTjoMDgXkVZ3ZRUvOPsLb5KdwISoQVsbP+DQzVZW4Zhci0DvpbNTQ==
+  dependencies:
+    regenerator-runtime "^0.13.4"
+
 "@babel/template@^7.10.4", "@babel/template@^7.12.13", "@babel/template@^7.12.7", "@babel/template@^7.3.3":
   version "7.12.13"
   resolved "https://registry.npmjs.org/@babel/template/-/template-7.12.13.tgz"
@@ -8202,14 +8209,17 @@ definixswap-sdk@1.0.0-klaytn:
     tiny-warning "^1.0.3"
     toformat "^2.0.0"
 
-definixswap-uikit@^0.0.2:
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/definixswap-uikit/-/definixswap-uikit-0.0.2.tgz#7ba22af045e48a9db542702eaba668978b13b0e9"
-  integrity sha512-pzJVn8Gn3WecOpxBL15fA2zldEuCFC5CGcEN/fDfNlxUvvbCDqPZuq/Ezgfeda7/wyvpEwdqiANPTRgC98Bs+w==
+definixswap-uikit-v2@^0.0.4:
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/definixswap-uikit-v2/-/definixswap-uikit-v2-0.0.4.tgz#d0141adffecd3f3fd625da0ab61055d7cd9c4be4"
+  integrity sha512-Zp593TXaid8/baMv5AWVXKlDzdhYoRSN0DR7hylJXXfbrR45qZuo9zeIll5UFJ21HjtcpewYaNgmSCZ/s4DOSg==
   dependencies:
     "@types/lodash" "^4.14.162"
     "@types/styled-system" "^5.1.10"
+    copy-to-clipboard "^3.3.1"
     lodash "^4.17.20"
+    polished "^4.1.3"
+    react-popper "^2.2.5"
     react-transition-group "^4.4.1"
     styled-system "^5.1.5"
 
@@ -14791,6 +14801,13 @@ polished@^3.3.2, polished@^3.4.4:
   dependencies:
     "@babel/runtime" "^7.12.5"
 
+polished@^4.1.3:
+  version "4.1.3"
+  resolved "https://registry.yarnpkg.com/polished/-/polished-4.1.3.tgz#7a3abf2972364e7d97770b827eec9a9e64002cfc"
+  integrity sha512-ocPAcVBUOryJEKe0z2KLd1l9EBa1r5mSwlKpExmrLzsnIzJo4axsoU9O2BjOTkDGDT4mZ0WFE5XKTlR3nLnZOA==
+  dependencies:
+    "@babel/runtime" "^7.14.0"
+
 portfinder@^1.0.26:
   version "1.0.28"
   resolved "https://registry.npmjs.org/portfinder/-/portfinder-1.0.28.tgz"
@@ -16027,6 +16044,14 @@ react-popper-tooltip@^3.1.1:
 react-popper@^2.2.3, react-popper@^2.2.4:
   version "2.2.4"
   resolved "https://registry.npmjs.org/react-popper/-/react-popper-2.2.4.tgz"
+  dependencies:
+    react-fast-compare "^3.0.1"
+    warning "^4.0.2"
+
+react-popper@^2.2.5:
+  version "2.2.5"
+  resolved "https://registry.yarnpkg.com/react-popper/-/react-popper-2.2.5.tgz#1214ef3cec86330a171671a4fbcbeeb65ee58e96"
+  integrity sha512-kxGkS80eQGtLl18+uig1UIf9MKixFSyPxglsgLBxlYnyDf65BiY9B3nZSc6C9XUNDgStROB0fMQlTEz1KxGddw==
   dependencies:
     react-fast-compare "^3.0.1"
     warning "^4.0.2"

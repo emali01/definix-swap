@@ -1,7 +1,7 @@
 import React from 'react';
 import Caver from 'caver-js'
 import { ethers } from 'ethers'
-import { Button } from 'definixswap-uikit'
+import { Button } from 'definixswap-uikit-v2'
 import { useTranslation } from 'react-i18next';
 import { Currency, TokenAmount } from 'definixswap-sdk';
 import { Field } from 'state/mint/actions';

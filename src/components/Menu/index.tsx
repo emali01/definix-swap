@@ -1,7 +1,7 @@
 import React from 'react'
 import { supportedLanguages } from 'constants/localisation/languageCodes'
 import { useCaverJsReact } from '@sixnetwork/caverjs-react-core'
-import { Menu as UikitMenu } from 'definixswap-uikit'
+import { Menu as UikitMenu } from 'definixswap-uikit-v2'
 import { useTranslation, Trans } from 'react-i18next'
 import { useUserSlippageTolerance, useUserDeadline } from 'state/user/hooks'
 import useCaverJsReactForWallet from 'hooks/useCaverJsReactForWallet'

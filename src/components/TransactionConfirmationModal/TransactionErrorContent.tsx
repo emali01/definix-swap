@@ -1,6 +1,6 @@
 import { RowBetween } from 'components/Row'
 import React from 'react'
-import { Button, ErrorIcon, Heading, Link, Text } from 'definixswap-uikit'
+import { Button, ErrorIcon, Heading, Link, Text } from 'definixswap-uikit-v2'
 import CopyToClipboard from 'uikit-dev/widgets/WalletModal/CopyToClipboard'
 import { getBscScanLink } from '../../utils'
 

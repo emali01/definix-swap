@@ -1,7 +1,7 @@
 import { Trade, TradeType } from 'definixswap-sdk'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { Text, Flex, ColorStyles, Helper } from 'definixswap-uikit'
+import { Text, Flex, ColorStyles, Helper } from 'definixswap-uikit-v2'
 import { Field } from '../../state/swap/actions'
 import { useUserSlippageTolerance } from '../../state/user/hooks'
 import { computeSlippageAdjustedAmounts, computeTradePriceBreakdown } from '../../utils/prices'

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import styled, { keyframes } from 'styled-components'
 import { darken } from 'polished'
 import { X } from 'react-feather'
-import { Flex, Box, ArrowChangeIcon } from 'definixswap-uikit'
+import { Flex, Box, ArrowChangeIcon } from 'definixswap-uikit-v2'
 
 export const Button = styled.button.attrs<{ warning: boolean }, { backgroundColor: string }>(({ warning, theme }) => ({
   backgroundColor: warning ? theme.colors.failure : theme.colors.primary,

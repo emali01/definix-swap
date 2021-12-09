@@ -19,7 +19,7 @@ import {
   ChangeBottomIcon,
   ChangePlusIcon,
   ArrowChangeIcon
-} from 'definixswap-uikit'
+} from 'definixswap-uikit-v2'
 import { useTokenBalance } from 'state/wallet/hooks'
 import { useTranslation } from 'react-i18next'
 import { CurrencyInputPanelOnRemoveLP } from '../../components/CurrencyInputPanel'

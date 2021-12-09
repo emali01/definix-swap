@@ -1,6 +1,6 @@
 import React from 'react'
 import { Currency, Percent, Price } from 'definixswap-sdk'
-import { Text, Flex, ColorStyles } from 'definixswap-uikit'
+import { Text, Flex, ColorStyles } from 'definixswap-uikit-v2'
 import { useTranslation } from 'react-i18next'
 import { AutoColumn } from '../../components/Column'
 import { AutoRow } from '../../components/Row'

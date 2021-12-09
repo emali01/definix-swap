@@ -1,7 +1,7 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Trade } from 'definixswap-sdk'
-import { Button, Text, Flex, ColorStyles, ButtonScales } from 'definixswap-uikit'
+import { Button, Text, Flex, ColorStyles, ButtonScales } from 'definixswap-uikit-v2'
 import AdvancedSwapDetailsDropdown from 'components/swap/AdvancedSwapDetailsDropdown'
 import { SwapCallbackError } from './styleds'
 import TradePrice from './TradePrice'

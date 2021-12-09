@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, Flex, ColorStyles, CloseIcon } from 'definixswap-uikit'
+import { Text, Flex, ColorStyles, CloseIcon } from 'definixswap-uikit-v2'
 
 type ConfirmationModalContentProps = {
   mainTitle: string

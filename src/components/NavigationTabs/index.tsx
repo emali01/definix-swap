@@ -2,7 +2,7 @@ import QuestionHelper from 'components/QuestionHelper'
 import React from 'react'
 import { Link as HistoryLink } from 'react-router-dom'
 import styled from 'styled-components'
-import { Button, Heading, Text } from 'definixswap-uikit'
+import { Button, Heading, Text } from 'definixswap-uikit-v2'
 
 const Tabs = styled.div`
   display: flex;

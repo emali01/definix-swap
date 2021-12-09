@@ -1,5 +1,5 @@
 import React from 'react'
-import { Heading, Link, Flex, Text, Box } from 'definixswap-uikit'
+import { Heading, Link, Flex, Text, Box } from 'definixswap-uikit-v2'
 import styled from 'styled-components'
 
 const TutorailsLink = styled(Link)`

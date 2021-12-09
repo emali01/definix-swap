@@ -1,7 +1,7 @@
 import { RowBetween } from 'components/Row'
 import React from 'react'
 import Lottie from 'react-lottie'
-import { Button, Heading, Link, Text } from 'definixswap-uikit'
+import { Button, Heading, Link, Text } from 'definixswap-uikit-v2'
 import complete from 'uikit-dev/animation/complete.json'
 import CopyToClipboard from 'uikit-dev/widgets/WalletModal/CopyToClipboard'
 import { getBscScanLink } from '../../utils'

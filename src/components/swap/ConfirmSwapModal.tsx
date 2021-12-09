@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react'
 import { currencyEquals, Trade } from 'definixswap-sdk'
-import { Modal, Box, Divider, ModalBody } from 'definixswap-uikit'
+import { Modal, Box, Divider, ModalBody } from 'definixswap-uikit-v2'
 import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
 import { computeTradePriceBreakdown } from 'utils/prices'
