@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react'
 import { currencyEquals, Trade } from 'definixswap-sdk'
-import { Modal, Box, Divider } from 'definixswap-uikit'
+import { Modal, Box, Divider, ModalBody } from 'definixswap-uikit'
 import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
 import { computeTradePriceBreakdown } from 'utils/prices'
@@ -100,27 +100,29 @@ export default function ConfirmSwapModal({
 
   return (
     <Modal title={t('Confirm Swap')} mobileFull onDismiss={onDismiss}>
-      <Wrap>
-        {!txHash && trade && (
-          <>
-            <SwapModalHeader
-              trade={trade}
-              allowedSlippage={allowedSlippage}
-              recipient={recipient}
-              showAcceptChanges={showAcceptChanges}
-              onAcceptChanges={onAcceptChanges}
-            />
-            <StyledDivider />
-            <SwapModalFooter
-              onConfirm={handleSwap}
-              trade={trade}
-              disabledConfirm={showAcceptChanges}
-              swapErrorMessage={errorMessage}
-              isPending={isPending}
-            />
-          </>
-        )}
-      </Wrap>
+      <ModalBody>
+        <Wrap>
+          {!txHash && trade && (
+            <>
+              <SwapModalHeader
+                trade={trade}
+                allowedSlippage={allowedSlippage}
+                recipient={recipient}
+                showAcceptChanges={showAcceptChanges}
+                onAcceptChanges={onAcceptChanges}
+              />
+              <StyledDivider />
+              <SwapModalFooter
+                onConfirm={handleSwap}
+                trade={trade}
+                disabledConfirm={showAcceptChanges}
+                swapErrorMessage={errorMessage}
+                isPending={isPending}
+              />
+            </>
+          )}
+        </Wrap>
+      </ModalBody>
     </Modal>
   )
 }

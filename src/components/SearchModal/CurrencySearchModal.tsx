@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { Currency } from 'definixswap-sdk'
-import { Modal, Box } from 'definixswap-uikit'
+import { Modal, Box, ModalBody } from 'definixswap-uikit'
 import { useTranslation } from 'react-i18next'
 import React from 'react'
 import { CurrencySearch } from './CurrencySearch'
@@ -35,14 +35,16 @@ export default function CurrencySearchModal({
 
   return (
     <Modal title={t('Select a token')} mobileFull onDismiss={onDismiss}>
-      <Wrap>
-        <CurrencySearch
-          onCurrencySelect={onCurrencySelect}
-          selectedCurrency={selectedCurrency}
-          otherSelectedCurrency={otherSelectedCurrency}
-          onDismiss={onDismiss}
-        />
-      </Wrap>
+      <ModalBody>
+        <Wrap>
+          <CurrencySearch
+            onCurrencySelect={onCurrencySelect}
+            selectedCurrency={selectedCurrency}
+            otherSelectedCurrency={otherSelectedCurrency}
+            onDismiss={onDismiss}
+          />
+        </Wrap>
+      </ModalBody>
     </Modal>
   )
 }

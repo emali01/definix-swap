@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { ethers } from 'ethers'
 import styled from 'styled-components'
 import { BigNumber } from '@ethersproject/bignumber'
-import { Flex, Text, Modal, Box, Divider, InjectedModalProps, ColorStyles, Button, ButtonScales, NotiIcon } from 'definixswap-uikit'
+import { Flex, Text, Modal, Box, Divider, InjectedModalProps, ColorStyles, Button, ButtonScales, NotiIcon, ModalBody } from 'definixswap-uikit'
 import { Currency, Percent, TokenAmount, CurrencyAmount, Pair, Token, ETHER } from 'definixswap-sdk'
 import { abi as IUniswapV2Router02ABI } from '@uniswap/v2-periphery/build/IUniswapV2Router02.json'
 
@@ -341,82 +341,84 @@ export default function ConfirmRemoveModal({
 
   return (
     <Modal title={t('Confirm Remove Liquidity')} mobileFull onDismiss={onDismiss}>
-      <Wrap>
-        <Flex flexDirection="column" mb="20px" mt="16px">
-          <Text textStyle="R_16M" color={ColorStyles.DEEPGREY}>{t('LP amount before removal')}</Text>
+      <ModalBody>
+        <Wrap>
+          <Flex flexDirection="column" mb="20px" mt="16px">
+            <Text textStyle="R_16M" color={ColorStyles.DEEPGREY}>{t('LP amount before removal')}</Text>
 
-          <Flex justifyContent="space-between" alignItems="center" p="14px 0px" mb="20px">
-            <Flex alignItems="center">
-              <DoubleCurrencyLogo currency0={currencyA} currency1={currencyB} size={32} />
-              <Text ml="10px" textStyle="R_16M" color={ColorStyles.BLACK}>{currencyA?.symbol}-{currencyB?.symbol}</Text>
-            </Flex>
-            <Text textStyle="R_16R" color={ColorStyles.BLACK}>
-              {parsedAmounts[Field.LIQUIDITY]?.toSignificant(6)}
-            </Text>
-          </Flex>
-
-          <Text textStyle="R_16M" color={ColorStyles.DEEPGREY}>{t('You will receive')}</Text>
-          <Flex justifyContent="space-between" alignItems="center" p="14px 0px">
-            <Flex alignItems="center">
-              <CurrencyLogo currency={currencyA} size="32px" />
-              <Text textStyle="R_16M" color={ColorStyles.BLACK} ml="10px">
-                {currencyA?.symbol}
+            <Flex justifyContent="space-between" alignItems="center" p="14px 0px" mb="20px">
+              <Flex alignItems="center">
+                <DoubleCurrencyLogo currency0={currencyA} currency1={currencyB} size={32} />
+                <Text ml="10px" textStyle="R_16M" color={ColorStyles.BLACK}>{currencyA?.symbol}-{currencyB?.symbol}</Text>
+              </Flex>
+              <Text textStyle="R_16R" color={ColorStyles.BLACK}>
+                {parsedAmounts[Field.LIQUIDITY]?.toSignificant(6)}
               </Text>
             </Flex>
-            <Text textStyle="R_16R" color={ColorStyles.BLACK}>
-              {parsedAmounts[Field.CURRENCY_A]?.toSignificant(6)}
-            </Text>
-          </Flex>
 
-          <Flex justifyContent="space-between" alignItems="center" p="14px 0px">
-            <Flex alignItems="center">
-              <CurrencyLogo currency={currencyB} size="32px" />
-              <Text textStyle="R_16M" color={ColorStyles.BLACK} ml="10px">
-                {currencyB?.symbol}
-              </Text>
-            </Flex>
-            <Text textStyle="R_16R" color={ColorStyles.BLACK}>
-              {parsedAmounts[Field.CURRENCY_B]?.toSignificant(6)}
-            </Text>
-          </Flex>
-        </Flex>
-        <Divider mb="24px" mt="35px" />
-        <Flex flexDirection="column">
-          <Flex>
-            <Text textStyle="R_16M" color={ColorStyles.DEEPGREY}>{t('Estimated Returns')}</Text>
-          </Flex>
-          {pair && (
-            <Flex justifyContent="space-between" mt="12px">
-              <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>{t('Price Rate')}</Text>
-              <Flex flexDirection="column" alignItems="flex-end">
-                <Text textStyle="R_14M" color={ColorStyles.DEEPGREY}>
-                  1 {currencyA?.symbol} = {tokenA ? pair.priceOf(tokenA).toSignificant(6) : '-'} {currencyB?.symbol}
-                </Text>
-                <Text textStyle="R_14M" color={ColorStyles.DEEPGREY}>
-                  1 {currencyB?.symbol} = {tokenB ? pair.priceOf(tokenB).toSignificant(6) : '-'} {currencyA?.symbol}
+            <Text textStyle="R_16M" color={ColorStyles.DEEPGREY}>{t('You will receive')}</Text>
+            <Flex justifyContent="space-between" alignItems="center" p="14px 0px">
+              <Flex alignItems="center">
+                <CurrencyLogo currency={currencyA} size="32px" />
+                <Text textStyle="R_16M" color={ColorStyles.BLACK} ml="10px">
+                  {currencyA?.symbol}
                 </Text>
               </Flex>
+              <Text textStyle="R_16R" color={ColorStyles.BLACK}>
+                {parsedAmounts[Field.CURRENCY_A]?.toSignificant(6)}
+              </Text>
             </Flex>
-          )}
-          <Flex alignItems="flex-start" mt="20px">
-            <StyledNotiIcon />
-            <Text ml="4px" textStyle="R_12R" color={ColorStyles.MEDIUMGREY}>
-              {t('Output is estimated')}
-              {/* {`Output is estimated. If the price changes by more than ${allowedSlippage / 100
-                }% your transaction will revert.`} */}
-            </Text>
+
+            <Flex justifyContent="space-between" alignItems="center" p="14px 0px">
+              <Flex alignItems="center">
+                <CurrencyLogo currency={currencyB} size="32px" />
+                <Text textStyle="R_16M" color={ColorStyles.BLACK} ml="10px">
+                  {currencyB?.symbol}
+                </Text>
+              </Flex>
+              <Text textStyle="R_16R" color={ColorStyles.BLACK}>
+                {parsedAmounts[Field.CURRENCY_B]?.toSignificant(6)}
+              </Text>
+            </Flex>
           </Flex>
-          <Button
-            mt="32px"
-            disabled={!(approval === ApprovalState.APPROVED || signatureData !== null)}
-            onClick={onRemove}
-            scale={ButtonScales.LG}
-            isLoading={attemptingTxn}
-          >
-            {t('Remove')}
-          </Button>
-        </Flex>
-      </Wrap>
+          <Divider mb="24px" mt="35px" />
+          <Flex flexDirection="column">
+            <Flex>
+              <Text textStyle="R_16M" color={ColorStyles.DEEPGREY}>{t('Estimated Returns')}</Text>
+            </Flex>
+            {pair && (
+              <Flex justifyContent="space-between" mt="12px">
+                <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>{t('Price Rate')}</Text>
+                <Flex flexDirection="column" alignItems="flex-end">
+                  <Text textStyle="R_14M" color={ColorStyles.DEEPGREY}>
+                    1 {currencyA?.symbol} = {tokenA ? pair.priceOf(tokenA).toSignificant(6) : '-'} {currencyB?.symbol}
+                  </Text>
+                  <Text textStyle="R_14M" color={ColorStyles.DEEPGREY}>
+                    1 {currencyB?.symbol} = {tokenB ? pair.priceOf(tokenB).toSignificant(6) : '-'} {currencyA?.symbol}
+                  </Text>
+                </Flex>
+              </Flex>
+            )}
+            <Flex alignItems="flex-start" mt="20px">
+              <StyledNotiIcon />
+              <Text ml="4px" textStyle="R_12R" color={ColorStyles.MEDIUMGREY}>
+                {t('Output is estimated')}
+                {/* {`Output is estimated. If the price changes by more than ${allowedSlippage / 100
+                  }% your transaction will revert.`} */}
+              </Text>
+            </Flex>
+            <Button
+              mt="32px"
+              disabled={!(approval === ApprovalState.APPROVED || signatureData !== null)}
+              onClick={onRemove}
+              scale={ButtonScales.LG}
+              isLoading={attemptingTxn}
+            >
+              {t('Remove')}
+            </Button>
+          </Flex>
+        </Wrap>
+      </ModalBody>
     </Modal>
   )
 }

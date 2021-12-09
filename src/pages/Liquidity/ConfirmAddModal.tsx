@@ -7,7 +7,7 @@ import { abi as IUniswapV2Router02ABI } from '@uniswap/v2-periphery/build/IUnisw
 import { KlipConnector } from "@sixnetwork/klip-connector"
 import { KlipModalContext } from '@sixnetwork/klaytn-use-wallet'
 import { useCaverJsReact } from '@sixnetwork/caverjs-react-core';
-import { Flex, Modal, Box, InjectedModalProps, Divider } from 'definixswap-uikit'
+import { Flex, Modal, Box, InjectedModalProps, Divider, ModalBody } from 'definixswap-uikit'
 import styled from 'styled-components'
 import { Currency, CurrencyAmount, Percent, Price, TokenAmount, ETHER } from 'definixswap-sdk'
 import { useTranslation } from 'react-i18next'
@@ -323,28 +323,30 @@ export default function ConfirmAddModal({
 
   return (
     <Modal title={t('Confirm Add Liquidity')} mobileFull onDismiss={onDismiss}>
-      <Wrap>
-        <Flex flexDirection="column" mb="20px" mt="16px">
-          <ModalHeader
-            noLiquidity={noLiquidity}
-            currencies={currencies}
-            liquidityMinted={liquidityMinted}
-          />
-        </Flex>
-        <Divider mb="24px" mt="35px" />
-        <Flex flexDirection="column">
-          <ConfirmAddModalBottom 
-            price={price}
-            currencies={currencies}
-            parsedAmounts={parsedAmounts}
-            noLiquidity={noLiquidity}
-            onAdd={onAdd}
-            isPending={attemptingTxn}
-            poolTokenPercentage={poolTokenPercentage}
-            allowedSlippage={allowedSlippage}
-          />
-        </Flex>
-      </Wrap>
+      <ModalBody>
+        <Wrap>
+          <Flex flexDirection="column" mb="20px" mt="16px">
+            <ModalHeader
+              noLiquidity={noLiquidity}
+              currencies={currencies}
+              liquidityMinted={liquidityMinted}
+            />
+          </Flex>
+          <Divider mb="24px" mt="35px" />
+          <Flex flexDirection="column">
+            <ConfirmAddModalBottom 
+              price={price}
+              currencies={currencies}
+              parsedAmounts={parsedAmounts}
+              noLiquidity={noLiquidity}
+              onAdd={onAdd}
+              isPending={attemptingTxn}
+              poolTokenPercentage={poolTokenPercentage}
+              allowedSlippage={allowedSlippage}
+            />
+          </Flex>
+        </Wrap>
+      </ModalBody>
     </Modal>
   )
 }
