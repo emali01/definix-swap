@@ -79,9 +79,15 @@ function ConfirmAddModalBottom({
         </Flex>
       </Flex>
 
-      <Flex alignItems="flex-start">
+      <Flex alignItems="flex-start"  mb="32px">
         <StyledNotiIcon />
-        <Text ml="4px" textStyle="R_12R" color={ColorStyles.MEDIUMGREY} mb="32px">
+        <Text
+          mt="-1px"
+          ml="4px"
+          textStyle="R_12R"
+          color={ColorStyles.MEDIUMGREY}
+          style={{whiteSpace:'pre-line'}}
+        >
           {t('Output is estimated')}
           {/* Output is estimated. If the price changes by more than {allowedSlippage / 100}% your transaction will revert. */}
         </Text>

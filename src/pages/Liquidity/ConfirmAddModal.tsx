@@ -325,14 +325,14 @@ export default function ConfirmAddModal({
     <Modal title={t('Confirm Add Liquidity')} mobileFull onDismiss={onDismiss}>
       <ModalBody>
         <Wrap>
-          <Flex flexDirection="column" mb="20px" mt="16px">
+          <Flex flexDirection="column" mt="16px">
             <ModalHeader
               noLiquidity={noLiquidity}
               currencies={currencies}
               liquidityMinted={liquidityMinted}
             />
           </Flex>
-          <Divider mb="24px" mt="35px" />
+          <Divider mb="24px" mt="20px" />
           <Flex flexDirection="column">
             <ConfirmAddModalBottom 
               price={price}

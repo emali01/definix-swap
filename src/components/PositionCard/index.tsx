@@ -1,7 +1,17 @@
-import { JSBI, Pair, Percent } from 'definixswap-sdk'
+import { JSBI, Pair } from 'definixswap-sdk'
 import React, { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Button, Text, CardBody, Flex, Box, ColorStyles, ButtonScales, ButtonVariants, useMatchBreakpoints } from 'definixswap-uikit-v2'
+import { 
+  Button,
+  Text,
+  CardBody,
+  Flex,
+  Box,
+  ColorStyles,
+  ButtonScales,
+  ButtonVariants,
+  useMatchBreakpoints
+} from 'definixswap-uikit-v2'
 import { useTranslation } from 'react-i18next'
 import { useTotalSupply } from '../../data/TotalSupply'
 import { useActiveWeb3React } from '../../hooks'
@@ -46,13 +56,17 @@ export function MinimalPositionCard({ pair, showUnwrapped = false, isLastCard = 
     <>
       {userPoolBalance && (
         <Flex backgroundColor={ColorStyles.WHITE} borderRadius="16px">
-          <CardBody style={{width: '100%'}}>
+          <CardBody style={{width: '100%'}} p="40px">
             <Flex flexDirection="column">
-              <Text textStyle="R_16M" mb="12px">
+              <Text
+                textStyle="R_16M"
+                mb="12px"
+                color={ColorStyles.DEEPGREY}
+              >
                 {t('Balance LP')}
               </Text>
               <Flex>
-                <Box mr="2px">
+                <Box mr="12px">
                   <DoubleCurrencyLogo currency0={currency0} currency1={currency1} size={24} />
                 </Box>
                 <Flex flexDirection="column" width="100%">
@@ -71,9 +85,18 @@ export function MinimalPositionCard({ pair, showUnwrapped = false, isLastCard = 
 
                   <Flex flexDirection="column" width="100%">
                     <Flex justifyContent="space-between" mb="8px">
-                      <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>
-                        {currency0.symbol}
-                      </Text>
+                    <Flex alignItems="center">
+                        <Box 
+                          width="3px"
+                          height="3px"
+                          borderRadius="50%"
+                          backgroundColor={ColorStyles.MEDIUMGREY}
+                          mr="6px"
+                        />
+                        <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>
+                          {currency0.symbol}
+                        </Text>
+                      </Flex>
                       {token0Deposited ? (
                         <Flex>
                           <Text textStyle="R_14M" color={ColorStyles.DEEPGREY}>
@@ -85,9 +108,19 @@ export function MinimalPositionCard({ pair, showUnwrapped = false, isLastCard = 
                       )}
                     </Flex>
                     <Flex justifyContent="space-between">
-                      <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>
-                        {currency1.symbol}
-                      </Text>
+                      <Flex alignItems="center">
+                        <Box 
+                          width="3px"
+                          height="3px"
+                          borderRadius="50%"
+                          backgroundColor={ColorStyles.MEDIUMGREY}
+                          mr="6px"
+                        />
+                        <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>
+                          {currency1.symbol}
+                        </Text>
+                      </Flex>
+                      
                       {token1Deposited ? (
                         <Flex>
                           <Text textStyle="R_14M" color={ColorStyles.DEEPGREY}>
