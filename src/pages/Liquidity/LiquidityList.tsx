@@ -46,6 +46,9 @@ const LiquidityList: React.FC = () => {
           style={{boxShadow: '0 12px 12px 0 rgba(227, 132, 0, 0.1)'}}
           borderBottomLeftRadius="16px"
           borderBottomRightRadius="16px"
+          borderLeft="1px solid #ffe5c9"
+          borderRight="1px solid #ffe5c9"
+          borderBottom="1px solid #ffe5c9"
         >
         {allV2PairsWithLiquidity?.map((v2Pair, i) => (
           <FullPositionCard 

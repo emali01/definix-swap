@@ -46,6 +46,7 @@ interface Props extends InjectedModalProps {
   tokenB: Token;
   signatureData: { v: number; r: string; s: string; deadline: number }
   onDismissModal: () => void;
+  onUserInput: (field: Field, val: string) => void;
 }
 
 const Wrap = styled(Box)`
@@ -72,8 +73,8 @@ export default function ConfirmRemoveModal({
   tokenA,
   tokenB,
   signatureData,
-  onDismissModal
-
+  onDismissModal,
+  onUserInput
 }: Props) {
   const { t } = useTranslation();
   const addTransaction = useTransactionAdder()
@@ -338,6 +339,10 @@ export default function ConfirmRemoveModal({
       onDismiss();
     }
   }, [errorMsg, t, onDismissModal, onDismiss, toastError])
+
+  useEffect(() => {
+    return () => onUserInput(Field.LIQUIDITY_PERCENT, '0');
+  }, [onUserInput]);
 
   return (
     <Modal title={t('Confirm Remove Liquidity')} mobileFull onDismiss={onDismiss}>
