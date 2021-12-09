@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
 import { RouteComponentProps } from 'react-router-dom'
 import numeral from 'numeral'
-import { CurrencyAmount, JSBI, Trade, Token } from 'definixswap-sdk'
+import { CurrencyAmount, JSBI, Token } from 'definixswap-sdk'
 import { AutoColumn } from 'components/Column'
 import ConnectWalletButton from 'components/ConnectWalletButton'
 import CurrencyInputPanel from 'components/CurrencyInputPanel'
@@ -11,12 +11,9 @@ import Loader from 'components/Loader'
 import { AutoRow, RowBetween } from 'components/Row'
 import { LinkStyledButton } from 'components/Shared'
 import AdvancedSwapDetailsDropdown from 'components/swap/AdvancedSwapDetailsDropdown'
-import confirmPriceImpactWithoutFee from 'components/swap/confirmPriceImpactWithoutFee'
 import ConfirmSwapModal from 'components/swap/ConfirmSwapModal'
 import { ArrowWrapper } from 'components/swap/styleds'
 import TradePrice from 'components/swap/TradePrice'
-import SyrupWarningModal from 'components/SyrupWarningModal'
-import TokenWarningModal from 'components/TokenWarningModal'
 import { useActiveWeb3React } from 'hooks'
 import { ApprovalState, useApproveCallbackFromTrade } from 'hooks/useApproveCallback'
 import { useSwapCallback } from 'hooks/useSwapCallback'
@@ -40,6 +37,7 @@ import {
   ButtonVariants,
   Noti,
   NotiType,
+  Box,
 } from 'definixswap-uikit-v2'
 
 // import { Overlay } from 'uikit-dev/components/Overlay'
@@ -48,19 +46,6 @@ import { computeTradePriceBreakdown, warningSeverity } from 'utils/prices'
 import { SwapContainer, CardContainer } from 'components/Layout'
 import CurrencyLogo from 'components/CurrencyLogo'
 import { useToast } from 'state/toasts/hooks'
-import {
-  SIX_ADDRESS,
-  FINIX_ADDRESS,
-  KSP_ADDRESS,
-  KDAI_ADDRESS,
-  KUSDT_ADDRESS,
-  WKLAY_ADDRESS,
-  KBNB_ADDRESS,
-  KXRP_ADDRESS,
-  KETH_ADDRESS,
-  KWBTC_ADDRESS,
-} from '../../constants'
-import TimerWrapper from './TimerWrapper'
 
 const WrapTop = styled(Flex)`
   flex-direction: column;
@@ -326,7 +311,7 @@ export default function Swap({
   }, [priceImpactSeverity, isExpertMode, t]);
 
   return (
-    <TimerWrapper isPhrase2={!(currentTime < phrase2TimeStamp && isPhrase2 === false)} date={phrase2TimeStamp}>
+    <Box>
       <Flex flexDirection="column" alignItems="center">
         <SwapContainer isMobile={isMobile}>
           <TitleSet
@@ -546,43 +531,6 @@ export default function Swap({
         </SwapContainer>
       </Flex>
 
-      {/* 스왑 히스토리 화면 */}
-      {/* <SwapHistory 
-        isShowRightPanel={isShowRightPanel}
-        showConfirm={showConfirm}
-        setIsShowRightPanel={setIsShowRightPanel}
-        sortedRecentTransactions={sortedRecentTransactions}
-        allTokens={allTokens}
-        wklay={wklay}
-        chainId={chainId}
-      /> */}
-
-      <TokenWarningModal
-        isOpen={
-          urlLoadedTokens.filter(
-            (x) =>
-              x.address.toLowerCase() !== SIX_ADDRESS[chainId].toLowerCase() &&
-              x.address.toLowerCase() !== FINIX_ADDRESS[chainId].toLowerCase() &&
-              x.address.toLowerCase() !== KSP_ADDRESS[chainId].toLowerCase() &&
-              x.address.toLowerCase() !== KDAI_ADDRESS[chainId].toLowerCase() &&
-              x.address.toLowerCase() !== KUSDT_ADDRESS[chainId].toLowerCase() &&
-              x.address.toLowerCase() !== WKLAY_ADDRESS[chainId].toLowerCase() &&
-              x.address.toLowerCase() !== KBNB_ADDRESS[chainId].toLowerCase() &&
-              x.address.toLowerCase() !== KXRP_ADDRESS[chainId].toLowerCase() &&
-              x.address.toLowerCase() !== KETH_ADDRESS[chainId].toLowerCase() &&
-              x.address.toLowerCase() !== KWBTC_ADDRESS[chainId].toLowerCase()
-          ).length > 0 && !dismissTokenWarning
-        }
-        tokens={urlLoadedTokens}
-        onConfirm={handleConfirmTokenWarning}
-      />
-
-      <SyrupWarningModal
-        isOpen={isSyrup}
-        transactionType={syrupTransactionType}
-        onConfirm={handleConfirmSyrupWarning}
-      />
-
-    </TimerWrapper>
+    </Box>
   )
 }
