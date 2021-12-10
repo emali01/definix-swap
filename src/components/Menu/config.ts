@@ -94,7 +94,7 @@ const config: MenuEntry[] = [
     newTab: false,
   },
   {
-    label: 'Finix',
+    label: 'vFINIX',
     icon: safeBlack,
     iconActive: safeWhite,
     href: '/finix',
@@ -110,6 +110,12 @@ const config: MenuEntry[] = [
       {
         label: 'Super Stake',
         href: `${process.env.REACT_APP_FRONTEND_URL}/long-term-stake/top-up`,
+        notHighlight: false,
+        newTab: false,
+      },
+      {
+        label: 'Voting',
+        href: `${process.env.REACT_APP_FRONTEND_URL}/voting`,
         notHighlight: false,
         newTab: false,
       },
