@@ -235,7 +235,9 @@ const Swap: React.FC = () => {
   const allTokens = useAllTokens()
 
   useEffect(() => {
-    handleInputSelect(allTokens[allTokenAddresses.SIX[chainId]]);
+    if(chainId){
+      handleInputSelect(allTokens[allTokenAddresses.SIX[chainId]]);
+    }
   }, [allTokens, chainId, handleInputSelect]);
 
   return (

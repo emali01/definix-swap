@@ -72,7 +72,7 @@ export default {
       address: process.env.REACT_APP_KBNB_ADDRESS_TESTNET,
       chainId: 1001,
       decimals: 18,
-      logoURI: '/images/coins/BNB.png'
+      logoURI: '/images/coins/bnb.png'
     },
     {
       name: 'KSP',
@@ -88,7 +88,7 @@ export default {
       address: process.env.REACT_APP_FINIX_ADDRESS_MAINNET,
       chainId: 8217,
       decimals: 18,
-      logoURI: '/images/coins/FINIX.png'
+      logoURI: '/images/coins/finix.png'
     },
     {
       name: 'SIX',
@@ -96,7 +96,7 @@ export default {
       address: process.env.REACT_APP_SIX_ADDRESS_MAINNET,
       chainId: 8217,
       decimals: 18,
-      logoURI: '/images/coins/SIX.png'
+      logoURI: '/images/coins/six.png'
     },
     {
       name: 'KUSDT',
@@ -144,7 +144,7 @@ export default {
       address: process.env.REACT_APP_KBNB_ADDRESS_MAINNET,
       chainId: 8217,
       decimals: 18,
-      logoURI: '/images/coins/BNB.png'
+      logoURI: '/images/coins/bnb.png'
     },
     {
       name: 'KSP',
