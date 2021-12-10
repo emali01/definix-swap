@@ -18,7 +18,6 @@ export const CardContainer = styled.div<{isMobile?: boolean}>`
   flex-direction: column;
   width: 100%;
   padding: ${({isMobile}) => isMobile ? '20px' : '40px'};
-  
   border-radius: 16px;
   background-color: ${lightColors.white};
   border: 1px solid ${lightColors.yellowBg2};

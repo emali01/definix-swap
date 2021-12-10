@@ -79,7 +79,7 @@ const AddLiquidity: React.FC = () => {
     )
   }, [noLiquidity, independentField, dependentField, typedValue, parsedAmounts, otherTypedValue]);
 
-  const maxAmounts: { [field in Field]?: TokenAmount } = [Field.CURRENCY_A, Field.CURRENCY_B].reduce(
+  const maxAmounts: { [field in Field]?: TokenAmount } = useMemo(() => [Field.CURRENCY_A, Field.CURRENCY_B].reduce(
     (accumulator, field) => {
       return {
         ...accumulator,
@@ -87,9 +87,9 @@ const AddLiquidity: React.FC = () => {
       }
     },
     {}
-  )
+  ), [currencyBalances]);
 
-  const atMaxAmounts: { [field in Field]?: TokenAmount } = [Field.CURRENCY_A, Field.CURRENCY_B].reduce(
+  const atMaxAmounts: { [field in Field]?: TokenAmount } = useMemo(() => [Field.CURRENCY_A, Field.CURRENCY_B].reduce(
     (accumulator, field) => {
       return {
         ...accumulator,
@@ -97,13 +97,12 @@ const AddLiquidity: React.FC = () => {
       }
     },
     {}
-  )
+  ), [maxAmounts, parsedAmounts]);
 
   const handleDismissConfirmation = useCallback(() => {
     onFieldAInput('');
     onFieldBInput('');
   }, [onFieldAInput, onFieldBInput]);
-
 
   const [onPresentConfirmAddModal] = useModal(
     <ConfirmAddModal
@@ -146,11 +145,11 @@ const AddLiquidity: React.FC = () => {
     [currencyIdA, history, currencyIdB]
   )
 
-  const oneCurrencyIsWETH = Boolean(
+  const oneCurrencyIsWETH = useMemo(() => Boolean(
     chainId &&
     ((currencyA && currencyEquals(currencyA, WETH(chainId))) ||
       (currencyB && currencyEquals(currencyB, WETH(chainId))))
-  );
+  ), [chainId, currencyA, currencyB]);
 
   useEffect(() => {
     return () => handleDismissConfirmation();
@@ -218,7 +217,6 @@ const AddLiquidity: React.FC = () => {
               showMaxButton={!atMaxAmounts[Field.CURRENCY_A]}
               currency={currencies[Field.CURRENCY_A]}
               id="add-liquidity-input-tokena"
-              showCommonBases={false}
               isInsufficientBalance={error === DerivedMintInfoError.INSUFFICIENT_A_BALANCE}
             />
             
@@ -249,7 +247,6 @@ const AddLiquidity: React.FC = () => {
               showMaxButton={!atMaxAmounts[Field.CURRENCY_B]}
               currency={currencies[Field.CURRENCY_B]}
               id="add-liquidity-input-tokenb"
-              showCommonBases={false}
               isInsufficientBalance={error === DerivedMintInfoError.INSUFFICIENT_B_BALANCE}
             />
           </Flex>

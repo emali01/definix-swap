@@ -51,7 +51,10 @@ export default function RemoveLiquidity({
   const isMobile = useMemo(() => !isXl && !isXxl, [isXl, isXxl])
 
   const { t } = useTranslation();
-  const [currencyA, currencyB] = [useCurrency(currencyIdA) ?? undefined, useCurrency(currencyIdB) ?? undefined]
+  const [currencyA, currencyB] = useMemo(
+    () => [useCurrency(currencyIdA) ?? undefined, useCurrency(currencyIdB) ?? undefined], 
+    [currencyIdA, currencyIdB]
+  );
   const { account, chainId } = useActiveWeb3React()
   const [tokenA, tokenB] = useMemo(() => [wrappedCurrency(currencyA, chainId), wrappedCurrency(currencyB, chainId)], [
     currencyA,
@@ -59,16 +62,12 @@ export default function RemoveLiquidity({
     chainId
   ])
 
-  // burn state
   const { independentField, typedValue } = useBurnState()
   const { pair, parsedAmounts, error } = useDerivedBurnInfo(currencyA ?? undefined, currencyB ?? undefined)
   const { onUserInput: _onUserInput } = useBurnActionHandlers()
   const isValid = !error
 
-  // modal, loading, error
   const [showDetailed, setShowDetailed] = useState<boolean>(false)
-
-  // const [deadline] = useUserDeadline()
 
   const formattedAmounts = useMemo(() => {
     return (
@@ -88,10 +87,6 @@ export default function RemoveLiquidity({
     )
   }, [independentField, parsedAmounts, typedValue]);
 
-  // pair contract
-  // const pairContract: Contract | null = usePairContract(pair?.liquidityToken?.address)
-
-  // allowance handling
   const [signatureData, setSignatureData] = useState<{ v: number; r: string; s: string; deadline: number } | null>(null)
   const [approval, approveCallback, approveErr, setApproveErr] = useApproveCallback(
     parsedAmounts[Field.LIQUIDITY],
@@ -99,79 +94,6 @@ export default function RemoveLiquidity({
   );
   const { toastError } = useToast();
 
-  
-  // const onAttemptToApprove = useCallback(async () => {
-  //   if (!pairContract || !pair || !library) throw new Error('missing dependencies')
-
-  //   const liquidityAmount = parsedAmounts[Field.LIQUIDITY]
-  //   if (!liquidityAmount) throw new Error('missing liquidity amount')
-
-  //   // try to gather a signature for permission
-  //   const nonce = await pairContract.nonces(account)
-  //   const deadlineForSignature: number = Math.ceil(Date.now() / 1000) + deadline
-
-  //   const EIP712Domain = [
-  //     { name: 'name', type: 'string' },
-  //     { name: 'version', type: 'string' },
-  //     { name: 'chainId', type: 'uint256' },
-  //     { name: 'verifyingContract', type: 'address' }
-  //   ]
-  //   const domain = {
-  //     name: 'Definix LPs',
-  //     version: '1',
-  //     chainId,
-  //     verifyingContract: pair.liquidityToken.address
-  //   }
-  //   const Permit = [
-  //     { name: 'owner', type: 'address' },
-  //     { name: 'spender', type: 'address' },
-  //     { name: 'value', type: 'uint256' },
-  //     { name: 'nonce', type: 'uint256' },
-  //     { name: 'deadline', type: 'uint256' }
-  //   ]
-  //   const message = {
-  //     owner: account,
-  //     spender: ROUTER_ADDRESS[chainId || parseInt(process.env.REACT_APP_CHAIN_ID || '0')],
-  //     value: liquidityAmount.raw.toString(),
-  //     nonce: nonce.toHexString(),
-  //     deadline: deadlineForSignature
-  //   }
-  //   const data = JSON.stringify({
-  //     types: {
-  //       EIP712Domain,
-  //       Permit
-  //     },
-  //     domain,
-  //     primaryType: 'Permit',
-  //     message
-  //   })
-
-  //   try {
-  //     library
-  //       .send('eth_signTypedData_v4', [account, data])
-  //       .then(splitSignature)
-  //       .then(signature => {
-  //         setSignatureData({
-  //           v: signature.v,
-  //           r: signature.r,
-  //           s: signature.s,
-  //           deadline: deadlineForSignature
-  //         })
-  //       })
-  //       .catch(e => {
-  //         setErrorMsg(e)
-  //         // for all errors other than 4001 (EIP-1193 user rejected request), fall back to manual approve
-  //         if (e?.code !== 4001) {
-  //           approveCallback();
-  //         }
-  //       })
-  //   } catch (err) {
-  //     setErrorMsg(String(err))
-  //   }
-    
-  // }, [account, approveCallback, chainId, deadline, library, pair, pairContract, parsedAmounts]);
-
-  // wrapped onUserInput to clear signatures
   const onUserInput = useCallback(
     (field: Field, val: string) => {
       setSignatureData(null)
@@ -505,7 +427,6 @@ export default function RemoveLiquidity({
                     <Button
                       onClick={() => {
                         onPresentConfirmRemoveModal();
-                        // setShowConfirm(true)
                       }}
                       disabled={!isValid || (signatureData === null && approval !== ApprovalState.APPROVED)}
                       scale={ButtonScales.LG}

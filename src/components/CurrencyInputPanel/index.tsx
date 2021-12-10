@@ -28,7 +28,6 @@ interface CurrencyInputPanelProps {
   isMobile: boolean;
   value: string
   showMaxButton: boolean
-  label?: string
   currency?: Currency | null
   disableCurrencySelect?: boolean
   hideBalance?: boolean
@@ -36,7 +35,6 @@ interface CurrencyInputPanelProps {
   hideInput?: boolean
   otherCurrency?: Currency | null
   id: string
-  showCommonBases?: boolean
   className?: string
   onMax?: () => void
   onQuarter?: () => void
@@ -163,7 +161,6 @@ export default function CurrencyInputPanel({
   isMobile,
   value,
   showMaxButton,
-  label,
   currency,
   disableCurrencySelect = false,
   hideBalance = false,
@@ -171,7 +168,6 @@ export default function CurrencyInputPanel({
   hideInput = false,
   otherCurrency,
   id,
-  showCommonBases,
   className,
   onMax,
   onQuarter,
@@ -198,7 +194,7 @@ export default function CurrencyInputPanel({
         <InputBox>
           {!hideInput && (
             <Flex flexDirection="column" flex="1" position="relative">
-              {account && (
+              {/* {account && ( */}
                 <Flex mb="4px">
                   <Text textStyle="R_14R" color={ColorStyles.DEEPGREY} mr="4px" >
                     {t('Balance')}
@@ -209,7 +205,7 @@ export default function CurrencyInputPanel({
                       : '-'}
                   </Text>
                 </Flex>
-              )}
+              {/* )} */}
               <NumericalInput
                 value={value}
                 onUserInput={(val) => onUserInput(val)}
@@ -254,17 +250,16 @@ export default function CurrencyInputPanel({
               </Flex>
               <Flex flexDirection="column" alignItems="center">
                 <Flex mb="5px">
-                  {pair ? (
-                      <DoubleCurrencyLogo currency0={pair.token0} currency1={pair.token1} size={16} margin />
-                    ) : currency ? (
-                      <CurrencyLogo currency={currency} size={isMobile ? "32px" : "40px"} />
-                  ) : <UnSelectTokenIcon viewBox="0 0 40 40" width={isMobile ? "32" : "40"} height={isMobile ? "32" : "40"} />}
+                  {pair && <DoubleCurrencyLogo currency0={pair.token0} currency1={pair.token1} size={16} margin />}
+                  {!pair && currency && <CurrencyLogo currency={currency} size={isMobile ? "32px" : "40px"} />}
+                  {!pair && !currency && <UnSelectTokenIcon viewBox="0 0 40 40" width={isMobile ? "32" : "40"} height={isMobile ? "32" : "40"} />}
                 </Flex>
-                {pair ? (
+                {pair && (
                   <Text textStyle={isMobile ? "R_12B" : "R_14B"} color={ColorStyles.BLACK}>
                     {pair?.token0.symbol}:{pair?.token1.symbol}
                   </Text>
-                ) : (
+                )}
+                {!pair && (
                   <Text
                     textStyle="R_14B"
                     color={ColorStyles.BLACK}
@@ -275,7 +270,9 @@ export default function CurrencyInputPanel({
                           currency.symbol.length
                         )}`
                       : currency?.symbol) || 
-                        <Text textStyle="R_14B" color={ColorStyles.BLACK}>{t('Token')}</Text>
+                        <Text textStyle="R_14B" color={ColorStyles.BLACK}>
+                          {t('Token')}
+                        </Text>
                   }
                   </Text>
                 )}
