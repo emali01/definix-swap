@@ -74,4 +74,4 @@ const ModalHeader: React.FC<IProps> = ({
   )
 }
 
-export default ModalHeader;
+export default React.memo(ModalHeader);

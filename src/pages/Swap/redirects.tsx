@@ -38,7 +38,7 @@ export function RedirectToSwap(props: RouteComponentProps<{ currencyIdA: string;
   }
   if(isInjectConnect())
     activate(injected)
-  return <Swap {...props} />
+  return <Swap />
 }
 
 export default RedirectPathToSwapOnly

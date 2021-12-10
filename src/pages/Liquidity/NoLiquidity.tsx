@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Flex, Text, Box, useMatchBreakpoints, ColorStyles, NotiIcon } from 'definixswap-uikit-v2';
 import { useTranslation } from 'react-i18next';
 
 const NoLiquidity: React.FC<{children?: React.ReactNode}> = () => {
   const { t } = useTranslation();
   const { isLg } = useMatchBreakpoints();
-  const isMobile = !isLg;
+  const isMobile = useMemo(() => !isLg, [isLg]);
 
   return (
     <Flex 
@@ -29,4 +29,4 @@ const NoLiquidity: React.FC<{children?: React.ReactNode}> = () => {
   );
 }
 
-export default NoLiquidity;
+export default React.memo(NoLiquidity);
