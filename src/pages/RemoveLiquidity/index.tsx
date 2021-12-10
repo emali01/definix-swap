@@ -32,11 +32,8 @@ import { ROUTER_ADDRESS } from '../../constants'
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrency } from '../../hooks/Tokens'
 import { ApprovalState, useApproveCallback } from '../../hooks/useApproveCallback'
-import { usePairContract } from '../../hooks/useContract'
 import { Field } from '../../state/burn/actions'
 import { useBurnActionHandlers, useBurnState, useDerivedBurnInfo } from '../../state/burn/hooks'
-import { useUserDeadline } from '../../state/user/hooks'
-import { currencyId } from '../../utils/currencyId'
 import useDebouncedChangeHandler from '../../utils/useDebouncedChangeHandler'
 import { wrappedCurrency } from '../../utils/wrappedCurrency'
 import ConfirmRemoveModal from './ConfirmRemoveModal'
@@ -51,16 +48,9 @@ export default function RemoveLiquidity({
   const isMobile = useMemo(() => !isXl && !isXxl, [isXl, isXxl])
 
   const { t } = useTranslation();
-  const [currencyA, currencyB] = useMemo(
-    () => [useCurrency(currencyIdA) ?? undefined, useCurrency(currencyIdB) ?? undefined], 
-    [currencyIdA, currencyIdB]
-  );
+  const [currencyA, currencyB] = [useCurrency(currencyIdA) ?? undefined, useCurrency(currencyIdB) ?? undefined];
   const { account, chainId } = useActiveWeb3React()
-  const [tokenA, tokenB] = useMemo(() => [wrappedCurrency(currencyA, chainId), wrappedCurrency(currencyB, chainId)], [
-    currencyA,
-    currencyB,
-    chainId
-  ])
+  const [tokenA, tokenB] = [wrappedCurrency(currencyA, chainId), wrappedCurrency(currencyB, chainId)];
 
   const { independentField, typedValue } = useBurnState()
   const { pair, parsedAmounts, error } = useDerivedBurnInfo(currencyA ?? undefined, currencyB ?? undefined)
@@ -69,23 +59,20 @@ export default function RemoveLiquidity({
 
   const [showDetailed, setShowDetailed] = useState<boolean>(false)
 
-  const formattedAmounts = useMemo(() => {
-    return (
-      {
-        [Field.LIQUIDITY_PERCENT]: parsedAmounts[Field.LIQUIDITY_PERCENT].equalTo('0')
-          ? '0'
-          : parsedAmounts[Field.LIQUIDITY_PERCENT].lessThan(new Percent('1', '100'))
-            ? '<1'
-            : parsedAmounts[Field.LIQUIDITY_PERCENT].toFixed(0),
-        [Field.LIQUIDITY]:
-          independentField === Field.LIQUIDITY ? typedValue : parsedAmounts[Field.LIQUIDITY]?.toSignificant(6) ?? '',
-        [Field.CURRENCY_A]:
-          independentField === Field.CURRENCY_A ? typedValue : parsedAmounts[Field.CURRENCY_A]?.toSignificant(6) ?? '',
-        [Field.CURRENCY_B]:
-          independentField === Field.CURRENCY_B ? typedValue : parsedAmounts[Field.CURRENCY_B]?.toSignificant(6) ?? ''
-      }
-    )
-  }, [independentField, parsedAmounts, typedValue]);
+  const formattedAmounts = 
+    {
+      [Field.LIQUIDITY_PERCENT]: parsedAmounts[Field.LIQUIDITY_PERCENT].equalTo('0')
+        ? '0'
+        : parsedAmounts[Field.LIQUIDITY_PERCENT].lessThan(new Percent('1', '100'))
+          ? '<1'
+          : parsedAmounts[Field.LIQUIDITY_PERCENT].toFixed(0),
+      [Field.LIQUIDITY]:
+        independentField === Field.LIQUIDITY ? typedValue : parsedAmounts[Field.LIQUIDITY]?.toSignificant(6) ?? '',
+      [Field.CURRENCY_A]:
+        independentField === Field.CURRENCY_A ? typedValue : parsedAmounts[Field.CURRENCY_A]?.toSignificant(6) ?? '',
+      [Field.CURRENCY_B]:
+        independentField === Field.CURRENCY_B ? typedValue : parsedAmounts[Field.CURRENCY_B]?.toSignificant(6) ?? ''
+    }
 
   const [signatureData, setSignatureData] = useState<{ v: number; r: string; s: string; deadline: number } | null>(null)
   const [approval, approveCallback, approveErr, setApproveErr] = useApproveCallback(
