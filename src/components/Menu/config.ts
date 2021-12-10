@@ -4,7 +4,7 @@ export const links = (t: (key: string) => string) => {
       label: t('Home'),
       icon: 'GnbHomeNIcon',
       activeIcon: 'GnbHomeSIcon',
-      href: '/',
+      href: process.env.REACT_APP_FRONTEND_URL,
     },
     {
       label: t('ExChange'),
@@ -13,11 +13,11 @@ export const links = (t: (key: string) => string) => {
       items: [
         {
           label: t('Swap'),
-          href: 'https://exchange.definix.com/#/swap',
+          href: '/#/swap',
         },
         {
           label: t('Liquidity'),
-          href: 'https://exchange.definix.com/#/liquidity',
+          href: '/#/liquidity',
         },
       ],
     },
@@ -28,11 +28,11 @@ export const links = (t: (key: string) => string) => {
       items: [
         {
           label: t('Farm'),
-          href: '/farm',
+          href: `${process.env.REACT_APP_FRONTEND_URL}/farm`,
         },
         {
           label: t('Pool'),
-          href: '/pool',
+          href: `${process.env.REACT_APP_FRONTEND_URL}/pool`,
         },
       ],
     },
@@ -40,19 +40,13 @@ export const links = (t: (key: string) => string) => {
       label: t('Rebalancing'),
       icon: 'GnbRebalancingNIcon',
       activeIcon: 'GnbRebalancingSIcon',
-      href: '/rebalancing',
+      href: `${process.env.REACT_APP_FRONTEND_URL}/rebalancing`,
     },
     {
       label: t('Bridge'),
       icon: 'GnbBridgeNIcon',
       activeIcon: 'GnbBridgeSIcon',
-      href: '/bridge',
-    },
-    {
-      label: t('MyInvestments'),
-      icon: 'GnbBridgeNIcon',
-      activeIcon: 'GnbBridgeSIcon',
-      href: '/myinvestments',
+      href: `${process.env.REACT_APP_FRONTEND_URL}/bridge`,
     },
     {
       label: t('More'),
