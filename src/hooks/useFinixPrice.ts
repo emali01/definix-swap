@@ -3,7 +3,7 @@ import { useCallback, useState, useEffect } from 'react'
 import _ from 'lodash'
 import { useActiveWeb3React } from './index'
 import multicall from '../utils/multicall'
-import { allTokens, getLpNetwork, MULTICALL_ADDRESS } from '../constants'
+import { allTokenAddresses, getLpNetwork, MULTICALL_ADDRESS } from '../constants'
 import erc20 from '../constants/abis/erc20.json'
 
 const getTotalBalanceLp = async input => {
@@ -96,7 +96,7 @@ export default function useFinixPrice(): number {
     [chainId]
   )
   const fetchCurrentFinixPrice = useCallback(async () => {
-    const allTokenCombinationKeys = pairObjectCombination(allTokens)
+    const allTokenCombinationKeys = pairObjectCombination(allTokenAddresses)
     const allFinixPair = allTokenCombinationKeys.filter(
       // @ts-ignore
       item => item.indexOf('FINIX') >= 0 || item.indexOf('KUSDT') >= 0
@@ -113,8 +113,8 @@ export default function useFinixPrice(): number {
     sortedPair.forEach(pair => {
       // @ts-ignore
       const [firstKey, secondKey] = findAndSelectPair(pair)
-      const firstTokenAddress = allTokens[firstKey]
-      const secondTokenAddress = allTokens[secondKey]
+      const firstTokenAddress = allTokenAddresses[firstKey]
+      const secondTokenAddress = allTokenAddresses[secondKey]
       fetchPromise.push(
         // @ts-ignore
         getTotalBalanceLp({

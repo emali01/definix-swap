@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import styled from 'styled-components'
 import { useTranslation } from 'react-i18next'
 import numeral from 'numeral'
 import { CurrencyAmount, JSBI, Trade } from 'definixswap-sdk'
@@ -41,6 +40,8 @@ import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { computeTradePriceBreakdown, warningSeverity } from 'utils/prices'
 import CurrencyLogo from 'components/CurrencyLogo'
 import { useToast } from 'state/toasts/hooks'
+import { useAllTokens } from 'hooks/Tokens'
+import { allTokenAddresses } from 'constants/index';
 
 const Swap: React.FC = () => {
   const { t } = useTranslation();
@@ -75,7 +76,7 @@ const Swap: React.FC = () => {
       }
     , [independentField, parsedAmount, showWrap, trade?.inputAmount, trade?.outputAmount]);
 
-  const { onSwitchTokens, onCurrencySelection, onUserInput, onChangeRecipient } = useSwapActionHandlers()
+  const { onSwitchTokens, onCurrencySelection, onUserInput } = useSwapActionHandlers()
   const isValid = useMemo(() => !swapInputError, [swapInputError]);
   const dependentField: Field = useMemo(() => independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT, [independentField]);
 
@@ -128,8 +129,13 @@ const Swap: React.FC = () => {
     }
   }, [approveErr, setApproveErr, t, toastError])
 
-  const maxAmountInput: CurrencyAmount | undefined = useMemo(() => maxAmountSpend(currencyBalances[Field.INPUT]), [currencyBalances]);
-  const atMaxAmountInput = useMemo(() => Boolean(maxAmountInput && parsedAmounts[Field.INPUT]?.equalTo(maxAmountInput)), [maxAmountInput, parsedAmounts]);
+  const maxAmountInput: CurrencyAmount | undefined = useMemo(() => 
+    maxAmountSpend(currencyBalances[Field.INPUT])
+    , [currencyBalances]);
+
+  const atMaxAmountInput = useMemo(() => 
+    Boolean(maxAmountInput && parsedAmounts[Field.INPUT]?.equalTo(maxAmountInput)),
+    [maxAmountInput, parsedAmounts]);
 
   const { error: swapCallbackError } = useSwapCallback(
     trade,
@@ -225,6 +231,12 @@ const Swap: React.FC = () => {
     return <></>
   }, [priceImpactSeverity, isExpertMode, t]);
 
+  const allTokens = useAllTokens()
+
+  useEffect(() => {
+    handleInputSelect(allTokens[allTokenAddresses.SIX[chainId]]);
+  }, [allTokens, chainId, handleInputSelect]);
+
   return (
     <Flex flexDirection="column" alignItems="center">
       <Box
@@ -253,7 +265,6 @@ const Swap: React.FC = () => {
             <Flex flexDirection="column">
               <CurrencyInputPanel
                 isMobile={isMobile}
-                className="mb-s20"
                 value={formattedAmounts[Field.INPUT]}
                 showMaxButton={!atMaxAmountInput}
                 currency={currencies[Field.INPUT]}
@@ -284,7 +295,6 @@ const Swap: React.FC = () => {
 
               <CurrencyInputPanel
                 isMobile={isMobile}
-                className="mb-s20"
                 value={formattedAmounts[Field.OUTPUT]}
                 onUserInput={handleTypeOutput}
                 currency={currencies[Field.OUTPUT]}

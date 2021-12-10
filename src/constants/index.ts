@@ -76,7 +76,7 @@ export const KBNB_ADDRESS = {
   [intTestnetId]: process.env.REACT_APP_KBNB_ADDRESS_TESTNET || ''
 }
 
-export const allTokens = {
+export const allTokenAddresses = {
   SIX: SIX_ADDRESS,
   FINIX: FINIX_ADDRESS,
   WKLAY: WKLAY_ADDRESS,

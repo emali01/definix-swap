@@ -1,5 +1,5 @@
 import { Currency, Pair } from 'definixswap-sdk'
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import { 
@@ -35,7 +35,6 @@ interface CurrencyInputPanelProps {
   hideInput?: boolean
   otherCurrency?: Currency | null
   id: string
-  className?: string
   onMax?: () => void
   onQuarter?: () => void
   onHalf?: () => void
@@ -43,8 +42,6 @@ interface CurrencyInputPanelProps {
   onCurrencySelect?: (currency: Currency) => void
   isInsufficientBalance?: boolean
 }
-
-const Container = styled.div<{ hideInput: boolean }>``;
 
 const InputBox = styled.div`
   display: flex;
@@ -168,7 +165,6 @@ export default function CurrencyInputPanel({
   hideInput = false,
   otherCurrency,
   id,
-  className,
   onMax,
   onQuarter,
   onHalf,
@@ -187,30 +183,27 @@ export default function CurrencyInputPanel({
     otherSelectedCurrency={otherCurrency}
   />, false)
 
-
   return (
     <>
-      <Container id={id} hideInput={hideInput} className={className}>
+      <Box id={id} mb="12px">
         <InputBox>
           {!hideInput && (
             <Flex flexDirection="column" flex="1" position="relative">
-              {/* {account && ( */}
-                <Flex mb="4px">
-                  <Text textStyle="R_14R" color={ColorStyles.DEEPGREY} mr="4px" >
-                    {t('Balance')}
-                  </Text>
-                  <Text textStyle="R_14B" color={ColorStyles.DEEPGREY}>
-                    {!hideBalance && !!currency && selectedCurrencyBalance
-                      ? selectedCurrencyBalance?.toSignificant(6)
-                      : '-'}
-                  </Text>
-                </Flex>
-              {/* )} */}
+              <Flex mb="4px">
+                <Text textStyle="R_14R" color={ColorStyles.DEEPGREY} mr="4px" >
+                  {t('Balance')}
+                </Text>
+                <Text textStyle="R_14B" color={ColorStyles.DEEPGREY}>
+                  {!hideBalance && !!currency && selectedCurrencyBalance
+                    ? selectedCurrencyBalance?.toSignificant(6)
+                    : '-'}
+                </Text>
+              </Flex>
               <NumericalInput
                 value={value}
                 onUserInput={(val) => onUserInput(val)}
               />
-              {(account && currency && showMaxButton) && 
+              {(account && currency) && 
                 <>
                   <Flex mt="8px">
                     <AnountButton onClick={onQuarter} mr="6px">
@@ -280,7 +273,7 @@ export default function CurrencyInputPanel({
             </Flex>
           </CurrencySelect>
         </InputBox>
-      </Container>
+      </Box>
     </>
   )
 }
