@@ -323,7 +323,7 @@ export default function ConfirmAddModal({
 
   return (
     <Modal title={t('Confirm Add Liquidity')} mobileFull onDismiss={onDismiss}>
-      <ModalBody>
+      <ModalBody isBody>
         <Wrap>
           <Flex flexDirection="column" mt="16px">
             <ModalHeader

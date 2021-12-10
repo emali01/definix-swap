@@ -382,7 +382,7 @@ export default function ConfirmRemoveModal({
 
   return (
     <Modal title={t('Confirm Remove Liquidity')} mobileFull onDismiss={onDismiss}>
-      <ModalBody>
+      <ModalBody isBody>
         <Wrap>
           <Flex flexDirection="column" mb="20px" mt="16px">
             <Text textStyle="R_16M" color={ColorStyles.DEEPGREY}>{t('LP amount before removal')}</Text>

@@ -35,7 +35,7 @@ export default function CurrencySearchModal({
 
   return (
     <Modal title={t('Select a token')} mobileFull onDismiss={onDismiss}>
-      <ModalBody>
+      <ModalBody isBody>
         <Wrap>
           <CurrencySearch
             onCurrencySelect={onCurrencySelect}

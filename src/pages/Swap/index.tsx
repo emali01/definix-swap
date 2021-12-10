@@ -206,10 +206,11 @@ const Swap: React.FC = () => {
     [onCurrencySelection]
   )
 
-  const [onPresentConfirmModal] = useModal(<ConfirmSwapModal
-    recipient={recipient}
-    onDismissModal={handleConfirmDismiss}
-  />, false)
+  const [onPresentConfirmModal] = useModal(
+    <ConfirmSwapModal
+      recipient={recipient}
+      onDismissModal={handleConfirmDismiss}
+    />, false)
 
   const onClickSwapButton = useCallback(() => {
     onPresentConfirmModal();

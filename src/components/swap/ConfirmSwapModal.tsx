@@ -100,7 +100,7 @@ export default function ConfirmSwapModal({
 
   return (
     <Modal title={t('Confirm Swap')} mobileFull onDismiss={onDismiss}>
-      <ModalBody>
+      <ModalBody isBody>
         <Wrap>
           {!txHash && trade && (
             <>
