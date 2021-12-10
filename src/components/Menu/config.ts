@@ -7,17 +7,17 @@ export const links = (t: (key: string) => string) => {
       href: process.env.REACT_APP_FRONTEND_URL,
     },
     {
-      label: t('ExChange'),
+      label: t('Exchange'),
       icon: 'GnbExchangeNIcon',
       activeIcon: 'GnbExchangeSIcon',
       items: [
         {
           label: t('Swap'),
-          href: '/#/swap',
+          href: '/swap',
         },
         {
           label: t('Liquidity'),
-          href: '/#/liquidity',
+          href: '/liquidity',
         },
       ],
     },
