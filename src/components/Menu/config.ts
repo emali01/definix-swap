@@ -107,6 +107,12 @@ const config: MenuEntry[] = [
         notHighlight: false,
         newTab: false,
       },
+      {
+        label: 'Super Stake',
+        href: `${process.env.REACT_APP_FRONTEND_URL}/long-term-stake/top-up`,
+        notHighlight: false,
+        newTab: false,
+      },
     ],
   },
   // {
