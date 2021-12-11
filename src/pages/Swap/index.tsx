@@ -241,7 +241,7 @@ const Swap: React.FC = () => {
   }, [allTokens, chainId, handleInputSelect]);
 
   return (
-    <Flex flexDirection="column" alignItems="center">
+    <Flex flexDirection="column" alignItems="center" pb={isMobile ? "40px" : "75px"}>
       <Box
         width={isMobile ? '100%' : '629px'}
       >

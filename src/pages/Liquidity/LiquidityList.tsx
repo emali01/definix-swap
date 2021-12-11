@@ -38,17 +38,19 @@ const LiquidityList: React.FC = () => {
   const allV2PairsWithLiquidity = v2Pairs.map(([, pair]) => pair).filter((v2Pair): v2Pair is Pair => Boolean(v2Pair))
 
   return (
-    <>
+    <Box
+      borderBottomLeftRadius="16px"
+      borderBottomRightRadius="16px"
+      borderLeft="1px solid #ffe5c9"
+      borderRight="1px solid #ffe5c9"
+      borderBottom="1px solid #ffe5c9"
+      style={{boxShadow: '0 12px 12px 0 rgba(227, 132, 0, 0.1)'}}
+      backgroundColor={ColorStyles.WHITE}
+      mb={isMobile ? "80px" : "40px"}
+    >
       {account && allV2PairsWithLiquidity.length > 0 && (
         <Box
           p={isMobile ? "0px 20px" : "24px 40px"}
-          backgroundColor={ColorStyles.WHITE}
-          style={{boxShadow: '0 12px 12px 0 rgba(227, 132, 0, 0.1)'}}
-          borderBottomLeftRadius="16px"
-          borderBottomRightRadius="16px"
-          borderLeft="1px solid #ffe5c9"
-          borderRight="1px solid #ffe5c9"
-          borderBottom="1px solid #ffe5c9"
         >
         {allV2PairsWithLiquidity?.map((v2Pair, i) => (
           <FullPositionCard 
@@ -60,13 +62,10 @@ const LiquidityList: React.FC = () => {
       </Box>)}
       {account && allV2PairsWithLiquidity.length <= 0 && (
         <Flex 
-          backgroundColor={ColorStyles.WHITE}
           flexDirection="column" 
           justifyContent="center" 
           alignItems="center" 
           p="60px"
-          borderBottomLeftRadius="16px"
-          borderBottomRightRadius="16px"
         >
           <Box mb="24px">
             <ImgEmptyStateLiquidity />
@@ -82,9 +81,6 @@ const LiquidityList: React.FC = () => {
           justifyContent="center"
           alignItems="center"
           p="40px"
-          backgroundColor={ColorStyles.WHITE}
-          borderBottomLeftRadius="16px"
-          borderBottomRightRadius="16px"
         >
           <Box mb="24px">
             <ImgEmptyStateWallet />
@@ -95,7 +91,7 @@ const LiquidityList: React.FC = () => {
           <ConnectWalletButton />
         </Flex>
       )}
-    </>
+    </Box>
   )
 }
 

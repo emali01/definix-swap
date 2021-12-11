@@ -28,7 +28,7 @@ interface PositionCardProps {
   isLastCard?: boolean
 }
 
-export function MinimalPositionCard({ pair, showUnwrapped = false, isLastCard = false }: PositionCardProps) {
+export const MinimalPositionCard = React.memo(({ pair, showUnwrapped = false, isLastCard = false }: PositionCardProps) => {
   const { t } = useTranslation();
   const { account } = useActiveWeb3React()
 
@@ -140,9 +140,9 @@ export function MinimalPositionCard({ pair, showUnwrapped = false, isLastCard = 
       )}
     </>
   )
-}
+});
 
-export default function FullPositionCard({ pair, isLastCard = false }: PositionCardProps) {
+const FullPositionCard = ({ pair, isLastCard = false }: PositionCardProps) => {
   const { t } = useTranslation();
   const { isXl, isXxl } = useMatchBreakpoints()
   const isMobile = useMemo(() => !isXl && !isXxl, [isXl, isXxl])
@@ -271,3 +271,5 @@ export default function FullPositionCard({ pair, isLastCard = false }: PositionC
     </Flex>
   )
 }
+
+export default React.memo(FullPositionCard);
