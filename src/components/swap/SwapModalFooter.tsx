@@ -49,15 +49,12 @@ export default function SwapModalFooter({
           onClick={onConfirm}
           isLoading={isPending}
           disabled={disabledConfirm}
-          variant="red"
           id="confirm-swap-or-send"
         >
           <Text textStyle="R_16B">
-            {/* {isPending ? 'Pending...' : severity > 2 ? 'Swap Anyway' : 'Swap'} */}
             {t('Swap')}
           </Text>
         </Button>
-
         {swapErrorMessage ? <SwapCallbackError error={swapErrorMessage} /> : null}
       </Flex>
     </Flex>

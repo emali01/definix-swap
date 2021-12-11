@@ -2,14 +2,11 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import numeral from 'numeral'
 import { CurrencyAmount, JSBI, Trade } from 'definixswap-sdk'
-import { AutoColumn } from 'components/Column'
 import ConnectWalletButton from 'components/ConnectWalletButton'
 import CurrencyInputPanel from 'components/CurrencyInputPanel'
 import Loader from 'components/Loader'
-import { AutoRow, RowBetween } from 'components/Row'
 import AdvancedSwapDetailsDropdown from 'components/swap/AdvancedSwapDetailsDropdown'
 import ConfirmSwapModal from 'components/swap/ConfirmSwapModal'
-import { ArrowWrapper } from 'components/swap/styleds'
 import TradePrice from 'components/swap/TradePrice'
 import { useActiveWeb3React } from 'hooks'
 import { ApprovalState, useApproveCallbackFromTrade } from 'hooks/useApproveCallback'
@@ -17,7 +14,7 @@ import { useSwapCallback } from 'hooks/useSwapCallback'
 import useWrapCallback, { WrapType } from 'hooks/useWrapCallback'
 import { Field } from 'state/swap/actions'
 import { SWAP_STATE, useDerivedSwapInfo, useSwapActionHandlers, useSwapState } from 'state/swap/hooks'
-import { useExpertModeManager, useUserDeadline, useUserSlippageTolerance } from 'state/user/hooks'
+import { useUserDeadline, useUserSlippageTolerance } from 'state/user/hooks'
 
 import {
   Button,
@@ -30,7 +27,6 @@ import {
   ButtonScales,
   ColorStyles,
   ChangeIcon,
-  ButtonVariants,
   Noti,
   NotiType,
   Box,
@@ -42,15 +38,19 @@ import CurrencyLogo from 'components/CurrencyLogo'
 import { useToast } from 'state/toasts/hooks'
 import { useAllTokens } from 'hooks/Tokens'
 import { allTokenAddresses } from 'constants/index';
+import { useLocation } from 'react-router'
+import qs from 'querystring';
 
 const Swap: React.FC = () => {
+  const location = useLocation();
+  const currencyQuerystring = useMemo(() => qs.parse(location.search), [location.search]);
+  const outputQs = useMemo(() => String(currencyQuerystring["?outputCurrency"] || currencyQuerystring.outputCurrency), [currencyQuerystring]);
+
   const { t } = useTranslation();
   const { isXl, isXxl } = useMatchBreakpoints()
   const isMobile = useMemo(() => !isXl && !isXxl, [isXl, isXxl])
  
   const { account, chainId = '' } = useActiveWeb3React()
-
-  const [isExpertMode] = useExpertModeManager()
 
   const [deadline] = useUserDeadline()
   const [allowedSlippage] = useUserSlippageTolerance()
@@ -149,10 +149,8 @@ const Swap: React.FC = () => {
 
   const showApproveFlow = useMemo(() => !swapInputError &&
     (approval === ApprovalState.NOT_APPROVED ||
-      approval === ApprovalState.PENDING ||
-      (approvalSubmitted && approval === ApprovalState.APPROVED)) &&
-    !(priceImpactSeverity > 3 && !isExpertMode), 
-    [approval, approvalSubmitted, isExpertMode, priceImpactSeverity, swapInputError]);
+      approval === ApprovalState.PENDING), 
+    [approval, swapInputError]);
 
     const initSwapData = useCallback(() => {
       onUserInput(Field.INPUT, '')
@@ -217,8 +215,6 @@ const Swap: React.FC = () => {
   }, [onPresentConfirmModal])
 
   const renderNoti = useCallback(() => {
-    if (isExpertMode) return <></>;
-
     if (priceImpactSeverity > 3) {
       return <Noti type={NotiType.ALERT} mt="12px">
         {t('Price Impact Too High')}
@@ -229,16 +225,22 @@ const Swap: React.FC = () => {
         {t('This swap has a price impact of at least 10%')}
       </Noti>
     }
-    return <></>
-  }, [priceImpactSeverity, isExpertMode, t]);
+    return null;
+  }, [priceImpactSeverity, t]);
 
   const allTokens = useAllTokens()
 
   useEffect(() => {
-    if(chainId){
+    if(chainId && !outputQs){
       handleInputSelect(allTokens[allTokenAddresses.SIX[chainId]]);
     }
-  }, [allTokens, chainId, handleInputSelect]);
+  }, [chainId, outputQs, allTokens, handleInputSelect]);
+
+  useEffect(() => {
+    if(outputQs){
+      handleOutputSelect(allTokens[outputQs]);
+    }
+  }, [outputQs, allTokens, handleOutputSelect])
 
   return (
     <Flex flexDirection="column" alignItems="center" pb={isMobile ? "40px" : "75px"}>
@@ -281,20 +283,18 @@ const Swap: React.FC = () => {
                 id="swap-currency-input"
               />
 
-              <AutoColumn justify="space-between">
-                <AutoRow justify={isExpertMode ? 'space-between' : 'center'} style={{ padding: '0 1rem' }}>
-                  <ArrowWrapper clickable>
-                    <IconButton
-                      onClick={() => {
-                        setApprovalSubmitted(false)
-                        onSwitchTokens()
-                      }}
-                    >
-                      <ChangeIcon />
-                    </IconButton>
-                  </ArrowWrapper>
-                </AutoRow>
-              </AutoColumn>
+              <Flex 
+                justifyContent="center"
+              >
+                <IconButton
+                  onClick={() => {
+                    setApprovalSubmitted(false)
+                    onSwitchTokens()
+                  }}
+                >
+                  <ChangeIcon />
+                </IconButton>
+              </Flex>
 
               <CurrencyInputPanel
                 isMobile={isMobile}
@@ -337,25 +337,22 @@ const Swap: React.FC = () => {
                   lg
                   onClick={onClickSwapButton}
                   id="swap-button"
-                  disabled={!isValid || (priceImpactSeverity > 3 && !isExpertMode) || !!swapCallbackError}
+                  disabled={!isValid || !!swapCallbackError}
                   variant={isValid && priceImpactSeverity > 2 && !swapCallbackError ? 'danger' : 'primary'}
                   isLoading={Boolean(noRoute && userHasSpecifiedInputOutput)}
                 >
                   {t('Swap')}
                 </Button>
               ) : showApproveFlow ? (
-                <RowBetween className="mb-3">
-
+                <Flex justifyContent="space-between">
                   <Flex flexDirection="column" flex="1 1 0">
-
                     <Flex justifyContent="space-between" alignItems="center" flex="1 1 0" mb="20px">
                       <Flex alignItems="center">
                         <CurrencyLogo
                           currency={currencies[Field.INPUT]} 
                           size="32px"
-                          style={{marginRight: '12px'}}
                         />
-                        <Text textStyle="R_16M" color={ColorStyles.MEDIUMGREY}>
+                        <Text ml="12px" textStyle="R_16M" color={ColorStyles.MEDIUMGREY}>
                           {`${currencies[Field.INPUT]?.symbol}`}
                         </Text>
                       </Flex>
@@ -365,39 +362,20 @@ const Swap: React.FC = () => {
                         onClick={approveCallback}
                         disabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted}
                         width="186px"
-                        variant={approval === ApprovalState.APPROVED ?  'primary' : ButtonVariants.BROWN}
                       >
                         {approval === ApprovalState.PENDING ? (
-                          <AutoRow gap="6px" justify="center">
-                            Approving <Loader stroke="white" />
-                          </AutoRow>
+                          <Flex>
+                            {t('Approve')} <Loader stroke="white" />
+                          </Flex>
                         ) : approvalSubmitted && approval === ApprovalState.APPROVED ? (
-                          'Approved'
+                          <>{t('Approve')}</>
                         ) : (
-                          `Approve ${currencies[Field.INPUT]?.symbol}`
+                          <>{t('Approve')} `${currencies[Field.INPUT]?.symbol}`</>
                         )}
                       </Button>
                     </Flex>
-
-                    <Button
-                      width="100%"
-                      variant={isValid && priceImpactSeverity > 2 ? 'danger' : 'primary'}
-                      scale={ButtonScales.LG}
-                      id="swap-button"
-                      onClick={onClickSwapButton}
-                      disabled={
-                        !isValid ||
-                        approval !== ApprovalState.APPROVED ||
-                        (priceImpactSeverity > 3 && !isExpertMode)
-                      }
-                    >
-                      {priceImpactSeverity > 3 && !isExpertMode
-                        ? `Price Impact High`
-                        : `Swap${priceImpactSeverity > 2 ? ' Anyway' : ''}`}
-                    </Button>
                   </Flex>
-
-                </RowBetween>
+                </Flex>
               ) : (
                 <Flex flexDirection="column" flex="1">
                   <Button
@@ -405,7 +383,7 @@ const Swap: React.FC = () => {
                     lg
                     onClick={onClickSwapButton}
                     id="swap-button"
-                    disabled={!isValid || (priceImpactSeverity > 3 && !isExpertMode) || !!swapCallbackError}
+                    disabled={!isValid || !!swapCallbackError}
                     variant={isValid && priceImpactSeverity > 2 && !swapCallbackError ? 'danger' : 'primary'}
                   >
                     {t('Swap')}

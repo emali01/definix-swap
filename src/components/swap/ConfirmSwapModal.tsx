@@ -1,9 +1,7 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import { currencyEquals, Trade } from 'definixswap-sdk'
-import { Modal, Box, Divider, ModalBody } from 'definixswap-uikit-v2'
-import styled from 'styled-components'
+import { Modal, Box, Divider, ModalBody, useMatchBreakpoints } from 'definixswap-uikit-v2'
 import { useTranslation } from 'react-i18next'
-import { computeTradePriceBreakdown } from 'utils/prices'
 import { useDerivedSwapInfo } from 'state/swap/hooks'
 import { useToast } from 'state/toasts/hooks'
 import { useSwapCallback } from 'hooks/useSwapCallback'
@@ -11,21 +9,6 @@ import KlaytnScopeLink from 'components/KlaytnScopeLink'
 import { useUserDeadline, useUserSlippageTolerance } from 'state/user/hooks'
 import SwapModalFooter from './SwapModalFooter'
 import SwapModalHeader from './SwapModalHeader'
-import confirmPriceImpactWithoutFee from './confirmPriceImpactWithoutFee'
-
-const Wrap = styled(Box)`
-  width: calc(100vw - 48px);
-  height: 100%;
-
-  @media screen and (min-width: 464px) {
-    width: 416px;
-  }
-`
-
-const StyledDivider = styled(Divider)`
-  margin-top: 20px;
-  margin-bottom: 24px;
-`
 
 /**
  * Returns true if the trade requires a confirmation of details before we can submit it
@@ -52,12 +35,13 @@ export default function ConfirmSwapModal({
   onDismissModal: () => void
 }) {
   const { t } = useTranslation();
+  const { isXl, isXxl } = useMatchBreakpoints()
+  const isMobile = useMemo(() => !isXl && !isXxl, [isXl, isXxl])
   const { v2Trade: trade } = useDerivedSwapInfo()
   const [originalTrade, setOriginalTrade] = useState(trade);
   const [isPending, setIsPending] = useState(false);
   const [txHash, setTxHash] = useState(undefined);
   const [errorMessage, setErrorMessage] = useState(undefined);
-  const { priceImpactWithoutFee } = computeTradePriceBreakdown(trade)
   const [deadline] = useUserDeadline()
   const [allowedSlippage] = useUserSlippageTolerance()
   const { toastSuccess, toastError } = useToast();
@@ -68,16 +52,13 @@ export default function ConfirmSwapModal({
     recipient
   )
 
-  const showAcceptChanges = Boolean(trade && originalTrade && tradeMeaningfullyDiffers(trade, originalTrade))
+  const showAcceptChanges = useMemo(() => Boolean(trade && originalTrade && tradeMeaningfullyDiffers(trade, originalTrade)), [originalTrade, trade]);
 
   const onAcceptChanges = useCallback(() => {
     setOriginalTrade(trade);
   }, [trade])
 
   const handleSwap = useCallback(() => {
-    if (priceImpactWithoutFee && !confirmPriceImpactWithoutFee(priceImpactWithoutFee)) {
-      return
-    }
     if (!swapCallback) {
       return
     }
@@ -96,12 +77,15 @@ export default function ConfirmSwapModal({
         onDismiss();
         onDismissModal();
       })
-  }, [priceImpactWithoutFee, swapCallback, onDismiss, onDismissModal, toastSuccess, toastError, t])
+  }, [swapCallback, onDismiss, onDismissModal, toastSuccess, toastError, t])
 
   return (
     <Modal title={t('Confirm Swap')} mobileFull onDismiss={onDismiss}>
       <ModalBody isBody>
-        <Wrap>
+        <Box
+          width={isMobile ? "100%" : "414px"}
+          height="100%"
+        >
           {!txHash && trade && (
             <>
               <SwapModalHeader
@@ -111,7 +95,7 @@ export default function ConfirmSwapModal({
                 showAcceptChanges={showAcceptChanges}
                 onAcceptChanges={onAcceptChanges}
               />
-              <StyledDivider />
+              <Divider mt="20px" mb="24px"/>
               <SwapModalFooter
                 onConfirm={handleSwap}
                 trade={trade}
@@ -121,7 +105,7 @@ export default function ConfirmSwapModal({
               />
             </>
           )}
-        </Wrap>
+        </Box>
       </ModalBody>
     </Modal>
   )
