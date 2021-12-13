@@ -282,6 +282,7 @@ const Swap: React.FC = () => {
                 otherCurrency={currencies[Field.OUTPUT]}
                 isInsufficientBalance={swapState === SWAP_STATE.INSUFFICIENT_BALANCE}
                 id="swap-currency-input"
+                maxTokenAmount={maxAmountInput?.toExact()}
               />
 
               <Flex 

@@ -1,5 +1,5 @@
 import { Currency, Pair } from 'definixswap-sdk'
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import { 
@@ -41,6 +41,7 @@ interface CurrencyInputPanelProps {
   onUserInput: (value: string) => void
   onCurrencySelect?: (currency: Currency) => void
   isInsufficientBalance?: boolean
+  maxTokenAmount?: string
 }
 
 const InputBox = styled.div`
@@ -171,10 +172,12 @@ export default function CurrencyInputPanel({
   onUserInput,
   onCurrencySelect,
   isInsufficientBalance,
+  maxTokenAmount,
 }: CurrencyInputPanelProps) {
   const { t } = useTranslation();
   const { account } = useCaverJsReact()
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
+  const [isMaxKlayNoti, setIsMaxKlayNoti] = useState<boolean>(false);
 
   const [onPresentCurrencySearchModal] = useModal(
   <CurrencySearchModal
@@ -182,6 +185,17 @@ export default function CurrencyInputPanel({
     selectedCurrency={currency}
     otherSelectedCurrency={otherCurrency}
   />, false)
+
+
+  useEffect(() => {
+    if(currency?.symbol === 'KLAY'){
+      if(selectedCurrencyBalance?.toFixed(2) >= maxTokenAmount){
+        setIsMaxKlayNoti(true);
+        return;
+      }
+    }
+    setIsMaxKlayNoti(false);
+  }, [isMaxKlayNoti, selectedCurrencyBalance, maxTokenAmount, currency?.symbol]);
 
   return (
     <>
@@ -195,7 +209,7 @@ export default function CurrencyInputPanel({
                 </Text>
                 <Text textStyle="R_14B" color={ColorStyles.DEEPGREY}>
                   {!hideBalance && !!currency && selectedCurrencyBalance
-                    ? selectedCurrencyBalance?.toSignificant(6)
+                    ? selectedCurrencyBalance?.toSignificant(8)
                     : '-'}
                 </Text>
               </Flex>
@@ -216,6 +230,11 @@ export default function CurrencyInputPanel({
                       {t('MAX')}
                     </AnountButton>
                   </Flex>
+                  {isMaxKlayNoti && (
+                    <Noti type={NotiType.ALERT} mt="12px">
+                      {t('Full payment of KLAY')}
+                    </Noti>
+                  )}
                   {isInsufficientBalance && 
                     <Noti type={NotiType.ALERT} mt="12px">
                       {t('Insufficient balance')}

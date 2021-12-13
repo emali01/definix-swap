@@ -30,14 +30,14 @@ export const SectionBreak = styled.div`
 `
 
 export const ErrorText = styled(Text)<{ severity?: 0 | 1 | 2 | 3 | 4 }>`
-  color: ${({ theme, severity }) =>
+  color: ${({ severity }) =>
     severity === 3 || severity === 4
-      ? theme.colors.failure
+      ? '#ff5532'
       : severity === 2
-      ? theme.colors.binance
+      ? '#fea948'
       : severity === 1
-      ? theme.colors.text
-      : theme.colors.success};
+      ? '#222222'
+      : '#02a1a1'};
 `
 
 export const StyledBalanceMaxMini = styled.button`
