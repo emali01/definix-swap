@@ -231,16 +231,17 @@ const Swap: React.FC = () => {
   const allTokens = useAllTokens()
 
   useEffect(() => {
-    if(chainId && !outputQs){
+    if(chainId){
       handleInputSelect(allTokens[allTokenAddresses.SIX[chainId]]);
     }
   }, [chainId, outputQs, allTokens, handleInputSelect]);
 
   useEffect(() => {
     if(outputQs){
+      handleInputSelect('');
       handleOutputSelect(allTokens[outputQs]);
     }
-  }, [outputQs, allTokens, handleOutputSelect])
+  }, [outputQs, allTokens, handleInputSelect, handleOutputSelect])
 
   return (
     <Flex flexDirection="column" alignItems="center" pb={isMobile ? "40px" : "75px"}>
