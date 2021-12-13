@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect } from 'react'
-import { HashRouter, Route, Switch } from 'react-router-dom'
+import { Route, Switch, BrowserRouter } from 'react-router-dom'
 import { useCaverJsReact } from '@sixnetwork/caverjs-react-core'
 import { GlobalStyle, Loading } from 'definixswap-uikit-v2'
 import useCaverJsReactForWallet from 'hooks/useCaverJsReactForWallet'
@@ -32,7 +32,7 @@ export default function App() {
   return (
     <Suspense fallback={null}>
       <GlobalStyle />
-      <HashRouter>
+      <BrowserRouter>
         <AppWrapper>
           <Menu>
             <Suspense fallback={<Loading />}>
@@ -53,7 +53,7 @@ export default function App() {
           </Menu>
           <ToastListener />
         </AppWrapper>
-      </HashRouter>
+      </BrowserRouter>
     </Suspense>
   )
 }
