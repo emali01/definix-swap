@@ -1,5 +1,5 @@
 import { Currency, Pair } from 'definixswap-sdk'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import { 
@@ -178,24 +178,51 @@ export default function CurrencyInputPanel({
   const { account } = useCaverJsReact()
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
   const [isMaxKlayNoti, setIsMaxKlayNoti] = useState<boolean>(false);
+  const [balance, setBalance] = useState<string>('');
 
   const [onPresentCurrencySearchModal] = useModal(
   <CurrencySearchModal
     onCurrencySelect={onCurrencySelect}
     selectedCurrency={currency}
     otherSelectedCurrency={otherCurrency}
-  />, false)
+  />, false);
+
+  const renderNoti = useCallback(() => {
+    if(isInsufficientBalance){
+      return (
+        <Noti type={NotiType.ALERT} mt="12px">
+          {t('Insufficient balance')}
+        </Noti>
+      )
+    }
+    if(isMaxKlayNoti) {
+      return (
+        <Noti type={NotiType.ALERT} mt="12px">
+          {t('Full payment of KLAY')}
+        </Noti>
+      )
+    }
+    return null;
+  }, [isInsufficientBalance, isMaxKlayNoti, t]);
+
+  useEffect(() => {
+    if(!hideBalance && !!currency && selectedCurrencyBalance){
+      setBalance(selectedCurrencyBalance?.toFixed(5));
+      return;
+    }
+    setBalance('-');
+  }, [hideBalance, currency, selectedCurrencyBalance])
 
 
   useEffect(() => {
     if(currency?.symbol === 'KLAY'){
-      if(selectedCurrencyBalance?.toFixed(2) >= maxTokenAmount){
+      if(value >= parseInt(balance).toFixed(2)){
         setIsMaxKlayNoti(true);
         return;
       }
     }
     setIsMaxKlayNoti(false);
-  }, [isMaxKlayNoti, selectedCurrencyBalance, maxTokenAmount, currency?.symbol]);
+  }, [value, balance, maxTokenAmount, currency?.symbol]);
 
   return (
     <>
@@ -208,9 +235,7 @@ export default function CurrencyInputPanel({
                   {t('Balance')}
                 </Text>
                 <Text textStyle="R_14B" color={ColorStyles.DEEPGREY}>
-                  {!hideBalance && !!currency && selectedCurrencyBalance
-                    ? selectedCurrencyBalance?.toSignificant(8)
-                    : '-'}
+                  {balance}
                 </Text>
               </Flex>
               <NumericalInput
@@ -230,16 +255,7 @@ export default function CurrencyInputPanel({
                       {t('MAX')}
                     </AnountButton>
                   </Flex>
-                  {isMaxKlayNoti && (
-                    <Noti type={NotiType.ALERT} mt="12px">
-                      {t('Full payment of KLAY')}
-                    </Noti>
-                  )}
-                  {isInsufficientBalance && 
-                    <Noti type={NotiType.ALERT} mt="12px">
-                      {t('Insufficient balance')}
-                    </Noti>
-                  }
+                  {renderNoti()}
                 </>
               }
             </Flex>
