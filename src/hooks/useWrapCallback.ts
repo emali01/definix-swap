@@ -95,7 +95,7 @@ export default function useWrapCallback(
               try {
                 if (isKlipConnector(connector)) {
                   // console.log("klip test 1",(+inputAmount.toSignificant(6)*1e18))
-                  const valueKlip = +inputAmount.toSignificant(6)*1e12
+                  const valueKlip = +Number.parseFloat(inputAmount.toSignificant(6)).toFixed(6)*1e12
                   klipProvider.genQRcodeContactInteract(
                     WETH(chainId).address,
                     JSON.stringify(getAbiByNameWETH("deposit")),
