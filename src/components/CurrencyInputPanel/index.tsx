@@ -1,6 +1,7 @@
 import { Currency, Pair } from 'definixswap-sdk'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import BigNumber from "bignumber.js";
 import styled from 'styled-components'
 import { 
   Text,
@@ -187,6 +188,9 @@ export default function CurrencyInputPanel({
     otherSelectedCurrency={otherCurrency}
   />, false);
 
+  const decimals = useMemo(() => 18, []);
+  const overDp = useMemo(() => new BigNumber(value).decimalPlaces() > decimals, [value, decimals])
+
   const renderNoti = useCallback(() => {
     if(isInsufficientBalance){
       return (
@@ -202,8 +206,15 @@ export default function CurrencyInputPanel({
         </Noti>
       )
     }
+    if(overDp){
+      return (
+        <Noti type={NotiType.ALERT} mt="12px">
+          {t('The value entered is out of the valid range')}
+        </Noti>
+      )
+    }
     return null;
-  }, [isInsufficientBalance, isMaxKlayNoti, t]);
+  }, [isInsufficientBalance, isMaxKlayNoti, t, overDp]);
 
   useEffect(() => {
     if(!hideBalance && !!currency && selectedCurrencyBalance){
@@ -216,10 +227,7 @@ export default function CurrencyInputPanel({
 
   useEffect(() => {
     if(currency?.symbol === 'KLAY'){
-      if(value >= balance){
-        setIsMaxKlayNoti(true);
-        return;
-      }
+      if(value >= balance) setIsMaxKlayNoti(true);
     }
     setIsMaxKlayNoti(false);
   }, [value, balance, maxTokenAmount, currency?.symbol]);
