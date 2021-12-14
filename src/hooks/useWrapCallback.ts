@@ -1,16 +1,22 @@
 import { Currency, currencyEquals, ETHER, WETH } from 'definixswap-sdk'
-import { useMemo } from 'react'
+import { useMemo, useContext } from 'react'
+import { KlipModalContext } from '@sixnetwork/klaytn-use-wallet'
+import { KlipConnector } from "@sixnetwork/klip-connector"
+import * as klipProvider from './KlipProvider'
 import { tryParseAmount } from '../state/swap/hooks'
 import { useTransactionAdder } from '../state/transactions/hooks'
 import { useCurrencyBalance } from '../state/wallet/hooks'
 import { useActiveWeb3React } from './index'
 import { useWETHContract } from './useContract'
+import { getAbiByNameWETH } from './HookHelper'
 
 export enum WrapType {
   NOT_APPLICABLE,
   WRAP,
   UNWRAP
 }
+
+
 
 const NOT_APPLICABLE = { wrapType: WrapType.NOT_APPLICABLE }
 /**
@@ -24,7 +30,8 @@ export default function useWrapCallback(
   outputCurrency: Currency | undefined,
   typedValue: string | undefined
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
-  const { chainId, account } = useActiveWeb3React()
+  const { chainId, account, connector } = useActiveWeb3React()
+  const { setShowModal } = useContext(KlipModalContext())
   const wethContract = useWETHContract()
   const balance = useCurrencyBalance(account ?? undefined, inputCurrency)
   // we can always parse the amount typed as the input currency, since wrapping is 1:1
@@ -42,13 +49,40 @@ export default function useWrapCallback(
         execute:
           sufficientBalance && inputAmount
             ? async () => {
-                try {
+              try {
+                if (isKlipConnector(connector)) {
+                  // console.log("klip test 1",(+inputAmount.toSignificant(6)*1e18))
+                  const valueKlip = +inputAmount.toSignificant(6)*1e12
+                  klipProvider.genQRcodeContactInteract(
+                    WETH(chainId).address,
+                    JSON.stringify(getAbiByNameWETH("deposit")),
+                    JSON.stringify([]),
+                    `${valueKlip}000000`,
+                    setShowModal
+                  )
+                  const tx = await klipProvider.checkResponse()
+                  setShowModal(false)
+                  // addTransaction(tx, { summary: `Wrap ${inputAmount.toSignificant(6)} KLAY to WKLAY` })
+                  // addTransaction(undefined, {
+                  //   type: 'removeLiquidity',
+                  //   klipTx: tx,
+                  //   data: {
+                  //     firstToken: currencyA?.symbol,
+                  //     firstTokenAmount: parsedAmounts[Field.CURRENCY_A]?.toSignificant(3),
+                  //     secondToken: currencyB?.symbol,
+                  //     secondTokenAmount: parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)
+                  //   },
+                  //   summary: `Remove ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${currencyA?.symbol
+                  //     } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencyB?.symbol}`
+                  // })
+                } else {
                   const txReceipt = await wethContract.deposit({ value: `0x${inputAmount.raw.toString(16)}` })
                   addTransaction(txReceipt, { summary: `Wrap ${inputAmount.toSignificant(6)} KLAY to WKLAY` })
-                } catch (error) {
-                  console.error('Could not deposit', error)
                 }
+              } catch (error) {
+                console.error('Could not deposit', error)
               }
+            }
             : undefined,
         inputError: sufficientBalance ? undefined : 'Insufficient ETH balance'
       }
@@ -58,18 +92,47 @@ export default function useWrapCallback(
         execute:
           sufficientBalance && inputAmount
             ? async () => {
-                try {
+              try {
+                if (isKlipConnector(connector)) {
+                  // console.log("klip test 1",(+inputAmount.toSignificant(6)*1e18))
+                  const valueKlip = +Number.parseFloat(inputAmount.toSignificant(6)).toFixed(6)*1e12
+                  klipProvider.genQRcodeContactInteract(
+                    WETH(chainId).address,
+                    JSON.stringify(getAbiByNameWETH("withdraw")),
+                    JSON.stringify([`${valueKlip}000000`]),
+                    "0",
+                    setShowModal
+                  )
+                  const tx = await klipProvider.checkResponse()
+                  setShowModal(false)
+                  // addTransaction(tx, { summary: `Wrap ${inputAmount.toSignificant(6)} KLAY to WKLAY` })
+                  // addTransaction(undefined, {
+                  //   type: 'removeLiquidity',
+                  //   klipTx: tx,
+                  //   data: {
+                  //     firstToken: currencyA?.symbol,
+                  //     firstTokenAmount: parsedAmounts[Field.CURRENCY_A]?.toSignificant(3),
+                  //     secondToken: currencyB?.symbol,
+                  //     secondTokenAmount: parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)
+                  //   },
+                  //   summary: `Remove ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${currencyA?.symbol
+                  //     } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencyB?.symbol}`
+                  // })
+                } else {
                   const txReceipt = await wethContract.withdraw(`0x${inputAmount.raw.toString(16)}`)
                   addTransaction(txReceipt, { summary: `Unwrap ${inputAmount.toSignificant(6)} WKLAY to KLAY` })
-                } catch (error) {
-                  console.error('Could not withdraw', error)
                 }
+              } catch (error) {
+                console.error('Could not withdraw', error)
               }
+            }
             : undefined,
         inputError: sufficientBalance ? undefined : 'Insufficient WBNB balance'
       }
-    } 
-      return NOT_APPLICABLE
-    
-  }, [wethContract, chainId, inputCurrency, outputCurrency, inputAmount, balance, addTransaction])
+    }
+    return NOT_APPLICABLE
+
+  }, [wethContract,connector,setShowModal, chainId, inputCurrency, outputCurrency, inputAmount, balance, addTransaction])
 }
+
+const isKlipConnector = (connector) => connector instanceof KlipConnector
