@@ -30,6 +30,7 @@ import {
   Noti,
   NotiType,
   Box,
+  Divider,
 } from 'definixswap-uikit-v2'
 
 import { maxAmountSpend } from 'utils/maxAmountSpend'
@@ -311,7 +312,7 @@ const Swap: React.FC = () => {
             </Flex>
 
             {!showWrap && (
-              <Flex mb="32px">
+              <Flex>
                   <Flex flex="1 1 0" justifyContent="space-between">
                     <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>
                       {t('Slippage Tolerance')}
@@ -324,74 +325,92 @@ const Swap: React.FC = () => {
             )}
           </Flex>
 
+          <Divider m={isMobile ? "24px 0px" : "32px 0px"} />
+
           <Flex flexDirection="column">
             <Flex mb="20px">
-              {!account ? (
+              {!account && (
                 <ConnectWalletButton />
-              ) : showWrap ? (
-                <Button disabled={Boolean(wrapInputError)} onClick={onWrap}>
-                  {wrapInputError ??
-                    (wrapType === WrapType.WRAP ? 'Wrap' : wrapType === WrapType.UNWRAP ? 'Unwrap' : null)}
-                </Button>
-              ) : noRoute && userHasSpecifiedInputOutput ? (
-                <Button
-                  width="100%"
-                  lg
-                  onClick={onClickSwapButton}
-                  id="swap-button"
-                  disabled={!isValid || !!swapCallbackError}
-                  variant={isValid && priceImpactSeverity > 2 && !swapCallbackError ? 'danger' : 'primary'}
-                  isLoading={Boolean(noRoute && userHasSpecifiedInputOutput)}
-                >
-                  {t('Swap')}
-                </Button>
-              ) : showApproveFlow ? (
-                <Flex justifyContent="space-between">
-                  <Flex flexDirection="column" flex="1 1 0">
-                    <Flex justifyContent="space-between" alignItems="center" flex="1 1 0" mb="20px">
-                      <Flex alignItems="center">
-                        <CurrencyLogo
-                          currency={currencies[Field.INPUT]} 
-                          size="32px"
-                        />
-                        <Text ml="12px" textStyle="R_16M" color={ColorStyles.MEDIUMGREY}>
-                          {`${currencies[Field.INPUT]?.symbol}`}
-                        </Text>
-                      </Flex>
-
-                      <Button
-                        scale={ButtonScales.MD}
-                        onClick={approveCallback}
-                        disabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted}
-                        width="186px"
-                      >
-                        {approval === ApprovalState.PENDING ? (
-                          <Flex>
-                            {t('Approve')} <Loader stroke="white" />
+              )}
+              {account && (
+                <>
+                  {showWrap && (
+                    <Button disabled={Boolean(wrapInputError)} onClick={onWrap}>
+                      {wrapInputError ??
+                        (wrapType === WrapType.WRAP ? 'Wrap' : wrapType === WrapType.UNWRAP ? 'Unwrap' : null)}
+                    </Button>
+                  )}
+                  {!showWrap && (
+                    <>
+                      {noRoute && userHasSpecifiedInputOutput && (
+                        <Button
+                          width="100%"
+                          lg
+                          onClick={onClickSwapButton}
+                          id="swap-button"
+                          disabled={!isValid || !!swapCallbackError}
+                          variant={isValid && priceImpactSeverity > 2 && !swapCallbackError ? 'danger' : 'primary'}
+                          isLoading={Boolean(noRoute && userHasSpecifiedInputOutput)}
+                        >
+                          {t('Swap')}
+                        </Button>
+                      )}
+                      {(!noRoute || !userHasSpecifiedInputOutput) && (
+                        <Flex flexDirection="column" width="100%">
+                          {showApproveFlow && (
+                            <Flex
+                              width="100%"
+                              flexDirection={isMobile ? "column" : "row"}
+                              justifyContent="space-between"
+                              alignItems={isMobile ? "flex-start" : "center"}
+                              mb="20px"
+                            >
+                              <Flex alignItems="center">
+                                <CurrencyLogo
+                                  currency={currencies[Field.INPUT]} 
+                                  size="32px"
+                                />
+                                <Text ml="12px" textStyle="R_16M" color={ColorStyles.MEDIUMGREY}>
+                                  {`${currencies[Field.INPUT]?.symbol}`}
+                                </Text>
+                              </Flex>
+        
+                              <Button
+                                scale={ButtonScales.MD}
+                                onClick={approveCallback}
+                                disabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted}
+                                width={isMobile ? "100%" : "186px"}
+                                mt={isMobile ? "8px" : "0px"}
+                              >
+                                {approval === ApprovalState.PENDING ? (
+                                  <Flex>
+                                    {t('Approve')} <Loader stroke="white" />
+                                  </Flex>
+                                ) : approvalSubmitted && approval === ApprovalState.APPROVED ? (
+                                  <>{t('Approve')}</>
+                                ) : (
+                                  <>{t(`Approve`)} {currencies[Field.INPUT]?.symbol}</>
+                                )}
+                              </Button>
+                            </Flex>
+                          )}
+                          <Flex flexDirection="column" flex="1 1 0">
+                            <Button
+                              width="100%"
+                              scale={ButtonScales.LG}
+                              onClick={onClickSwapButton}
+                              id="swap-button"
+                              disabled={!isValid || !!swapCallbackError || showApproveFlow}
+                            >
+                              {t('Swap')}
+                            </Button>
+                            {renderNoti()}
                           </Flex>
-                        ) : approvalSubmitted && approval === ApprovalState.APPROVED ? (
-                          <>{t('Approve')}</>
-                        ) : (
-                          <>{t('Approve')} `${currencies[Field.INPUT]?.symbol}`</>
-                        )}
-                      </Button>
-                    </Flex>
-                  </Flex>
-                </Flex>
-              ) : (
-                <Flex flexDirection="column" flex="1">
-                  <Button
-                    width="100%"
-                    lg
-                    onClick={onClickSwapButton}
-                    id="swap-button"
-                    disabled={!isValid || !!swapCallbackError}
-                    variant={isValid && priceImpactSeverity > 2 && !swapCallbackError ? 'danger' : 'primary'}
-                  >
-                    {t('Swap')}
-                  </Button>
-                  {renderNoti()}
-                </Flex>
+                        </Flex>
+                      )}
+                    </>
+                  )}
+                </>
               )}
             </Flex>
 
