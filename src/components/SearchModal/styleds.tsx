@@ -1,8 +1,8 @@
+import { Flex } from 'definixswap-uikit-v2'
 import styled from 'styled-components'
 import { AutoColumn } from '../Column'
-import { RowBetween, RowFixed } from '../Row'
 
-export const FadedSpan = styled(RowFixed)`
+export const FadedSpan = styled(Flex)`
   color: ${({ theme }) => theme.colors.primary};
   font-size: 14px;
 `
@@ -12,7 +12,7 @@ export const PaddedColumn = styled(AutoColumn)`
   padding-bottom: 0;
 `
 
-export const MenuItem = styled(RowBetween)`
+export const MenuItem = styled(Flex)<{ disabled: boolean; selected: boolean }>`
   /* padding: 4px 20px; */
   padding: 14px 0;
   min-height: 60px;

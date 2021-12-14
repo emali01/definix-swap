@@ -10,7 +10,6 @@ import { useCurrencyBalance } from '../../state/wallet/hooks'
 import { LinkStyledButton } from '../Shared'
 import { useIsUserAddedToken } from '../../hooks/Tokens'
 import CurrencyLogo from '../CurrencyLogo'
-import { MouseoverTooltip } from '../Tooltip'
 import { FadedSpan, MenuItem } from './styleds'
 import Loader from '../Loader'
 import { isTokenOnList } from '../../utils'
@@ -26,57 +25,9 @@ const StyledBalanceText = styled(Text)`
   text-overflow: ellipsis;
 `
 
-const Tag = styled.div`
-  background-color: ${({ theme }) => theme.colors.tertiary};
-  color: ${({ theme }) => theme.colors.textSubtle};
-  font-size: 14px;
-  border-radius: ${({ theme }) => theme.radii.default};
-  padding: 0.25rem 0.3rem 0.25rem 0.3rem;
-  max-width: 6rem;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  justify-self: flex-end;
-  margin-right: 4px;
-`
-
 function Balance({ balance }: { balance: CurrencyAmount }) {
   // return <></>
   return <StyledBalanceText textStyle="R_16R" title={balance.toExact()}>{balance.toSignificant(4)}</StyledBalanceText>
-}
-
-const TagContainer = styled.div`
-  display: flex;
-  justify-content: flex-end;
-`
-
-function TokenTags({ currency }: { currency: Currency }) {
-  if (!(currency instanceof WrappedTokenInfo)) {
-    return <span />
-  }
-
-  const { tags } = currency
-  if (!tags || tags.length === 0) return <span />
-
-  const tag = tags[0]
-
-  return (
-    <TagContainer>
-      <MouseoverTooltip text={tag.description}>
-        <Tag key={tag.id}>{tag.name}</Tag>
-      </MouseoverTooltip>
-      {tags.length > 1 ? (
-        <MouseoverTooltip
-          text={tags
-            .slice(1)
-            .map(({ name, description }) => `${name}: ${description}`)
-            .join('; \n')}
-        >
-          <Tag>...</Tag>
-        </MouseoverTooltip>
-      ) : null}
-    </TagContainer>
-  )
 }
 
 function CurrencyRow({
@@ -144,7 +95,7 @@ function CurrencyRow({
         </FadedSpan>
       </Flex>
 
-      <TokenTags currency={currency} />
+      {/* <TokenTags currency={currency} /> */}
 
       <Flex justifySelf="flex-end">
         {balance ? <Balance balance={balance} /> : account ? <Loader /> : null}
