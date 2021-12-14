@@ -39,17 +39,13 @@ export const SearchInput = styled.input`
   border: none;
   outline: none;
   border-radius: 8px;
-
   color: ${({ theme }) => theme.colors.text};
   border-style: solid;
   border: 1px solid ${({ theme }) => theme.colors.border};
   -webkit-appearance: none;
-
-  font-size: 18px;
-
+  font-size: 14px;
   ::placeholder {
     color: ${({ theme }) => theme.colors.textDisabled};
-    /* font-size: 1rem; */
     font-size: 14px;
   }
   transition: border 100ms;

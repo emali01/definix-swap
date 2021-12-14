@@ -19,7 +19,14 @@ const LinkText = styled(Text)`
 
 const KlaytnScopeLink: React.FC<Props> = ({ hash }) => {
   const { t } = useTranslation();
-  return <WrapLink href={`https://scope.klaytn.com/tx/${hash}`}><LinkText>{t('View on KlaytnScope')}</LinkText><ArrowRightGIcon /></WrapLink>
+  return (
+    <WrapLink href={`https://scope.klaytn.com/tx/${hash}`} target='_blank'>
+      <LinkText>
+        {t('View on KlaytnScope')}
+      </LinkText>
+      <ArrowRightGIcon />
+    </WrapLink>
+  )
 }
 
 export default KlaytnScopeLink;

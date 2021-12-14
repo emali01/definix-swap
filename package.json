@@ -1,6 +1,6 @@
 {
   "name": "@definixswap/interface",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": true,
   "scripts": {
     "start": "NODE_ENV=development react-scripts start",
@@ -78,6 +78,7 @@
     "@web3-react/walletconnect-connector": "^6.1.4",
     "@web3-react/walletlink-connector": "^6.1.1",
     "ajv": "^6.12.3",
+    "bignumber.js": "^9.0.2",
     "caver-js": "1.6.3-rc.4",
     "cids": "^1.0.0",
     "copy-to-clipboard": "^3.2.0",

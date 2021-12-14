@@ -18,6 +18,7 @@ import { Currency, currencyEquals, TokenAmount, WETH } from 'definixswap-sdk';
 import { Field } from 'state/mint/actions'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { currencyId } from 'utils/currencyId';
+import { useTokenBalance } from 'state/wallet/hooks';
 
 import numeral from 'numeral'
 import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
@@ -178,9 +179,11 @@ const AddLiquidity: React.FC = () => {
     toastError
   ])
 
+  const userPoolBalance = useTokenBalance(account ?? undefined, pair?.liquidityToken)
+
   return (
     <>
-      <Flex 
+      <Flex
         flexDirection="column"
         backgroundColor={ColorStyles.WHITE}
         borderBottomLeftRadius="16px"
@@ -384,9 +387,14 @@ const AddLiquidity: React.FC = () => {
         </CardBody>
       </Flex>
 
-      {pair && !noLiquidity && pairState !== PairState.INVALID && (
-        <Box 
-          mb={isMobile ? "40px" : "80px"} 
+      {
+        pair &&
+        !noLiquidity &&
+        pairState !== PairState.INVALID &&
+        userPoolBalance?.toExact() > '0' &&
+      (
+        <Box
+          mb={isMobile ? "40px" : "80px"}
           border="1px solid #ffe5c9"
           borderRadius="16px"
           style={{boxShadow: "0 12px 12px 0 rgba(227, 132, 0, 0.1)"}}

@@ -1,7 +1,5 @@
-import { splitSignature } from '@ethersproject/bytes'
-import { Contract } from '@ethersproject/contracts'
 import ConnectWalletButton from 'components/ConnectWalletButton'
-import { Currency, currencyEquals, ETHER, Percent, WETH } from 'definixswap-sdk'
+import { currencyEquals, ETHER, Percent, WETH } from 'definixswap-sdk'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { RouteComponentProps } from 'react-router'
 import { 
@@ -18,7 +16,8 @@ import {
   Divider,
   ChangeBottomIcon,
   ChangePlusIcon,
-  ArrowChangeIcon
+  ArrowChangeIcon,
+  BackIcon
 } from 'definixswap-uikit-v2'
 import { useTokenBalance } from 'state/wallet/hooks'
 import { useTranslation } from 'react-i18next'
@@ -160,7 +159,22 @@ export default function RemoveLiquidity({
 
   return (
     <Flex width="100%" flexDirection="column" alignItems="center">
-      <Flex width={isMobile ? "100%" : "629px"} mb="40px">
+      <Flex flexDirection="column" width={isMobile ? "100%" : "629px"} mb="40px">
+        <Flex 
+          mb="20px"
+          onClick={() => history.replace('/liquidity')}
+          style={{cursor: 'pointer'}}
+        >
+          <BackIcon />
+          <Text 
+            ml="6px"
+            textStyle={isMobile ? "R_14M" :"R_16M"}
+            color={ColorStyles.MEDIUMGREY}
+            mt={isMobile ? "0px" : "-2px"}
+          >
+            {t('BACK')}
+          </Text>
+        </Flex>
         <TitleSet
           title={t("Liquidity")}
           description={t("Remove LP and take back tokens")}
@@ -385,7 +399,7 @@ export default function RemoveLiquidity({
                   <ConnectWalletButton />
                 ) : (
                   <Flex flexDirection="column" width="100%">
-                    <Flex 
+                    {approval !== ApprovalState.APPROVED && (<Flex 
                       flexDirection={isMobile ? "column" : "row"}
                       justifyContent="space-between"
                       mb={isMobile ? "32px" : "16px"}
@@ -399,7 +413,6 @@ export default function RemoveLiquidity({
                         </Text>
                       </Flex>
                       <Button
-                        // onClick={onAttemptToApprove}
                         onClick={approveCallback}
                         textStyle="R_14B"
                         scale={ButtonScales.LG}
@@ -407,9 +420,9 @@ export default function RemoveLiquidity({
                         disabled={approval !== ApprovalState.NOT_APPROVED || signatureData !== null}
                         isLoading={approval === ApprovalState.PENDING}
                       >
-                        {t('Approve')}
+                        {t('Approve to LP')}
                       </Button>
-                    </Flex>
+                    </Flex>)}
                     
                     <Button
                       onClick={() => {

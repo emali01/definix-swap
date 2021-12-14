@@ -12,10 +12,12 @@ function TradeSummary({
   trade,
   allowedSlippage,
   className,
+  isPriceImpactCaution,
 }: {
   trade: Trade
   allowedSlippage: number
   className?: string
+  isPriceImpactCaution?: boolean;
 }) {
   const { t } = useTranslation();
   const { priceImpactWithoutFee, realizedLPFee } = computeTradePriceBreakdown(trade)
@@ -34,10 +36,17 @@ function TradeSummary({
         </Flex>
         <Flex>
           <Text textStyle="R_14M" color={ColorStyles.DEEPGREY} textAlign="right">
-            {isExactIn
-              ? `${slippageAdjustedAmounts[Field.OUTPUT]?.toSignificant(4)} ${trade.outputAmount.currency.symbol}` ??
-                '-'
-              : `${slippageAdjustedAmounts[Field.INPUT]?.toSignificant(4)} ${trade.inputAmount.currency.symbol}` ?? '-'}
+            {!isPriceImpactCaution && (
+              <>
+                {isExactIn ? 
+                `${slippageAdjustedAmounts[Field.OUTPUT]?.toSignificant(4)} ${trade.outputAmount.currency.symbol}` ??
+                  '-' : `${slippageAdjustedAmounts[Field.INPUT]?.toSignificant(4)} ${trade.inputAmount.currency.symbol}` ?? 
+                  '-'}
+              </>
+            )}
+            {isPriceImpactCaution && (
+              `- ${trade.outputAmount.currency.symbol}`
+            )}
           </Text>
         </Flex>
       </Flex>
@@ -62,7 +71,12 @@ function TradeSummary({
           />
         </Flex>
         <Text textStyle="R_14M" color={ColorStyles.DEEPGREY} textAlign="right">
-          {realizedLPFee ? `${realizedLPFee.toSignificant(4)} ${trade.inputAmount.currency.symbol}` : '-'}
+          {!isPriceImpactCaution && (
+            <>
+              {realizedLPFee ? `${realizedLPFee.toSignificant(4)} ${trade.inputAmount.currency.symbol}` : '-'}
+            </>
+          )}
+          {isPriceImpactCaution && `- ${trade.inputAmount.currency.symbol}`}
         </Text>
       </Flex>
     </Flex>
@@ -73,9 +87,10 @@ export interface AdvancedSwapDetailsProps {
   trade?: Trade;
   isMobile?: boolean;
   isRoute?: boolean;
+  isPriceImpactCaution?: boolean;
 }
 
-export function AdvancedSwapDetails({ trade, isMobile, isRoute = true }: AdvancedSwapDetailsProps) {
+export function AdvancedSwapDetails({ trade, isMobile, isRoute = true, isPriceImpactCaution }: AdvancedSwapDetailsProps) {
   const [allowedSlippage] = useUserSlippageTolerance()
   const { t } = useTranslation();
 
@@ -83,7 +98,12 @@ export function AdvancedSwapDetails({ trade, isMobile, isRoute = true }: Advance
 
   return trade ? (
     <Flex flexDirection="column">
-      <TradeSummary trade={trade} allowedSlippage={allowedSlippage} className={showRoute ? 'col-6' : 'col-12'} />
+      <TradeSummary 
+        trade={trade}
+        allowedSlippage={allowedSlippage}
+        className={showRoute ? 'col-6' : 'col-12'}
+        isPriceImpactCaution={isPriceImpactCaution}
+      />
       {showRoute && (
         <Flex justifyContent="space-between" alignItems="flex-start">
           <Flex className="mb-3">
@@ -92,7 +112,11 @@ export function AdvancedSwapDetails({ trade, isMobile, isRoute = true }: Advance
             </Text>
             <Helper ml="4px" text={t('Routing through these tokens')} />
           </Flex>
-          <SwapRoute trade={trade} isMobile={isMobile} />
+          <SwapRoute 
+            trade={trade}
+            isMobile={isMobile}
+            isPriceImpactCaution={isPriceImpactCaution}
+          />
         </Flex>
       )}
     </Flex>

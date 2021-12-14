@@ -1,6 +1,7 @@
 import { Currency, Pair } from 'definixswap-sdk'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import BigNumber from "bignumber.js";
 import styled from 'styled-components'
 import { 
   Text,
@@ -85,6 +86,21 @@ export const CurrencyInputPanelOnRemoveLP: React.FC<any> = ({
     }
   };
 
+  const decimals = useMemo(() => 18, []);
+  const overDp = useMemo(() => new BigNumber(value).decimalPlaces() > decimals, [value, decimals])
+  
+  const renderNoti = useCallback(() => {
+    if(overDp){
+      return (
+        <Noti type={NotiType.ALERT} mt="12px">
+          {t('The value entered is out of the valid range')}
+        </Noti>
+      )
+    }
+    return null;
+  }, [t, overDp]);
+
+
   return (
     <Flex flexDirection="column">
       <Flex alignItems="center" mb={isMobile ? "8px" : "16px"}>
@@ -151,6 +167,7 @@ export const CurrencyInputPanelOnRemoveLP: React.FC<any> = ({
           </AnountButton>
         </Flex>
       </Flex>
+      {renderNoti()}
     </Flex>
   );
 }
@@ -187,6 +204,9 @@ export default function CurrencyInputPanel({
     otherSelectedCurrency={otherCurrency}
   />, false);
 
+  const decimals = useMemo(() => 18, []);
+  const overDp = useMemo(() => new BigNumber(value).decimalPlaces() > decimals, [value, decimals])
+
   const renderNoti = useCallback(() => {
     if(isInsufficientBalance){
       return (
@@ -202,8 +222,15 @@ export default function CurrencyInputPanel({
         </Noti>
       )
     }
+    if(overDp){
+      return (
+        <Noti type={NotiType.ALERT} mt="12px">
+          {t('The value entered is out of the valid range')}
+        </Noti>
+      )
+    }
     return null;
-  }, [isInsufficientBalance, isMaxKlayNoti, t]);
+  }, [isInsufficientBalance, isMaxKlayNoti, t, overDp]);
 
   useEffect(() => {
     if(!hideBalance && !!currency && selectedCurrencyBalance){
@@ -216,10 +243,7 @@ export default function CurrencyInputPanel({
 
   useEffect(() => {
     if(currency?.symbol === 'KLAY'){
-      if(value >= balance){
-        setIsMaxKlayNoti(true);
-        return;
-      }
+      if(value >= balance) setIsMaxKlayNoti(true);
     }
     setIsMaxKlayNoti(false);
   }, [value, balance, maxTokenAmount, currency?.symbol]);
@@ -242,7 +266,7 @@ export default function CurrencyInputPanel({
                 value={value}
                 onUserInput={(val) => onUserInput(val)}
               />
-              {(account && currency) && 
+              {(account && currency && onQuarter && onHalf && onMax) && 
                 <>
                   <Flex mt="8px">
                     <AnountButton onClick={onQuarter} mr="6px">
