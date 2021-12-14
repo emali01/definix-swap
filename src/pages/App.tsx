@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect } from 'react'
+import React, { lazy, Suspense, useEffect } from 'react'
 import { Route, Switch, BrowserRouter } from 'react-router-dom'
 import { useCaverJsReact } from '@sixnetwork/caverjs-react-core'
 import { GlobalStyle, Loading } from 'definixswap-uikit-v2'
@@ -7,12 +7,14 @@ import Menu from '../components/Menu'
 import Web3ReactManager from '../components/Web3ReactManager'
 import { AppWrapper } from '../components/Layout'
 import ToastListener from '../components/ToastListener'
-import Liquidity from './Liquidity'
 import { RedirectDuplicateTokenIds, RedirectOldAddLiquidityPathStructure } from './Liquidity/redirects'
 import RemoveLiquidity from './RemoveLiquidity'
 import { RedirectOldRemoveLiquidityPathStructure } from './RemoveLiquidity/redirects'
-import Swap from './Swap'
-import { RedirectPathToSwapOnly, RedirectToSwap } from './Swap/redirects'
+import { RedirectToSwap } from './Swap/redirects'
+
+const Swap = lazy(() => import('./Swap'))
+const Error = lazy(() => import('./Error'))
+const Liquidity = lazy(() => import('./Liquidity'))
 
 export default function App() {
   const { account } = useCaverJsReact()
@@ -46,7 +48,10 @@ export default function App() {
                   <Route exact path="/liquidity/add/:currencyIdA" component={RedirectOldAddLiquidityPathStructure} />
                   <Route exact path="/liquidity/add/:currencyIdA/:currencyIdB" component={RedirectDuplicateTokenIds} />
                   <Route exact strict path="/liquidity/remove/:tokens" component={RedirectOldRemoveLiquidityPathStructure} />
-                  <Route component={RedirectPathToSwapOnly} />
+                  {/* <Route component={RedirectPathToSwapOnly} /> */}
+                  <Route>
+                    <Error />
+                  </Route>
                 </Switch>
               </Web3ReactManager>
             </Suspense>
