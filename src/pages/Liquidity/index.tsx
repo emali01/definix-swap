@@ -19,7 +19,7 @@ const Liquidity: React.FC = () => {
           <TitleSet
             title={t("Liquidity")}
             description={t("Pair tokens and add to liquidity to earn high interest profit")}
-            link="https://sixnetwork.gitbook.io/definix-on-klaytn-en/exchange/liquidity-pools-and-adding-liquidity"
+            link="https://sixnetwork.gitbook.io/definix-on-klaytn-en/exchange/how-to-add-liquidity"
             linkLabel={t("Learn how to add Liquidity")}
           />
         </Flex>
