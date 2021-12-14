@@ -216,7 +216,7 @@ export default function CurrencyInputPanel({
 
   useEffect(() => {
     if(currency?.symbol === 'KLAY'){
-      if(value >= parseInt(balance).toFixed(2)){
+      if(value >= balance){
         setIsMaxKlayNoti(true);
         return;
       }
