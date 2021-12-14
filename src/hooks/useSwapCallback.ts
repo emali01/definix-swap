@@ -334,7 +334,6 @@ export function useSwapCallback(
   }, [trade, library, account, connector, chainId, recipient, recipientAddressOrName, swapCalls, addTransaction, setShowModal])
 }
 
-export default useSwapCallback
 
 const isKlipConnector = (connector) => connector instanceof KlipConnector
 const convertArgKlip = (args: (string[] | string)[], abi) => {
@@ -363,3 +362,6 @@ const convertArgKlip = (args: (string[] | string)[], abi) => {
   }
 
 }
+
+
+export default useSwapCallback
