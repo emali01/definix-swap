@@ -86,6 +86,21 @@ export const CurrencyInputPanelOnRemoveLP: React.FC<any> = ({
     }
   };
 
+  const decimals = useMemo(() => 18, []);
+  const overDp = useMemo(() => new BigNumber(value).decimalPlaces() > decimals, [value, decimals])
+  
+  const renderNoti = useCallback(() => {
+    if(overDp){
+      return (
+        <Noti type={NotiType.ALERT} mt="12px">
+          {t('The value entered is out of the valid range')}
+        </Noti>
+      )
+    }
+    return null;
+  }, [t, overDp]);
+
+
   return (
     <Flex flexDirection="column">
       <Flex alignItems="center" mb={isMobile ? "8px" : "16px"}>
@@ -152,6 +167,7 @@ export const CurrencyInputPanelOnRemoveLP: React.FC<any> = ({
           </AnountButton>
         </Flex>
       </Flex>
+      {renderNoti()}
     </Flex>
   );
 }
