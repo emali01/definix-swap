@@ -98,9 +98,9 @@ export default function useWrapCallback(
                   const valueKlip = +Number.parseFloat(inputAmount.toSignificant(6)).toFixed(6)*1e12
                   klipProvider.genQRcodeContactInteract(
                     WETH(chainId).address,
-                    JSON.stringify(getAbiByNameWETH("deposit")),
-                    JSON.stringify([]),
-                    `${valueKlip}000000`,
+                    JSON.stringify(getAbiByNameWETH("withdraw")),
+                    JSON.stringify([`${valueKlip}000000`]),
+                    "0",
                     setShowModal
                   )
                   const tx = await klipProvider.checkResponse()
