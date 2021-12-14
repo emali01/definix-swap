@@ -400,7 +400,7 @@ const Swap: React.FC = () => {
                               scale={ButtonScales.LG}
                               onClick={onClickSwapButton}
                               id="swap-button"
-                              disabled={!isValid || !!swapCallbackError || showApproveFlow}
+                              disabled={!isValid || !!swapCallbackError || showApproveFlow || priceImpactSeverity > 3}
                             >
                               {t('Swap')}
                             </Button>
