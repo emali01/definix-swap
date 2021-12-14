@@ -317,7 +317,7 @@ const Swap: React.FC = () => {
                       {t('Slippage Tolerance')}
                     </Text>
                     <Text textStyle="R_14M" color={ColorStyles.DEEPGREY}>
-                      {allowedSlippage / 100}%
+                      {(allowedSlippage / 100).toFixed(6)}%
                     </Text>
                 </Flex>
               </Flex>
