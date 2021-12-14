@@ -1,15 +1,10 @@
 import { Trade, TradeType } from 'definixswap-sdk'
 import { useTranslation } from 'react-i18next'
-import React, { useContext, useMemo } from 'react'
-import { ArrowDown } from 'react-feather'
-import styled, { DefaultTheme, ThemeContext } from 'styled-components'
+import React, { useMemo } from 'react'
+import styled from 'styled-components'
 import { Button, Text, Flex, Box, ChangeBottomIcon, Noti, NotiType } from 'definixswap-uikit-v2'
-import { Field } from '../../state/swap/actions'
-import { isAddress, shortenAddress } from '../../utils'
 import { computeSlippageAdjustedAmounts, computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
-import { AutoColumn } from '../Column'
 import CurrencyLogo from '../CurrencyLogo'
-import { RowBetween, RowFixed } from '../Row'
 
 const BalanceText = styled(Text)<{ isAcceptChange: boolean }>`
   ${({ theme }) => theme.textStyle.R_16R}

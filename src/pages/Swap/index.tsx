@@ -38,7 +38,7 @@ import { computeTradePriceBreakdown, warningSeverity } from 'utils/prices'
 import CurrencyLogo from 'components/CurrencyLogo'
 import { useToast } from 'state/toasts/hooks'
 import { useAllTokens } from 'hooks/Tokens'
-import { allTokenAddresses } from 'constants/index';
+import { allTokenAddresses, BLOCKED_PRICE_IMPACT_NON_EXPERT, LIMITED_PRICE_IMPACT } from 'constants/index';
 import { useLocation } from 'react-router'
 import qs from 'querystring';
 
@@ -147,6 +147,7 @@ const Swap: React.FC = () => {
 
   const { priceImpactWithoutFee } = useMemo(() => computeTradePriceBreakdown(trade), [trade]);
   const priceImpactSeverity = useMemo(() => warningSeverity(priceImpactWithoutFee), [priceImpactWithoutFee]);
+  const isPriceImpactCaution = useMemo(() => priceImpactWithoutFee?.lessThan(LIMITED_PRICE_IMPACT), [priceImpactWithoutFee]);
 
   const showApproveFlow = useMemo(() => !swapInputError &&
     (approval === ApprovalState.NOT_APPROVED ||
@@ -425,10 +426,15 @@ const Swap: React.FC = () => {
                     </Text>
                     <TradePrice
                       price={trade?.executionPrice}
+                      isPriceImpactCaution={!isPriceImpactCaution}
                     />
                   </Flex>
                 )}
-                <AdvancedSwapDetailsDropdown trade={trade} isMobile={isMobile} />
+                <AdvancedSwapDetailsDropdown 
+                  trade={trade}
+                  isMobile={isMobile}
+                  isPriceImpactCaution={!isPriceImpactCaution}
+                />
               </Flex>
             )}
           </Flex>

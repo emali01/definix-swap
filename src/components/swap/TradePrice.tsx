@@ -5,8 +5,7 @@ import styled from 'styled-components'
 
 interface TradePriceProps {
   price?: Price
-  showInverted?: boolean
-  setShowInverted?: (showInverted: boolean) => void
+  isPriceImpactCaution?: boolean
 }
 
 const StyledText = styled(Text)`
@@ -14,12 +13,16 @@ const StyledText = styled(Text)`
   color: ${({ theme }) => theme.colors.deepgrey};
 `
 
-export default function TradePrice({ price, showInverted, setShowInverted }: TradePriceProps) {
-  const show = Boolean(price?.baseCurrency && price?.quoteCurrency)
-
+export default function TradePrice({ price, isPriceImpactCaution = false }: TradePriceProps) {
+  const show = Boolean((price?.baseCurrency && price?.quoteCurrency))
+  
   return (
-    <div className="flex align-center justify-end flex-wrap">
-      {show ? (
+    <Flex
+      alignItems="center"
+      justifyContent="flex-end"
+      flexWrap="wrap"
+    >
+      {show && !isPriceImpactCaution ? (
         <Box>
           <Flex justifyContent="flex-end">
             <StyledText>
@@ -53,6 +56,6 @@ export default function TradePrice({ price, showInverted, setShowInverted }: Tra
       ) : (
         '-'
       )}
-    </div>
+    </Flex>
   )
 }
