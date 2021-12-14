@@ -250,7 +250,7 @@ export default function CurrencyInputPanel({
                 value={value}
                 onUserInput={(val) => onUserInput(val)}
               />
-              {(account && currency) && 
+              {(account && currency && onQuarter && onHalf && onMax) && 
                 <>
                   <Flex mt="8px">
                     <AnountButton onClick={onQuarter} mr="6px">
