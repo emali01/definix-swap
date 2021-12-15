@@ -10,7 +10,7 @@ import ToastListener from '../components/ToastListener'
 import { RedirectDuplicateTokenIds, RedirectOldAddLiquidityPathStructure } from './Liquidity/redirects'
 import RemoveLiquidity from './RemoveLiquidity'
 import { RedirectOldRemoveLiquidityPathStructure } from './RemoveLiquidity/redirects'
-import { RedirectToSwap } from './Swap/redirects'
+import { RedirectToSwap, RedirectPathToSwapOnly } from './Swap/redirects'
 
 const Swap = lazy(() => import('./Swap'))
 const Error = lazy(() => import('./Error'))
@@ -48,7 +48,7 @@ export default function App() {
                   <Route exact path="/liquidity/add/:currencyIdA" component={RedirectOldAddLiquidityPathStructure} />
                   <Route exact path="/liquidity/add/:currencyIdA/:currencyIdB" component={RedirectDuplicateTokenIds} />
                   <Route exact strict path="/liquidity/remove/:tokens" component={RedirectOldRemoveLiquidityPathStructure} />
-                  {/* <Route component={RedirectPathToSwapOnly} /> */}
+                  <Route exact component={RedirectPathToSwapOnly} />
                   <Route>
                     <Error />
                   </Route>
