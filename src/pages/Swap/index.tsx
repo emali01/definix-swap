@@ -224,7 +224,7 @@ const Swap: React.FC = () => {
     }
     if (priceImpactSeverity > 2) {
       return <Noti type={NotiType.ALERT} mt="12px">
-        {t('This swap has a price impact of at least 10%')}
+        {t('This swap has a price impact of at least 5%')}
       </Noti>
     }
     return null;
@@ -391,7 +391,7 @@ const Swap: React.FC = () => {
                                   <>{t('Approve')}</>
                                 ) : (
                                   <>
-                                    {t('Approve {{Token}}', { Token: `${currencies[Field.INPUT]?.symbol}` })}
+                                    {t('Approve {{Token}}', { Token: `${currencies[Field.INPUT]?.symbol}`})}
                                   </>
                                 )}
                               </Button>
