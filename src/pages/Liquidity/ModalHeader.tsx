@@ -21,7 +21,7 @@ const ModalHeader: React.FC<IProps> = ({
 }) => {
   const { t } = useTranslation();
   return (
-    <>
+    <Flex flexDirection="column">
       {!noLiquidity && (
         <Flex
           justifyContent="space-between"
@@ -72,7 +72,7 @@ const ModalHeader: React.FC<IProps> = ({
           </Flex>
         </Flex>
       )}
-    </>
+    </Flex>
   )
 }
 

@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useContext, useEffect } from 'react'
+import React, { useCallback, useState, useContext, useEffect, useMemo } from 'react'
 import { BigNumber } from '@ethersproject/bignumber'
 import { ethers } from 'ethers'
 import tp from 'tp-js-sdk'
@@ -7,7 +7,7 @@ import { abi as IUniswapV2Router02ABI } from '@uniswap/v2-periphery/build/IUnisw
 import { KlipConnector } from "@sixnetwork/klip-connector"
 import { KlipModalContext } from '@sixnetwork/klaytn-use-wallet'
 import { useCaverJsReact } from '@sixnetwork/caverjs-react-core';
-import { Flex, Modal, Box, InjectedModalProps, Divider, ModalBody } from '@fingerlabs/definixswap-uikit-v2'
+import { Flex, Modal, Box, InjectedModalProps, Divider, ModalBody, useMatchBreakpoints } from '@fingerlabs/definixswap-uikit-v2'
 import styled from 'styled-components'
 import { Currency, CurrencyAmount, Percent, Price, TokenAmount, ETHER } from 'definixswap-sdk'
 import { useTranslation } from 'react-i18next'
@@ -43,22 +43,11 @@ interface Props extends InjectedModalProps {
     CURRENCY_A?: CurrencyAmount;
     CURRENCY_B?: CurrencyAmount;
   };
-  // onAdd: () =>  Promise<void>;
   poolTokenPercentage: Percent;
   onDismissModal: () => void;
   currencyA: Currency;
   currencyB: Currency;
 }
-
-const Wrap = styled(Box)`
-  width: calc(100vw - 48px);
-  height: 100%;
-
-  @media screen and (min-width: 464px) {
-    width: 416px;
-  }
-`
-
 
 export default function ConfirmAddModal({
   noLiquidity,
@@ -66,7 +55,6 @@ export default function ConfirmAddModal({
   liquidityMinted,
   price,
   parsedAmounts,
-  // onAdd,
   poolTokenPercentage,
   onDismiss = () => null,
   onDismissModal = () => null,
@@ -84,6 +72,8 @@ export default function ConfirmAddModal({
   const addTransaction = useTransactionAdder();
   const { connector } = useCaverJsReact()
   const { toastSuccess, toastError } = useToast();
+  const { isXl, isXxl } = useMatchBreakpoints()
+  const isMobile = useMemo(() => !isXl && !isXxl, [isXl, isXxl])
 
   const sendDefinixAnalytics = useCallback(() =>{
     if (tp.isConnected()) {
@@ -324,14 +314,15 @@ export default function ConfirmAddModal({
   return (
     <Modal title={t('Confirm Add Liquidity')} mobileFull onDismiss={onDismiss}>
       <ModalBody isBody>
-        <Wrap>
-          <Flex flexDirection="column" mt="16px">
-            <ModalHeader
-              noLiquidity={noLiquidity}
-              currencies={currencies}
-              liquidityMinted={liquidityMinted}
-            />
-          </Flex>
+        <Box
+          width={isMobile ? "100%" : "416px"}
+          height={isMobile ? "100vh" : "100%"}
+        >
+          <ModalHeader
+            noLiquidity={noLiquidity}
+            currencies={currencies}
+            liquidityMinted={liquidityMinted}
+          />
           <Divider mb="24px" mt="20px" />
           <ConfirmAddModalBottom
             price={price}
@@ -343,7 +334,7 @@ export default function ConfirmAddModal({
             poolTokenPercentage={poolTokenPercentage}
             allowedSlippage={allowedSlippage}
           />
-        </Wrap>
+        </Box>
       </ModalBody>
     </Modal>
   )
