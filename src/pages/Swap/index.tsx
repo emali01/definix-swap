@@ -419,11 +419,22 @@ const Swap: React.FC = () => {
 
             {trade && (
               <Flex flexDirection="column" mt="24px">
-                <Text textStyle={isMobile ? "R_14M" : "R_16M"} color={ColorStyles.DEEPGREY} mb="12px">{t('Estimated Returns')}</Text>
+                <Text textStyle={isMobile ? "R_14M" : "R_16M"} color={ColorStyles.DEEPGREY} mb="12px">
+                  {t('Estimated Returns')}
+                </Text>
 
                 {Boolean(trade) && (
-                  <Flex flex="1 1 0" justifyContent="space-between" mb="12px">
-                    <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>
+                  <Flex
+                    flexDirection={isMobile ? "column" : "row"}
+                    flex="1 1 0"
+                    justifyContent="space-between"
+                    mb="12px"
+                  >
+                    <Text
+                      mb="4px"
+                      textStyle="R_14R"
+                      color={ColorStyles.MEDIUMGREY}
+                    >
                       {t('Price Rate')}
                     </Text>
                     <TradePrice

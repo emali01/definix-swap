@@ -95,7 +95,7 @@ export default function ConfirmSwapModal({
       <ModalBody isBody>
         <Box
           width={isMobile ? "100%" : "414px"}
-          height="100%"
+          height={isMobile ? "100vh" : "100%"}
         >
           {!txHash && trade && (
             <>

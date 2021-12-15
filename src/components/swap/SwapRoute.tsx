@@ -11,18 +11,22 @@ export default memo(function SwapRoute({ trade, isMobile, isPriceImpactCaution }
 }) {
   const { t } = useTranslation();
   return (
-    <Flex alignItems="center" justifyContent="flex-end" flexWrap="wrap" alignContent="">
+    <Flex 
+      alignItems="center"
+      justifyContent={isMobile ? "flex-start" :"flex-end"}
+      flexWrap="wrap"
+    >
       {!isPriceImpactCaution && trade.route.path.map((token, i, path) => {
         const isLastItem: boolean = i === path.length - 1
         return (
           // eslint-disable-next-line react/no-array-index-key
           <Fragment key={i}>
-            <Flex alignItems="center" ml="10px" mb="6px">
+            <Flex alignItems="center" mr="10px" mb="6px">
               <CurrencyLogo currency={token} size={isMobile ? "20px" : "22px"} />
-              <Text textStyle="R_14M" color={ColorStyles.DEEPGREY} ml="6px">
+              <Text textStyle="R_14M" color={ColorStyles.DEEPGREY} ml="9px">
                 {token.symbol}
               </Text>
-              {!isLastItem && <Flex ml="10px"><ArrowDoubleArrowIcon/></Flex>}
+              {!isLastItem && <Flex ml="14px"><ArrowDoubleArrowIcon/></Flex>}
             </Flex>
           </Fragment>
         )

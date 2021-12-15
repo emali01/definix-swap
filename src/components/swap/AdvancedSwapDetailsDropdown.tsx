@@ -4,6 +4,11 @@ import { AdvancedSwapDetails, AdvancedSwapDetailsProps } from './AdvancedSwapDet
 
 export default function AdvancedSwapDetailsDropdown({ trade, isPriceImpactCaution, ...rest }: AdvancedSwapDetailsProps) {
   const lastTrade = useLastTruthy(trade)
-
-  return <AdvancedSwapDetails {...rest} trade={trade ?? lastTrade ?? undefined} isPriceImpactCaution={isPriceImpactCaution} />
+  return (
+    <AdvancedSwapDetails
+      {...rest}
+      trade={trade ?? lastTrade ?? undefined}
+      isPriceImpactCaution={isPriceImpactCaution}
+    />
+  )
 }

@@ -455,8 +455,15 @@ export default function RemoveLiquidity({
                   <Text textStyle="R_16M" color={ColorStyles.DEEPGREY} mb="12px">
                     {t('Estimated Returns')}
                   </Text>
-                  <Flex justifyContent="space-between">
-                    <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>
+                  <Flex
+                    flexDirection={isMobile ? "column" : "row"}
+                    justifyContent="space-between"
+                  >
+                    <Text
+                      mb={isMobile ? "4px" : "0px"}
+                      textStyle="R_14R"
+                      color={ColorStyles.MEDIUMGREY}
+                    >
                       {t('Price Rate')}
                     </Text>
                     <Flex flexDirection="column">

@@ -1,6 +1,6 @@
 import { Price } from 'definixswap-sdk'
-import React from 'react'
-import { ColorStyles, Box, Flex, Text } from '@fingerlabs/definixswap-uikit-v2'
+import React, { useMemo } from 'react'
+import { Box, Flex, Text, useMatchBreakpoints } from '@fingerlabs/definixswap-uikit-v2'
 import styled from 'styled-components'
 
 interface TradePriceProps {
@@ -11,20 +11,23 @@ interface TradePriceProps {
 const StyledText = styled(Text)`
   ${({ theme }) => theme.textStyle.R_14M}
   color: ${({ theme }) => theme.colors.deepgrey};
+  white-space: pre-line;
 `
 
 export default function TradePrice({ price, isPriceImpactCaution = false }: TradePriceProps) {
   const show = Boolean((price?.baseCurrency && price?.quoteCurrency))
+  const { isXl, isXxl } = useMatchBreakpoints()
+  const isMobile = useMemo(() => !isXl && !isXxl, [isXl, isXxl])
   
   return (
     <Flex
       alignItems="center"
-      justifyContent="flex-end"
+      justifyContent={isMobile ? "flex-start" : "flex-end"}
       flexWrap="wrap"
     >
       {show && !isPriceImpactCaution ? (
         <Box>
-          <Flex justifyContent="flex-end">
+          <Flex justifyContent={isMobile ? "flex-start" : "flex-end"}>
             <StyledText>
               1 {price?.baseCurrency?.symbol}
             </StyledText>
@@ -38,7 +41,7 @@ export default function TradePrice({ price, isPriceImpactCaution = false }: Trad
               {price?.quoteCurrency?.symbol}
             </StyledText>
           </Flex>
-          <Flex justifyContent="flex-end">
+          <Flex justifyContent={isMobile ? "flex-start" : "flex-end"}>
             <StyledText>
               1 {price?.quoteCurrency?.symbol}
             </StyledText>

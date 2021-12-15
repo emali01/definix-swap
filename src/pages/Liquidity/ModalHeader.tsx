@@ -48,7 +48,9 @@ const ModalHeader: React.FC<IProps> = ({
       )}
       {noLiquidity && (
         <Flex flexDirection="column">
-          <Text textStyle="R_16M" color={ColorStyles.DEEPGREY}>{t('You are creating a pool')}</Text>
+          <Text textStyle="R_16M" color={ColorStyles.DEEPGREY}>
+            {t('You are creating a pool')}
+          </Text>
           <Flex
             justifyContent="space-between"
             alignItems="center"

@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useContext, useEffect } from 'react'
+import React, { useCallback, useState, useContext, useEffect, useMemo } from 'react'
 import Caver from 'caver-js'
 import { useTranslation } from 'react-i18next'
 import { ethers } from 'ethers'
@@ -15,7 +15,8 @@ import {
   Button,
   ButtonScales,
   NotiIcon,
-  ModalBody
+  ModalBody,
+  useMatchBreakpoints
 } from '@fingerlabs/definixswap-uikit-v2'
 import { 
   Currency,
@@ -70,9 +71,7 @@ interface Props extends InjectedModalProps {
 }
 
 const Wrap = styled(Box)`
-  width: calc(100vw - 48px);
   height: 100%;
-
   @media screen and (min-width: 464px) {
     width: 416px;
   }
@@ -109,6 +108,9 @@ export default function ConfirmRemoveModal({
   const [errorMsg, setErrorMsg] = useState<string>('')
   const [deadline] = useUserDeadline()
   const [allowedSlippage] = useUserSlippageTolerance()
+
+  const { isXl, isXxl } = useMatchBreakpoints()
+  const isMobile = useMemo(() => !isXl && !isXxl, [isXl, isXxl])
 
   const onRemove = useCallback(async () => {
     if (!chainId || !library || !account) throw new Error('missing dependencies')
@@ -383,10 +385,14 @@ export default function ConfirmRemoveModal({
   return (
     <Modal title={t('Confirm Remove Liquidity')} mobileFull onDismiss={onDismiss}>
       <ModalBody isBody>
-        <Wrap>
+        <Box
+          width={isMobile ? "100%" : "416px"}
+          height={isMobile ? "100vh" : "100%"}
+        >
           <Flex flexDirection="column" mb="20px" mt="16px">
-            <Text textStyle="R_16M" color={ColorStyles.DEEPGREY}>{t('LP amount before removal')}</Text>
-
+            <Text textStyle="R_16M" color={ColorStyles.DEEPGREY}>
+              {t('LP amount before removal')}
+            </Text>
             <Flex justifyContent="space-between" alignItems="center" p="14px 0px" mb="20px">
               <Flex alignItems="center">
                 <DoubleCurrencyLogo currency0={currencyA} currency1={currencyB} size={32} />
@@ -428,9 +434,22 @@ export default function ConfirmRemoveModal({
               <Text textStyle="R_16M" color={ColorStyles.DEEPGREY}>{t('Estimated Returns')}</Text>
             </Flex>
             {pair && (
-              <Flex justifyContent="space-between" mt="12px">
-                <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>{t('Price Rate')}</Text>
-                <Flex flexDirection="column" alignItems="flex-end">
+              <Flex
+                flexDirection={isMobile ? "column" : "row"}
+                justifyContent="space-between"
+                mt="12px"
+              >
+                <Text
+                  textStyle="R_14R"
+                  color={ColorStyles.MEDIUMGREY}
+                  mb={isMobile ? "4px" : "0px"}
+                >
+                  {t('Price Rate')}
+                </Text>
+                <Flex 
+                  flexDirection="column"
+                  alignItems={isMobile ? "flex-start" : "flex-end"}
+                >
                   <Text textStyle="R_14M" color={ColorStyles.DEEPGREY}>
                     1 {currencyA?.symbol} = {tokenA ? pair.priceOf(tokenA).toSignificant(6) : '-'} {currencyB?.symbol}
                   </Text>
@@ -443,9 +462,7 @@ export default function ConfirmRemoveModal({
             <Flex alignItems="flex-start" mt="20px">
               <StyledNotiIcon />
               <Text ml="4px" textStyle="R_12R" color={ColorStyles.MEDIUMGREY}>
-                {t('Output is estimated')}
-                {/* {`Output is estimated. If the price changes by more than ${allowedSlippage / 100
-                  }% your transaction will revert.`} */}
+                {t('Output is estimated {{N}}', { N: `${allowedSlippage / 100}`})}
               </Text>
             </Flex>
             <Button
@@ -458,7 +475,7 @@ export default function ConfirmRemoveModal({
               {t('Remove')}
             </Button>
           </Flex>
-        </Wrap>
+        </Box>
       </ModalBody>
     </Modal>
   )

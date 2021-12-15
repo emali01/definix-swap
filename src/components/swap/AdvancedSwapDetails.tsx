@@ -1,7 +1,7 @@
 import { Trade, TradeType } from 'definixswap-sdk'
-import React from 'react'
+import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Text, Flex, ColorStyles, Helper } from '@fingerlabs/definixswap-uikit-v2'
+import { Text, Flex, ColorStyles, Helper, useMatchBreakpoints } from '@fingerlabs/definixswap-uikit-v2'
 import { Field } from '../../state/swap/actions'
 import { useUserSlippageTolerance } from '../../state/user/hooks'
 import { computeSlippageAdjustedAmounts, computeTradePriceBreakdown } from '../../utils/prices'
@@ -23,18 +23,32 @@ function TradeSummary({
   const { priceImpactWithoutFee, realizedLPFee } = computeTradePriceBreakdown(trade)
   const isExactIn = trade.tradeType === TradeType.EXACT_INPUT
   const slippageAdjustedAmounts = computeSlippageAdjustedAmounts(trade, allowedSlippage)
+  const { isXl, isXxl } = useMatchBreakpoints()
+  const isMobile = useMemo(() => !isXl && !isXxl, [isXl, isXxl])
 
   return (
     <Flex flexDirection="column">
-      <Flex alignItems="center" justifyContent="space-between" mb="12px">
-        <Flex>
-          <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>
+      <Flex
+        flexDirection={isMobile ? "column" : "row"}
+        alignItems={isMobile ? "flex-start" : "center"}
+        justifyContent="space-between"
+        mb="12px"
+      >
+        <Flex mb={isMobile ? "4px" : "0px"}>
+          <Text
+            textStyle="R_14R"
+            color={ColorStyles.MEDIUMGREY}
+          >
             {t(isExactIn ? 'Minimum Received' : 'Maximum sold')}
           </Text>
           <Helper ml="4px" text={t('Your transaction will revert if there')} />
         </Flex>
         <Flex>
-          <Text textStyle="R_14M" color={ColorStyles.DEEPGREY} textAlign="right">
+          <Text 
+            textStyle="R_14M"
+            color={ColorStyles.DEEPGREY}
+            textAlign={isMobile ? "left" : "right"}
+          >
             {!isPriceImpactCaution && (
               <>
                 {isExactIn ? 
@@ -50,8 +64,14 @@ function TradeSummary({
         </Flex>
       </Flex>
       
-      <Flex justifyContent="space-between" mb="12px">
-        <Flex margin="0">
+      <Flex
+        flexDirection={isMobile ? "column" : "row"}
+        justifyContent="space-between"
+        mb="12px"
+      >
+        <Flex
+          mb={isMobile ? "4px" : "0px"}
+        >
           <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>
             {t('Price Impact')}
           </Text>
@@ -60,8 +80,13 @@ function TradeSummary({
         <FormattedPriceImpact priceImpact={priceImpactWithoutFee} />
       </Flex>
 
-      <Flex justifyContent="space-between">
-        <Flex marginBottom="0 !important">
+      <Flex
+        flexDirection={isMobile ? "column" : "row"}
+        justifyContent="space-between"
+      >
+        <Flex
+          mb={isMobile ? "4px" : "0px"}
+        >
           <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>
             {t('Liquidity Provider Fee')}
           </Text>
@@ -69,7 +94,11 @@ function TradeSummary({
             text={t('For each trade a 0.2%')}
           />
         </Flex>
-        <Text textStyle="R_14M" color={ColorStyles.DEEPGREY} textAlign="right">
+        <Text
+          textStyle="R_14M"
+          color={ColorStyles.DEEPGREY}
+          textAlign={isMobile ? "left" : "right"}
+        >
           {!isPriceImpactCaution && (
             <>
               {realizedLPFee ? `${realizedLPFee.toSignificant(4)} ${trade.inputAmount.currency.symbol}` : '-'}
@@ -89,7 +118,12 @@ export interface AdvancedSwapDetailsProps {
   isPriceImpactCaution?: boolean;
 }
 
-export function AdvancedSwapDetails({ trade, isMobile, isRoute = true, isPriceImpactCaution }: AdvancedSwapDetailsProps) {
+export function AdvancedSwapDetails({
+  trade,
+  isMobile,
+  isRoute = true,
+  isPriceImpactCaution
+}: AdvancedSwapDetailsProps) {
   const [allowedSlippage] = useUserSlippageTolerance()
   const { t } = useTranslation();
 
@@ -104,8 +138,13 @@ export function AdvancedSwapDetails({ trade, isMobile, isRoute = true, isPriceIm
         isPriceImpactCaution={isPriceImpactCaution}
       />
       {showRoute && (
-        <Flex justifyContent="space-between" alignItems="flex-start" mt="8px">
-          <Flex className="mb-3">
+        <Flex
+          flexDirection={isMobile ? "column" : "row"}
+          justifyContent="space-between"
+          alignItems="flex-start"
+          mt="8px"
+        >
+          <Flex mb={isMobile ? "8px" : "0px"}>
             <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>
               {t('Routing')}
             </Text>

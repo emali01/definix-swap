@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Currency, CurrencyAmount, Fraction, Percent } from 'definixswap-sdk'
 import styled from 'styled-components'
-import { Flex, Button, Text, ColorStyles, ButtonScales, NotiIcon } from '@fingerlabs/definixswap-uikit-v2'
+import { Flex, Button, Text, ColorStyles, ButtonScales, NotiIcon, useMatchBreakpoints } from '@fingerlabs/definixswap-uikit-v2'
 import { useTranslation } from 'react-i18next'
 import { Field } from 'state/mint/actions'
 
@@ -37,15 +37,33 @@ function ConfirmAddModalBottom({
   isPending: boolean;
 }) {
   const { t } = useTranslation();
+  const { isXl, isXxl } = useMatchBreakpoints()
+  const isMobile = useMemo(() => !isXl && !isXxl, [isXl, isXxl])
 
   return (
-    <>
+    <Flex flexDirection="column">
       <Flex flexDirection="column">
-        <TitleText color={ColorStyles.DEEPGREY} mb="12px">{t('Estimated Returns')}</TitleText>
+        <TitleText color={ColorStyles.DEEPGREY} mb="12px">
+          {t('Estimated Returns')}
+        </TitleText>
 
-        <Flex justifyContent="space-between" mb="8px">
-          <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>{t('Deposited')}</Text>
-          <Flex flexDirection="column" alignItems="flex-end">
+        <Flex
+          flexDirection={isMobile ? "column" : "row"}
+          justifyContent="space-between"
+          mb="8px"
+        >
+          <Text 
+            textStyle="R_14R"
+            color={ColorStyles.MEDIUMGREY}
+            mb={isMobile ? "4px" : "0px"}
+          >
+            {t('Deposited')}
+          </Text>
+
+          <Flex
+            flexDirection="column"
+            alignItems={isMobile ? "flex-start" : "flex-end"}
+          >
             <Text textStyle="R_14M" color={ColorStyles.DEEPGREY}>
               {parsedAmounts[Field.CURRENCY_A]?.toSignificant(6)} {currencies[Field.CURRENCY_A]?.symbol}
             </Text>
@@ -55,9 +73,22 @@ function ConfirmAddModalBottom({
           </Flex>
         </Flex>
 
-        <Flex justifyContent="space-between" mb="8px">
-          <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>{t('Price Rate')}</Text>
-          <Flex flexDirection="column" alignItems="flex-end">
+        <Flex
+          flexDirection={isMobile ? "column" : "row"}
+          justifyContent="space-between"
+          mb="8px"
+        >
+          <Text 
+            textStyle="R_14R"
+            color={ColorStyles.MEDIUMGREY}
+            mb={isMobile ? "4px" : "0px"}
+          >
+            {t('Price Rate')}
+          </Text>
+          <Flex 
+            flexDirection="column"
+            alignItems={isMobile ? "flex-start" : "flex-end"}
+          >
             <Text textStyle="R_14M" color={ColorStyles.DEEPGREY}>
                 {`1 ${currencies[Field.CURRENCY_A]?.symbol} = ${price?.toSignificant(4)} ${
                   currencies[Field.CURRENCY_B]?.symbol
@@ -71,8 +102,17 @@ function ConfirmAddModalBottom({
           </Flex>
         </Flex>
 
-        <Flex justifyContent="space-between">
-          <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>{t('Share of Pool')}</Text>
+        <Flex
+          flexDirection={isMobile ? "column" : "row"}
+          justifyContent="space-between"
+        >
+          <Text 
+            textStyle="R_14R"
+            color={ColorStyles.MEDIUMGREY}
+            mb={isMobile ? "4px" : "0px"}
+          >
+            {t('Share of Pool')}
+          </Text>
           <Text textStyle="R_14M" color={ColorStyles.DEEPGREY}>
             {noLiquidity ? '100' : poolTokenPercentage?.toSignificant(4)}%
           </Text>
@@ -97,7 +137,7 @@ function ConfirmAddModalBottom({
       <Button onClick={onAdd} width="100%" scale={ButtonScales.LG} isLoading={isPending} mt="32px">
         {t(noLiquidity ? 'Create Pool & Supply' : 'Add Liquidity')}
       </Button>
-    </>
+    </Flex>
   )
 }
 

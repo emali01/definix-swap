@@ -333,18 +333,16 @@ export default function ConfirmAddModal({
             />
           </Flex>
           <Divider mb="24px" mt="20px" />
-          <Flex flexDirection="column">
-            <ConfirmAddModalBottom 
-              price={price}
-              currencies={currencies}
-              parsedAmounts={parsedAmounts}
-              noLiquidity={noLiquidity}
-              onAdd={onAdd}
-              isPending={attemptingTxn}
-              poolTokenPercentage={poolTokenPercentage}
-              allowedSlippage={allowedSlippage}
-            />
-          </Flex>
+          <ConfirmAddModalBottom
+            price={price}
+            currencies={currencies}
+            parsedAmounts={parsedAmounts}
+            noLiquidity={noLiquidity}
+            onAdd={onAdd}
+            isPending={attemptingTxn}
+            poolTokenPercentage={poolTokenPercentage}
+            allowedSlippage={allowedSlippage}
+          />
         </Wrap>
       </ModalBody>
     </Modal>

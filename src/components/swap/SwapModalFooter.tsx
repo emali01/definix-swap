@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Trade } from 'definixswap-sdk'
-import { Button, Text, Flex, ColorStyles, ButtonScales } from '@fingerlabs/definixswap-uikit-v2'
+import { Button, Text, Flex, ColorStyles, ButtonScales, useMatchBreakpoints } from '@fingerlabs/definixswap-uikit-v2'
 import AdvancedSwapDetailsDropdown from 'components/swap/AdvancedSwapDetailsDropdown'
 import { SwapCallbackError } from './styleds'
 import TradePrice from './TradePrice'
@@ -20,6 +20,8 @@ export default function SwapModalFooter({
   isPending: boolean
 }) {
   const { t } = useTranslation();
+  const { isXl, isXxl } = useMatchBreakpoints()
+  const isMobile = useMemo(() => !isXl && !isXxl, [isXl, isXxl]);
 
   return (
     <Flex flexDirection="column">
@@ -32,8 +34,16 @@ export default function SwapModalFooter({
       </Text>
 
       <Flex flexDirection="column" mb="24px">
-        <Flex justifyContent="space-between" mb="8px">
-          <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>
+        <Flex
+          flexDirection={isMobile ? "column" : "row"}
+          justifyContent="space-between"
+          mb="8px"
+        >
+          <Text
+            mb={isMobile ? "4px" : "0px"}
+            textStyle="R_14R"
+            color={ColorStyles.MEDIUMGREY}
+          >
             {t('Price Rate')}
           </Text>
           <TradePrice 

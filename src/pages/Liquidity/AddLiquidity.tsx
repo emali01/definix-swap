@@ -62,6 +62,7 @@ const AddLiquidity: React.FC = () => {
   const history = useHistory();
   const { chainId, account } = useActiveWeb3React()
   const { isXl, isXxl } = useMatchBreakpoints()
+  const isMobile = useMemo(() => !isXl && !isXxl, [isXl, isXxl])
 
   const { independentField, typedValue, otherTypedValue } = useMintState()
 
@@ -69,7 +70,6 @@ const AddLiquidity: React.FC = () => {
   const [approvalB, approveBCallback, approveBErr, setApproveBErr] = useApproveCallback(parsedAmounts[Field.CURRENCY_B], ROUTER_ADDRESS[chainId || parseInt(process.env.REACT_APP_CHAIN_ID || '0')])
   const { toastError } = useToast();
 
-  const isMobile = useMemo(() => !isXl && !isXxl, [isXl, isXxl])
   const isValid = useMemo(() => !error, [error]);
   const formattedAmounts = useMemo(() => {
     return (
