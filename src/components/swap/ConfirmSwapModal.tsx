@@ -7,8 +7,11 @@ import { useToast } from 'state/toasts/hooks'
 import { useSwapCallback } from 'hooks/useSwapCallback'
 import KlaytnScopeLink from 'components/KlaytnScopeLink'
 import { useUserDeadline, useUserSlippageTolerance } from 'state/user/hooks'
+import { ALLOWED_PRICE_IMPACT_HIGH , BLOCKED_PRICE_IMPACT_NON_EXPERT } from 'constants/index'
+import { computeTradePriceBreakdown } from 'utils/prices'
 import SwapModalFooter from './SwapModalFooter'
 import SwapModalHeader from './SwapModalHeader'
+
 
 /**
  * Returns true if the trade requires a confirmation of details before we can submit it
@@ -53,14 +56,22 @@ export default function ConfirmSwapModal({
   )
 
   const showAcceptChanges = useMemo(() => Boolean(trade && originalTrade && tradeMeaningfullyDiffers(trade, originalTrade)), [originalTrade, trade]);
+  const { priceImpactWithoutFee } = useMemo(() => computeTradePriceBreakdown(trade), [trade]);
 
   const onAcceptChanges = useCallback(() => {
     setOriginalTrade(trade);
   }, [trade])
 
   const handleSwap = useCallback(() => {
+    if(!priceImpactWithoutFee.lessThan(ALLOWED_PRICE_IMPACT_HIGH) && 
+      priceImpactWithoutFee.lessThan(BLOCKED_PRICE_IMPACT_NON_EXPERT)
+    ) {
+      if(!window.confirm(t('This swap has a price impact of at least 5%'))) {
+        return;
+      }
+    }
     if (!swapCallback) {
-      return
+      return;
     }
     setIsPending(true);
     setTxHash(undefined);
@@ -77,7 +88,7 @@ export default function ConfirmSwapModal({
         onDismiss();
         onDismissModal();
       })
-  }, [swapCallback, onDismiss, onDismissModal, toastSuccess, toastError, t])
+  }, [priceImpactWithoutFee, swapCallback, toastSuccess, t, onDismiss, onDismissModal, toastError])
 
   return (
     <Modal title={t('Confirm Swap')} mobileFull onDismiss={onDismiss}>
