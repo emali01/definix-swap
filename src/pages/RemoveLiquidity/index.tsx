@@ -157,6 +157,8 @@ export default function RemoveLiquidity({
     }
   }, [approveErr, toastError, t, setApproveErr])
 
+  console.log('~~~', formattedAmounts[Field.LIQUIDITY_PERCENT])
+
   return (
     <Flex width="100%" flexDirection="column" alignItems="center">
       <Flex flexDirection="column" width={isMobile ? "100%" : "629px"} mb="40px">
@@ -399,50 +401,52 @@ export default function RemoveLiquidity({
                   <ConnectWalletButton />
                 ) : (
                   <Flex flexDirection="column" width="100%">
-                    {approval !== ApprovalState.APPROVED && (<Flex 
-                      flexDirection={isMobile ? "column" : "row"}
-                      justifyContent="space-between"
-                      mb={isMobile ? "32px" : "16px"}
-                    >
-                      <Flex alignItems="center" mb={isMobile ? "8px" : "0px"}>
-                        <Box mr="12px">
-                          <DoubleCurrencyLogo size={32} currency0={currencyA} currency1={currencyB}/>
-                        </Box>
-                        <Text textStyle={isMobile ? "R_16M" : "R_18M"} color={ColorStyles.MEDIUMGREY}>
-                          {currencyA?.symbol}-{currencyB?.symbol}
-                        </Text>
-                      </Flex>
-                      <Button
-                        onClick={approveCallback}
-                        textStyle="R_14B"
-                        scale={ButtonScales.LG}
-                        width={isMobile ? "100%" : "186px"}
-                        disabled={approval !== ApprovalState.NOT_APPROVED || signatureData !== null}
-                        isLoading={approval === ApprovalState.PENDING}
+                    {(approval !== ApprovalState.APPROVED && formattedAmounts[Field.LIQUIDITY_PERCENT] !== '0') &&(
+                      <Flex 
+                        flexDirection={isMobile ? "column" : "row"}
+                        justifyContent="space-between"
+                        mb={isMobile ? "32px" : "16px"}
                       >
-                        {t('Approve to LP')}
-                      </Button>
-                    </Flex>)}
-                    
-                    <Button
-                      onClick={() => {
-                        onPresentConfirmRemoveModal();
-                      }}
-                      disabled={!isValid || (signatureData === null && approval !== ApprovalState.APPROVED)}
-                      scale={ButtonScales.LG}
-                      width="100%"
-                      textStyle="R_16B"
-                    >
-                      {t('Remove')}
-                    </Button>
-                    
-                    {/* {error && (
-                      <Noti type={NotiType.ALERT} mt="12px">
-                        {t(`${error}`)}
-                      </Noti>
-                    )} */}
+                        <Flex alignItems="center" mb={isMobile ? "8px" : "0px"}>
+                          <Box mr="12px">
+                            <DoubleCurrencyLogo size={32} currency0={currencyA} currency1={currencyB}/>
+                          </Box>
+                          <Text textStyle={isMobile ? "R_16M" : "R_18M"} color={ColorStyles.MEDIUMGREY}>
+                            {currencyA?.symbol}-{currencyB?.symbol}
+                          </Text>
+                        </Flex>
 
-                  </Flex>
+                        <Button
+                          onClick={approveCallback}
+                          textStyle="R_14B"
+                          scale={ButtonScales.LG}
+                          width={isMobile ? "100%" : "186px"}
+                          disabled={approval !== ApprovalState.NOT_APPROVED || signatureData !== null}
+                          isLoading={approval === ApprovalState.PENDING}
+                        >
+                          {t('Approve to LP')}
+                        </Button>
+                      </Flex>
+                    )}
+                      
+                      <Button
+                        onClick={() => {
+                          onPresentConfirmRemoveModal();
+                        }}
+                        disabled={!isValid || (signatureData === null && approval !== ApprovalState.APPROVED)}
+                        scale={ButtonScales.LG}
+                        width="100%"
+                        textStyle="R_16B"
+                      >
+                        {t('Remove')}
+                      </Button>
+                      
+                      {/* {error && (
+                        <Noti type={NotiType.ALERT} mt="12px">
+                          {t(`${error}`)}
+                        </Noti>
+                      )} */}
+                    </Flex>
                 )}
               </Flex>
 
