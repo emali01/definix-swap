@@ -18,7 +18,7 @@ import {
   ChangePlusIcon,
   ArrowChangeIcon,
   BackIcon
-} from 'definixswap-uikit-v2'
+} from '@fingerlabs/definixswap-uikit-v2'
 import { useTokenBalance } from 'state/wallet/hooks'
 import { useTranslation } from 'react-i18next'
 import { useToast } from 'state/toasts/hooks'

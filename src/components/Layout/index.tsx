@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Flex, lightColors  } from 'definixswap-uikit-v2'
+import { Flex, lightColors  } from '@fingerlabs/definixswap-uikit-v2'
 
 export const MaxWidthLeft = styled.div`
   max-width: 800px;

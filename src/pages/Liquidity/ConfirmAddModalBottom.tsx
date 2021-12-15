@@ -1,7 +1,7 @@
 import React from 'react'
 import { Currency, CurrencyAmount, Fraction, Percent } from 'definixswap-sdk'
 import styled from 'styled-components'
-import { Flex, Button, Text, ColorStyles, ButtonScales, NotiIcon } from 'definixswap-uikit-v2'
+import { Flex, Button, Text, ColorStyles, ButtonScales, NotiIcon } from '@fingerlabs/definixswap-uikit-v2'
 import { useTranslation } from 'react-i18next'
 import { Field } from 'state/mint/actions'
 

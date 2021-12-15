@@ -16,7 +16,7 @@ import {
   ButtonScales,
   NotiIcon,
   ModalBody
-} from 'definixswap-uikit-v2'
+} from '@fingerlabs/definixswap-uikit-v2'
 import { 
   Currency,
   Percent,

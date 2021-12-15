@@ -44,6 +44,7 @@
   },
   "dependencies": {
     "@ethersproject/experimental": "^5.0.1",
+    "@fingerlabs/definixswap-uikit-v2": "^0.0.13",
     "@popperjs/core": "^2.4.4",
     "@reduxjs/toolkit": "^1.3.5",
     "@sixnetwork/caverjs-react-abstract-connector": "^1.0.4",
@@ -80,7 +81,6 @@
     "cids": "^1.0.0",
     "copy-to-clipboard": "^3.2.0",
     "definixswap-sdk": "1.0.0-klaytn",
-    "definixswap-uikit-v2": "^0.0.12",
     "ethers": "^5.0.7",
     "finix-caver-providers": "^1.0.3",
     "i18next": "^21.4.0",

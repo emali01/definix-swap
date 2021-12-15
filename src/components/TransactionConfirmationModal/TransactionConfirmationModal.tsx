@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import styled from 'styled-components'
-import { Modal } from 'definixswap-uikit-v2'
+import { Modal } from '@fingerlabs/definixswap-uikit-v2'
 import { useHistory } from 'react-router'
 import { useActiveWeb3React } from '../../hooks'
 

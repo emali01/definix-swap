@@ -11,7 +11,7 @@ import {
   ButtonScales,
   ButtonVariants,
   useMatchBreakpoints
-} from 'definixswap-uikit-v2'
+} from '@fingerlabs/definixswap-uikit-v2'
 import { useTranslation } from 'react-i18next'
 import { useTotalSupply } from '../../data/TotalSupply'
 import { useActiveWeb3React } from '../../hooks'

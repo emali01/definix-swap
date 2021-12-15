@@ -1,4 +1,4 @@
-import { Toast, toastTypes } from "definixswap-uikit-v2"
+import { Toast, toastTypes } from "@fingerlabs/definixswap-uikit-v2"
 import React, { useMemo } from "react"
 import { useDispatch } from "react-redux"
 import {

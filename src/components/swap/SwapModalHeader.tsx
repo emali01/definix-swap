@@ -2,7 +2,7 @@ import { Trade, TradeType } from 'definixswap-sdk'
 import { useTranslation } from 'react-i18next'
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
-import { Button, Text, Flex, Box, ChangeBottomIcon, Noti, NotiType } from 'definixswap-uikit-v2'
+import { Button, Text, Flex, Box, ChangeBottomIcon, Noti, NotiType } from '@fingerlabs/definixswap-uikit-v2'
 import { computeSlippageAdjustedAmounts, computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
 import CurrencyLogo from '../CurrencyLogo'
 

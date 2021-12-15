@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import { currencyEquals, Trade } from 'definixswap-sdk'
-import { Modal, Box, Divider, ModalBody, useMatchBreakpoints } from 'definixswap-uikit-v2'
+import { Modal, Box, Divider, ModalBody, useMatchBreakpoints } from '@fingerlabs/definixswap-uikit-v2'
 import { useTranslation } from 'react-i18next'
 import { useDerivedSwapInfo } from 'state/swap/hooks'
 import { useToast } from 'state/toasts/hooks'

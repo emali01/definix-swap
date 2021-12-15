@@ -1,4 +1,4 @@
-import { Flex } from 'definixswap-uikit-v2'
+import { Flex } from '@fingerlabs/definixswap-uikit-v2'
 import styled from 'styled-components'
 import { AutoColumn } from '../Column'
 

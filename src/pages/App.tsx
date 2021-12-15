@@ -1,7 +1,7 @@
 import React, { lazy, Suspense, useEffect } from 'react'
 import { Route, Switch, BrowserRouter } from 'react-router-dom'
 import { useCaverJsReact } from '@sixnetwork/caverjs-react-core'
-import { GlobalStyle, Loading } from 'definixswap-uikit-v2'
+import { GlobalStyle, Loading } from '@fingerlabs/definixswap-uikit-v2'
 import useCaverJsReactForWallet from 'hooks/useCaverJsReactForWallet'
 import Menu from '../components/Menu'
 import Web3ReactManager from '../components/Web3ReactManager'

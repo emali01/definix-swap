@@ -1,6 +1,6 @@
 import { Trade } from 'definixswap-sdk'
 import React, { Fragment, memo } from 'react'
-import { Text, Flex, ArrowDoubleArrowIcon, ColorStyles } from 'definixswap-uikit-v2'
+import { Text, Flex, ArrowDoubleArrowIcon, ColorStyles } from '@fingerlabs/definixswap-uikit-v2'
 import { useTranslation } from 'react-i18next'
 import CurrencyLogo from '../CurrencyLogo'
 

@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { Currency } from 'definixswap-sdk'
-import { Modal, Box, ModalBody } from 'definixswap-uikit-v2'
+import { Modal, Box, ModalBody } from '@fingerlabs/definixswap-uikit-v2'
 import { useTranslation } from 'react-i18next'
 import React from 'react'
 import { CurrencySearch } from './CurrencySearch'

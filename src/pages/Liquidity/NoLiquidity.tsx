@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Flex, Text, Box, useMatchBreakpoints, ColorStyles, NotiIcon } from 'definixswap-uikit-v2';
+import { Flex, Text, Box, useMatchBreakpoints, ColorStyles, NotiIcon } from '@fingerlabs/definixswap-uikit-v2';
 import { useTranslation } from 'react-i18next';
 
 const NoLiquidity: React.FC<{children?: React.ReactNode}> = () => {

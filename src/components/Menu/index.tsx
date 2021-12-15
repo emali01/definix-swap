@@ -1,7 +1,7 @@
 import React from 'react'
 import { supportedLanguages } from 'constants/localisation/languageCodes'
 import { useCaverJsReact } from '@sixnetwork/caverjs-react-core'
-import { Menu as UikitMenu } from 'definixswap-uikit-v2'
+import { Menu as UikitMenu } from '@fingerlabs/definixswap-uikit-v2'
 import { Link } from 'react-router-dom'
 import { useTranslation, Trans } from 'react-i18next'
 import { useUserSlippageTolerance, useUserDeadline } from 'state/user/hooks'

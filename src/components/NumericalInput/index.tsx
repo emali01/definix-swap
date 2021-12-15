@@ -1,4 +1,4 @@
-import { ColorStyles } from 'definixswap-uikit-v2'
+import { ColorStyles } from '@fingerlabs/definixswap-uikit-v2'
 import React from 'react'
 import styled from 'styled-components'
 import { escapeRegExp } from '../../utils'

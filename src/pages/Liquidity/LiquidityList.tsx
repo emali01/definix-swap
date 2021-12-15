@@ -5,7 +5,7 @@ import { useTokenBalancesWithLoadingIndicator } from "state/wallet/hooks";
 import { usePairs } from "data/Reserves";
 import { Pair } from "definixswap-sdk";
 import { useActiveWeb3React } from "hooks";
-import { Flex, Box, Text, ColorStyles, ImgEmptyStateWallet, ImgEmptyStateLiquidity, useMatchBreakpoints } from "definixswap-uikit-v2";
+import { Flex, Box, Text, ColorStyles, ImgEmptyStateWallet, ImgEmptyStateLiquidity, useMatchBreakpoints } from "@fingerlabs/definixswap-uikit-v2";
 import ConnectWalletButton from "components/ConnectWalletButton";
 import { useTranslation } from "react-i18next";
 

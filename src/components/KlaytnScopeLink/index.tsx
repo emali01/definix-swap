@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Text, ArrowRightGIcon } from 'definixswap-uikit-v2'
+import { Text, ArrowRightGIcon } from '@fingerlabs/definixswap-uikit-v2'
 import { useTranslation } from 'react-i18next'
 
 interface Props {

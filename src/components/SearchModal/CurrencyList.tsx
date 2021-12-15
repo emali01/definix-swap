@@ -2,7 +2,7 @@ import { Currency, CurrencyAmount, currencyEquals, ETHER, Token } from 'definixs
 import React, { CSSProperties, MutableRefObject } from 'react'
 import { FixedSizeList } from 'react-window'
 import styled from 'styled-components'
-import { Text, Flex, Box } from 'definixswap-uikit-v2'
+import { Text, Flex, Box } from '@fingerlabs/definixswap-uikit-v2'
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
 import CurrencyLogo from '../CurrencyLogo'

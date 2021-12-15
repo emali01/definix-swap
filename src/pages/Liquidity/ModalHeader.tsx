@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { ColorStyles, Flex, Text, Box } from 'definixswap-uikit-v2';
+import { ColorStyles, Flex, Text, Box } from '@fingerlabs/definixswap-uikit-v2';
 import { Field } from 'state/mint/actions';
 import DoubleCurrencyLogo from 'components/DoubleLogo';
 import { Currency, TokenAmount } from 'definixswap-sdk';
