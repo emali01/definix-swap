@@ -41,11 +41,11 @@ export const SearchInput = styled.input`
   border: none;
   outline: none;
   border-radius: 8px;
-  color: ${({ theme }) => theme.colors.text};
   border-style: solid;
   border: 1px solid ${({ theme }) => theme.colors.border};
   -webkit-appearance: none;
   font-size: 14px;
+  color: #222222;
   ::placeholder {
     color: ${({ theme }) => theme.colors.textDisabled};
     font-size: 14px;

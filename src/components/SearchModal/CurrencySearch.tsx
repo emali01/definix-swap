@@ -3,7 +3,7 @@ import React, { KeyboardEvent, RefObject, useCallback, useMemo, useRef, useState
 import { useTranslation } from 'react-i18next'
 import { FixedSizeList } from 'react-window'
 import styled from 'styled-components'
-import { Flex, SearchIcon } from '@fingerlabs/definixswap-uikit-v2'
+import { Box, Flex, SearchIcon } from '@fingerlabs/definixswap-uikit-v2'
 import { useAllTokens, useToken } from '../../hooks/Tokens'
 import { isAddress } from '../../utils'
 import CurrencyList from './CurrencyList'
@@ -18,19 +18,17 @@ interface CurrencySearchProps {
   otherSelectedCurrency?: Currency | null
 }
 
-const SearchInputWithIcon = styled.div`
+const SearchInputWithIcon = styled(Box)`
   position: relative;
   display: flex;
   justify-content: flex-end;
   align-items: center;
-
   svg {
     position: absolute;
     right: 12px;
     width: 16px;
-    height: 16px;
+    height: 16px;   
   }
-
   input {
     padding-right: 46px;
   }
@@ -40,15 +38,10 @@ const WrapCurrencyList = styled(Flex)<{ listLength: number }>`
   flex-direction: column;
   height: ${({ listLength }) => listLength * 60}px;
   margin-top: 20px;
-
   ${({ theme }) => theme.mediaQueries.mobile} {
     height: auto;
     flex: 1;
   }
-`
-
-const StyledSearchIcon = styled(SearchIcon)`
-
 `
 
 export function CurrencySearch({
@@ -136,30 +129,45 @@ export function CurrencySearch({
   const currencies = useMemo(() => (showETH ? [Currency.ETHER, ...filteredSortedTokens] : [...filteredSortedTokens]), [filteredSortedTokens, showETH])
 
   return (
-    <Flex flex="1 1 0" flexDirection="column" height="100%">
-      <Flex flexDirection="column">
-        <SearchInputWithIcon>
-          <SearchInput
-            type="text"
-            id="token-search-input"
-            placeholder={t('Search token name or address')}
-            value={searchQuery}
-            ref={inputRef as RefObject<HTMLInputElement>}
-            onChange={handleInput}
-            onKeyDown={handleEnter}
-          />
-          <StyledSearchIcon />
-        </SearchInputWithIcon>
-      </Flex>
+    <Flex
+      flexDirection="column"
+      height="100%"
+    >
+      <SearchInputWithIcon>
+        <SearchInput
+          type="text"
+          id="token-search-input"
+          placeholder={t('Search token name or address')}
+          value={searchQuery}
+          ref={inputRef as RefObject<HTMLInputElement>}
+          onChange={handleInput}
+          onKeyDown={handleEnter}
+        />
+        <SearchIcon />
+      </SearchInputWithIcon>
 
-      <WrapCurrencyList listLength={Object.keys(allTokens).length + 1}>
-        {currencies.length > 0 ? <CurrencyList
-          currencies={currencies}
-          onCurrencySelect={handleCurrencySelect}
-          otherCurrency={otherSelectedCurrency}
-          selectedCurrency={selectedCurrency}
-          fixedListRef={fixedList}
-        /> : <Flex mt="-20px" height="100%" alignItems="center" justifyContent="center">{t('No search results')}</Flex>}
+      <WrapCurrencyList 
+        listLength={Object.keys(allTokens).length + 1}
+      >
+        {currencies.length > 0 && (
+          <CurrencyList
+            currencies={currencies}
+            onCurrencySelect={handleCurrencySelect}
+            otherCurrency={otherSelectedCurrency}
+            selectedCurrency={selectedCurrency}
+            fixedListRef={fixedList}
+          />
+        )}
+        {currencies.length <= 0 && (
+          <Flex
+            mt="-20px"
+            height="100%"
+            alignItems="center"
+            justifyContent="center"
+          >
+            {t('No search results')}
+          </Flex>
+        )}
       </WrapCurrencyList>
     </Flex>
   )
