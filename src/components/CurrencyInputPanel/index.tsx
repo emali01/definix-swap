@@ -208,13 +208,6 @@ export default function CurrencyInputPanel({
   const overDp = useMemo(() => new BigNumber(value).decimalPlaces() > decimals, [value, decimals])
 
   const renderNoti = useCallback(() => {
-    if(isInsufficientBalance){
-      return (
-        <Noti type={NotiType.ALERT} mt="12px">
-          {t('Insufficient balance')}
-        </Noti>
-      )
-    }
     if(isMaxKlayNoti) {
       return (
         <Noti type={NotiType.ALERT} mt="12px">
@@ -222,6 +215,14 @@ export default function CurrencyInputPanel({
         </Noti>
       )
     }
+    if(isInsufficientBalance){
+      return (
+        <Noti type={NotiType.ALERT} mt="12px">
+          {t('Insufficient balance')}
+        </Noti>
+      )
+    }
+    
     if(overDp){
       return (
         <Noti type={NotiType.ALERT} mt="12px">
@@ -243,7 +244,10 @@ export default function CurrencyInputPanel({
 
   useEffect(() => {
     if(currency?.symbol === 'KLAY'){
-      if(value >= balance) setIsMaxKlayNoti(true);
+      if(value >= balance) {
+        setIsMaxKlayNoti(true);
+        return;
+      }
     }
     setIsMaxKlayNoti(false);
   }, [value, balance, maxTokenAmount, currency?.symbol]);
@@ -253,35 +257,37 @@ export default function CurrencyInputPanel({
       <Box id={id} mb="12px">
         <InputBox>
           {!hideInput && (
-            <Flex flexDirection="column" flex="1" position="relative">
-              <Flex mb="4px">
-                <Text textStyle="R_14R" color={ColorStyles.DEEPGREY} mr="4px" >
-                  {t('Balance')}
-                </Text>
-                <Text textStyle="R_14B" color={ColorStyles.DEEPGREY}>
-                  {balance}
-                </Text>
+            <Flex flexDirection="row">
+              <Flex flexDirection="column" flex="1" position="relative">
+                <Flex mb="4px">
+                  <Text textStyle="R_14R" color={ColorStyles.DEEPGREY} mr="4px" >
+                    {t('Balance')}
+                  </Text>
+                  <Text textStyle="R_14B" color={ColorStyles.DEEPGREY}>
+                    {balance}
+                  </Text>
+                </Flex>
+                <NumericalInput
+                  value={value}
+                  onUserInput={(val) => onUserInput(val)}
+                />
+                {(account && currency && onQuarter && onHalf && onMax) && 
+                  <>
+                    <Flex mt="8px">
+                      <AnountButton onClick={onQuarter} mr="6px">
+                        {t('25%')}
+                      </AnountButton>
+                      <AnountButton onClick={onHalf} mr="6px">
+                        {t('50%')}
+                      </AnountButton>
+                      <AnountButton onClick={onMax}>
+                        {t('MAX')}
+                      </AnountButton>
+                    </Flex>
+                    {renderNoti()}
+                  </>
+                }
               </Flex>
-              <NumericalInput
-                value={value}
-                onUserInput={(val) => onUserInput(val)}
-              />
-              {(account && currency && onQuarter && onHalf && onMax) && 
-                <>
-                  <Flex mt="8px">
-                    <AnountButton onClick={onQuarter} mr="6px">
-                      {t('25%')}
-                    </AnountButton>
-                    <AnountButton onClick={onHalf} mr="6px">
-                      {t('50%')}
-                    </AnountButton>
-                    <AnountButton onClick={onMax}>
-                      {t('MAX')}
-                    </AnountButton>
-                  </Flex>
-                  {renderNoti()}
-                </>
-              }
             </Flex>
           )}
 
