@@ -80,7 +80,7 @@
     "cids": "^1.0.0",
     "copy-to-clipboard": "^3.2.0",
     "definixswap-sdk": "1.0.0-klaytn",
-    "definixswap-uikit-v2": "^0.0.11",
+    "definixswap-uikit-v2": "^0.0.12",
     "ethers": "^5.0.7",
     "finix-caver-providers": "^1.0.3",
     "i18next": "^21.4.0",
