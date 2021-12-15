@@ -391,7 +391,7 @@ const Swap: React.FC = () => {
                                   <>{t('Approve')}</>
                                 ) : (
                                   <>
-                                    {t('Approve {{Token}}', { Token: `${currencies[Field.INPUT]?.symbol}` })}
+                                    {t('Approve {{Token}}', { Token: `${currencies[Field.INPUT]?.symbol}`})}
                                   </>
                                 )}
                               </Button>

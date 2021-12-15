@@ -88,8 +88,7 @@ function ConfirmAddModalBottom({
           color={ColorStyles.MEDIUMGREY}
           style={{whiteSpace:'pre-line'}}
         >
-          {t('Output is estimated')}
-          {/* Output is estimated. If the price changes by more than {allowedSlippage / 100}% your transaction will revert. */}
+          {t('Output is estimated {{N}}', { N: `${allowedSlippage / 100}`})}
         </Text>
       </Flex>
 
