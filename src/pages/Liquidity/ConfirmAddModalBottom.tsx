@@ -71,7 +71,7 @@ function ConfirmAddModalBottom({
           </Flex>
         </Flex>
 
-        <Flex justifyContent="space-between" mb="20px">
+        <Flex justifyContent="space-between">
           <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>{t('Share of Pool')}</Text>
           <Text textStyle="R_14M" color={ColorStyles.DEEPGREY}>
             {noLiquidity ? '100' : poolTokenPercentage?.toSignificant(4)}%
@@ -79,20 +79,22 @@ function ConfirmAddModalBottom({
         </Flex>
       </Flex>
 
-      <Flex alignItems="flex-start"  mb="32px">
-        <StyledNotiIcon />
-        <Text
-          mt="-1px"
-          ml="4px"
-          textStyle="R_12R"
-          color={ColorStyles.MEDIUMGREY}
-          style={{whiteSpace:'pre-line'}}
-        >
-          {t('Output is estimated {{N}}', { N: `${allowedSlippage / 100}`})}
-        </Text>
-      </Flex>
+      {!noLiquidity && (
+        <Flex alignItems="flex-start" mt="20px">
+          <StyledNotiIcon />
+          <Text
+            mt="-1px"
+            ml="4px"
+            textStyle="R_12R"
+            color={ColorStyles.MEDIUMGREY}
+            style={{whiteSpace:'pre-line'}}
+          >
+            {t('Output is estimated {{N}}', { N: `${allowedSlippage / 100}`})}
+          </Text>
+        </Flex>
+      )}
 
-      <Button onClick={onAdd} width="100%" scale={ButtonScales.LG} isLoading={isPending}>
+      <Button onClick={onAdd} width="100%" scale={ButtonScales.LG} isLoading={isPending} mt="32px">
         {t(noLiquidity ? 'Create Pool & Supply' : 'Add Liquidity')}
       </Button>
     </>
