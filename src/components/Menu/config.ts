@@ -43,6 +43,17 @@ export const links = (t: (key: string) => string) => {
       href: `${process.env.REACT_APP_FRONTEND_URL}/rebalancing`,
     },
     {
+      label: t('vFINIX'),
+      icon: 'GnbFinixNIcon',
+      activeIcon: 'GnbFinixSIcon',
+      items: [
+        {
+          label: t('Long-term Stake'),
+          href: `${process.env.REACT_APP_FRONTEND_URL}/long-term-stake`,
+        },
+      ],
+    },
+    {
       label: t('Bridge'),
       icon: 'GnbBridgeNIcon',
       activeIcon: 'GnbBridgeSIcon',
