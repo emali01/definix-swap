@@ -25,8 +25,7 @@ function TradeSummary({
   const slippageAdjustedAmounts = computeSlippageAdjustedAmounts(trade, allowedSlippage)
 
   return (
-    <Flex flexDirection="column" mb="12px">
-
+    <Flex flexDirection="column">
       <Flex alignItems="center" justifyContent="space-between" mb="12px">
         <Flex>
           <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>
@@ -50,7 +49,7 @@ function TradeSummary({
           </Text>
         </Flex>
       </Flex>
-
+      
       <Flex justifyContent="space-between" mb="12px">
         <Flex margin="0">
           <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>
@@ -105,7 +104,7 @@ export function AdvancedSwapDetails({ trade, isMobile, isRoute = true, isPriceIm
         isPriceImpactCaution={isPriceImpactCaution}
       />
       {showRoute && (
-        <Flex justifyContent="space-between" alignItems="flex-start">
+        <Flex justifyContent="space-between" alignItems="flex-start" mt="8px">
           <Flex className="mb-3">
             <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>
               {t('Routing')}

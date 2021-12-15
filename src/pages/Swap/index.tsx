@@ -154,12 +154,12 @@ const Swap: React.FC = () => {
       approval === ApprovalState.PENDING), 
     [approval, swapInputError]);
 
-    const initSwapData = useCallback(() => {
-      onUserInput(Field.INPUT, '')
-      onUserInput(Field.OUTPUT, '')
-      onCurrencySelection(Field.INPUT, '')
-      onCurrencySelection(Field.OUTPUT, '')
-    }, [onCurrencySelection, onUserInput])
+  const initSwapData = useCallback(() => {
+    onUserInput(Field.INPUT, '')
+    onUserInput(Field.OUTPUT, '')
+    onCurrencySelection(Field.INPUT, '')
+    onCurrencySelection(Field.OUTPUT, '')
+  }, [onCurrencySelection, onUserInput])
 
   const handleConfirmDismiss = useCallback(() => {
     onUserInput(Field.INPUT, '')
@@ -319,7 +319,7 @@ const Swap: React.FC = () => {
                       {t('Slippage Tolerance')}
                     </Text>
                     <Text textStyle="R_14M" color={ColorStyles.DEEPGREY}>
-                      {(allowedSlippage / 100).toFixed(6)}%
+                      {(allowedSlippage / 100)}%
                     </Text>
                 </Flex>
               </Flex>
@@ -390,7 +390,9 @@ const Swap: React.FC = () => {
                                 ) : approvalSubmitted && approval === ApprovalState.APPROVED ? (
                                   <>{t('Approve')}</>
                                 ) : (
-                                  <>{t(`Approve`)} {currencies[Field.INPUT]?.symbol}</>
+                                  <>
+                                    {t('Approve {{Token}}', { Token: `${currencies[Field.INPUT]?.symbol}` })}
+                                  </>
                                 )}
                               </Button>
                             </Flex>
