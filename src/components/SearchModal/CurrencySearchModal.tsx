@@ -1,18 +1,8 @@
-import styled from 'styled-components'
 import { Currency } from 'definixswap-sdk'
-import { Modal, Box, ModalBody } from 'definixswap-uikit-v2'
+import { Modal, Box, ModalBody, useMatchBreakpoints } from 'definixswap-uikit-v2'
 import { useTranslation } from 'react-i18next'
-import React from 'react'
+import React, { useMemo } from 'react'
 import { CurrencySearch } from './CurrencySearch'
-
-const Wrap = styled(Box)`
-  width: calc(100vw - 48px);
-  height: 100%;
-
-  @media screen and (min-width: 464px) {
-    width: 416px;
-  }
-`
 
 interface CurrencySearchModalProps {
   isOpen?: boolean;
@@ -33,17 +23,23 @@ export default function CurrencySearchModal({
 }: CurrencySearchModalProps) {
   const { t } = useTranslation();
 
+  const { isXl, isXxl } = useMatchBreakpoints()
+  const isMobile = useMemo(() => !isXl && !isXxl, [isXl, isXxl])
+
   return (
     <Modal title={t('Select a token')} mobileFull onDismiss={onDismiss}>
       <ModalBody isBody>
-        <Wrap>
+        <Box
+          width={isMobile ? "100%" : "416px"}
+          height={isMobile ? "100vh" : "auto"}
+        >
           <CurrencySearch
             onCurrencySelect={onCurrencySelect}
             selectedCurrency={selectedCurrency}
             otherSelectedCurrency={otherSelectedCurrency}
             onDismiss={onDismiss}
           />
-        </Wrap>
+        </Box>
       </ModalBody>
     </Modal>
   )
