@@ -40,6 +40,7 @@ export default function App() {
             <Suspense fallback={<Loading />}>
               <Web3ReactManager>
                 <Switch>
+                  <Route exact path="/" component={RedirectPathToSwapOnly} />
                   <Route exact strict path="/swap" component={Swap} />
                   <Route exact path="/swap/:currencyIdA/:currencyIdB" component={RedirectToSwap} />
                   <Route exact path="/swap/:currencyIdA" component={RedirectToSwap} />
@@ -48,7 +49,6 @@ export default function App() {
                   <Route exact path="/liquidity/add/:currencyIdA" component={RedirectOldAddLiquidityPathStructure} />
                   <Route exact path="/liquidity/add/:currencyIdA/:currencyIdB" component={RedirectDuplicateTokenIds} />
                   <Route exact strict path="/liquidity/remove/:tokens" component={RedirectOldRemoveLiquidityPathStructure} />
-                  <Route exact component={RedirectPathToSwapOnly} />
                   <Route>
                     <Error />
                   </Route>

@@ -4,19 +4,10 @@ import { FixedSizeList } from 'react-window'
 import styled from 'styled-components'
 import { Text, Flex, Box } from 'definixswap-uikit-v2'
 import { useActiveWeb3React } from '../../hooks'
-import { useSelectedTokenList, WrappedTokenInfo } from '../../state/lists/hooks'
-import { useAddUserToken, useRemoveUserAddedToken } from '../../state/user/hooks'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
-import { LinkStyledButton } from '../Shared'
-import { useIsUserAddedToken } from '../../hooks/Tokens'
 import CurrencyLogo from '../CurrencyLogo'
-import { FadedSpan, MenuItem } from './styleds'
+import { MenuItem } from './styleds'
 import Loader from '../Loader'
-import { isTokenOnList } from '../../utils'
-
-function currencyKey(currency: Currency): string {
-  return currency instanceof Token ? currency.address : currency === ETHER ? 'ETHER' : ''
-}
 
 const StyledBalanceText = styled(Text)`
   white-space: nowrap;
@@ -43,15 +34,8 @@ function CurrencyRow({
   otherSelected: boolean
   style: CSSProperties
 }) {
-  const { account, chainId } = useActiveWeb3React()
-  const key = currencyKey(currency)
-  const selectedTokenList = useSelectedTokenList()
-  const isOnSelectedList = isTokenOnList(selectedTokenList, currency)
-  const customAdded = useIsUserAddedToken(currency)
+  const { account } = useActiveWeb3React()
   const balance = useCurrencyBalance(account ?? undefined, currency)
-
-  const removeToken = useRemoveUserAddedToken()
-  const addToken = useAddUserToken()
 
   // only show add or remove buttons if not on selected list
   return (
@@ -62,37 +46,9 @@ function CurrencyRow({
       disabled={isSelected}
       selected={otherSelected}
     >
-      <CurrencyLogo currency={currency} size="32px" />
-      <Flex>
-        <Text title={currency.name}>{currency.symbol}</Text>
-        <FadedSpan>
-          {!isOnSelectedList && customAdded && !(currency instanceof WrappedTokenInfo) ? (
-            <Text>
-              Added by user
-              <LinkStyledButton
-                onClick={(event) => {
-                  event.stopPropagation()
-                  if (chainId && currency instanceof Token) removeToken(chainId, currency.address)
-                }}
-              >
-                (Remove)
-              </LinkStyledButton>
-            </Text>
-          ) : null}
-          {!isOnSelectedList && !customAdded && !(currency instanceof WrappedTokenInfo) ? (
-            <Text>
-              Found by address
-              <LinkStyledButton
-                onClick={(event) => {
-                  event.stopPropagation()
-                  if (currency instanceof Token) addToken(currency)
-                }}
-              >
-                (Add)
-              </LinkStyledButton>
-            </Text>
-          ) : null}
-        </FadedSpan>
+      <Flex alignItems="center">
+        <CurrencyLogo currency={currency} size="32px" />
+        <Text ml="12px">{currency.symbol}</Text>
       </Flex>
 
       {/* <TokenTags currency={currency} /> */}
