@@ -7,8 +7,7 @@ import { abi as IUniswapV2Router02ABI } from '@uniswap/v2-periphery/build/IUnisw
 import { KlipConnector } from "@sixnetwork/klip-connector"
 import { KlipModalContext } from '@sixnetwork/klaytn-use-wallet'
 import { useCaverJsReact } from '@sixnetwork/caverjs-react-core';
-import { Flex, Modal, Box, InjectedModalProps, Divider, ModalBody, useMatchBreakpoints } from '@fingerlabs/definixswap-uikit-v2'
-import styled from 'styled-components'
+import { Modal, Box, InjectedModalProps, Divider, ModalBody, useMatchBreakpoints } from '@fingerlabs/definixswap-uikit-v2'
 import { Currency, CurrencyAmount, Percent, Price, TokenAmount, ETHER } from 'definixswap-sdk'
 import { useTranslation } from 'react-i18next'
 import { useActiveWeb3React } from 'hooks'

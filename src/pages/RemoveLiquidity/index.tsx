@@ -157,8 +157,6 @@ export default function RemoveLiquidity({
     }
   }, [approveErr, toastError, t, setApproveErr])
 
-  console.log('~~~', formattedAmounts[Field.LIQUIDITY_PERCENT])
-
   return (
     <Flex width="100%" flexDirection="column" alignItems="center">
       <Flex flexDirection="column" width={isMobile ? "100%" : "629px"} mb="40px">

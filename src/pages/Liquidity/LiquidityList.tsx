@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import FullPositionCard from "components/PositionCard";
 import { toV2LiquidityToken, useTrackedTokenPairs } from "state/user/hooks";
 import { useTokenBalancesWithLoadingIndicator } from "state/wallet/hooks";
@@ -23,7 +23,8 @@ const LiquidityList: React.FC = () => {
   const liquidityTokens = useMemo(() => tokenPairsWithLiquidityTokens.map((tpwlt) => tpwlt.liquidityToken), [
     tokenPairsWithLiquidityTokens,
   ])
-  const [v2PairsBalances] = useTokenBalancesWithLoadingIndicator(
+
+  const [v2PairsBalances, v2PairsLoading] = useTokenBalancesWithLoadingIndicator(
     account ?? undefined,
     liquidityTokens
   )
