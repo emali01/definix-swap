@@ -314,7 +314,7 @@ export default function ConfirmAddModal({
     <Modal title={t('Confirm Add Liquidity')} mobileFull onDismiss={onDismiss}>
       <ModalBody isBody>
         <Box
-          width={isMobile ? "100%" : "520px"}
+          width={isMobile ? "100%" : "472px"}
           height={isMobile ? "100vh" : "100%"}
         >
           <ModalHeader

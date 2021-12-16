@@ -386,7 +386,7 @@ export default function ConfirmRemoveModal({
     <Modal title={t('Confirm Remove Liquidity')} mobileFull onDismiss={onDismiss}>
       <ModalBody isBody>
         <Box
-          width={isMobile ? "100%" : "520px"}
+          width={isMobile ? "100%" : "472px"}
           height={isMobile ? "100vh" : "100%"}
         >
           <Flex flexDirection="column" mb="20px" mt="16px">
