@@ -1,5 +1,5 @@
 {
-  "* 대문자, 긴 문장일 경우 앞 5단어,  \" 금지\nKey": "영어",
+  "Key": "English",
   "What is FINIX token?": "What is FINIX token?",
   "SIX Bridge": "SIX Bridge",
   "English": "English",
@@ -58,7 +58,7 @@
   "Home": "Home",
   "Exchange": "Exchange",
   "Yield Farming": "Yield Farming",
-  "Rebalancing": "Rebalancing",
+  "Rebalancing": "Rebalancing Farm",
   "Finix": "Finix",
   "Bridge": "Bridge",
   "More": "More",
@@ -116,6 +116,7 @@
   "Your transaction will revert if": "Your transaction will revert if it is pending for more than this long.",
   "Minutes": "Minutes",
   "Enter a valid number": "Enter a valid number.",
+  "I'm new to this": "",
   "Learn how to set up": "Learn how to connect wallet",
   "Learn how to Swap": "Learn how to Swap",
   "Swap it for any token": "Swap it for any token you want easily and conveniently.",
@@ -333,7 +334,7 @@
   "Total Liquidity": "Total Liquidity",
   "My Liquidity": "My Liquidity",
   "Finix Earned": "Finix Earned",
-  "Basic order": "Basic order",
+  "Basic order": "Basic",
   "Wallet Connected": "Wallet Connected",
   "Provider Error": "Provider Error",
   "No provider was found": "No provider was found.",
@@ -439,5 +440,13 @@
   "The value entered is out of the valid range": "The value entered is out of the valid range.",
   "There are no routes.": "There are no routes.",
   "Approve to LP": "Approve to LP",
-  "Loading data": "Loading data. Please wait for a moment."
+  "Loading data": "Loading data. Please wait for a moment.",
+  "Go to BSC": "Go to BSC",
+  "Wrap": "Wrap",
+  "Found by address (Add)": "Found by address (Add)",
+  "Approve Failed": "Approve Failed",
+  "Approve Complete": "Approve Complete",
+  "Order APR": "APR",
+  "By Total Liquidity": "Total Liquidity",
+  "By Total staked": "Total staked"
 }
