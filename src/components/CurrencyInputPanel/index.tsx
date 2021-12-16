@@ -257,7 +257,11 @@ export default function CurrencyInputPanel({
       <Box id={id} mb="12px">
         <InputBox>
           {!hideInput && (
-            <Flex flexDirection="row">
+            <Flex
+              flexDirection="row"
+              flex="1 1 0"
+              pr="20px"
+            >
               <Flex flexDirection="column" flex="1" position="relative">
                 <Flex mb="4px">
                   <Text textStyle="R_14R" color={ColorStyles.DEEPGREY} mr="4px" >
