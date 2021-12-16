@@ -31,6 +31,7 @@ import {
   NotiType,
   Box,
   Divider,
+  ButtonVariants,
 } from '@fingerlabs/definixswap-uikit-v2'
 
 import { maxAmountSpend } from 'utils/maxAmountSpend'
@@ -396,6 +397,7 @@ const Swap: React.FC = () => {
                                 width={isMobile ? "100%" : "186px"}
                                 mt={isMobile ? "8px" : "0px"}
                                 isLoading={isApprovePending}
+                                variant={ButtonVariants.BROWN}
                               >
                                 {approval === ApprovalState.PENDING ? (
                                   <Flex>

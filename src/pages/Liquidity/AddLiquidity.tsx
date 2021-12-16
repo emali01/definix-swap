@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useEffect } from 'react';
+import React, { useCallback, useMemo, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { 
   ColorStyles,
@@ -12,7 +12,8 @@ import {
   CheckBIcon,
   useMatchBreakpoints,
   useModal,
-  Divider
+  Divider,
+  ButtonVariants
 } from '@fingerlabs/definixswap-uikit-v2';
 import { Currency, currencyEquals, TokenAmount, WETH } from 'definixswap-sdk';
 import { Field } from 'state/mint/actions'
@@ -41,6 +42,9 @@ import ConfirmAddModal from './ConfirmAddModal';
 
 
 const AddLiquidity: React.FC = () => {
+  const [isApproveAPending, setIsApproveAPending] = useState<boolean>(false);
+  const [isApproveBPending, setIsApproveBPending] = useState<boolean>(false);
+
   const { t } = useTranslation();
   const { currencyIdA, currencyIdB } = useParams<{currencyIdA: string; currencyIdB: string;}>();
   const currencyA = useCurrency(currencyIdA)
@@ -68,8 +72,27 @@ const AddLiquidity: React.FC = () => {
 
   const [approvalA, approveACallback, approveAErr, setApproveAErr] = useApproveCallback(parsedAmounts[Field.CURRENCY_A], ROUTER_ADDRESS[chainId || parseInt(process.env.REACT_APP_CHAIN_ID || '0')])
   const [approvalB, approveBCallback, approveBErr, setApproveBErr] = useApproveCallback(parsedAmounts[Field.CURRENCY_B], ROUTER_ADDRESS[chainId || parseInt(process.env.REACT_APP_CHAIN_ID || '0')])
-  const { toastError } = useToast();
+  const onClickApproveAButton = useCallback(async () => {
+    try {
+      setIsApproveAPending(true);
+      await approveACallback();
+    } catch (err) {
+      setIsApproveAPending(false);
+    }
+    setIsApproveAPending(false);
+  }, [approveACallback, setIsApproveAPending]);
 
+  const onClickApproveBButton = useCallback(async () => {
+    try {
+      setIsApproveBPending(true);
+      await approveBCallback();
+    } catch (err) {
+      setIsApproveBPending(false);
+    }
+    setIsApproveBPending(false);
+  }, [approveBCallback, setIsApproveBPending]);
+
+  const { toastError } = useToast();
   const isValid = useMemo(() => !error, [error]);
   const formattedAmounts = useMemo(() => {
     return (
@@ -283,11 +306,12 @@ const AddLiquidity: React.FC = () => {
                           {approvalA === ApprovalState.APPROVED && (
                             <Button
                               scale={ButtonScales.LG}
-                              onClick={approveBCallback}
+                              onClick={onClickApproveAButton}
                               disabled
                               width={isMobile ? "100%" : "186px"}
                               textStyle="R_14B"
                               color={ColorStyles.MEDIUMGREY}
+                              variant={ButtonVariants.BROWN}
                             >
                               <Box style={{opacity: 0.5}} mt="4px">
                                 <CheckBIcon />
@@ -301,10 +325,11 @@ const AddLiquidity: React.FC = () => {
                           {approvalA !== ApprovalState.APPROVED && (
                             <Button
                               scale={ButtonScales.LG}
-                              onClick={approveACallback}
+                              onClick={onClickApproveAButton}
                               disabled={approvalA === ApprovalState.PENDING}
-                              isLoading={approvalA === ApprovalState.PENDING}
+                              isLoading={isApproveAPending}
                               width={isMobile ? "100%" : "186px"}
+                              variant={ButtonVariants.BROWN}
                             >
                               {t('Approve')} {currencies[Field.CURRENCY_A]?.symbol}
                             </Button>
@@ -326,11 +351,12 @@ const AddLiquidity: React.FC = () => {
                           {approvalB === ApprovalState.APPROVED && (
                             <Button
                               scale={ButtonScales.LG}
-                              onClick={approveBCallback}
+                              onClick={onClickApproveBButton}
                               disabled
                               width={isMobile ? "100%" : "186px"}
                               textStyle="R_14B"
                               color={ColorStyles.MEDIUMGREY}
+                              variant={ButtonVariants.BROWN}
                             >
                               <Box style={{opacity: 0.5}} mt="4px">
                                 <CheckBIcon />
@@ -344,10 +370,11 @@ const AddLiquidity: React.FC = () => {
                           {approvalB !== ApprovalState.APPROVED && (
                             <Button
                               scale={ButtonScales.LG}
-                              onClick={approveBCallback}
+                              onClick={onClickApproveBButton}
                               disabled={approvalB === ApprovalState.PENDING}
-                              isLoading={approvalB === ApprovalState.PENDING}
+                              isLoading={isApproveBPending}
                               width={isMobile ? "100%" : "186px"}
+                              variant={ButtonVariants.BROWN}
                             >
                               {t('Approve')} {currencies[Field.CURRENCY_B]?.symbol}
                             </Button>
