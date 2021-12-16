@@ -17,16 +17,18 @@ import {
   ChangeBottomIcon,
   ChangePlusIcon,
   ArrowChangeIcon,
-  BackIcon
+  BackIcon,
+  textStyle,
 } from '@fingerlabs/definixswap-uikit-v2'
 import { useTokenBalance } from 'state/wallet/hooks'
 import { useTranslation } from 'react-i18next'
 import { useToast } from 'state/toasts/hooks'
+import Slider from 'components/Slider'
+import styled from 'styled-components'
 import { CurrencyInputPanelOnRemoveLP } from '../../components/CurrencyInputPanel'
 import CurrencyLogo from '../../components/CurrencyLogo'
 import DoubleCurrencyLogo from '../../components/DoubleLogo'
 import { StyledInternalLink } from '../../components/Shared'
-import Slider from '../../components/Slider'
 import { ROUTER_ADDRESS } from '../../constants'
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrency } from '../../hooks/Tokens'
@@ -36,6 +38,24 @@ import { useBurnActionHandlers, useBurnState, useDerivedBurnInfo } from '../../s
 import useDebouncedChangeHandler from '../../utils/useDebouncedChangeHandler'
 import { wrappedCurrency } from '../../utils/wrappedCurrency'
 import ConfirmRemoveModal from './ConfirmRemoveModal'
+
+// const PercentInput = styled.input`
+//   width: 40px;
+//   ${textStyle.R_28M};
+//   color: ${ColorStyles.BLACK};
+//   border: none;
+//   outline: none;
+//   text-align: right;
+// `;
+
+const PercentInput = styled.span`
+  ${textStyle.R_28M};
+  color: ${ColorStyles.BLACK};
+  border: none;
+  outline: none;
+`;
+
+
 
 export default function RemoveLiquidity({
   history,
@@ -232,14 +252,29 @@ export default function RemoveLiquidity({
                 </Flex>
 
 
-                <Flex width="100%" flexDirection="column">
+                <Flex
+                  width="100%"
+                  flexDirection="column"
+                >
                   <Flex justifyContent="space-between">
-                    
-                    <Flex alignItems="center">
-                      <Text mr="6px" textStyle="R_28M" color={ColorStyles.BLACK}>
-                        {formattedAmounts[Field.LIQUIDITY_PERCENT]}
+                    <Flex 
+                      alignItems="flex-end"
+                    >
+                      {/* <PercentInput value={innerLiquidityPercentage} /> */}
+                      <PercentInput 
+                        role="textbox"
+                        contentEditable={false}
+                      >
+                        {innerLiquidityPercentage}
+                      </PercentInput>
+                      <Text
+                        textStyle="R_20M"
+                        color={ColorStyles.MEDIUMGREY}
+                        mb="2.5px"
+                        ml="4px"
+                      >
+                        %
                       </Text>
-                      <Text textStyle="R_20M" color={ColorStyles.MEDIUMGREY}>%</Text>
                     </Flex>
                     
                     <Box
@@ -248,15 +283,22 @@ export default function RemoveLiquidity({
                       }}
                       style={{cursor: 'pointer'}}
                     >
-                      <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>
+                      <Text
+                        textStyle="R_14R"
+                        color={ColorStyles.MEDIUMGREY}
+                        style={{textDecoration: 'underline'}}
+                      >
                         {showDetailed ? t('Simple') : t('Detail')}
                       </Text>
                     </Box>
                   </Flex>
-
-                  <Box mt="15px" mb="15px">
-                    <Slider value={innerLiquidityPercentage} onChange={setInnerLiquidityPercentage} />
-                  </Box>
+                  <Slider
+                    min={0}
+                    max={100}
+                    value={innerLiquidityPercentage}
+                    onValueChanged={setInnerLiquidityPercentage}
+                    valueLabel={String(innerLiquidityPercentage)}
+                  />
                 </Flex>
               </Flex>
               {showDetailed && (
@@ -334,7 +376,12 @@ export default function RemoveLiquidity({
                             }`}
                         >
                           <Flex alignItems="center">
-                            <Text mr="4px">{t('Receive')} WKLAY</Text>
+                            <Text
+                              mr="4px"
+                              style={{textDecoration: 'underline'}}
+                            >
+                              {t('Receive')} WKLAY
+                            </Text>
                             <ArrowChangeIcon />
                           </Flex>
                         </StyledInternalLink>
@@ -344,7 +391,12 @@ export default function RemoveLiquidity({
                             }/${currencyB && currencyEquals(currencyB, WETH(chainId)) ? 'KLAY' : currencyIdB}`}
                         >
                           <Flex alignItems="center">
-                            <Text mr="4px">{t('Receive')} KLAY</Text>
+                            <Text 
+                              mr="4px"
+                              style={{textDecoration: 'underline'}}
+                            >
+                              {t('Receive')} KLAY
+                            </Text>
                             <ArrowChangeIcon />
                           </Flex>
                         </StyledInternalLink>

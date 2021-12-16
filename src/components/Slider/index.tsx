@@ -1,98 +1,105 @@
-import { ColorStyles } from '@fingerlabs/definixswap-uikit-v2'
-import React, { useCallback } from 'react'
-import styled from 'styled-components'
+import { Box, ColorStyles, Flex, Text, textStyle } from "@fingerlabs/definixswap-uikit-v2";
+import React, { ChangeEvent, useCallback, useMemo, InputHTMLAttributes } from "react";
+import styled from "styled-components";
 
-const StyledRangeInput = styled.input<{ size: number }>`
-  -webkit-appearance: none;
-  width: 100%;
-  background: transparent;
-  cursor: pointer;
-
-  &:focus {
-    outline: none;
-  }
-
-  &::-moz-focus-outer {
-    border: 0;
-  }
-
-  &::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    height: ${({ size }) => size}px;
-    width: ${({ size }) => size}px;
-    border-radius: 50%;
-    transform: translateY(-50%);
-    background-color: ${ColorStyles.WHITE};
-    border: 7px solid #ff6828;
-  }
-
-  &::-moz-range-thumb {
-    height: ${({ size }) => size}px;
-    width: ${({ size }) => size}px;
-    border-radius: 50%;
-  }
-
-  &::-ms-thumb {
-    height: ${({ size }) => size}px;
-    width: ${({ size }) => size}px;
-    border-radius: 50%;
-  }
-
-  &::-webkit-slider-runnable-track {
-    background-color: #ff6828;
-    height: 5px;
-    border-radius: 2.5px;
-  }
-
-  &::-moz-range-track {
-    background-color: #ff6828;
-    height: 5px;
-    border-radius: 2.5px;
-  }
-
-  &::-ms-track {
-    width: 100%;
-    border-color: transparent;
-    color: transparent;
-    background-color: #ff6828;
-    height: 5px;
-    border-radius: 2.5px;
-  }
-  &::-ms-fill-lower {
-    background-color: #e0e0e0;
-  }
-  &::-ms-fill-upper {
-    background-color: #e0e0e0;
-  }
-`
-
-interface InputSliderProps {
-  value: number
-  onChange: (value: number) => void
-  step?: number
-  min?: number
-  max?: number
-  size?: number
+interface SliderProps {
+  min: number;
+  max: number;
+  value: number;
+  onValueChanged: (newValue: number) => void;
+  valueLabel?: string;
 }
 
-export default function Slider({ value, onChange, min = 0, step = 1, max = 100, size = 28 }: InputSliderProps) {
-  const changeCallback = useCallback(
-    e => {
-      onChange(parseInt(e.target.value))
-    },
-    [onChange]
-  )
+interface StyledInputProps extends InputHTMLAttributes<HTMLInputElement> {
+  isCurrentValueMaxValue: boolean;
+}
+
+const StyledInput = styled.input<StyledInputProps>`
+  height: 33px;
+  position: relative;
+  cursor: pointer;
+  ::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 22px;
+    height: 22px;
+    border: 5px solid #ff6828;
+    background-color: ${ColorStyles.WHITE};
+    border-radius: 50%;
+    cursor: pointer;
+    transform: translate(-2px, 1px);
+  }
+  ::-moz-range-thumb {
+    -webkit-appearance: none;
+    width: 22px;
+    height: 22px;
+    border: 5px solid #ff6828;
+    background-color: ${ColorStyles.WHITE};
+    border-radius: 50%;
+    cursor: pointer;
+    transform: translate(-2px, 1px);
+  }
+  ::-ms-thumb {
+    -webkit-appearance: none;
+    width: 22px;
+    height: 22px;
+    border: 5px solid #ff6828;
+    background-color: ${ColorStyles.WHITE};
+    border-radius: 50%;
+    cursor: pointer;
+    transform: translate(-2px, 1px);
+  }
+`;
+
+const BarBackground = styled.div`
+  position: absolute;
+  width: 100%;
+  height: 5px;
+  top: 18px;
+  border-radius: 2.5px;
+  background-color: ${ColorStyles.LIGHTGREY};
+`;
+
+const BarProgress = styled.div<{ progress: number; isCurrentValueMaxValue: boolean }>`
+  position: absolute;
+  width: ${({ progress, isCurrentValueMaxValue }) => (isCurrentValueMaxValue ? "calc(100% - 16px)" : `${progress}%`)};
+  height: 5px;
+  top: 18px;
+  background-color: #ff6828;
+  border-radius: 2.5px;
+`;
+
+
+const Slider: React.FC<SliderProps> = ({ min, max, value, onValueChanged, valueLabel, ...props }) => {
+  const handleChange = useCallback(({ target }: ChangeEvent<HTMLInputElement>) => {
+    if(onValueChanged){
+      onValueChanged(parseInt(target.value, 10));
+    }
+  }, [onValueChanged]);
+  const progressPercentage = useMemo(() => (value / max) * 100, [value, max]);
+  const isCurrentValueMaxValue = useMemo(() => value === max, [value, max]);
 
   return (
-    <StyledRangeInput
-      size={size}
-      type="range"
-      value={value}
-      onChange={changeCallback}
-      // aria-labelledby="input slider"
-      step={step}
-      min={min}
-      max={max}
-    />
-  )
-}
+    <Box
+      position="relative"
+      height="48px"
+    >
+      <Box
+        position="absolute"
+        width="100%"
+      >
+        <BarBackground />
+        <BarProgress isCurrentValueMaxValue={isCurrentValueMaxValue} progress={progressPercentage} />
+        <StyledInput
+          type="range"
+          min={min}
+          max={max}
+          value={value}
+          onChange={handleChange}
+          isCurrentValueMaxValue={isCurrentValueMaxValue}
+        />
+      </Box>
+    </Box>
+  );
+};
+
+export default Slider;
