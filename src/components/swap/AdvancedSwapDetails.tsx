@@ -43,25 +43,26 @@ function TradeSummary({
           </Text>
           <Helper ml="4px" text={t('Your transaction will revert if there')} />
         </Flex>
-        <Flex>
-          <Text 
-            textStyle="R_14M"
-            color={ColorStyles.DEEPGREY}
-            textAlign={isMobile ? "left" : "right"}
-          >
-            {!isPriceImpactCaution && (
-              <>
-                {isExactIn ? 
-                `${slippageAdjustedAmounts[Field.OUTPUT]?.toSignificant(4)} ${trade.outputAmount.currency.symbol}` ??
-                  '-' : `${slippageAdjustedAmounts[Field.INPUT]?.toSignificant(4)} ${trade.inputAmount.currency.symbol}` ?? 
-                  '-'}
-              </>
-            )}
-            {isPriceImpactCaution && (
-              `- ${trade.outputAmount.currency.symbol}`
-            )}
-          </Text>
-        </Flex>
+        <Text
+          textStyle="R_14M"
+          color={ColorStyles.DEEPGREY}
+          textAlign={isMobile ? "left" : "right"}
+          style={{whiteSpace: "pre"}}
+        >
+          {!isPriceImpactCaution && (
+            <>
+              {isExactIn ? 
+              `${slippageAdjustedAmounts[Field.OUTPUT]?.toSignificant(4)} ${trade.outputAmount.currency.symbol}` ??
+                '-' : `${slippageAdjustedAmounts[Field.INPUT]?.toSignificant(4)} ${trade.inputAmount.currency.symbol}` ?? 
+                '-'}
+            </>
+          )}
+          {isPriceImpactCaution && (
+            <>
+              - {trade.outputAmount.currency.symbol}
+            </>
+          )}
+        </Text>
       </Flex>
       
       <Flex
@@ -69,9 +70,7 @@ function TradeSummary({
         justifyContent="space-between"
         mb="12px"
       >
-        <Flex
-          mb={isMobile ? "4px" : "0px"}
-        >
+        <Flex mb={isMobile ? "4px" : "0px"}>
           <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>
             {t('Price Impact')}
           </Text>
@@ -98,6 +97,7 @@ function TradeSummary({
           textStyle="R_14M"
           color={ColorStyles.DEEPGREY}
           textAlign={isMobile ? "left" : "right"}
+          style={{whiteSpace: "pre"}}
         >
           {!isPriceImpactCaution && (
             <>

@@ -29,30 +29,12 @@ export default function TradePrice({ price, isPriceImpactCaution = false }: Trad
         <Box>
           <Flex justifyContent={isMobile ? "flex-start" : "flex-end"}>
             <StyledText>
-              1 {price?.baseCurrency?.symbol}
-            </StyledText>
-            <StyledText ml="2px" mr="2px">
-              =
-            </StyledText>
-            <StyledText mr="2px">
-              {price?.toSignificant(6) ?? '-'}
-            </StyledText>
-            <StyledText>
-              {price?.quoteCurrency?.symbol}
+              1 {price?.baseCurrency?.symbol} = {price?.toSignificant(6) ?? '-'} {price?.quoteCurrency?.symbol}
             </StyledText>
           </Flex>
           <Flex justifyContent={isMobile ? "flex-start" : "flex-end"}>
             <StyledText>
-              1 {price?.quoteCurrency?.symbol}
-            </StyledText>
-            <StyledText ml="2px" mr="2px">
-              =
-            </StyledText>
-            <StyledText mr="2px">
-              {price?.invert()?.toSignificant(6) ?? '-'}
-            </StyledText>
-            <StyledText>
-              {price?.baseCurrency?.symbol}
+              1 {price?.quoteCurrency?.symbol} = {price?.invert()?.toSignificant(6) ?? '-'} {price?.baseCurrency?.symbol}
             </StyledText>
           </Flex>
         </Box>
