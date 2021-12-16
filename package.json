@@ -11,7 +11,7 @@
     "build:staging_prev": "NODE_ENV=staging CI=false dotenv -e .env.staging_prev react-scripts build",
     "build:stage": "NODE_ENV=production CI=false dotenv -e .env.stage react-scripts build",
     "postbuild:stage": "npm run versionfile",
-    "build:prod": "NODE_ENV=production CI=false dotenv -e .env.production react-scripts build",
+    "build:production": "NODE_ENV=production CI=false dotenv -e .env.production react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}'",
