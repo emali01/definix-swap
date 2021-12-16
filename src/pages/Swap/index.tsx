@@ -43,6 +43,8 @@ import { useLocation } from 'react-router'
 import qs from 'querystring';
 
 const Swap: React.FC = () => {
+  const [isApprovePending, setIsApprovePending] = useState<boolean>(false);
+
   const location = useLocation();
   const currencyQuerystring = useMemo(() => qs.parse(location.search), [location.search]);
   const outputQs = useMemo(() => String(currencyQuerystring["?outputCurrency"] || currencyQuerystring.outputCurrency), [currencyQuerystring]);
@@ -116,6 +118,12 @@ const Swap: React.FC = () => {
   const noRoute = useMemo(() => !route, [route]);
 
   const [approval, approveCallback, approveErr, setApproveErr] = useApproveCallbackFromTrade(chainId, trade, allowedSlippage)
+
+  const onClickApproveBtn = useCallback(async () => {
+    setIsApprovePending(true);
+    await approveCallback();
+    setIsApprovePending(false);
+  }, [approveCallback, setIsApprovePending]);
 
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
   const { toastError } = useToast();
@@ -383,10 +391,11 @@ const Swap: React.FC = () => {
         
                               <Button
                                 scale={ButtonScales.MD}
-                                onClick={approveCallback}
+                                onClick={onClickApproveBtn}
                                 disabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted}
                                 width={isMobile ? "100%" : "186px"}
                                 mt={isMobile ? "8px" : "0px"}
+                                isLoading={isApprovePending}
                               >
                                 {approval === ApprovalState.PENDING ? (
                                   <Flex>
