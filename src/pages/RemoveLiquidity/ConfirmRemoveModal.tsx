@@ -363,7 +363,7 @@ export default function ConfirmRemoveModal({
   useEffect(() => {
     if (txHash) {
       toastSuccess(t('{{Action}} Complete', {
-        Action: t('Remove Liquidity')
+        Action: t('actionRemove Liquidty')
       }), <KlaytnScopeLink hash={txHash} />)
       onDismiss();
     }
@@ -372,7 +372,7 @@ export default function ConfirmRemoveModal({
   useEffect(() => {
     if (errorMsg) {
       toastError(t('{{Action}} Failed', {
-        Action: t('Remove Liquidity')
+        Action: t('actionRemove Liquidty')
       }))
       onDismiss();
     }

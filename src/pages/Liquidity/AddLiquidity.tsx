@@ -159,14 +159,14 @@ const AddLiquidity: React.FC = () => {
   useEffect(() => {
     if(approveAErr){
       toastError(t('{{Action}} Failed', {
-        Action: t('Approve')
+        Action: t('actionApprove')
       }));
       setApproveAErr('');
       return;
     }
     if(approveBErr){
       toastError(t('{{Action}} Failed', {
-        Action: t('Approve')
+        Action: t('actionApprove')
       }));
       setApproveBErr('');
     }

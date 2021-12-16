@@ -124,7 +124,7 @@ const Swap: React.FC = () => {
   useEffect(() => {
     if(approveErr){
       toastError(t('{{Action}} Failed', {
-        Action: t('Approve')
+        Action: t('actionApprove')
       }));
       setApproveErr('');
     }

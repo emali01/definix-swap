@@ -295,7 +295,7 @@ export default function ConfirmAddModal({
   useEffect(() => {
     if (txHash) {
       toastSuccess(t('{{Action}} Complete', {
-        Action: t('Add Liquidity')
+        Action: t('actionAdd Liquidity')
       }), <KlaytnScopeLink hash={txHash} />)
       onDismiss();
     }
@@ -304,7 +304,7 @@ export default function ConfirmAddModal({
   useEffect(() => {
     if (errorMsg) {
       toastError(t('{{Action}} Failed', {
-        Action: t('Add Liquidity')
+        Action: t('actionAdd Liquidity')
       }))
       onDismiss();
     }

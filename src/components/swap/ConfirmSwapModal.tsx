@@ -78,17 +78,21 @@ export default function ConfirmSwapModal({
     swapCallback()
       .then((hash) => {
         setTxHash(hash);
-        toastSuccess(t('Swap Complete'), <KlaytnScopeLink hash={hash} />)
+        toastSuccess(t('{{Action}} Complete', {
+          Action: t('actionSwap')
+        }), <KlaytnScopeLink hash={hash} />)
         onDismiss();
         onDismissModal();
       })
       .catch((error) => {
         setErrorMessage(error.message);
-        toastError(t('Swap Failed'))
+        toastError(t('{{Action}} Failed', {
+          Action: t('actionSwap')
+        }))
         onDismiss();
         onDismissModal();
       })
-  }, [priceImpactWithoutFee, swapCallback, toastSuccess, t, onDismiss, onDismissModal, toastError])
+  }, [priceImpactWithoutFee, swapCallback, t, toastSuccess, onDismiss, onDismissModal, toastError])
 
   return (
     <Modal title={t('Confirm Swap')} mobileFull onDismiss={onDismiss}>
