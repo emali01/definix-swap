@@ -19,6 +19,8 @@ import {
   ArrowChangeIcon,
   BackIcon,
   textStyle,
+  ButtonVariants,
+  CheckBIcon,
 } from '@fingerlabs/definixswap-uikit-v2'
 import { useTokenBalance } from 'state/wallet/hooks'
 import { useTranslation } from 'react-i18next'
@@ -63,6 +65,7 @@ export default function RemoveLiquidity({
     params: { currencyIdA, currencyIdB }
   }
 }: RouteComponentProps<{ currencyIdA: string; currencyIdB: string }>) {
+  const [isApprovePending, setIsApprovePending] = useState<boolean>(false);
   const { isXl, isXxl } = useMatchBreakpoints()
   const isMobile = useMemo(() => !isXl && !isXxl, [isXl, isXxl])
 
@@ -98,8 +101,18 @@ export default function RemoveLiquidity({
     parsedAmounts[Field.LIQUIDITY],
     ROUTER_ADDRESS[chainId || parseInt(process.env.REACT_APP_CHAIN_ID || '0')]
   );
-  const { toastError } = useToast();
 
+  const onClickApproveButton = useCallback(async () => {
+    try {
+      setIsApprovePending(true);
+      await approveCallback();
+    } catch (err) {
+      setIsApprovePending(false);
+    }
+    setIsApprovePending(false);
+  }, [approveCallback, setIsApprovePending]);
+
+  const { toastError } = useToast();
   const onUserInput = useCallback(
     (field: Field, val: string) => {
       setSignatureData(null)
@@ -467,14 +480,25 @@ export default function RemoveLiquidity({
                         </Flex>
 
                         <Button
-                          onClick={approveCallback}
+                          onClick={onClickApproveButton}
                           textStyle="R_14B"
                           scale={ButtonScales.LG}
                           width={isMobile ? "100%" : "186px"}
+                          xs={approval !== ApprovalState.NOT_APPROVED || signatureData !== null}
                           disabled={approval !== ApprovalState.NOT_APPROVED || signatureData !== null}
-                          isLoading={approval === ApprovalState.PENDING}
+                          isLoading={isApprovePending}
+                          variant={
+                            (approval !== ApprovalState.NOT_APPROVED || signatureData !== null) ? 
+                            'line' : 
+                            ButtonVariants.BROWN
+                          }
                         >
-                          {t('Approve to LP')}
+                          {(approval !== ApprovalState.NOT_APPROVED || signatureData !== null) && (
+                            <Box style={{opacity: 0.5}} mt="4px">
+                              <CheckBIcon />
+                            </Box>
+                          )}
+                          <Text ml="6px">{t('Approve to LP')}</Text>
                         </Button>
                       </Flex>
                     )}

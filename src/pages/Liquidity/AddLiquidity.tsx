@@ -306,12 +306,12 @@ const AddLiquidity: React.FC = () => {
                           {approvalA === ApprovalState.APPROVED && (
                             <Button
                               scale={ButtonScales.LG}
-                              onClick={onClickApproveAButton}
+                              xs
                               disabled
+                              variant="line"
                               width={isMobile ? "100%" : "186px"}
                               textStyle="R_14B"
                               color={ColorStyles.MEDIUMGREY}
-                              variant={ButtonVariants.BROWN}
                             >
                               <Box style={{opacity: 0.5}} mt="4px">
                                 <CheckBIcon />
@@ -351,12 +351,12 @@ const AddLiquidity: React.FC = () => {
                           {approvalB === ApprovalState.APPROVED && (
                             <Button
                               scale={ButtonScales.LG}
-                              onClick={onClickApproveBButton}
+                              xs
                               disabled
+                              variant="line"
                               width={isMobile ? "100%" : "186px"}
                               textStyle="R_14B"
                               color={ColorStyles.MEDIUMGREY}
-                              variant={ButtonVariants.BROWN}
                             >
                               <Box style={{opacity: 0.5}} mt="4px">
                                 <CheckBIcon />
