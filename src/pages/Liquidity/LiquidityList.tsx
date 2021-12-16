@@ -86,7 +86,12 @@ const LiquidityList: React.FC = () => {
           <Box mb="24px">
             <ImgEmptyStateWallet />
           </Box>
-          <Text mb="60px" textStyle="R_16M" color={ColorStyles.DEEPGREY}>
+          <Text 
+            mb="60px"
+            textStyle="R_16M"
+            color={ColorStyles.DEEPGREY}
+            textAlign="center"
+          >
             {t('Connect to a wallet to view your liquidity.')}
           </Text>
           <ConnectWalletButton />

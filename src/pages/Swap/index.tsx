@@ -47,9 +47,14 @@ const Swap: React.FC = () => {
   const currencyQuerystring = useMemo(() => qs.parse(location.search), [location.search]);
   const outputQs = useMemo(() => String(currencyQuerystring["?outputCurrency"] || currencyQuerystring.outputCurrency), [currencyQuerystring]);
 
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { isXl, isXxl } = useMatchBreakpoints()
   const isMobile = useMemo(() => !isXl && !isXxl, [isXl, isXxl])
+
+  const gitbookLink = useMemo(() => i18n.language === 'ko' ? 
+    'https://sixnetwork.gitbook.io/definix-on-klaytn-kr/exchange/how-to-swap' : 
+    'https://sixnetwork.gitbook.io/definix-on-klaytn-en/exchange/how-to-trade-on-definix-exchange' 
+  ,[i18n.language])
  
   const { account, chainId = '' } = useActiveWeb3React()
 
@@ -253,7 +258,7 @@ const Swap: React.FC = () => {
         <TitleSet
           title={t("Swap")}
           description={t('Swap it for any token')}
-          link="https://sixnetwork.gitbook.io/definix-on-klaytn-en/exchange/how-to-trade-on-definix-exchange"
+          link={gitbookLink}
           linkLabel={t('Learn how to Swap')}
         />
         <Flex 
