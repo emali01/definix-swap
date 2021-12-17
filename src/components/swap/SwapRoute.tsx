@@ -1,8 +1,7 @@
 import { Trade } from 'definixswap-sdk'
 import React, { Fragment, memo } from 'react'
-import { Text, Flex, ArrowDoubleArrowIcon, ColorStyles } from '@fingerlabs/definixswap-uikit-v2'
+import { Text, Flex, ArrowDoubleArrowIcon, ColorStyles, Coin } from '@fingerlabs/definixswap-uikit-v2'
 import { useTranslation } from 'react-i18next'
-import CurrencyLogo from '../CurrencyLogo'
 
 export default memo(function SwapRoute({ trade, isMobile, isPriceImpactCaution }: { 
   trade: Trade; 
@@ -22,7 +21,7 @@ export default memo(function SwapRoute({ trade, isMobile, isPriceImpactCaution }
           // eslint-disable-next-line react/no-array-index-key
           <Fragment key={i}>
             <Flex alignItems="center" mr="10px" mb="6px">
-              <CurrencyLogo currency={token} size={isMobile ? "20px" : "22px"} />
+              <Coin size={isMobile ? "20px" : "22px"} symbol={token?.symbol} />
               <Text textStyle="R_14M" color={ColorStyles.DEEPGREY} ml="9px">
                 {token.symbol}
               </Text>

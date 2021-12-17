@@ -1,11 +1,10 @@
-import { Currency, CurrencyAmount, currencyEquals, ETHER, Token } from 'definixswap-sdk'
+import { Currency, CurrencyAmount, currencyEquals } from 'definixswap-sdk'
 import React, { CSSProperties, MutableRefObject } from 'react'
 import { FixedSizeList } from 'react-window'
 import styled from 'styled-components'
-import { Text, Flex, Box } from '@fingerlabs/definixswap-uikit-v2'
+import { Text, Flex, Box, Coin } from '@fingerlabs/definixswap-uikit-v2'
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
-import CurrencyLogo from '../CurrencyLogo'
 import { MenuItem } from './styleds'
 import Loader from '../Loader'
 
@@ -41,18 +40,16 @@ function CurrencyRow({
   return (
     <MenuItem
       style={style}
-      // className={`token-item-${key}`}
       onClick={() => (isSelected ? null : onSelect())}
       disabled={isSelected}
       selected={otherSelected}
     >
       <Flex alignItems="center">
-        <CurrencyLogo currency={currency} size="32px" />
+        <Coin size="32px" symbol={currency?.symbol} />
         <Text ml="12px">{currency.symbol}</Text>
       </Flex>
 
       {/* <TokenTags currency={currency} /> */}
-
       <Flex justifySelf="flex-end">
         {balance ? <Balance balance={balance} /> : account ? <Loader /> : null}
       </Flex>
@@ -79,14 +76,16 @@ export default function CurrencyList({
       {
         currencies.map((item) => {
           const currency = item;
-          return <CurrencyRow
-            key={item.symbol}
-            style={{}}
-            currency={currency}
-            isSelected={Boolean(selectedCurrency && currencyEquals(selectedCurrency, currency))}
-            onSelect={() => onCurrencySelect(currency)}
-            otherSelected={Boolean(otherCurrency && currencyEquals(otherCurrency, currency))}
-          />
+          return (
+            <CurrencyRow
+              key={item.symbol}
+              style={{}}
+              currency={currency}
+              isSelected={Boolean(selectedCurrency && currencyEquals(selectedCurrency, currency))}
+              onSelect={() => onCurrencySelect(currency)}
+              otherSelected={Boolean(otherCurrency && currencyEquals(otherCurrency, currency))}
+            />
+          )
         })
       }
     </Box>

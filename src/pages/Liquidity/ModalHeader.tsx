@@ -1,8 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { ColorStyles, Flex, Text, Box } from '@fingerlabs/definixswap-uikit-v2';
+import { ColorStyles, Flex, Text, Box, Lp } from '@fingerlabs/definixswap-uikit-v2';
 import { Field } from 'state/mint/actions';
-import DoubleCurrencyLogo from 'components/DoubleLogo';
 import { Currency, TokenAmount } from 'definixswap-sdk';
 
 interface IProps {
@@ -31,10 +30,9 @@ const ModalHeader: React.FC<IProps> = ({
         >
           <Flex alignItems="center">
             <Box mr="10px">
-              <DoubleCurrencyLogo
-                currency0={currencies[Field.CURRENCY_A]}
-                currency1={currencies[Field.CURRENCY_B]}
-                size={32}
+              <Lp
+                size="32px"
+                lpSymbols={[currencies[Field.CURRENCY_A]?.symbol, currencies[Field.CURRENCY_B]?.symbol]}
               />
             </Box>
             <Text textStyle="R_16M" color={ColorStyles.BLACK}>
@@ -59,10 +57,9 @@ const ModalHeader: React.FC<IProps> = ({
           >
             <Flex alignItems="center">
               <Box mr="10px">
-                <DoubleCurrencyLogo
-                  currency0={currencies[Field.CURRENCY_A]}
-                  currency1={currencies[Field.CURRENCY_B]}
-                  size={32}
+                <Lp
+                  size="32px"
+                  lpSymbols={[currencies[Field.CURRENCY_A]?.symbol, currencies[Field.CURRENCY_B]?.symbol]}
                 />
               </Box>
               <Text textStyle="R_16M" color={ColorStyles.BLACK}>

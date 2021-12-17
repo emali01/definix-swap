@@ -16,7 +16,9 @@ import {
   ButtonScales,
   NotiIcon,
   ModalBody,
-  useMatchBreakpoints
+  useMatchBreakpoints,
+  Lp,
+  Coin
 } from '@fingerlabs/definixswap-uikit-v2'
 import { 
   Currency,
@@ -47,8 +49,6 @@ import UseDeParam from 'hooks/useDeParam'
 
 import { ROUTER_ADDRESS } from 'constants/index'
 
-import DoubleCurrencyLogo from 'components/DoubleLogo'
-import CurrencyLogo from 'components/CurrencyLogo'
 import KlaytnScopeLink from 'components/KlaytnScopeLink'
 
 import { calculateGasMargin, calculateSlippageAmount, getRouterContract } from 'utils'
@@ -395,7 +395,10 @@ export default function ConfirmRemoveModal({
             </Text>
             <Flex justifyContent="space-between" alignItems="center" p="14px 0px" mb="20px">
               <Flex alignItems="center">
-                <DoubleCurrencyLogo currency0={currencyA} currency1={currencyB} size={32} />
+                <Lp
+                  size="32px"
+                  lpSymbols={[currencyA?.symbol, currencyB?.symbol]}
+                />
                 <Text ml="10px" textStyle="R_16M" color={ColorStyles.BLACK}>{currencyA?.symbol}-{currencyB?.symbol}</Text>
               </Flex>
               <Text textStyle="R_16R" color={ColorStyles.BLACK}>
@@ -406,7 +409,10 @@ export default function ConfirmRemoveModal({
             <Text textStyle="R_16M" color={ColorStyles.DEEPGREY}>{t('You will receive')}</Text>
             <Flex justifyContent="space-between" alignItems="center" p="14px 0px">
               <Flex alignItems="center">
-                <CurrencyLogo currency={currencyA} size="32px" />
+                <Coin
+                  symbol={currencyA?.symbol}
+                  size="32px"
+                />
                 <Text textStyle="R_16M" color={ColorStyles.BLACK} ml="10px">
                   {currencyA?.symbol}
                 </Text>
@@ -418,7 +424,10 @@ export default function ConfirmRemoveModal({
 
             <Flex justifyContent="space-between" alignItems="center" p="14px 0px">
               <Flex alignItems="center">
-                <CurrencyLogo currency={currencyB} size="32px" />
+                <Coin
+                  symbol={currencyB?.symbol}
+                  size="32px"
+                />
                 <Text textStyle="R_16M" color={ColorStyles.BLACK} ml="10px">
                   {currencyB?.symbol}
                 </Text>

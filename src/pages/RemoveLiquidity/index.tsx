@@ -21,6 +21,8 @@ import {
   textStyle,
   ButtonVariants,
   CheckBIcon,
+  Lp,
+  Coin,
 } from '@fingerlabs/definixswap-uikit-v2'
 import { useTokenBalance } from 'state/wallet/hooks'
 import { useTranslation } from 'react-i18next'
@@ -28,8 +30,6 @@ import { useToast } from 'state/toasts/hooks'
 import Slider from 'components/Slider'
 import styled from 'styled-components'
 import { CurrencyInputPanelOnRemoveLP } from '../../components/CurrencyInputPanel'
-import CurrencyLogo from '../../components/CurrencyLogo'
-import DoubleCurrencyLogo from '../../components/DoubleLogo'
 import { StyledInternalLink } from '../../components/Shared'
 import { ROUTER_ADDRESS } from '../../constants'
 import { useActiveWeb3React } from '../../hooks'
@@ -228,24 +228,19 @@ export default function RemoveLiquidity({
             <CardBody>
               <Flex flexDirection="column" mb="20px">
                 <Flex 
-                  justifyContent={isMobile ? "flex-start" : "space-between"}
+                  justifyContent={isMobile ? "flex-start" : "flex-start"}
                   alignItems="center"
                   mb="20px"
                 >
-                  <Flex 
-                    alignItems="center"
-                    mr={isMobile ? "10px" : "20px"}
-                  >
-                    <DoubleCurrencyLogo 
-                      size={isMobile ? 36 : 40} 
-                      currency0={currencyA} 
-                      currency1={currencyB}
-                    />
-                  </Flex>
-                  <Flex 
+                  <Lp
+                    size={isMobile ? '36px' : '40px'}
+                    lpSymbols={[currencyA?.symbol, currencyB?.symbol]}
+                  />
+                  <Flex
+                    ml="10px"
                     flexDirection={isMobile ? "column" : "row"}
                     justifyContent={isMobile ? "flex-start" : "space-between"}
-                    width={isMobile ? "auto" : "100%"}
+                    flex="1 1 0"
                   >
                     <Text 
                       textStyle={isMobile ? "R_16M" : "R_18M"}
@@ -425,7 +420,10 @@ export default function RemoveLiquidity({
                   p={isMobile ? "5px 0" : "14px 0"}
                 >
                   <Flex alignItems="center">
-                    <CurrencyLogo size={isMobile ? "30px" : "32px"} currency={currencyA}/>
+                    <Coin 
+                      size={isMobile ? "30px" : "32px"}
+                      symbol={currencyA?.symbol}
+                    />
                     <Text
                       textStyle={isMobile ? "R_14M" : "R_16M"}
                       color={ColorStyles.BLACK}
@@ -443,7 +441,10 @@ export default function RemoveLiquidity({
                   p={isMobile ? "5px 0" : "14px 0"}
                 >
                   <Flex alignItems="center">
-                    <CurrencyLogo size={isMobile ? "30px" : "32px"} currency={currencyB}/>
+                    <Coin 
+                      size={isMobile ? "30px" : "32px"}
+                      symbol={currencyB?.symbol}
+                    />
                     <Text
                       textStyle={isMobile ? "R_14M" : "R_16M"}
                       color={ColorStyles.BLACK}
@@ -472,7 +473,10 @@ export default function RemoveLiquidity({
                       >
                         <Flex alignItems="center" mb={isMobile ? "8px" : "0px"}>
                           <Box mr="12px">
-                            <DoubleCurrencyLogo size={32} currency0={currencyA} currency1={currencyB}/>
+                            <Lp
+                              size="32px"
+                              lpSymbols={[currencyA?.symbol, currencyB?.symbol]}
+                            />
                           </Box>
                           <Text textStyle={isMobile ? "R_16M" : "R_18M"} color={ColorStyles.MEDIUMGREY}>
                             {currencyA?.symbol}-{currencyB?.symbol}

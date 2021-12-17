@@ -10,7 +10,8 @@ import {
   ColorStyles,
   ButtonScales,
   ButtonVariants,
-  useMatchBreakpoints
+  useMatchBreakpoints,
+  Lp
 } from '@fingerlabs/definixswap-uikit-v2'
 import { useTranslation } from 'react-i18next'
 import { useTotalSupply } from '../../data/TotalSupply'
@@ -18,7 +19,6 @@ import { useActiveWeb3React } from '../../hooks'
 import { useTokenBalance } from '../../state/wallet/hooks'
 import { currencyId } from '../../utils/currencyId'
 import { unwrappedToken } from '../../utils/wrappedCurrency'
-import DoubleCurrencyLogo from '../DoubleLogo'
 import { Dots } from '../swap/styleds'
 
 interface PositionCardProps {
@@ -67,7 +67,7 @@ export const MinimalPositionCard = React.memo(({ pair, showUnwrapped = false, is
               </Text>
               <Flex>
                 <Box mr="12px">
-                  <DoubleCurrencyLogo currency0={currency0} currency1={currency1} size={24} />
+                  <Lp size="24px" lpSymbols={[currency0?.symbol, currency1?.symbol]} />
                 </Box>
                 <Flex flexDirection="column" width="100%">
                   <Flex justifyContent="space-between" mb="8px" onClick={() => setShowMore(!showMore)}>
@@ -176,7 +176,7 @@ const FullPositionCard = ({ pair, isLastCard = false }: PositionCardProps) => {
       >
         <Flex alignItems="center" mb={isMobile ? "20px" : "0px"}>
           <Box mr="12px">
-            <DoubleCurrencyLogo currency0={currency0} currency1={currency1} size={32} />
+            <Lp size="32px" lpSymbols={[currency0?.symbol, currency1?.symbol]} />
           </Box>
 
           <Flex flexDirection="column" mr="20px" justifyContent="center">

@@ -32,14 +32,14 @@ import {
   Box,
   Divider,
   ButtonVariants,
+  Coin,
 } from '@fingerlabs/definixswap-uikit-v2'
 
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { computeTradePriceBreakdown, warningSeverity } from 'utils/prices'
-import CurrencyLogo from 'components/CurrencyLogo'
 import { useToast } from 'state/toasts/hooks'
 import { useAllTokens } from 'hooks/Tokens'
-import { allTokenAddresses, BLOCKED_PRICE_IMPACT_NON_EXPERT, LIMITED_PRICE_IMPACT } from 'constants/index';
+import { allTokenAddresses, LIMITED_PRICE_IMPACT } from 'constants/index';
 import { useLocation } from 'react-router'
 import qs from 'querystring';
 
@@ -288,7 +288,6 @@ const Swap: React.FC = () => {
               <CurrencyInputPanel
                 isMobile={isMobile}
                 value={formattedAmounts[Field.INPUT]}
-                showMaxButton={!atMaxAmountInput}
                 currency={currencies[Field.INPUT]}
                 onUserInput={handleTypeInput}
                 onQuarter={handleQuarterInput}
@@ -322,7 +321,6 @@ const Swap: React.FC = () => {
                 onCurrencySelect={handleOutputSelect}
                 otherCurrency={currencies[Field.INPUT]}
                 id="swap-currency-output"
-                showMaxButton={!atMaxAmountInput}
               />
             </Flex>
 
@@ -381,10 +379,7 @@ const Swap: React.FC = () => {
                               mb="20px"
                             >
                               <Flex alignItems="center">
-                                <CurrencyLogo
-                                  currency={currencies[Field.INPUT]} 
-                                  size="32px"
-                                />
+                                <Coin symbol={currencies[Field.INPUT]?.symbol} size="32px" />
                                 <Text ml="12px" textStyle="R_16M" color={ColorStyles.MEDIUMGREY}>
                                   {`${currencies[Field.INPUT]?.symbol}`}
                                 </Text>

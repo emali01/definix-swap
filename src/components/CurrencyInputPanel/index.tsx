@@ -12,23 +12,21 @@ import {
   ColorStyles,
   Noti,
   NotiType,
-  UnSelectTokenIcon,
   useModal,
   textStyle,
   useMatchBreakpoints,
+  Coin,
+  Lp,
 } from '@fingerlabs/definixswap-uikit-v2'
 import { useCaverJsReact } from '@sixnetwork/caverjs-react-core'
 import { escapeRegExp } from 'utils'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
-import CurrencyLogo from '../CurrencyLogo'
-import DoubleCurrencyLogo from '../DoubleLogo'
 import { Input as NumericalInput } from '../NumericalInput'
 import CurrencySearchModal from '../SearchModal/CurrencySearchModal'
 
 interface CurrencyInputPanelProps {
   isMobile: boolean;
   value: string
-  showMaxButton: boolean
   currency?: Currency | null
   disableCurrencySelect?: boolean
   hideBalance?: boolean
@@ -107,7 +105,10 @@ export const CurrencyInputPanelOnRemoveLP: React.FC<any> = ({
         {currencyA && currencyB && (
           <>
             <Box mr={isMobile ? "12px" : "10px"}>
-              <DoubleCurrencyLogo size={32} currency0={currencyA} currency1={currencyB}/>
+              <Lp 
+                lpSymbols={[currencyA?.symbol, currencyB?.symbol]}
+                size="32px"
+              />
             </Box>
             <Text textStyle="R_16M" color={ColorStyles.DEEPGREY}>
               {currencyA?.symbol}-{currencyB?.symbol}
@@ -117,7 +118,10 @@ export const CurrencyInputPanelOnRemoveLP: React.FC<any> = ({
         {currency && (
           <>
             <Box mr={isMobile ? "12px" : "10px"}>
-              <CurrencyLogo size="32px" currency={currency}/>
+              <Coin 
+                size="32px"
+                symbol={currency?.symbol}
+              />
             </Box>
             <Text
               textStyle="R_16M"
@@ -175,7 +179,6 @@ export const CurrencyInputPanelOnRemoveLP: React.FC<any> = ({
 export default function CurrencyInputPanel({
   isMobile,
   value,
-  showMaxButton,
   currency,
   disableCurrencySelect = false,
   hideBalance = false,
@@ -312,9 +315,23 @@ export default function CurrencyInputPanel({
               </Flex>
               <Flex flexDirection="column" alignItems="center">
                 <Flex mb="5px">
-                  {pair && <DoubleCurrencyLogo currency0={pair.token0} currency1={pair.token1} size={16} margin />}
-                  {!pair && currency && <CurrencyLogo currency={currency} size={isMobile ? "32px" : "40px"} />}
-                  {!pair && !currency && <UnSelectTokenIcon viewBox="0 0 40 40" width={isMobile ? "32" : "40"} height={isMobile ? "32" : "40"} />}
+                  {pair && 
+                    <Lp 
+                      lpSymbols={[pair.token0?.symbol, pair.token1?.symbol]} size="16px"
+                    />
+                  }
+                  {!pair && currency && 
+                    <Coin 
+                      symbol={currency?.symbol}
+                      size={isMobile ? "32px" : "40px"}
+                    />
+                  }
+                  {!pair && !currency && 
+                    <Coin 
+                      symbol="UNSELECT"
+                      size={isMobile ? "32px" : "40px"}
+                    />
+                  }
                 </Flex>
                 {pair && (
                   <Text textStyle={isMobile ? "R_12B" : "R_14B"} color={ColorStyles.BLACK}>

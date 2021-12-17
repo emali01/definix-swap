@@ -13,7 +13,8 @@ import {
   useMatchBreakpoints,
   useModal,
   Divider,
-  ButtonVariants
+  ButtonVariants,
+  Coin
 } from '@fingerlabs/definixswap-uikit-v2';
 import { Currency, currencyEquals, TokenAmount, WETH } from 'definixswap-sdk';
 import { Field } from 'state/mint/actions'
@@ -31,7 +32,6 @@ import { ROUTER_ADDRESS } from 'constants/index';
 import { useHistory, useParams } from 'react-router';
 import { useCurrency } from 'hooks/Tokens';
 
-import CurrencyLogo from 'components/CurrencyLogo';
 import ConnectWalletButton from 'components/ConnectWalletButton'
 import CurrencyInputPanel from 'components/CurrencyInputPanel';
 
@@ -240,7 +240,6 @@ const AddLiquidity: React.FC = () => {
                 )
               }}
               onCurrencySelect={handleCurrencyASelect}
-              showMaxButton={!atMaxAmounts[Field.CURRENCY_A]}
               currency={currencies[Field.CURRENCY_A]}
               id="add-liquidity-input-tokena"
               isInsufficientBalance={error === DerivedMintInfoError.INSUFFICIENT_A_BALANCE}
@@ -270,7 +269,6 @@ const AddLiquidity: React.FC = () => {
                   numeral(parseFloat(maxAmounts[Field.CURRENCY_B]?.toExact() || '') / 2).format('0.00') ?? ''
                 )
               }}
-              showMaxButton={!atMaxAmounts[Field.CURRENCY_B]}
               currency={currencies[Field.CURRENCY_B]}
               id="add-liquidity-input-tokenb"
               isInsufficientBalance={error === DerivedMintInfoError.INSUFFICIENT_B_BALANCE}
@@ -297,7 +295,10 @@ const AddLiquidity: React.FC = () => {
                         mb={isMobile ? "24px" : "8px"}
                       >
                           <Flex alignItems="center" mb={isMobile ? "8px" : "0px"}>
-                            <CurrencyLogo currency={currencies[Field.CURRENCY_A]} size="32px" />
+                            <Coin
+                              size="32px"
+                              symbol={currencies[Field.CURRENCY_A]?.symbol}
+                            />
                             <Text ml={isMobile ? "10px" : "12px"} textStyle="R_16M" color={ColorStyles.MEDIUMGREY}>
                               {currencies[Field.CURRENCY_A]?.symbol}
                             </Text>
@@ -342,7 +343,10 @@ const AddLiquidity: React.FC = () => {
                         alignItems={isMobile ? "flex-start" : "center"}
                       >
                           <Flex alignItems="center" mb={isMobile ? "8px" : "0px"}>
-                            <CurrencyLogo currency={currencies[Field.CURRENCY_B]} size="32px" />
+                            <Coin
+                              size="32px"
+                              symbol={currencies[Field.CURRENCY_B]?.symbol}
+                            />
                             <Text ml={isMobile ? "10px" : "12px"} textStyle="R_16M" color={ColorStyles.MEDIUMGREY}>
                               {currencies[Field.CURRENCY_B]?.symbol}
                             </Text>

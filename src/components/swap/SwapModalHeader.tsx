@@ -2,9 +2,8 @@ import { Trade, TradeType } from 'definixswap-sdk'
 import { useTranslation } from 'react-i18next'
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
-import { Button, Text, Flex, Box, ChangeBottomIcon, Noti, NotiType } from '@fingerlabs/definixswap-uikit-v2'
+import { Button, Text, Flex, Box, ChangeBottomIcon, Noti, NotiType, Coin } from '@fingerlabs/definixswap-uikit-v2'
 import { computeSlippageAdjustedAmounts, computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
-import CurrencyLogo from '../CurrencyLogo'
 
 const BalanceText = styled(Text)<{ isAcceptChange: boolean }>`
   ${({ theme }) => theme.textStyle.R_16R}
@@ -31,7 +30,8 @@ const SwapTokenInfo = ({
   isInput,
   trade,
   showAcceptChanges,
-  priceImpactSeverity}: {
+  priceImpactSeverity
+}: {
     isInput: boolean
     trade: Trade
     showAcceptChanges?: boolean
@@ -42,8 +42,13 @@ const SwapTokenInfo = ({
     <Flex justifyContent="space-between" alignItems="center" height="60px">
       <Flex alignItems="center">
         <Box mr="12px" mt="2px">
-          {isInput && <CurrencyLogo currency={trade.inputAmount.currency} size="32px" />}
-          {!isInput && <CurrencyLogo currency={trade.outputAmount.currency} size="32px" />}
+          {isInput && 
+            <Coin size="32px" symbol={trade.inputAmount.currency?.symbol} />
+
+          }
+          {!isInput && 
+            <Coin size="32px" symbol={trade.outputAmount.currency?.symbol} />
+          }
         </Box>
         <Text textStyle="R_16M">
           {isInput && trade.inputAmount.currency.symbol}
