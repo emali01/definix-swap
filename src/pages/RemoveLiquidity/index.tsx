@@ -69,7 +69,13 @@ export default function RemoveLiquidity({
   const { isXl, isXxl } = useMatchBreakpoints()
   const isMobile = useMemo(() => !isXl && !isXxl, [isXl, isXxl])
 
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+
+  const gitbookLink = useMemo(() => i18n.language === 'ko' ? 
+  'https://sixnetwork.gitbook.io/definix-on-klaytn-kr/exchange/how-to-add-liquidity' : 
+  'https://sixnetwork.gitbook.io/definix-on-klaytn-en/exchange/how-to-add-liquidity' 
+, [i18n.language]);
+
   const [currencyA, currencyB] = [useCurrency(currencyIdA) ?? undefined, useCurrency(currencyIdB) ?? undefined];
   const { account, chainId } = useActiveWeb3React()
   const [tokenA, tokenB] = [wrappedCurrency(currencyA, chainId), wrappedCurrency(currencyB, chainId)];
@@ -211,7 +217,7 @@ export default function RemoveLiquidity({
         <TitleSet
           title={t("Liquidity")}
           description={t("Remove LP and take back tokens")}
-          link="https://sixnetwork.gitbook.io/definix-on-klaytn-en/exchange/liquidity-pools-and-adding-liquidity"
+          link={gitbookLink}
           linkLabel={t("Learn how to add Liquidity")}
         />
       </Flex>

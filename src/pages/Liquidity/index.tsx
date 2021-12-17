@@ -7,7 +7,12 @@ import AddLiquidity from './AddLiquidity'
 const Liquidity: React.FC = () => {
   const { isXl, isXxl } = useMatchBreakpoints()
   const isMobile = useMemo(() => !isXl && !isXxl, [isXl, isXxl])
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+
+  const gitbookLink = useMemo(() => i18n.language === 'ko' ? 
+  'https://sixnetwork.gitbook.io/definix-on-klaytn-kr/exchange/how-to-add-liquidity' : 
+  'https://sixnetwork.gitbook.io/definix-on-klaytn-en/exchange/how-to-add-liquidity' 
+, [i18n.language])
 
   const tabNames = useMemo(() => [t('Add'), t('Remove')], [t]);
   const [curTab, setCurTab] = useState<string>(tabNames[0]);
@@ -19,7 +24,7 @@ const Liquidity: React.FC = () => {
           <TitleSet
             title={t("Liquidity")}
             description={t("Pair tokens and add to liquidity to earn high interest profit")}
-            link="https://sixnetwork.gitbook.io/definix-on-klaytn-en/exchange/how-to-add-liquidity"
+            link={gitbookLink}
             linkLabel={t("Learn how to add Liquidity")}
           />
         </Flex>
