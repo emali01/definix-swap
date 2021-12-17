@@ -211,7 +211,7 @@ export default function RemoveLiquidity({
             color={ColorStyles.MEDIUMGREY}
             mt={isMobile ? "0px" : "-2px"}
           >
-            {t('BACK')}
+            {t('Back')}
           </Text>
         </Flex>
         <TitleSet
