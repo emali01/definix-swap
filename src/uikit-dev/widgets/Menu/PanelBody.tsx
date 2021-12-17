@@ -14,7 +14,9 @@ import { PanelProps, PushedProps } from './types'
 import UserBlock from './UserBlock'
 import CopyToClipboard from '../WalletModal/CopyToClipboard'
 import FinixCoin from '../../images/finix-coin.png'
-import RankMenuCard from "./RankMenuCard"
+import RankMenuCard from './RankMenuCard'
+// import g2kr from '../../images/g2-kr.png'
+import g2en from '../../images/g2-en.png'
 
 interface Props extends PanelProps, PushedProps {
   isMobile: boolean
@@ -76,7 +78,7 @@ const StyledDark = styled.div`
 const PanelBody: React.FC<Props> = (props) => {
   const location = useLocation()
   const { isDark } = useTheme()
-  const { isPushed, pushNav, isMobile, links, account, login, logout, currentLang ,vfinixBalance} = props
+  const { isPushed, pushNav, isMobile, links, account, login, logout, currentLang, vfinixBalance } = props
 
   // Close the menu when a user clicks a link on mobile
   const handleClick = isMobile ? () => pushNav(false) : undefined
@@ -149,7 +151,7 @@ const PanelBody: React.FC<Props> = (props) => {
         </div>
       )}
       <div className="py-2 bd-b">
-        <RankMenuCard  account={account} vfinixBalance={vfinixBalance}/>
+        <RankMenuCard account={account} vfinixBalance={vfinixBalance} />
       </div>
       {links.map((link) => (
         <div className="py-2 bd-b">
@@ -180,6 +182,11 @@ const PanelBody: React.FC<Props> = (props) => {
           <CopyToClipboard color="#000" noText toCopy={addressFinix} tooltipPos="bottom" iconWidth="16px" />
         </StyleLight>
       )}
+
+      <a href="http://google.com" target="_blank" rel="noopener noreferrer" className="mx-2">
+        <img src={g2en} alt="" />
+      </a>
+
       {/* <BorderBox>
         <Heading fontSize="14px" className="mb-4">
           Wallet
