@@ -92,7 +92,7 @@ const LiquidityList: React.FC = () => {
             color={ColorStyles.DEEPGREY}
             textAlign="center"
           >
-            {t('Connect to a wallet to view your liquidity.')}
+            {t('Connect to a wallet to view')}
           </Text>
           <ConnectWalletButton />
         </Flex>
