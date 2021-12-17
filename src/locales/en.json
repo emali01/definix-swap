@@ -19,7 +19,7 @@
   "No worries if you don't know": "No worries if you don't know how to make profits from cryptocurrency trade. You can invest in crypto funds managed by professional traders. Your portfolio will grow easier with helps from experts.",
   "User-Generated Crypto Funds": "User-Generated Crypto Funds",
   "For high-skilled traders": "For high-skilled traders, they can come to challenge our test. If they pass, they can create their own funds on the platform and earn more from fund managing fees.",
-  "Say hello to Definix G1": "Say hello to <0>Definix G2 Beta</0>",
+  "Say hello to Definix V1": "Say hello to <0>Definix G2 Beta</0>",
   "DEX and Liquidity Pools": "DEX and Liquidity Pools",
   "Decentralized exchange (DEX) is a cryptocurrency": "DEX is a decentralized cryptocurrency exchange operated by smart contracts. Connect your wallet to start exchange tokens and provide liquidity.",
   "Farms": "Farms",
@@ -116,6 +116,7 @@
   "Your transaction will revert if": "Your transaction will revert if it is pending for more than this long.",
   "Minutes": "Minutes",
   "Enter a valid number": "Enter a valid number.",
+  "I'm new to this": "",
   "Learn how to set up": "Learn how to connect wallet",
   "Learn how to Swap": "Learn how to Swap",
   "Swap it for any token": "Swap it for any token you want easily and conveniently.",
@@ -443,7 +444,9 @@
   "By Total staked": "Total staked",
   "Feedback": "Feedback",
   "Document": "Document",
-  "Still in progress": "Still in progress. It is available to use service on G1.",
+  "Still in progress": "Still in progress.\nIt is available to use service on G1.",
   "Connect to a wallet to view": "Connect to a wallet to view your liquidity.",
-  "No liquidity found.": "No liquidity found."
+  "No liquidity found.": "No liquidity found.",
+  "Go to G1": "Go to G1",
+  "Menu Swap": "Swap"
 }
