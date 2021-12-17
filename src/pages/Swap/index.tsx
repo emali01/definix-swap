@@ -348,9 +348,14 @@ const Swap: React.FC = () => {
               {account && (
                 <>
                   {showWrap && (
-                    <Button disabled={Boolean(wrapInputError)} onClick={onWrap}>
-                      {/* {wrapInputError ??
-                        (wrapType === WrapType.WRAP ? 'Wrap' : wrapType === WrapType.UNWRAP ? 'Unwrap' : null)} */}
+                    <Button
+                      width="100%"
+                      scale={ButtonScales.LG}
+                      disabled={Boolean(wrapInputError)}
+                      onClick={onWrap}
+                    >
+                      {wrapInputError ??
+                        (wrapType === WrapType.WRAP ? 'Wrap' : wrapType === WrapType.UNWRAP ? 'Unwrap' : null)}
                     </Button>
                   )}
                   {!showWrap && (
@@ -358,7 +363,6 @@ const Swap: React.FC = () => {
                       {noRoute && userHasSpecifiedInputOutput && (
                         <Button
                           width="100%"
-                          lg
                           onClick={onClickSwapButton}
                           id="swap-button"
                           disabled={!isValid || !!swapCallbackError}
