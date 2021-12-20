@@ -58,16 +58,15 @@ export const MinimalPositionCard = React.memo(({ pair, showUnwrapped = false, is
     <>
       {userPoolBalance && (
         <Flex backgroundColor={ColorStyles.WHITE} borderRadius="16px">
-          <CardBody style={{width: '100%'}} p="40px">
+          <CardBody style={{width: '100%'}} p={isMobile ? "20px" : "40px"}>
             <Flex flexDirection="column">
               <Text
                 textStyle="R_16M"
-                mb="12px"
                 color={ColorStyles.DEEPGREY}
               >
                 {t('Balance LP')}
               </Text>
-              <Flex>
+              <Flex mt={isMobile ? "14px" : "12px"}>
                 <Box
                   width={isMobile ? "46px" : "43px"}
                   mr={isMobile ? "12px" : "10px"}
@@ -75,7 +74,7 @@ export const MinimalPositionCard = React.memo(({ pair, showUnwrapped = false, is
                   <Lp size="24px" lpSymbols={[currency0?.symbol, currency1?.symbol]} />
                 </Box>
                 <Flex flexDirection="column" width="100%">
-                  <Flex justifyContent="space-between" mb="8px" onClick={() => setShowMore(!showMore)}>
+                  <Flex justifyContent="space-between" mb={isMobile ? "14px" : "8px"} onClick={() => setShowMore(!showMore)}>
                     <Flex>
                       <Text textStyle="R_14R">
                         {currency0.symbol}-{currency1.symbol}
@@ -89,55 +88,55 @@ export const MinimalPositionCard = React.memo(({ pair, showUnwrapped = false, is
                   </Flex>
 
                   <Flex flexDirection="column" width="100%">
-                    <Flex justifyContent="space-between" mb="8px">
-                    <Flex alignItems="center">
-                        <Box 
-                          width="3px"
-                          height="3px"
-                          borderRadius="50%"
-                          backgroundColor={ColorStyles.MEDIUMGREY}
-                          mr="6px"
-                        />
-                        <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>
-                          {currency0.symbol}
-                        </Text>
-                      </Flex>
-                      {token0Deposited ? (
-                        <Flex>
-                          <Text textStyle="R_14M" color={ColorStyles.DEEPGREY}>
-                            {token0Deposited?.toSignificant(6)}
-                          </Text>
-                        </Flex>
-                      ) : (
-                        '-'
-                      )}
-                    </Flex>
-                    <Flex justifyContent="space-between">
+                    <Flex justifyContent="space-between" mb={isMobile ? "6px" : "8px"}>
                       <Flex alignItems="center">
-                        <Box 
-                          width="3px"
-                          height="3px"
-                          borderRadius="50%"
-                          backgroundColor={ColorStyles.MEDIUMGREY}
-                          mr="6px"
-                        />
-                        <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>
-                          {currency1.symbol}
-                        </Text>
-                      </Flex>
-                      
-                      {token1Deposited ? (
-                        <Flex>
-                          <Text textStyle="R_14M" color={ColorStyles.DEEPGREY}>
-                            {token1Deposited?.toSignificant(6)}
+                          <Box 
+                            width="3px"
+                            height="3px"
+                            borderRadius="50%"
+                            backgroundColor={ColorStyles.MEDIUMGREY}
+                            mr="6px"
+                          />
+                          <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>
+                            {currency0.symbol}
                           </Text>
                         </Flex>
-                      ) : (
-                        '-'
-                      )}
+                        {token0Deposited ? (
+                          <Flex>
+                            <Text textStyle="R_14M" color={ColorStyles.DEEPGREY}>
+                              {token0Deposited?.toSignificant(6)}
+                            </Text>
+                          </Flex>
+                        ) : (
+                          '-'
+                        )}
+                      </Flex>
+                      <Flex justifyContent="space-between">
+                          <Flex alignItems="center">
+                            <Box 
+                              width="3px"
+                              height="3px"
+                              borderRadius="50%"
+                              backgroundColor={ColorStyles.MEDIUMGREY}
+                              mr="6px"
+                            />
+                            <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>
+                              {currency1.symbol}
+                            </Text>
+                          </Flex>
+                        
+                        {token1Deposited ? (
+                          <Flex>
+                            <Text textStyle="R_14M" color={ColorStyles.DEEPGREY}>
+                              {token1Deposited?.toSignificant(6)}
+                            </Text>
+                          </Flex>
+                        ) : (
+                          '-'
+                        )}
+                      </Flex>
                     </Flex>
                   </Flex>
-                </Flex>
               </Flex>
             </Flex>
           </CardBody>
