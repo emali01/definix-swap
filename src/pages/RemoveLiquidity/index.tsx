@@ -43,12 +43,12 @@ import ConfirmRemoveModal from './ConfirmRemoveModal'
 
 const StyledInternalLink = styled(Link)`
   ${textStyle.R_14R}
-  color: ${ColorStyles.MEDIUMGREY}
+  color: #999999;
   cursor: pointer;
 `
 const PercentInput = styled.span`
   ${textStyle.R_28M};
-  color: ${ColorStyles.BLACK};
+  color: #222222;
   border: none;
   outline: none;
 `
