@@ -46,6 +46,8 @@ interface Props extends InjectedModalProps {
   onDismissModal: () => void;
   currencyA: Currency;
   currencyB: Currency;
+  onFieldAInput: (typedValue: string) => void;
+  onFieldBInput: (typedValue: string) => void;
 }
 
 export default function ConfirmAddModal({
@@ -59,6 +61,8 @@ export default function ConfirmAddModal({
   onDismissModal = () => null,
   currencyA,
   currencyB,
+  onFieldAInput,
+  onFieldBInput,
 }: Props) {
   const { t } = useTranslation()
   const { chainId, account, library } = useActiveWeb3React()
@@ -297,9 +301,11 @@ export default function ConfirmAddModal({
       toastSuccess(t('{{Action}} Complete', {
         Action: t('actionAdd Liquidity')
       }), <KlaytnScopeLink hash={txHash} />)
+      onFieldAInput('');
+      onFieldBInput('');
       onDismiss();
     }
-  }, [txHash, t, toastSuccess, onDismissModal, onDismiss])
+  }, [txHash, t, toastSuccess, onDismissModal, onDismiss, onFieldAInput, onFieldBInput])
 
   useEffect(() => {
     if (errorMsg) {

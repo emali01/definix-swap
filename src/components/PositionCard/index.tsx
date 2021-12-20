@@ -31,6 +31,8 @@ interface PositionCardProps {
 export const MinimalPositionCard = React.memo(({ pair, showUnwrapped = false, isLastCard = false }: PositionCardProps) => {
   const { t } = useTranslation();
   const { account } = useActiveWeb3React()
+  const { isXl, isXxl } = useMatchBreakpoints()
+  const isMobile = useMemo(() => !isXl && !isXxl, [isXl, isXxl])
 
   const currency0 = showUnwrapped ? pair.token0 : unwrappedToken(pair.token0)
   const currency1 = showUnwrapped ? pair.token1 : unwrappedToken(pair.token1)
@@ -66,7 +68,10 @@ export const MinimalPositionCard = React.memo(({ pair, showUnwrapped = false, is
                 {t('Balance LP')}
               </Text>
               <Flex>
-                <Box mr="12px">
+                <Box
+                  width={isMobile ? "46px" : "43px"}
+                  mr={isMobile ? "12px" : "10px"}
+                >
                   <Lp size="24px" lpSymbols={[currency0?.symbol, currency1?.symbol]} />
                 </Box>
                 <Flex flexDirection="column" width="100%">

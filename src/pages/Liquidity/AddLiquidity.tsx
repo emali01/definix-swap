@@ -139,6 +139,8 @@ const AddLiquidity: React.FC = () => {
       currencyA={currencyA}
       currencyB={currencyB}
       onDismissModal={handleDismissConfirmation}
+      onFieldAInput={onFieldAInput}
+      onFieldBInput={onFieldBInput}
     />
   );
 
