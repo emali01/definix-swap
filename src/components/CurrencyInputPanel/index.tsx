@@ -141,7 +141,7 @@ export const CurrencyInputPanelOnRemoveLP: React.FC<any> = ({
         alignItems="center"
       >
         <Input
-          placeholder="0"
+          placeholder="0.0"
           value={value}
           onChange={(event) => {
             // replace commas with periods, because uniswap exclusively uses period as the decimal separator
