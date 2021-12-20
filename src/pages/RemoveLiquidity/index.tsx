@@ -41,15 +41,6 @@ import useDebouncedChangeHandler from '../../utils/useDebouncedChangeHandler'
 import { wrappedCurrency } from '../../utils/wrappedCurrency'
 import ConfirmRemoveModal from './ConfirmRemoveModal'
 
-// const PercentInput = styled.input`
-//   width: 40px;
-//   ${textStyle.R_28M};
-//   color: ${ColorStyles.BLACK};
-//   border: none;
-//   outline: none;
-//   text-align: right;
-// `;
-
 const PercentInput = styled.span`
   ${textStyle.R_28M};
   color: ${ColorStyles.BLACK};
@@ -79,7 +70,11 @@ export default function RemoveLiquidity({
 
   const [currencyA, currencyB] = [useCurrency(currencyIdA) ?? undefined, useCurrency(currencyIdB) ?? undefined]
   const { account, chainId } = useActiveWeb3React()
-  const [tokenA, tokenB] = [wrappedCurrency(currencyA, chainId), wrappedCurrency(currencyB, chainId)]
+  const [tokenA, tokenB] = useMemo(() => [wrappedCurrency(currencyA, chainId), wrappedCurrency(currencyB, chainId)], [
+    chainId,
+    currencyA,
+    currencyB,
+  ])
 
   const { independentField, typedValue } = useBurnState()
   const { pair, parsedAmounts, error } = useDerivedBurnInfo(currencyA ?? undefined, currencyB ?? undefined)
@@ -88,19 +83,21 @@ export default function RemoveLiquidity({
 
   const [showDetailed, setShowDetailed] = useState<boolean>(false)
 
-  const formattedAmounts = {
-    [Field.LIQUIDITY_PERCENT]: parsedAmounts[Field.LIQUIDITY_PERCENT].equalTo('0')
-      ? '0'
-      : parsedAmounts[Field.LIQUIDITY_PERCENT].lessThan(new Percent('1', '100'))
-      ? '<1'
-      : parsedAmounts[Field.LIQUIDITY_PERCENT].toFixed(0),
-    [Field.LIQUIDITY]:
-      independentField === Field.LIQUIDITY ? typedValue : parsedAmounts[Field.LIQUIDITY]?.toSignificant(6) ?? '',
-    [Field.CURRENCY_A]:
-      independentField === Field.CURRENCY_A ? typedValue : parsedAmounts[Field.CURRENCY_A]?.toSignificant(6) ?? '',
-    [Field.CURRENCY_B]:
-      independentField === Field.CURRENCY_B ? typedValue : parsedAmounts[Field.CURRENCY_B]?.toSignificant(6) ?? '',
-  }
+  const formattedAmounts = useMemo(() => {
+    return {
+      [Field.LIQUIDITY_PERCENT]: parsedAmounts[Field.LIQUIDITY_PERCENT].equalTo('0')
+        ? '0'
+        : parsedAmounts[Field.LIQUIDITY_PERCENT].lessThan(new Percent('1', '100'))
+        ? '<1'
+        : parsedAmounts[Field.LIQUIDITY_PERCENT].toFixed(0),
+      [Field.LIQUIDITY]:
+        independentField === Field.LIQUIDITY ? typedValue : parsedAmounts[Field.LIQUIDITY]?.toSignificant(6) ?? '',
+      [Field.CURRENCY_A]:
+        independentField === Field.CURRENCY_A ? typedValue : parsedAmounts[Field.CURRENCY_A]?.toSignificant(6) ?? '',
+      [Field.CURRENCY_B]:
+        independentField === Field.CURRENCY_B ? typedValue : parsedAmounts[Field.CURRENCY_B]?.toSignificant(6) ?? '',
+    }
+  }, [independentField, parsedAmounts, typedValue])
 
   const [signatureData, setSignatureData] = useState<{ v: number; r: string; s: string; deadline: number } | null>(null)
   const [approval, approveCallback, approveErr, setApproveErr] = useApproveCallback(
@@ -234,7 +231,7 @@ export default function RemoveLiquidity({
           mb={isMobile ? '40px' : '80px'}
         >
           <Flex flexDirection="column" width="100%">
-            <CardBody>
+            <CardBody p={isMobile ? '20px' : '40px'}>
               <Flex flexDirection="column" mb="20px">
                 <Flex justifyContent={isMobile ? 'flex-start' : 'flex-start'} alignItems="center" mb="20px">
                   <Lp size={isMobile ? '36px' : '40px'} lpSymbols={[currencyA?.symbol, currencyB?.symbol]} />
@@ -482,12 +479,6 @@ export default function RemoveLiquidity({
                     >
                       {t('Remove')}
                     </Button>
-
-                    {/* {error && (
-                        <Noti type={NotiType.ALERT} mt="12px">
-                          {t(`${error}`)}
-                        </Noti>
-                      )} */}
                   </Flex>
                 )}
               </Flex>
@@ -518,27 +509,6 @@ export default function RemoveLiquidity({
           </Flex>
         </Flex>
       )}
-
-      {/* <TransactionConfirmationModal
-        isOpen={showConfirm}
-        isPending={!!attemptingTxn}
-        isSubmitted={!!txHash}
-        isError={!!errorMsg}
-        confirmContent={() => (
-          <ConfirmationModalContent
-            mainTitle={t("Confirm Remove Liquidity")}
-            title="You will receive"
-            topContent={modalHeader}
-            bottomContent={modalBottom}
-          />
-        )}
-        submittedContent={() => <></>}
-        errorContent={errorContent}
-        onDismiss={handleDismissConfirmation}
-        
-        setShowConfirm={setShowConfirm}
-        setTxHash={setTxHash}
-      /> */}
     </Flex>
   )
 }
