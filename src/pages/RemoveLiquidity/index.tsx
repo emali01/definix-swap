@@ -24,13 +24,13 @@ import {
   Lp,
   Coin,
 } from '@fingerlabs/definixswap-uikit-v2'
+import { Link } from 'react-router-dom'
 import { useTokenBalance } from 'state/wallet/hooks'
 import { useTranslation } from 'react-i18next'
 import { useToast } from 'state/toasts/hooks'
 import Slider from 'components/Slider'
 import styled from 'styled-components'
 import { CurrencyInputPanelOnRemoveLP } from '../../components/CurrencyInputPanel'
-import { StyledInternalLink } from '../../components/Shared'
 import { ROUTER_ADDRESS } from '../../constants'
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrency } from '../../hooks/Tokens'
@@ -41,6 +41,11 @@ import useDebouncedChangeHandler from '../../utils/useDebouncedChangeHandler'
 import { wrappedCurrency } from '../../utils/wrappedCurrency'
 import ConfirmRemoveModal from './ConfirmRemoveModal'
 
+const StyledInternalLink = styled(Link)`
+  ${textStyle.R_14R}
+  color: ${ColorStyles.MEDIUMGREY}
+  cursor: pointer;
+`
 const PercentInput = styled.span`
   ${textStyle.R_28M};
   color: ${ColorStyles.BLACK};

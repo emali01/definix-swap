@@ -1,27 +1,16 @@
 import { Flex } from '@fingerlabs/definixswap-uikit-v2'
 import styled from 'styled-components'
-import { AutoColumn } from '../Column'
 
 export const FadedSpan = styled(Flex)`
   color: ${({ theme }) => theme.colors.primary};
   font-size: 14px;
 `
 
-export const PaddedColumn = styled(AutoColumn)`
-  padding: 24px;
-  padding-bottom: 0;
-`
-
 export const MenuItem = styled(Flex)<{ disabled: boolean; selected: boolean }>`
-  /* padding: 4px 20px; */
   padding: 14px 0;
   min-height: 60px;
   justify-content: space-between;
   align-items: center;
-  // display: grid;
-  // grid-template-columns: auto minmax(auto, 1fr) auto minmax(0, 72px);
-  // grid-gap: 10px;
-
   cursor: ${({ disabled }) => !disabled && 'pointer'};
   pointer-events: ${({ disabled }) => disabled && 'none'};
   :hover {

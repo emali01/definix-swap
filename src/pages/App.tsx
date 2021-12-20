@@ -1,11 +1,10 @@
 import React, { lazy, Suspense, useEffect } from 'react'
 import { Route, Switch, BrowserRouter } from 'react-router-dom'
 import { useCaverJsReact } from '@sixnetwork/caverjs-react-core'
-import { GlobalStyle, Loading } from '@fingerlabs/definixswap-uikit-v2'
+import { Flex, GlobalStyle, Loading } from '@fingerlabs/definixswap-uikit-v2'
 import useCaverJsReactForWallet from 'hooks/useCaverJsReactForWallet'
 import Menu from '../components/Menu'
 import Web3ReactManager from '../components/Web3ReactManager'
-import { AppWrapper } from '../components/Layout'
 import ToastListener from '../components/ToastListener'
 import { RedirectDuplicateTokenIds, RedirectOldAddLiquidityPathStructure } from './Liquidity/redirects'
 import RemoveLiquidity from './RemoveLiquidity'
@@ -23,19 +22,23 @@ export default function App() {
   // wallet
   const checkConnector = (connector: string) => window.localStorage.getItem('connector') === connector
   useEffect(() => {
-    if (!account && window.localStorage.getItem('accountStatus') && checkConnector("injected")) {
-      login('injected');
-    }else if (!account && window.localStorage.getItem('accountStatus') && window.localStorage.getItem('userAccount') && checkConnector("klip")){
-      login('klip');
+    if (!account && window.localStorage.getItem('accountStatus') && checkConnector('injected')) {
+      login('injected')
+    } else if (
+      !account &&
+      window.localStorage.getItem('accountStatus') &&
+      window.localStorage.getItem('userAccount') &&
+      checkConnector('klip')
+    ) {
+      login('klip')
     }
-
   }, [account, login])
 
   return (
     <Suspense fallback={null}>
       <GlobalStyle />
       <BrowserRouter>
-        <AppWrapper>
+        <Flex position="relative" flexDirection="column" alignItems="flex-start" maxWidth="1280px" height="100%">
           <Menu>
             <Suspense fallback={<Loading />}>
               <Web3ReactManager>
@@ -48,7 +51,12 @@ export default function App() {
                   <Route exact strict path="/liquidity/remove/:currencyIdA/:currencyIdB" component={RemoveLiquidity} />
                   <Route exact path="/liquidity/add/:currencyIdA" component={RedirectOldAddLiquidityPathStructure} />
                   <Route exact path="/liquidity/add/:currencyIdA/:currencyIdB" component={RedirectDuplicateTokenIds} />
-                  <Route exact strict path="/liquidity/remove/:tokens" component={RedirectOldRemoveLiquidityPathStructure} />
+                  <Route
+                    exact
+                    strict
+                    path="/liquidity/remove/:tokens"
+                    component={RedirectOldRemoveLiquidityPathStructure}
+                  />
                   <Route>
                     <Error />
                   </Route>
@@ -57,7 +65,7 @@ export default function App() {
             </Suspense>
           </Menu>
           <ToastListener />
-        </AppWrapper>
+        </Flex>
       </BrowserRouter>
     </Suspense>
   )

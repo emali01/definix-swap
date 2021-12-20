@@ -1,12 +1,10 @@
 import { Currency, CurrencyAmount, currencyEquals } from 'definixswap-sdk'
-import React, { CSSProperties, MutableRefObject } from 'react'
-import { FixedSizeList } from 'react-window'
+import React, { CSSProperties } from 'react'
 import styled from 'styled-components'
 import { Text, Flex, Box, Coin } from '@fingerlabs/definixswap-uikit-v2'
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
 import { MenuItem } from './styleds'
-import Loader from '../Loader'
 
 const StyledBalanceText = styled(Text)`
   white-space: nowrap;
@@ -16,8 +14,11 @@ const StyledBalanceText = styled(Text)`
 `
 
 function Balance({ balance }: { balance: CurrencyAmount }) {
-  // return <></>
-  return <StyledBalanceText textStyle="R_16R" title={balance.toExact()}>{balance.toSignificant(4)}</StyledBalanceText>
+  return (
+    <StyledBalanceText textStyle="R_16R" title={balance.toExact()}>
+      {balance.toSignificant(4)}
+    </StyledBalanceText>
+  )
 }
 
 function CurrencyRow({
@@ -48,11 +49,7 @@ function CurrencyRow({
         <Coin size="32px" symbol={currency?.symbol} />
         <Text ml="12px">{currency.symbol}</Text>
       </Flex>
-
-      {/* <TokenTags currency={currency} /> */}
-      <Flex justifySelf="flex-end">
-        {balance ? <Balance balance={balance} /> : account ? <Loader /> : null}
-      </Flex>
+      <Flex justifySelf="flex-end">{balance && <Balance balance={balance} />}</Flex>
     </MenuItem>
   )
 }
@@ -62,32 +59,27 @@ export default function CurrencyList({
   selectedCurrency,
   onCurrencySelect,
   otherCurrency,
-  fixedListRef,
 }: {
   currencies: Currency[]
   selectedCurrency?: Currency | null
   onCurrencySelect: (currency: Currency) => void
   otherCurrency?: Currency | null
-  fixedListRef?: MutableRefObject<FixedSizeList | undefined>
 }) {
-
   return (
     <Box height="auto">
-      {
-        currencies.map((item) => {
-          const currency = item;
-          return (
-            <CurrencyRow
-              key={item.symbol}
-              style={{}}
-              currency={currency}
-              isSelected={Boolean(selectedCurrency && currencyEquals(selectedCurrency, currency))}
-              onSelect={() => onCurrencySelect(currency)}
-              otherSelected={Boolean(otherCurrency && currencyEquals(otherCurrency, currency))}
-            />
-          )
-        })
-      }
+      {currencies.map((item) => {
+        const currency = item
+        return (
+          <CurrencyRow
+            key={item.symbol}
+            style={{}}
+            currency={currency}
+            isSelected={Boolean(selectedCurrency && currencyEquals(selectedCurrency, currency))}
+            onSelect={() => onCurrencySelect(currency)}
+            otherSelected={Boolean(otherCurrency && currencyEquals(otherCurrency, currency))}
+          />
+        )
+      })}
     </Box>
   )
 }
