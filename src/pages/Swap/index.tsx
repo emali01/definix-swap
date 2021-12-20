@@ -171,9 +171,9 @@ const Swap: React.FC = () => {
   const initSwapData = useCallback(() => {
     onUserInput(Field.INPUT, '')
     onUserInput(Field.OUTPUT, '')
-    onCurrencySelection(Field.INPUT, '')
-    onCurrencySelection(Field.OUTPUT, '')
-  }, [onCurrencySelection, onUserInput])
+    // onCurrencySelection(Field.INPUT, '')
+    // onCurrencySelection(Field.OUTPUT, '')
+  }, [onUserInput])
 
   const handleConfirmDismiss = useCallback(() => {
     onUserInput(Field.INPUT, '')
