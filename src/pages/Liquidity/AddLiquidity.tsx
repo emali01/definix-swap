@@ -427,7 +427,6 @@ const AddLiquidity: React.FC = () => {
         userPoolBalance?.toExact() > '0' &&
       (
         <Box
-          mb={isMobile ? "40px" : "80px"}
           border="1px solid #ffe5c9"
           borderRadius="16px"
           style={{boxShadow: "0 12px 12px 0 rgba(227, 132, 0, 0.1)"}}

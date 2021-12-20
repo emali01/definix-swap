@@ -48,7 +48,7 @@ const Liquidity: React.FC = () => {
               equal={isMobile}
             />
           </Box>
-          <Box>
+          <Box pb={isMobile ? "40px" : "80px"}>
             {curTab === tabNames[0] && (
               <AddLiquidity />
             )}
