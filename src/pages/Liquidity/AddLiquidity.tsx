@@ -222,7 +222,7 @@ const AddLiquidity: React.FC = () => {
         {noLiquidity && (
           <NoLiquidity />
         )}
-        <CardBody>
+        <CardBody p={isMobile ? "20px" : "40px"}>
           <Flex flexDirection="column">
             <CurrencyInputPanel
               isMobile={isMobile}
@@ -277,7 +277,7 @@ const AddLiquidity: React.FC = () => {
             />
           </Flex>
 
-          <Divider m="32px 0" />
+          <Divider m={isMobile ? "24px 0" : "32px 0"} />
 
           <Box>
             {!account ? (
