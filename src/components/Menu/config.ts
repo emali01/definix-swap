@@ -12,7 +12,7 @@ export const links = (t: (key: string) => string, currentLang: string) => {
       activeIcon: 'GnbExchangeNIcon',
       items: [
         {
-          label: t('Swap'),
+          label: t('Menu Swap'),
           href: '/swap',
         },
         {
