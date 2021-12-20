@@ -355,7 +355,7 @@ const Swap: React.FC = () => {
                       onClick={onWrap}
                     >
                       {wrapInputError ??
-                        (wrapType === WrapType.WRAP ? 'Wrap' : wrapType === WrapType.UNWRAP ? 'Unwrap' : null)}
+                        (wrapType === WrapType.WRAP ? t('Wrap') : wrapType === WrapType.UNWRAP ? t('Unwrap') : null)}
                     </Button>
                   )}
                   {!showWrap && (
