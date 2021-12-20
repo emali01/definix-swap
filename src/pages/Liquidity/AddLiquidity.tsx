@@ -308,7 +308,7 @@ const AddLiquidity: React.FC = () => {
 
                           {approvalA === ApprovalState.APPROVED && (
                             <Button
-                              scale={ButtonScales.LG}
+                              scale={ButtonScales.MD}
                               xs
                               disabled
                               variant="line"
@@ -327,7 +327,7 @@ const AddLiquidity: React.FC = () => {
 
                           {approvalA !== ApprovalState.APPROVED && (
                             <Button
-                              scale={ButtonScales.LG}
+                              scale={ButtonScales.MD}
                               onClick={onClickApproveAButton}
                               disabled={approvalA === ApprovalState.PENDING}
                               isLoading={isApproveAPending}
@@ -356,7 +356,7 @@ const AddLiquidity: React.FC = () => {
                           
                           {approvalB === ApprovalState.APPROVED && (
                             <Button
-                              scale={ButtonScales.LG}
+                              scale={ButtonScales.MD}
                               xs
                               disabled
                               variant="line"
@@ -375,7 +375,7 @@ const AddLiquidity: React.FC = () => {
 
                           {approvalB !== ApprovalState.APPROVED && (
                             <Button
-                              scale={ButtonScales.LG}
+                              scale={ButtonScales.MD}
                               onClick={onClickApproveBButton}
                               disabled={approvalB === ApprovalState.PENDING}
                               isLoading={isApproveBPending}
