@@ -17,6 +17,7 @@ const Menu: React.FC = (props) => {
 
   return (
     <UikitMenu
+      version={process.env.REACT_APP_VERSION || 'v0.0.1'}
       Link={Link}
       // SettingsModal slippage
       userSlippageTolerance={userSlippageTolerance}
