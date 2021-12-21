@@ -55,7 +55,7 @@ export function CurrencySearch({
   const allTokens = useAllTokens()
 
   // if they input an address, use it
-  const isAddressSearch = isAddress(searchQuery)
+  const isAddressSearch = useMemo(() => isAddress(searchQuery), [searchQuery])
   const searchToken = useToken(searchQuery)
 
   const showETH: boolean = useMemo(() => {

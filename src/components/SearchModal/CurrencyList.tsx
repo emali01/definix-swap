@@ -2,6 +2,8 @@ import { Currency, CurrencyAmount, currencyEquals } from 'definixswap-sdk'
 import React, { CSSProperties } from 'react'
 import styled from 'styled-components'
 import { Text, Flex, Box, Coin } from '@fingerlabs/definixswap-uikit-v2'
+
+import Loader from '../Loader'
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
 import { MenuItem } from './styleds'
@@ -49,7 +51,7 @@ function CurrencyRow({
         <Coin size="32px" symbol={currency?.symbol} />
         <Text ml="12px">{currency.symbol}</Text>
       </Flex>
-      <Flex justifySelf="flex-end">{balance && <Balance balance={balance} />}</Flex>
+      <Flex justifySelf="flex-end">{balance ? <Balance balance={balance} /> : <Loader />}</Flex>
     </MenuItem>
   )
 }
