@@ -409,7 +409,7 @@ export default function RemoveLiquidity({
                       {currencyA?.symbol}
                     </Text>
                   </Flex>
-                  <Text>{formattedAmounts[Field.CURRENCY_A] || '-'}</Text>
+                  <Text>{formattedAmounts[Field.CURRENCY_A] || '0'}</Text>
                 </Flex>
                 <Flex alignItems="center" justifyContent="space-between" p={isMobile ? '5px 0' : '14px 0'}>
                   <Flex alignItems="center">
@@ -423,7 +423,7 @@ export default function RemoveLiquidity({
                       {currencyB?.symbol}
                     </Text>
                   </Flex>
-                  <Text>{formattedAmounts[Field.CURRENCY_B] || '-'}</Text>
+                  <Text>{formattedAmounts[Field.CURRENCY_B] || '0'}</Text>
                 </Flex>
               </Flex>
 
