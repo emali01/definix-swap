@@ -7,14 +7,14 @@ import { computeSlippageAdjustedAmounts, computeTradePriceBreakdown, warningSeve
 
 const BalanceText = styled(Text)<{ isAcceptChange: boolean }>`
   ${({ theme }) => theme.textStyle.R_16R}
-  color: ${({ isAcceptChange, theme }) => isAcceptChange ? theme.colors.red : theme.colors.black};
+  color: ${({ isAcceptChange, theme }) => (isAcceptChange ? theme.colors.red : theme.colors.black)};
 `
 
 const WrapIcon = styled(Flex)`
   margin-top: -30px;
   transform: translateY(20px);
   justify-content: center;
-` 
+`
 
 const WrapPriceUpdate = styled(Flex)`
   margin-top: 20px;
@@ -22,7 +22,7 @@ const WrapPriceUpdate = styled(Flex)`
   padding: 16px;
   border-radius: 8px;
   border: solid 1px ${({ theme }) => theme.colors.lightGrey50};
-  background-color: ${({ theme }) => theme.colors.lightGrey10};
+  background-color: rgba(224, 224, 224, 0.1);
 }
 `
 
@@ -30,25 +30,19 @@ const SwapTokenInfo = ({
   isInput,
   trade,
   showAcceptChanges,
-  priceImpactSeverity
+  priceImpactSeverity,
 }: {
-    isInput: boolean
-    trade: Trade
-    showAcceptChanges?: boolean
-    priceImpactSeverity?: 0 | 1 | 2 | 3 | 4
-  }) => {
-
+  isInput: boolean
+  trade: Trade
+  showAcceptChanges?: boolean
+  priceImpactSeverity?: 0 | 1 | 2 | 3 | 4
+}) => {
   return (
     <Flex justifyContent="space-between" alignItems="center" height="60px">
       <Flex alignItems="center">
         <Box mr="12px" mt="2px">
-          {isInput && 
-            <Coin size="32px" symbol={trade.inputAmount.currency?.symbol} />
-
-          }
-          {!isInput && 
-            <Coin size="32px" symbol={trade.outputAmount.currency?.symbol} />
-          }
+          {isInput && <Coin size="32px" symbol={trade.inputAmount.currency?.symbol} />}
+          {!isInput && <Coin size="32px" symbol={trade.outputAmount.currency?.symbol} />}
         </Box>
         <Text textStyle="R_16M">
           {isInput && trade.inputAmount.currency.symbol}
@@ -56,14 +50,12 @@ const SwapTokenInfo = ({
         </Text>
       </Flex>
       {isInput && (
-        <BalanceText
-          isAcceptChange={showAcceptChanges && trade.tradeType === TradeType.EXACT_OUTPUT}
-        >
+        <BalanceText isAcceptChange={showAcceptChanges && trade.tradeType === TradeType.EXACT_OUTPUT}>
           {trade.inputAmount.toSignificant(6)}
         </BalanceText>
       )}
       {!isInput && (
-        <BalanceText 
+        <BalanceText
           // isAcceptChange={priceImpactSeverity > 2}
           isAcceptChange={showAcceptChanges}
         >
@@ -89,7 +81,7 @@ export default function SwapModalHeader({
   onlyCurrency?: boolean
   onAcceptChanges?: () => void
 }) {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
   const slippageAdjustedAmounts = useMemo(() => computeSlippageAdjustedAmounts(trade, allowedSlippage), [
     trade,
     allowedSlippage,
@@ -100,11 +92,7 @@ export default function SwapModalHeader({
   return (
     <Flex flexDirection="column">
       <Flex flexDirection="column">
-        <SwapTokenInfo 
-          isInput
-          trade={trade}
-          showAcceptChanges={showAcceptChanges}
-        />
+        <SwapTokenInfo isInput trade={trade} showAcceptChanges={showAcceptChanges} />
         <WrapIcon>
           <ChangeBottomIcon />
         </WrapIcon>
@@ -116,55 +104,14 @@ export default function SwapModalHeader({
         />
       </Flex>
 
-      {
-        // true && <WrapPriceUpdate>
-        !onlyCurrency && showAcceptChanges && <WrapPriceUpdate>
-          <Noti type={NotiType.ALERT}>
-            {t('Price update')}
-          </Noti>
-          <Button xs variant="red" minWidth="107px" onClick={onAcceptChanges}>{t('Accept')}</Button>
+      {!onlyCurrency && showAcceptChanges && (
+        <WrapPriceUpdate>
+          <Noti type={NotiType.ALERT}>{t('Price update')}</Noti>
+          <Button minWidth="107px" p="7px 20px" style={{ whiteSpace: 'pre' }} onClick={onAcceptChanges}>
+            {t('Accept')}
+          </Button>
         </WrapPriceUpdate>
-      }
-    
-      {/* {!onlyCurrency && (
-        <>
-          {showAcceptChanges ? (
-            <RowBetween>
-              <div className="flex align-center">
-                <Text>Price Updated</Text>
-              </div>
-              <Button onClick={onAcceptChanges} size="sm" className="flex-shrink">
-                Accept Price
-              </Button>
-            </RowBetween>
-          ) : null}
-
-          {trade.tradeType === TradeType.EXACT_INPUT ? (
-            <PriceInfoText>
-              {`Output is estimated. You will receive at least `}
-              <span>
-                {slippageAdjustedAmounts[Field.OUTPUT]?.toSignificant(6)} {trade.outputAmount.currency.symbol}
-              </span>
-              {' or the transaction will revert.'}
-            </PriceInfoText>
-          ) : (
-            <PriceInfoText>
-              {`Input is estimated. You will sell at most `}
-              <span>
-                {slippageAdjustedAmounts[Field.INPUT]?.toSignificant(6)} {trade.inputAmount.currency.symbol}
-              </span>
-              {' or the transaction will revert.'}
-            </PriceInfoText>
-          )}
-
-          {recipient !== null ? (
-            <Text>
-              Output will be sent to{' '}
-              <b title={recipient}>{isAddress(recipient) ? shortenAddress(recipient) : recipient}</b>
-            </Text>
-          ) : null}
-        </>
-      )} */}
+      )}
     </Flex>
   )
 }
