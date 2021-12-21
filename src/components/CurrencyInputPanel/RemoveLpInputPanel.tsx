@@ -107,14 +107,14 @@ const RemoveLpInputPanel: React.FC<IProps> = ({
       </Flex>
       <Flex
         width="100%"
-        flexDirection="column"
-        alignItems="flex-end"
+        flexDirection={isMobile ? 'column' : 'row'}
+        alignItems={isMobile ? 'flex-end' : 'center'}
         borderRadius="8px"
         border="solid 1px #e0e0e0"
         p="14px 12px 14px 16px"
       >
         <Input placeholder="0.0" value={value} onChange={onChangeInput} />
-        <Flex flexWrap="wrap" mt="2px">
+        <Flex flexWrap={isMobile ? 'wrap' : 'nowrap'} mt={isMobile ? '2px' : '0px'}>
           <AnountButton onClick={onQuarter} mr="6px" backgroundColor="rgba(224, 224, 224, 0.3)">
             {t('25%')}
           </AnountButton>
