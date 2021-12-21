@@ -30,7 +30,7 @@ import { useTranslation } from 'react-i18next'
 import { useToast } from 'state/toasts/hooks'
 import Slider from 'components/Slider'
 import styled from 'styled-components'
-import { CurrencyInputPanelOnRemoveLP } from '../../components/CurrencyInputPanel'
+import RemoveLpInputPanel from '../../components/CurrencyInputPanel/RemoveLpInputPanel'
 import { ROUTER_ADDRESS } from '../../constants'
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrency } from '../../hooks/Tokens'
@@ -295,7 +295,7 @@ export default function RemoveLiquidity({
               {showDetailed && (
                 <>
                   <Flex flexDirection="column">
-                    <CurrencyInputPanelOnRemoveLP
+                    <RemoveLpInputPanel
                       value={formattedAmounts[Field.LIQUIDITY]}
                       onUserInput={onLiquidityInput}
                       onMax={() => {
@@ -315,7 +315,7 @@ export default function RemoveLiquidity({
                       <ChangeBottomIcon />
                     </Flex>
 
-                    <CurrencyInputPanelOnRemoveLP
+                    <RemoveLpInputPanel
                       value={formattedAmounts[Field.CURRENCY_A]}
                       onUserInput={onCurrencyAInput}
                       onMax={() => {
@@ -334,7 +334,7 @@ export default function RemoveLiquidity({
                       <ChangePlusIcon />
                     </Flex>
 
-                    <CurrencyInputPanelOnRemoveLP
+                    <RemoveLpInputPanel
                       value={formattedAmounts[Field.CURRENCY_B]}
                       onUserInput={onCurrencyBInput}
                       onMax={() => {
