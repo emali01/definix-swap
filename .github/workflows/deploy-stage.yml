@@ -23,7 +23,7 @@ jobs:
 
       - name: Build
         # run: yarn build:stage
-        run: yarn build:development
+        run: yarn build:dev
 
       - name: Deploy
         uses: jakejarvis/s3-sync-action@master
