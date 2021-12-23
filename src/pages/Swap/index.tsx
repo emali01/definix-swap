@@ -77,7 +77,15 @@ const Swap: React.FC = () => {
     inputError: swapInputError,
     swapState,
   } = useDerivedSwapInfo()
-  const { wrapType, execute: onWrap, inputError: wrapInputError } = useWrapCallback(
+
+  const { 
+      wrapType,
+      execute: onWrap,
+      loading: wrapLoading,
+      inputError: wrapInputError,
+      error: wrapCallbackError,
+      setError: setWrapCallbackError 
+    } = useWrapCallback(
     currencies[Field.INPUT],
     currencies[Field.OUTPUT],
     typedValue
@@ -264,6 +272,28 @@ const Swap: React.FC = () => {
   }, [approveErr, setApproveErr, t, toastError])
 
   useEffect(() => {
+    if (wrapCallbackError?.unWrapError) {
+      toastError(
+        t('{{Action}} Failed', {
+          Action: t('actionUnwrap'),
+        })
+      )
+      setWrapCallbackError?.setUnWrapError(null);
+    }
+  }, [setWrapCallbackError, t, toastError, wrapCallbackError?.unWrapError])
+
+  useEffect(() => {
+    if (wrapCallbackError?.wrapError) {
+      toastError(
+        t('{{Action}} Failed', {
+          Action: t('actionWrap'),
+        })
+      )
+      setWrapCallbackError?.setWrapError(null);
+    }
+  }, [setWrapCallbackError, t, toastError, wrapCallbackError?.wrapError])
+
+  useEffect(() => {
     if (chainId) {
       handleInputSelect(allTokens[allTokenAddresses.SIX[chainId]])
     }
@@ -355,7 +385,7 @@ const Swap: React.FC = () => {
               {account && (
                 <>
                   {showWrap && (
-                    <Button width="100%" scale={ButtonScales.LG} disabled={Boolean(wrapInputError)} onClick={onWrap}>
+                    <Button width="100%" scale={ButtonScales.LG} disabled={Boolean(wrapInputError)} onClick={onWrap} isLoading={wrapLoading}>
                       {wrapInputError ??
                         (wrapType === WrapType.WRAP ? t('Wrap') : wrapType === WrapType.UNWRAP ? t('Unwrap') : null)}
                     </Button>
