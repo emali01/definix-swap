@@ -367,8 +367,7 @@ const Swap: React.FC = () => {
                 <>
                   {showWrap && (
                     <Button width="100%" scale={ButtonScales.LG} disabled={Boolean(wrapInputError)} onClick={onClickWrapButton} isLoading={wrapLoading}>
-                      {wrapInputError ??
-                        (wrapType === WrapType.WRAP ? t('Wrap') : wrapType === WrapType.UNWRAP ? t('Unwrap') : null)}
+                      {(wrapType === WrapType.WRAP ? t('Wrap') : wrapType === WrapType.UNWRAP ? t('Unwrap') : null)}
                     </Button>
                   )}
                   {!showWrap && (
