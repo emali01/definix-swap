@@ -41,7 +41,7 @@ const getTotalBalanceLp = async input => {
     pair1Amount = new BigNumber(pair1BalanceLP).div(new BigNumber(10).pow(pair1Decimals)).toNumber()
     pair2Amount = new BigNumber(pair2BalanceLP).div(new BigNumber(10).pow(pair2Decimals)).toNumber()
   } catch (error) {
-    console.log(error)
+    // console.log(error)
   }
   return [pair1Amount, pair2Amount]
 }

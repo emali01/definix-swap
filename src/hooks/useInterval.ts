@@ -11,7 +11,7 @@ export default function useInterval(callback: () => void, delay: null | number, 
   // Set up the interval.
   useEffect(() => {
     function tick() {
-      console.log('setInterval tick')
+      // console.log('setInterval tick')
       const { current } = savedCallback
       if (current) {
         current()

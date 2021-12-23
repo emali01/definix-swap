@@ -27,7 +27,7 @@ export class FortmaticConnector extends FortmaticConnectorCore {
 
     const pollForOverlayReady: Promise<void> = new Promise(resolve => {
       const interval = setInterval(() => {
-        console.log('setInterval Formatic.js')
+        // console.log('setInterval Formatic.js')
         if (provider.overlayReady) {
           clearInterval(interval)
           this.emit(OVERLAY_READY)

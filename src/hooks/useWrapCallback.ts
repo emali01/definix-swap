@@ -1,6 +1,7 @@
 import { Currency, currencyEquals, ETHER, WETH } from 'definixswap-sdk'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useToast } from 'state/toasts/hooks'
 import { tryParseAmount } from '../state/swap/hooks'
 import { useTransactionAdder } from '../state/transactions/hooks'
 import { useCurrencyBalance } from '../state/wallet/hooks'
@@ -16,16 +17,8 @@ export enum WrapType {
 interface IProps {
   wrapType: WrapType;
   execute?: undefined | (() => Promise<void>);
-  loading?:boolean;
+  loading?: boolean;
   inputError?: string;
-  error?: {
-    wrapError: unknown;
-    unWrapError: unknown;
-  };
-  setError?: {
-    setWrapError: React.Dispatch<unknown>;
-    setUnWrapError: React.Dispatch<unknown>;
-  }
 }
 
 const NOT_APPLICABLE = { wrapType: WrapType.NOT_APPLICABLE }
@@ -41,8 +34,6 @@ export default function useWrapCallback(
   typedValue: string | undefined
 ): IProps {
   const [loading, setLoading] = useState<boolean>(false);
-  const [wrapError, setWrapError] = useState<unknown>();
-  const [unWrapError, setUnWrapError] = useState<unknown>();
 
   const { chainId, account } = useActiveWeb3React()
   const wethContract = useWETHContract()
@@ -51,6 +42,7 @@ export default function useWrapCallback(
   const inputAmount = useMemo(() => tryParseAmount(typedValue, inputCurrency), [inputCurrency, typedValue])
   const addTransaction = useTransactionAdder()
   const { t } = useTranslation();
+  const { toastSuccess, toastError } = useToast()
 
   const executeWrap = useCallback(async () => {
     setLoading(true);
@@ -58,11 +50,20 @@ export default function useWrapCallback(
       const txReceipt = await wethContract.deposit({ value: `0x${inputAmount.raw.toString(16)}` })
       addTransaction(txReceipt, { summary: `Wrap ${inputAmount.toSignificant(6)} KLAY to WKLAY` })
       setLoading(false);
+      toastSuccess(
+        t('{{Action}} Complete', {
+          Action: t('actionWrap'),
+        }),
+      )
     } catch (err: unknown) {
-      setWrapError(err);
       setLoading(false);
+      toastError(
+        t('{{Action}} Failed', {
+          Action: t('actionWrap'),
+        })
+      )
     }
-  }, [addTransaction, inputAmount, wethContract]);
+  }, [addTransaction, inputAmount, t, toastError, toastSuccess, wethContract]);
 
   const executeUnWrap = useCallback(async () => {
     setLoading(true);
@@ -70,11 +71,20 @@ export default function useWrapCallback(
       const txReceipt = await wethContract.withdraw(`0x${inputAmount.raw.toString(16)}`)
       addTransaction(txReceipt, { summary: `Unwrap ${inputAmount.toSignificant(6)} WKLAY to KLAY` });
       setLoading(false);
+      toastSuccess(
+        t('{{Action}} Complete', {
+          Action: t('actionUnwrap'),
+        }),
+      )
     } catch (err: unknown) {
-      setUnWrapError(err);
       setLoading(false);
+      toastError(
+        t('{{Action}} Failed', {
+          Action: t('actionUnwrap'),
+        })
+      )
     }
-  }, [addTransaction, inputAmount, wethContract]);
+  }, [addTransaction, inputAmount, t, toastError, toastSuccess, wethContract]);
 
   return useMemo(() => {
     if (!wethContract || !chainId || !inputCurrency || !outputCurrency) return NOT_APPLICABLE
@@ -90,14 +100,6 @@ export default function useWrapCallback(
             : undefined,
         loading,
         inputError: sufficientBalance ? undefined : t('Insufficient balance'),
-        error: {
-          wrapError,
-          unWrapError
-        },
-        setError: {
-          setWrapError,
-          setUnWrapError
-        }
       }
     } if (currencyEquals(WETH(chainId), inputCurrency) && outputCurrency === ETHER) {
       return {
@@ -108,17 +110,9 @@ export default function useWrapCallback(
             : undefined,
         loading,
         inputError: sufficientBalance ? undefined : t('Insufficient balance'),
-        error: {
-          wrapError,
-          unWrapError
-        },
-        setError: {
-          setWrapError,
-          setUnWrapError
-        }
       }
     } 
       return NOT_APPLICABLE
     
-  }, [wethContract, chainId, inputCurrency, outputCurrency, inputAmount, balance, executeWrap, loading, t, wrapError, unWrapError, executeUnWrap])
+  }, [wethContract, chainId, inputCurrency, outputCurrency, inputAmount, balance, executeWrap, loading, t, executeUnWrap])
 }
