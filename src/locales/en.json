@@ -154,7 +154,7 @@
   "LP": "LP",
   "Select": "Select",
   "Pooled": "Pooled",
-  "No liquidity found": "No liquidity found",
+  "No liquidity found.": "No liquidity found",
   "Remove LP and take back tokens": "Remove LP and take back tokens.",
   "You will receive": "You will receive",
   "Receive {{Token name}}": "Receive {{Token name}}",

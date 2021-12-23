@@ -65,7 +65,7 @@ export const getRequestKey = () => requestKey
 export const checkResponse = async (): Promise<string> => {
   return new Promise(resolve => {
     const interCheck = setInterval(() => {
-      console.log("setInterval KlipProvider checkResponse")
+      // console.log("setInterval KlipProvider checkResponse")
       if (responseData != undefined) {
         clearInterval(interCheck)
         resolve(responseData);
@@ -77,7 +77,7 @@ export const checkResponse = async (): Promise<string> => {
 
 
 export const getResultContract = async () => {
-  console.log('setInterval KlipProvider getResultContract')
+  // console.log('setInterval KlipProvider getResultContract')
   const url = `https://a2a-api.klipwallet.com/v2/a2a/result?request_key=${requestKey}`
   // const url = `http://localhost:8080/con`
   const res = await axios.get(url)

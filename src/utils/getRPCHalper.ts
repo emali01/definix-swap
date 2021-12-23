@@ -32,7 +32,7 @@ const getRPCurlIsWorking = async () => {
 const getRPCurl = async():Promise<string> => {
     try {
         const x= await getRPCurlIsWorking()
-        console.log(x)
+        // console.log(x)
         return x
     } catch (error) {
         return "" // all rpc is die

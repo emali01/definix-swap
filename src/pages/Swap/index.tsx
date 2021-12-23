@@ -83,8 +83,6 @@ const Swap: React.FC = () => {
       execute: onWrap,
       loading: wrapLoading,
       inputError: wrapInputError,
-      error: wrapCallbackError,
-      setError: setWrapCallbackError 
     } = useWrapCallback(
     currencies[Field.INPUT],
     currencies[Field.OUTPUT],
@@ -260,6 +258,11 @@ const Swap: React.FC = () => {
 
   const allTokens = useAllTokens()
 
+  const onClickWrapButton = useCallback(async () => {
+    await onWrap();  
+    onUserInput(Field.INPUT, '');
+  }, [onUserInput, onWrap])
+
   useEffect(() => {
     if (approveErr) {
       toastError(
@@ -270,28 +273,6 @@ const Swap: React.FC = () => {
       setApproveErr('')
     }
   }, [approveErr, setApproveErr, t, toastError])
-
-  useEffect(() => {
-    if (wrapCallbackError?.unWrapError) {
-      toastError(
-        t('{{Action}} Failed', {
-          Action: t('actionUnwrap'),
-        })
-      )
-      setWrapCallbackError?.setUnWrapError(null);
-    }
-  }, [setWrapCallbackError, t, toastError, wrapCallbackError?.unWrapError])
-
-  useEffect(() => {
-    if (wrapCallbackError?.wrapError) {
-      toastError(
-        t('{{Action}} Failed', {
-          Action: t('actionWrap'),
-        })
-      )
-      setWrapCallbackError?.setWrapError(null);
-    }
-  }, [setWrapCallbackError, t, toastError, wrapCallbackError?.wrapError])
 
   useEffect(() => {
     if (chainId) {
@@ -385,7 +366,7 @@ const Swap: React.FC = () => {
               {account && (
                 <>
                   {showWrap && (
-                    <Button width="100%" scale={ButtonScales.LG} disabled={Boolean(wrapInputError)} onClick={onWrap} isLoading={wrapLoading}>
+                    <Button width="100%" scale={ButtonScales.LG} disabled={Boolean(wrapInputError)} onClick={onClickWrapButton} isLoading={wrapLoading}>
                       {wrapInputError ??
                         (wrapType === WrapType.WRAP ? t('Wrap') : wrapType === WrapType.UNWRAP ? t('Unwrap') : null)}
                     </Button>
