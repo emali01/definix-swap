@@ -22,7 +22,7 @@ const StyledInput = styled.input<{ error?: boolean; fontSize?: string; align?: s
     ${({ theme }) => theme.textStyle.R_23M}
   }
   ${ColorStyles.BLACK}
-  &::-webkit-search-decoration {
+  ::-webkit-search-decoration {
     -webkit-appearance: none;
   }
 
@@ -30,13 +30,19 @@ const StyledInput = styled.input<{ error?: boolean; fontSize?: string; align?: s
     -moz-appearance: textfield;
   }
 
-  &::-webkit-outer-spin-button,
-  &::-webkit-inner-spin-button {
+  ::-webkit-outer-spin-button,
+  ::-webkit-inner-spin-button {
     -webkit-appearance: none;
   }
 
-  &::placeholder {
-    ${ColorStyles.MEDIUMGREY}
+  ::placeholder,
+  ::-webkit-input-placeholder {
+    /* ${ColorStyles.MEDIUMGREY} */
+    color: #999999;
+  }
+  :-ms-input-placeholder {
+    /* ${ColorStyles.MEDIUMGREY} */
+    color: #999999;
   }
 `
 
@@ -68,7 +74,6 @@ export const Input = React.memo(function InnerInput({
         enforcer(event.target.value.replace(/,/g, '.'))
       }}
       inputMode="decimal"
-      // title="Token Amount"
       autoComplete="off"
       autoCorrect="off"
       type="text"
