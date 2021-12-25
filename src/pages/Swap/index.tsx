@@ -78,12 +78,7 @@ const Swap: React.FC = () => {
     swapState,
   } = useDerivedSwapInfo()
 
-  const { 
-      wrapType,
-      execute: onWrap,
-      loading: wrapLoading,
-      inputError: wrapInputError,
-    } = useWrapCallback(
+  const { wrapType, execute: onWrap, loading: wrapLoading, inputError: wrapInputError } = useWrapCallback(
     currencies[Field.INPUT],
     currencies[Field.OUTPUT],
     typedValue
@@ -259,8 +254,8 @@ const Swap: React.FC = () => {
   const allTokens = useAllTokens()
 
   const onClickWrapButton = useCallback(async () => {
-    await onWrap();  
-    onUserInput(Field.INPUT, '');
+    await onWrap()
+    onUserInput(Field.INPUT, '')
   }, [onUserInput, onWrap])
 
   useEffect(() => {
@@ -361,13 +356,19 @@ const Swap: React.FC = () => {
           <Divider m={isMobile ? '24px 0px' : '32px 0px'} />
 
           <Flex flexDirection="column">
-            <Flex mb="20px">
+            <Flex>
               {!account && <ConnectWalletButton />}
               {account && (
                 <>
                   {showWrap && (
-                    <Button width="100%" scale={ButtonScales.LG} disabled={Boolean(wrapInputError)} onClick={onClickWrapButton} isLoading={wrapLoading}>
-                      {(wrapType === WrapType.WRAP ? t('Wrap') : wrapType === WrapType.UNWRAP ? t('Unwrap') : null)}
+                    <Button
+                      width="100%"
+                      scale={ButtonScales.LG}
+                      disabled={Boolean(wrapInputError)}
+                      onClick={onClickWrapButton}
+                      isLoading={wrapLoading}
+                    >
+                      {wrapType === WrapType.WRAP ? t('Wrap') : wrapType === WrapType.UNWRAP ? t('Unwrap') : null}
                     </Button>
                   )}
                   {!showWrap && (
