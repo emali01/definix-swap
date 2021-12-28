@@ -18,11 +18,11 @@ const NoLiquidity: React.FC<{children?: React.ReactNode}> = () => {
         <Box mr="6px">
           <NotiIcon />
         </Box>
-        <Text textStyle="R_16M" color={ColorStyles.DEEPGREY} style={{whiteSpace:'pre-line'}}>
+        <Text textStyle="R_16M" color={ColorStyles.DEEPGREY}>
           {t('You are the first liquidity')}
         </Text>
       </Flex>
-      <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY} style={{whiteSpace:'pre-line'}}>
+      <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>
         {t('The ratio of tokens')}
       </Text>
     </Flex>

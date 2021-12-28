@@ -139,6 +139,8 @@ const AddLiquidity: React.FC = () => {
       currencyA={currencyA}
       currencyB={currencyB}
       onDismissModal={handleDismissConfirmation}
+      onFieldAInput={onFieldAInput}
+      onFieldBInput={onFieldBInput}
     />
   );
 
@@ -220,7 +222,7 @@ const AddLiquidity: React.FC = () => {
         {noLiquidity && (
           <NoLiquidity />
         )}
-        <CardBody>
+        <CardBody p={isMobile ? "20px" : "40px"}>
           <Flex flexDirection="column">
             <CurrencyInputPanel
               isMobile={isMobile}
@@ -275,7 +277,7 @@ const AddLiquidity: React.FC = () => {
             />
           </Flex>
 
-          <Divider m="32px 0" />
+          <Divider m={isMobile ? "24px 0" : "32px 0"} />
 
           <Box>
             {!account ? (
@@ -306,7 +308,7 @@ const AddLiquidity: React.FC = () => {
 
                           {approvalA === ApprovalState.APPROVED && (
                             <Button
-                              scale={ButtonScales.LG}
+                              scale={ButtonScales.MD}
                               xs
                               disabled
                               variant="line"
@@ -325,7 +327,7 @@ const AddLiquidity: React.FC = () => {
 
                           {approvalA !== ApprovalState.APPROVED && (
                             <Button
-                              scale={ButtonScales.LG}
+                              scale={ButtonScales.MD}
                               onClick={onClickApproveAButton}
                               disabled={approvalA === ApprovalState.PENDING}
                               isLoading={isApproveAPending}
@@ -354,7 +356,7 @@ const AddLiquidity: React.FC = () => {
                           
                           {approvalB === ApprovalState.APPROVED && (
                             <Button
-                              scale={ButtonScales.LG}
+                              scale={ButtonScales.MD}
                               xs
                               disabled
                               variant="line"
@@ -373,7 +375,7 @@ const AddLiquidity: React.FC = () => {
 
                           {approvalB !== ApprovalState.APPROVED && (
                             <Button
-                              scale={ButtonScales.LG}
+                              scale={ButtonScales.MD}
                               onClick={onClickApproveBButton}
                               disabled={approvalB === ApprovalState.PENDING}
                               isLoading={isApproveBPending}
@@ -425,7 +427,6 @@ const AddLiquidity: React.FC = () => {
         userPoolBalance?.toExact() > '0' &&
       (
         <Box
-          mb={isMobile ? "40px" : "80px"}
           border="1px solid #ffe5c9"
           borderRadius="16px"
           style={{boxShadow: "0 12px 12px 0 rgba(227, 132, 0, 0.1)"}}

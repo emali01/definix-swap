@@ -1,5 +1,7 @@
 import { Currency, currencyEquals, ETHER, WETH } from 'definixswap-sdk'
-import { useMemo } from 'react'
+import { useCallback, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useToast } from 'state/toasts/hooks'
 import { tryParseAmount } from '../state/swap/hooks'
 import { useTransactionAdder } from '../state/transactions/hooks'
 import { useCurrencyBalance } from '../state/wallet/hooks'
@@ -10,6 +12,13 @@ export enum WrapType {
   NOT_APPLICABLE,
   WRAP,
   UNWRAP
+}
+
+interface IProps {
+  wrapType: WrapType;
+  execute?: undefined | (() => Promise<void>);
+  loading?: boolean;
+  inputError?: string;
 }
 
 const NOT_APPLICABLE = { wrapType: WrapType.NOT_APPLICABLE }
@@ -23,13 +32,59 @@ export default function useWrapCallback(
   inputCurrency: Currency | undefined,
   outputCurrency: Currency | undefined,
   typedValue: string | undefined
-): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
+): IProps {
+  const [loading, setLoading] = useState<boolean>(false);
+
   const { chainId, account } = useActiveWeb3React()
   const wethContract = useWETHContract()
   const balance = useCurrencyBalance(account ?? undefined, inputCurrency)
   // we can always parse the amount typed as the input currency, since wrapping is 1:1
   const inputAmount = useMemo(() => tryParseAmount(typedValue, inputCurrency), [inputCurrency, typedValue])
   const addTransaction = useTransactionAdder()
+  const { t } = useTranslation();
+  const { toastSuccess, toastError } = useToast()
+
+  const executeWrap = useCallback(async () => {
+    setLoading(true);
+    try {
+      const txReceipt = await wethContract.deposit({ value: `0x${inputAmount.raw.toString(16)}` })
+      addTransaction(txReceipt, { summary: `Wrap ${inputAmount.toSignificant(6)} KLAY to WKLAY` })
+      setLoading(false);
+      toastSuccess(
+        t('{{Action}} Complete', {
+          Action: t('actionWrap'),
+        }),
+      )
+    } catch (err: unknown) {
+      setLoading(false);
+      toastError(
+        t('{{Action}} Failed', {
+          Action: t('actionWrap'),
+        })
+      )
+    }
+  }, [addTransaction, inputAmount, t, toastError, toastSuccess, wethContract]);
+
+  const executeUnWrap = useCallback(async () => {
+    setLoading(true);
+    try {
+      const txReceipt = await wethContract.withdraw(`0x${inputAmount.raw.toString(16)}`)
+      addTransaction(txReceipt, { summary: `Unwrap ${inputAmount.toSignificant(6)} WKLAY to KLAY` });
+      setLoading(false);
+      toastSuccess(
+        t('{{Action}} Complete', {
+          Action: t('actionUnwrap'),
+        }),
+      )
+    } catch (err: unknown) {
+      setLoading(false);
+      toastError(
+        t('{{Action}} Failed', {
+          Action: t('actionUnwrap'),
+        })
+      )
+    }
+  }, [addTransaction, inputAmount, t, toastError, toastSuccess, wethContract]);
 
   return useMemo(() => {
     if (!wethContract || !chainId || !inputCurrency || !outputCurrency) return NOT_APPLICABLE
@@ -41,35 +96,23 @@ export default function useWrapCallback(
         wrapType: WrapType.WRAP,
         execute:
           sufficientBalance && inputAmount
-            ? async () => {
-                try {
-                  const txReceipt = await wethContract.deposit({ value: `0x${inputAmount.raw.toString(16)}` })
-                  addTransaction(txReceipt, { summary: `Wrap ${inputAmount.toSignificant(6)} KLAY to WKLAY` })
-                } catch (error) {
-                  console.error('Could not deposit', error)
-                }
-              }
+            ? executeWrap
             : undefined,
-        inputError: sufficientBalance ? undefined : 'Insufficient ETH balance'
+        loading,
+        inputError: sufficientBalance ? undefined : t('Insufficient balance'),
       }
     } if (currencyEquals(WETH(chainId), inputCurrency) && outputCurrency === ETHER) {
       return {
         wrapType: WrapType.UNWRAP,
         execute:
           sufficientBalance && inputAmount
-            ? async () => {
-                try {
-                  const txReceipt = await wethContract.withdraw(`0x${inputAmount.raw.toString(16)}`)
-                  addTransaction(txReceipt, { summary: `Unwrap ${inputAmount.toSignificant(6)} WKLAY to KLAY` })
-                } catch (error) {
-                  console.error('Could not withdraw', error)
-                }
-              }
+            ? executeUnWrap
             : undefined,
-        inputError: sufficientBalance ? undefined : 'Insufficient WBNB balance'
+        loading,
+        inputError: sufficientBalance ? undefined : t('Insufficient balance'),
       }
     } 
       return NOT_APPLICABLE
     
-  }, [wethContract, chainId, inputCurrency, outputCurrency, inputAmount, balance, addTransaction])
+  }, [wethContract, chainId, inputCurrency, outputCurrency, inputAmount, balance, executeWrap, loading, t, executeUnWrap])
 }

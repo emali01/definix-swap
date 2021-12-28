@@ -22,7 +22,6 @@ const StyledInput = styled.input<{ error?: boolean; fontSize?: string; align?: s
     ${({ theme }) => theme.textStyle.R_23M}
   }
   ${ColorStyles.BLACK}
-
   ::-webkit-search-decoration {
     -webkit-appearance: none;
   }
@@ -36,8 +35,14 @@ const StyledInput = styled.input<{ error?: boolean; fontSize?: string; align?: s
     -webkit-appearance: none;
   }
 
-  ::placeholder {
-    ${ColorStyles.MEDIUMGREY}
+  ::placeholder,
+  ::-webkit-input-placeholder {
+    /* ${ColorStyles.MEDIUMGREY} */
+    color: #999999;
+  }
+  :-ms-input-placeholder {
+    /* ${ColorStyles.MEDIUMGREY} */
+    color: #999999;
   }
 `
 
@@ -66,15 +71,11 @@ export const Input = React.memo(function InnerInput({
       {...rest}
       value={value}
       onChange={(event) => {
-        // replace commas with periods, because uniswap exclusively uses period as the decimal separator
         enforcer(event.target.value.replace(/,/g, '.'))
       }}
-      // universal input options
       inputMode="decimal"
-      title="Token Amount"
       autoComplete="off"
       autoCorrect="off"
-      // text-specific options
       type="text"
       pattern="^[0-9]*[.,]?[0-9]*$"
       placeholder={placeholder || '0.0'}

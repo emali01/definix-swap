@@ -2,7 +2,7 @@ import ConnectWalletButton from 'components/ConnectWalletButton'
 import { currencyEquals, ETHER, Percent, WETH } from 'definixswap-sdk'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { RouteComponentProps } from 'react-router'
-import { 
+import {
   Button,
   CardBody,
   ColorStyles,
@@ -24,13 +24,13 @@ import {
   Lp,
   Coin,
 } from '@fingerlabs/definixswap-uikit-v2'
+import { Link } from 'react-router-dom'
 import { useTokenBalance } from 'state/wallet/hooks'
 import { useTranslation } from 'react-i18next'
 import { useToast } from 'state/toasts/hooks'
 import Slider from 'components/Slider'
 import styled from 'styled-components'
-import { CurrencyInputPanelOnRemoveLP } from '../../components/CurrencyInputPanel'
-import { StyledInternalLink } from '../../components/Shared'
+import RemoveLpInputPanel from '../../components/CurrencyInputPanel/RemoveLpInputPanel'
 import { ROUTER_ADDRESS } from '../../constants'
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrency } from '../../hooks/Tokens'
@@ -41,44 +41,45 @@ import useDebouncedChangeHandler from '../../utils/useDebouncedChangeHandler'
 import { wrappedCurrency } from '../../utils/wrappedCurrency'
 import ConfirmRemoveModal from './ConfirmRemoveModal'
 
-// const PercentInput = styled.input`
-//   width: 40px;
-//   ${textStyle.R_28M};
-//   color: ${ColorStyles.BLACK};
-//   border: none;
-//   outline: none;
-//   text-align: right;
-// `;
-
+const StyledInternalLink = styled(Link)`
+  ${textStyle.R_14R}
+  color: #999999;
+  cursor: pointer;
+`
 const PercentInput = styled.span`
   ${textStyle.R_28M};
-  color: ${ColorStyles.BLACK};
+  color: #222222;
   border: none;
   outline: none;
-`;
-
-
+`
 
 export default function RemoveLiquidity({
   history,
   match: {
-    params: { currencyIdA, currencyIdB }
-  }
+    params: { currencyIdA, currencyIdB },
+  },
 }: RouteComponentProps<{ currencyIdA: string; currencyIdB: string }>) {
-  const [isApprovePending, setIsApprovePending] = useState<boolean>(false);
+  const [isApprovePending, setIsApprovePending] = useState<boolean>(false)
   const { isXl, isXxl } = useMatchBreakpoints()
   const isMobile = useMemo(() => !isXl && !isXxl, [isXl, isXxl])
 
-  const { t, i18n } = useTranslation();
+  const { t, i18n } = useTranslation()
 
-  const gitbookLink = useMemo(() => i18n.language === 'ko' ? 
-  'https://sixnetwork.gitbook.io/definix-on-klaytn-kr/exchange/how-to-add-liquidity' : 
-  'https://sixnetwork.gitbook.io/definix-on-klaytn-en/exchange/how-to-add-liquidity' 
-, [i18n.language]);
+  const gitbookLink = useMemo(
+    () =>
+      i18n.language === 'ko'
+        ? 'https://sixnetwork.gitbook.io/definix-on-klaytn-kr/exchange/how-to-add-liquidity'
+        : 'https://sixnetwork.gitbook.io/definix-on-klaytn-en/exchange/how-to-add-liquidity',
+    [i18n.language]
+  )
 
-  const [currencyA, currencyB] = [useCurrency(currencyIdA) ?? undefined, useCurrency(currencyIdB) ?? undefined];
+  const [currencyA, currencyB] = [useCurrency(currencyIdA) ?? undefined, useCurrency(currencyIdB) ?? undefined]
   const { account, chainId } = useActiveWeb3React()
-  const [tokenA, tokenB] = [wrappedCurrency(currencyA, chainId), wrappedCurrency(currencyB, chainId)];
+  const [tokenA, tokenB] = useMemo(() => [wrappedCurrency(currencyA, chainId), wrappedCurrency(currencyB, chainId)], [
+    chainId,
+    currencyA,
+    currencyB,
+  ])
 
   const { independentField, typedValue } = useBurnState()
   const { pair, parsedAmounts, error } = useDerivedBurnInfo(currencyA ?? undefined, currencyB ?? undefined)
@@ -87,38 +88,39 @@ export default function RemoveLiquidity({
 
   const [showDetailed, setShowDetailed] = useState<boolean>(false)
 
-  const formattedAmounts = 
-    {
+  const formattedAmounts = useMemo(() => {
+    return {
       [Field.LIQUIDITY_PERCENT]: parsedAmounts[Field.LIQUIDITY_PERCENT].equalTo('0')
         ? '0'
         : parsedAmounts[Field.LIQUIDITY_PERCENT].lessThan(new Percent('1', '100'))
-          ? '<1'
-          : parsedAmounts[Field.LIQUIDITY_PERCENT].toFixed(0),
+        ? '<1'
+        : parsedAmounts[Field.LIQUIDITY_PERCENT].toFixed(0),
       [Field.LIQUIDITY]:
         independentField === Field.LIQUIDITY ? typedValue : parsedAmounts[Field.LIQUIDITY]?.toSignificant(6) ?? '',
       [Field.CURRENCY_A]:
         independentField === Field.CURRENCY_A ? typedValue : parsedAmounts[Field.CURRENCY_A]?.toSignificant(6) ?? '',
       [Field.CURRENCY_B]:
-        independentField === Field.CURRENCY_B ? typedValue : parsedAmounts[Field.CURRENCY_B]?.toSignificant(6) ?? ''
+        independentField === Field.CURRENCY_B ? typedValue : parsedAmounts[Field.CURRENCY_B]?.toSignificant(6) ?? '',
     }
+  }, [independentField, parsedAmounts, typedValue])
 
   const [signatureData, setSignatureData] = useState<{ v: number; r: string; s: string; deadline: number } | null>(null)
   const [approval, approveCallback, approveErr, setApproveErr] = useApproveCallback(
     parsedAmounts[Field.LIQUIDITY],
     ROUTER_ADDRESS[chainId || parseInt(process.env.REACT_APP_CHAIN_ID || '0')]
-  );
+  )
 
   const onClickApproveButton = useCallback(async () => {
     try {
-      setIsApprovePending(true);
-      await approveCallback();
+      setIsApprovePending(true)
+      await approveCallback()
     } catch (err) {
-      setIsApprovePending(false);
+      setIsApprovePending(false)
     }
-    setIsApprovePending(false);
-  }, [approveCallback, setIsApprovePending]);
+    setIsApprovePending(false)
+  }, [approveCallback, setIsApprovePending])
 
-  const { toastError } = useToast();
+  const { toastError } = useToast()
   const onUserInput = useCallback(
     (field: Field, val: string) => {
       setSignatureData(null)
@@ -139,11 +141,15 @@ export default function RemoveLiquidity({
   )
 
   const oneCurrencyIsETH = useMemo(() => currencyA === ETHER || currencyB === ETHER, [currencyA, currencyB])
-  const oneCurrencyIsWETH = useMemo(() => Boolean(
-    chainId &&
-    ((currencyA && currencyEquals(WETH(chainId), currencyA)) ||
-      (currencyB && currencyEquals(WETH(chainId), currencyB)))
-  ), [chainId, currencyA, currencyB]);
+  const oneCurrencyIsWETH = useMemo(
+    () =>
+      Boolean(
+        chainId &&
+          ((currencyA && currencyEquals(WETH(chainId), currencyA)) ||
+            (currencyB && currencyEquals(WETH(chainId), currencyB)))
+      ),
+    [chainId, currencyA, currencyB]
+  )
 
   const handleDismissConfirmation = useCallback(() => {
     setSignatureData(null) // important that we clear signature data to avoid bad sigs
@@ -151,17 +157,16 @@ export default function RemoveLiquidity({
     onUserInput(Field.LIQUIDITY_PERCENT, '0')
   }, [onUserInput])
 
-
   const [innerLiquidityPercentage, setInnerLiquidityPercentage] = useDebouncedChangeHandler(
     Number.parseInt(parsedAmounts[Field.LIQUIDITY_PERCENT].toFixed(0)),
     liquidityPercentChangeCallback
-  );
+  )
 
   useEffect(() => {
-    if(!account) {
-      history.replace('/liquidity');
+    if (!account) {
+      history.replace('/liquidity')
     }
-  }, [account, history]);
+  }, [account, history])
 
   useEffect(() => {
     return () => {
@@ -173,85 +178,75 @@ export default function RemoveLiquidity({
 
   const userPoolBalance = useTokenBalance(account ?? undefined, pair?.liquidityToken)
 
-  const [onPresentConfirmRemoveModal] = useModal(<ConfirmRemoveModal {
-    ...{
-      currencyA,
-      currencyB,
-      parsedAmounts,
-      pair,
-      tokenA,
-      tokenB,
-      signatureData,
-      onDismissModal: handleDismissConfirmation,
-      onUserInput
-    }
-  } />)
+  const [onPresentConfirmRemoveModal] = useModal(
+    <ConfirmRemoveModal
+      {...{
+        currencyA,
+        currencyB,
+        parsedAmounts,
+        pair,
+        tokenA,
+        tokenB,
+        signatureData,
+        onDismissModal: handleDismissConfirmation,
+        onUserInput,
+      }}
+    />
+  )
 
   useEffect(() => {
-    if(approveErr){
-      toastError(t('{{Action}} Failed', {
-        Action: t('actionApprove')
-      }));
-      setApproveErr('');
+    if (approveErr) {
+      toastError(
+        t('{{Action}} Failed', {
+          Action: t('actionApprove'),
+        })
+      )
+      setApproveErr('')
     }
   }, [approveErr, toastError, t, setApproveErr])
 
   return (
     <Flex width="100%" flexDirection="column" alignItems="center">
-      <Flex flexDirection="column" width={isMobile ? "100%" : "629px"} mb="40px">
-        <Flex 
-          mb="20px"
-          onClick={() => history.replace('/liquidity')}
-          style={{cursor: 'pointer'}}
-        >
+      <Flex flexDirection="column" width={isMobile ? '100%' : '629px'} mb="40px">
+        <Flex mb="20px" onClick={() => history.replace('/liquidity')} style={{ cursor: 'pointer' }}>
           <BackIcon />
-          <Text 
+          <Text
             ml="6px"
-            textStyle={isMobile ? "R_14M" :"R_16M"}
+            textStyle={isMobile ? 'R_14M' : 'R_16M'}
             color={ColorStyles.MEDIUMGREY}
-            mt={isMobile ? "0px" : "-2px"}
+            mt={isMobile ? '0px' : '-2px'}
           >
             {t('Back')}
           </Text>
         </Flex>
         <TitleSet
-          title={t("Liquidity")}
-          description={t("Remove LP and take back tokens")}
+          title={t('Liquidity')}
+          description={t('Remove LP and take back tokens')}
           link={gitbookLink}
-          linkLabel={t("Learn how to add Liquidity")}
+          linkLabel={t('Learn how to add Liquidity')}
         />
       </Flex>
       {account && (
-        <Flex 
+        <Flex
           backgroundColor={ColorStyles.WHITE}
           borderRadius="16px"
-          width={isMobile ? "100%" : "629px"}
+          width={isMobile ? '100%' : '629px'}
           border="1px solid #ffe5c9"
-          style={{boxShadow: '0 12px 12px 0 rgba(227, 132, 0, 0.1)'}}
-          mb={isMobile ? "40px" : "80px"}
+          style={{ boxShadow: '0 12px 12px 0 rgba(227, 132, 0, 0.1)' }}
+          mb={isMobile ? '40px' : '80px'}
         >
           <Flex flexDirection="column" width="100%">
-            <CardBody>
+            <CardBody p={isMobile ? '20px' : '40px'}>
               <Flex flexDirection="column" mb="20px">
-                <Flex 
-                  justifyContent={isMobile ? "flex-start" : "flex-start"}
-                  alignItems="center"
-                  mb="20px"
-                >
-                  <Lp
-                    size={isMobile ? '36px' : '40px'}
-                    lpSymbols={[currencyA?.symbol, currencyB?.symbol]}
-                  />
+                <Flex justifyContent={isMobile ? 'flex-start' : 'flex-start'} alignItems="center" mb="20px">
+                  <Lp size={isMobile ? '36px' : '40px'} lpSymbols={[currencyA?.symbol, currencyB?.symbol]} />
                   <Flex
                     ml="10px"
-                    flexDirection={isMobile ? "column" : "row"}
-                    justifyContent={isMobile ? "flex-start" : "space-between"}
+                    flexDirection={isMobile ? 'column' : 'row'}
+                    justifyContent={isMobile ? 'flex-start' : 'space-between'}
                     flex="1 1 0"
                   >
-                    <Text 
-                      textStyle={isMobile ? "R_16M" : "R_18M"}
-                      color={ColorStyles.BLACK}
-                    >
+                    <Text textStyle={isMobile ? 'R_16M' : 'R_18M'} color={ColorStyles.BLACK}>
                       {currencyA?.symbol}-{currencyB?.symbol}
                     </Text>
                     <Flex alignItems="center">
@@ -265,43 +260,25 @@ export default function RemoveLiquidity({
                   </Flex>
                 </Flex>
 
-
-                <Flex
-                  width="100%"
-                  flexDirection="column"
-                >
+                <Flex width="100%" flexDirection="column">
                   <Flex justifyContent="space-between">
-                    <Flex 
-                      alignItems="flex-end"
-                    >
+                    <Flex alignItems="flex-end">
                       {/* <PercentInput value={innerLiquidityPercentage} /> */}
-                      <PercentInput 
-                        role="textbox"
-                        contentEditable={false}
-                      >
+                      <PercentInput role="textbox" contentEditable={false}>
                         {innerLiquidityPercentage}
                       </PercentInput>
-                      <Text
-                        textStyle="R_20M"
-                        color={ColorStyles.MEDIUMGREY}
-                        mb="2.5px"
-                        ml="4px"
-                      >
+                      <Text textStyle="R_20M" color={ColorStyles.MEDIUMGREY} mb="2.5px" ml="4px">
                         %
                       </Text>
                     </Flex>
-                    
+
                     <Box
                       onClick={() => {
                         setShowDetailed(!showDetailed)
                       }}
-                      style={{cursor: 'pointer'}}
+                      style={{ cursor: 'pointer' }}
                     >
-                      <Text
-                        textStyle="R_14R"
-                        color={ColorStyles.MEDIUMGREY}
-                        style={{textDecoration: 'underline'}}
-                      >
+                      <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY} style={{ textDecoration: 'underline' }}>
                         {showDetailed ? t('Simple') : t('Detail')}
                       </Text>
                     </Box>
@@ -318,7 +295,7 @@ export default function RemoveLiquidity({
               {showDetailed && (
                 <>
                   <Flex flexDirection="column">
-                    <CurrencyInputPanelOnRemoveLP
+                    <RemoveLpInputPanel
                       value={formattedAmounts[Field.LIQUIDITY]}
                       onUserInput={onLiquidityInput}
                       onMax={() => {
@@ -338,7 +315,7 @@ export default function RemoveLiquidity({
                       <ChangeBottomIcon />
                     </Flex>
 
-                    <CurrencyInputPanelOnRemoveLP
+                    <RemoveLpInputPanel
                       value={formattedAmounts[Field.CURRENCY_A]}
                       onUserInput={onCurrencyAInput}
                       onMax={() => {
@@ -357,7 +334,7 @@ export default function RemoveLiquidity({
                       <ChangePlusIcon />
                     </Flex>
 
-                    <CurrencyInputPanelOnRemoveLP
+                    <RemoveLpInputPanel
                       value={formattedAmounts[Field.CURRENCY_B]}
                       onUserInput={onCurrencyBInput}
                       onMax={() => {
@@ -373,7 +350,7 @@ export default function RemoveLiquidity({
                     />
                   </Flex>
 
-                  <Divider mt={isMobile ? "24px" :"32px"} mb={isMobile ? "24px" : "32px"} />
+                  <Divider mt={isMobile ? '24px' : '32px'} mb={isMobile ? '24px' : '32px'} />
                 </>
               )}
 
@@ -386,14 +363,12 @@ export default function RemoveLiquidity({
                     <Flex alignItems="center">
                       {oneCurrencyIsETH ? (
                         <StyledInternalLink
-                          to={`/liquidity/remove/${currencyA === ETHER ? WETH(chainId).address : currencyIdA}/${currencyB === ETHER ? WETH(chainId).address : currencyIdB
-                            }`}
+                          to={`/liquidity/remove/${currencyA === ETHER ? WETH(chainId).address : currencyIdA}/${
+                            currencyB === ETHER ? WETH(chainId).address : currencyIdB
+                          }`}
                         >
                           <Flex alignItems="center">
-                            <Text
-                              mr="4px"
-                              style={{textDecoration: 'underline'}}
-                            >
+                            <Text mr="4px" style={{ textDecoration: 'underline' }}>
                               {t('Receive')} WKLAY
                             </Text>
                             <ArrowChangeIcon />
@@ -401,14 +376,12 @@ export default function RemoveLiquidity({
                         </StyledInternalLink>
                       ) : oneCurrencyIsWETH ? (
                         <StyledInternalLink
-                          to={`/liquidity/remove/${currencyA && currencyEquals(currencyA, WETH(chainId)) ? 'KLAY' : currencyIdA
-                            }/${currencyB && currencyEquals(currencyB, WETH(chainId)) ? 'KLAY' : currencyIdB}`}
+                          to={`/liquidity/remove/${
+                            currencyA && currencyEquals(currencyA, WETH(chainId)) ? 'KLAY' : currencyIdA
+                          }/${currencyB && currencyEquals(currencyB, WETH(chainId)) ? 'KLAY' : currencyIdB}`}
                         >
                           <Flex alignItems="center">
-                            <Text 
-                              mr="4px"
-                              style={{textDecoration: 'underline'}}
-                            >
+                            <Text mr="4px" style={{ textDecoration: 'underline' }}>
                               {t('Receive')} KLAY
                             </Text>
                             <ArrowChangeIcon />
@@ -419,19 +392,16 @@ export default function RemoveLiquidity({
                   )}
                 </Flex>
 
-                <Flex 
+                <Flex
                   alignItems="center"
                   justifyContent="space-between"
-                  mb={isMobile ? "10px" : "0"}
-                  p={isMobile ? "5px 0" : "14px 0"}
+                  mb={isMobile ? '10px' : '0'}
+                  p={isMobile ? '5px 0' : '14px 0'}
                 >
                   <Flex alignItems="center">
-                    <Coin 
-                      size={isMobile ? "30px" : "32px"}
-                      symbol={currencyA?.symbol}
-                    />
+                    <Coin size={isMobile ? '30px' : '32px'} symbol={currencyA?.symbol} />
                     <Text
-                      textStyle={isMobile ? "R_14M" : "R_16M"}
+                      textStyle={isMobile ? 'R_14M' : 'R_16M'}
                       color={ColorStyles.BLACK}
                       ml="10px"
                       id="remove-liquidity-tokena-symbol"
@@ -439,20 +409,13 @@ export default function RemoveLiquidity({
                       {currencyA?.symbol}
                     </Text>
                   </Flex>
-                  <Text>{formattedAmounts[Field.CURRENCY_A] || '-'}</Text>
+                  <Text>{formattedAmounts[Field.CURRENCY_A] || '0'}</Text>
                 </Flex>
-                <Flex
-                  alignItems="center"
-                  justifyContent="space-between"
-                  p={isMobile ? "5px 0" : "14px 0"}
-                >
+                <Flex alignItems="center" justifyContent="space-between" p={isMobile ? '5px 0' : '14px 0'}>
                   <Flex alignItems="center">
-                    <Coin 
-                      size={isMobile ? "30px" : "32px"}
-                      symbol={currencyB?.symbol}
-                    />
+                    <Coin size={isMobile ? '30px' : '32px'} symbol={currencyB?.symbol} />
                     <Text
-                      textStyle={isMobile ? "R_14M" : "R_16M"}
+                      textStyle={isMobile ? 'R_14M' : 'R_16M'}
                       color={ColorStyles.BLACK}
                       ml="10px"
                       id="remove-liquidity-tokenb-symbol"
@@ -460,31 +423,28 @@ export default function RemoveLiquidity({
                       {currencyB?.symbol}
                     </Text>
                   </Flex>
-                  <Text>{formattedAmounts[Field.CURRENCY_B] || '-'}</Text>
+                  <Text>{formattedAmounts[Field.CURRENCY_B] || '0'}</Text>
                 </Flex>
               </Flex>
 
-              <Divider mt={isMobile ? "24px" :"20px"} mb={isMobile ? "24px" : "32px"} />
+              <Divider mt={isMobile ? '24px' : '20px'} mb={isMobile ? '24px' : '32px'} />
 
               <Flex>
                 {!account ? (
                   <ConnectWalletButton />
                 ) : (
                   <Flex flexDirection="column" width="100%">
-                    {(approval !== ApprovalState.APPROVED && formattedAmounts[Field.LIQUIDITY_PERCENT] !== '0') &&(
-                      <Flex 
-                        flexDirection={isMobile ? "column" : "row"}
+                    {approval !== ApprovalState.APPROVED && formattedAmounts[Field.LIQUIDITY_PERCENT] !== '0' && (
+                      <Flex
+                        flexDirection={isMobile ? 'column' : 'row'}
                         justifyContent="space-between"
-                        mb={isMobile ? "32px" : "16px"}
+                        mb={isMobile ? '32px' : '16px'}
                       >
-                        <Flex alignItems="center" mb={isMobile ? "8px" : "0px"}>
+                        <Flex alignItems="center" mb={isMobile ? '8px' : '0px'}>
                           <Box mr="12px">
-                            <Lp
-                              size="32px"
-                              lpSymbols={[currencyA?.symbol, currencyB?.symbol]}
-                            />
+                            <Lp size="32px" lpSymbols={[currencyA?.symbol, currencyB?.symbol]} />
                           </Box>
-                          <Text textStyle={isMobile ? "R_16M" : "R_18M"} color={ColorStyles.MEDIUMGREY}>
+                          <Text textStyle={isMobile ? 'R_16M' : 'R_18M'} color={ColorStyles.MEDIUMGREY}>
                             {currencyA?.symbol}-{currencyB?.symbol}
                           </Text>
                         </Flex>
@@ -493,18 +453,18 @@ export default function RemoveLiquidity({
                           onClick={onClickApproveButton}
                           textStyle="R_14B"
                           scale={ButtonScales.LG}
-                          width={isMobile ? "100%" : "186px"}
+                          width={isMobile ? '100%' : '186px'}
                           xs={approval !== ApprovalState.NOT_APPROVED || signatureData !== null}
                           disabled={approval !== ApprovalState.NOT_APPROVED || signatureData !== null}
                           isLoading={isApprovePending}
                           variant={
-                            (approval !== ApprovalState.NOT_APPROVED || signatureData !== null) ? 
-                            'line' : 
-                            ButtonVariants.BROWN
+                            approval !== ApprovalState.NOT_APPROVED || signatureData !== null
+                              ? 'line'
+                              : ButtonVariants.BROWN
                           }
                         >
                           {(approval !== ApprovalState.NOT_APPROVED || signatureData !== null) && (
-                            <Box style={{opacity: 0.5}} mt="4px">
+                            <Box style={{ opacity: 0.5 }} mt="4px">
                               <CheckBIcon />
                             </Box>
                           )}
@@ -512,25 +472,19 @@ export default function RemoveLiquidity({
                         </Button>
                       </Flex>
                     )}
-                      
-                      <Button
-                        onClick={() => {
-                          onPresentConfirmRemoveModal();
-                        }}
-                        disabled={!isValid || (signatureData === null && approval !== ApprovalState.APPROVED)}
-                        scale={ButtonScales.LG}
-                        width="100%"
-                        textStyle="R_16B"
-                      >
-                        {t('Remove')}
-                      </Button>
-                      
-                      {/* {error && (
-                        <Noti type={NotiType.ALERT} mt="12px">
-                          {t(`${error}`)}
-                        </Noti>
-                      )} */}
-                    </Flex>
+
+                    <Button
+                      onClick={() => {
+                        onPresentConfirmRemoveModal()
+                      }}
+                      disabled={!isValid || (signatureData === null && approval !== ApprovalState.APPROVED)}
+                      scale={ButtonScales.LG}
+                      width="100%"
+                      textStyle="R_16B"
+                    >
+                      {t('Remove')}
+                    </Button>
+                  </Flex>
                 )}
               </Flex>
 
@@ -539,15 +493,8 @@ export default function RemoveLiquidity({
                   <Text textStyle="R_16M" color={ColorStyles.DEEPGREY} mb="12px">
                     {t('Estimated Returns')}
                   </Text>
-                  <Flex
-                    flexDirection={isMobile ? "column" : "row"}
-                    justifyContent="space-between"
-                  >
-                    <Text
-                      mb={isMobile ? "4px" : "0px"}
-                      textStyle="R_14R"
-                      color={ColorStyles.MEDIUMGREY}
-                    >
+                  <Flex flexDirection={isMobile ? 'column' : 'row'} justifyContent="space-between">
+                    <Text mb={isMobile ? '4px' : '0px'} textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>
                       {t('Price Rate')}
                     </Text>
                     <Flex flexDirection="column">
@@ -564,32 +511,9 @@ export default function RemoveLiquidity({
                 </Flex>
               )}
             </CardBody>
-
-            
           </Flex>
         </Flex>
       )}
-
-      {/* <TransactionConfirmationModal
-        isOpen={showConfirm}
-        isPending={!!attemptingTxn}
-        isSubmitted={!!txHash}
-        isError={!!errorMsg}
-        confirmContent={() => (
-          <ConfirmationModalContent
-            mainTitle={t("Confirm Remove Liquidity")}
-            title="You will receive"
-            topContent={modalHeader}
-            bottomContent={modalBottom}
-          />
-        )}
-        submittedContent={() => <></>}
-        errorContent={errorContent}
-        onDismiss={handleDismissConfirmation}
-        
-        setShowConfirm={setShowConfirm}
-        setTxHash={setTxHash}
-      /> */}
     </Flex>
   )
 }

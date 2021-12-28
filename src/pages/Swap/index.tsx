@@ -4,10 +4,9 @@ import numeral from 'numeral'
 import { CurrencyAmount, JSBI, Trade } from 'definixswap-sdk'
 import ConnectWalletButton from 'components/ConnectWalletButton'
 import CurrencyInputPanel from 'components/CurrencyInputPanel'
-import Loader from 'components/Loader'
-import AdvancedSwapDetailsDropdown from 'components/swap/AdvancedSwapDetailsDropdown'
-import ConfirmSwapModal from 'components/swap/ConfirmSwapModal'
-import TradePrice from 'components/swap/TradePrice'
+import AdvancedSwapDetailsDropdown from 'components/SwapComponent/AdvancedSwapDetailsDropdown'
+import ConfirmSwapModal from 'components/SwapComponent/ConfirmSwapModal'
+import TradePrice from 'components/SwapComponent/TradePrice'
 import { useActiveWeb3React } from 'hooks'
 import { ApprovalState, useApproveCallbackFromTrade } from 'hooks/useApproveCallback'
 import { useSwapCallback } from 'hooks/useSwapCallback'
@@ -39,55 +38,73 @@ import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { computeTradePriceBreakdown, warningSeverity } from 'utils/prices'
 import { useToast } from 'state/toasts/hooks'
 import { useAllTokens } from 'hooks/Tokens'
-import { allTokenAddresses, LIMITED_PRICE_IMPACT } from 'constants/index';
+import { allTokenAddresses, LIMITED_PRICE_IMPACT } from 'constants/index'
 import { useLocation } from 'react-router'
-import qs from 'querystring';
+import qs from 'querystring'
 
 const Swap: React.FC = () => {
-  const [isApprovePending, setIsApprovePending] = useState<boolean>(false);
+  const [isApprovePending, setIsApprovePending] = useState<boolean>(false)
 
-  const location = useLocation();
-  const currencyQuerystring = useMemo(() => qs.parse(location.search), [location.search]);
-  const outputQs = useMemo(() => String(currencyQuerystring["?outputCurrency"] || currencyQuerystring.outputCurrency), [currencyQuerystring]);
+  const location = useLocation()
+  const currencyQuerystring = useMemo(() => qs.parse(location.search), [location.search])
+  const outputQs = useMemo(() => String(currencyQuerystring['?outputCurrency'] || currencyQuerystring.outputCurrency), [
+    currencyQuerystring,
+  ])
 
-  const { t, i18n } = useTranslation();
+  const { t, i18n } = useTranslation()
   const { isXl, isXxl } = useMatchBreakpoints()
   const isMobile = useMemo(() => !isXl && !isXxl, [isXl, isXxl])
 
-  const gitbookLink = useMemo(() => i18n.language === 'ko' ? 
-    'https://sixnetwork.gitbook.io/definix-on-klaytn-kr/exchange/how-to-swap' : 
-    'https://sixnetwork.gitbook.io/definix-on-klaytn-en/exchange/how-to-trade-on-definix-exchange' 
-  ,[i18n.language])
- 
+  const gitbookLink = useMemo(
+    () =>
+      i18n.language === 'ko'
+        ? 'https://sixnetwork.gitbook.io/definix-on-klaytn-kr/exchange/how-to-swap'
+        : 'https://sixnetwork.gitbook.io/definix-on-klaytn-en/exchange/how-to-trade-on-definix-exchange',
+    [i18n.language]
+  )
+
   const { account, chainId = '' } = useActiveWeb3React()
 
   const [deadline] = useUserDeadline()
   const [allowedSlippage] = useUserSlippageTolerance()
 
   const { independentField, typedValue, recipient } = useSwapState()
-  const { v2Trade, currencyBalances, parsedAmount, currencies, inputError: swapInputError, swapState } = useDerivedSwapInfo()
-  const { wrapType, execute: onWrap, inputError: wrapInputError } = useWrapCallback(
+  const {
+    v2Trade,
+    currencyBalances,
+    parsedAmount,
+    currencies,
+    inputError: swapInputError,
+    swapState,
+  } = useDerivedSwapInfo()
+
+  const { wrapType, execute: onWrap, loading: wrapLoading, inputError: wrapInputError } = useWrapCallback(
     currencies[Field.INPUT],
     currencies[Field.OUTPUT],
     typedValue
   )
-  const showWrap: boolean = useMemo(() => wrapType !== WrapType.NOT_APPLICABLE, [wrapType]);
-  const trade: Trade = useMemo(() => v2Trade, [v2Trade]);
+  const showWrap: boolean = useMemo(() => wrapType !== WrapType.NOT_APPLICABLE, [wrapType])
+  const trade: Trade = useMemo(() => v2Trade, [v2Trade])
 
-  const parsedAmounts = useMemo(() => showWrap
-    ? {
-        [Field.INPUT]: parsedAmount,
-        [Field.OUTPUT]: parsedAmount,
-      }
-    : {
-        [Field.INPUT]: independentField === Field.INPUT ? parsedAmount : trade?.inputAmount,
-        [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : trade?.outputAmount,
-      }
-    , [independentField, parsedAmount, showWrap, trade?.inputAmount, trade?.outputAmount]);
+  const parsedAmounts = useMemo(
+    () =>
+      showWrap
+        ? {
+            [Field.INPUT]: parsedAmount,
+            [Field.OUTPUT]: parsedAmount,
+          }
+        : {
+            [Field.INPUT]: independentField === Field.INPUT ? parsedAmount : trade?.inputAmount,
+            [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : trade?.outputAmount,
+          },
+    [independentField, parsedAmount, showWrap, trade?.inputAmount, trade?.outputAmount]
+  )
 
   const { onSwitchTokens, onCurrencySelection, onUserInput } = useSwapActionHandlers()
-  const isValid = useMemo(() => !swapInputError, [swapInputError]);
-  const dependentField: Field = useMemo(() => independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT, [independentField]);
+  const isValid = useMemo(() => !swapInputError, [swapInputError])
+  const dependentField: Field = useMemo(() => (independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT), [
+    independentField,
+  ])
 
   const handleTypeInput = useCallback(
     (value: string) => {
@@ -109,83 +126,70 @@ const Swap: React.FC = () => {
         ? parsedAmounts[independentField]?.toExact() ?? ''
         : parsedAmounts[dependentField]?.toSignificant(6) ?? '',
     }
-  }, [dependentField, independentField, parsedAmounts, showWrap, typedValue]);
+  }, [dependentField, independentField, parsedAmounts, showWrap, typedValue])
 
-  const route = useMemo(() => trade?.route, [trade?.route]);
-  const userHasSpecifiedInputOutput = useMemo(() => Boolean(
-    currencies[Field.INPUT] && currencies[Field.OUTPUT] && parsedAmounts[independentField]?.greaterThan(JSBI.BigInt(0))
-  ), [currencies, independentField, parsedAmounts]);
-
-  const noRoute = useMemo(() => !route, [route]);
-
-  const [approval, approveCallback, approveErr, setApproveErr] = useApproveCallbackFromTrade(chainId, trade, allowedSlippage)
-
-  const onClickApproveBtn = useCallback(async () => {
-    setIsApprovePending(true);
-    await approveCallback();
-    setIsApprovePending(false);
-  }, [approveCallback, setIsApprovePending]);
-
-  const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
-  const { toastError } = useToast();
-
-  useEffect(() => {
-    if (approval === ApprovalState.PENDING) {
-      setApprovalSubmitted(true)
-    }
-  }, [approval, approvalSubmitted])
-
-  useEffect(() => {
-    if(approveErr){
-      toastError(t('{{Action}} Failed', {
-        Action: t('actionApprove')
-      }));
-      setApproveErr('');
-    }
-  }, [approveErr, setApproveErr, t, toastError])
-
-  const maxAmountInput: CurrencyAmount | undefined = useMemo(() => 
-    maxAmountSpend(currencyBalances[Field.INPUT])
-    , [currencyBalances]);
-
-  const atMaxAmountInput = useMemo(() => 
-    Boolean(maxAmountInput && parsedAmounts[Field.INPUT]?.equalTo(maxAmountInput)),
-    [maxAmountInput, parsedAmounts]);
-
-  const { error: swapCallbackError } = useSwapCallback(
-    trade,
-    allowedSlippage,
-    deadline,
-    recipient
+  const route = useMemo(() => trade?.route, [trade?.route])
+  const userHasSpecifiedInputOutput = useMemo(
+    () =>
+      Boolean(
+        currencies[Field.INPUT] &&
+          currencies[Field.OUTPUT] &&
+          parsedAmounts[independentField]?.greaterThan(JSBI.BigInt(0))
+      ),
+    [currencies, independentField, parsedAmounts]
   )
 
-  const { priceImpactWithoutFee } = useMemo(() => computeTradePriceBreakdown(trade), [trade]);
-  const priceImpactSeverity = useMemo(() => warningSeverity(priceImpactWithoutFee), [priceImpactWithoutFee]);
-  const isPriceImpactCaution = useMemo(() => priceImpactWithoutFee?.lessThan(LIMITED_PRICE_IMPACT), [priceImpactWithoutFee]);
+  const [approval, approveCallback, approveErr, setApproveErr] = useApproveCallbackFromTrade(
+    chainId,
+    trade,
+    allowedSlippage
+  )
 
-  const showApproveFlow = useMemo(() => !swapInputError &&
-    (approval === ApprovalState.NOT_APPROVED ||
-      approval === ApprovalState.PENDING), 
-    [approval, swapInputError]);
+  const onClickApproveBtn = useCallback(async () => {
+    setIsApprovePending(true)
+    await approveCallback()
+    setIsApprovePending(false)
+  }, [approveCallback, setIsApprovePending])
+
+  const { toastError } = useToast()
+
+  const maxAmountInput: CurrencyAmount | undefined = useMemo(() => maxAmountSpend(currencyBalances[Field.INPUT]), [
+    currencyBalances,
+  ])
+
+  // const atMaxAmountInput = useMemo(
+  //   () => Boolean(maxAmountInput && parsedAmounts[Field.INPUT]?.equalTo(maxAmountInput)),
+  //   [maxAmountInput, parsedAmounts]
+  // )
+
+  const { error: swapCallbackError } = useSwapCallback(trade, allowedSlippage, deadline, recipient)
+
+  const { priceImpactWithoutFee } = useMemo(() => computeTradePriceBreakdown(trade), [trade])
+  const priceImpactSeverity = useMemo(() => warningSeverity(priceImpactWithoutFee), [priceImpactWithoutFee])
+  const isPriceImpactCaution = useMemo(() => priceImpactWithoutFee?.lessThan(LIMITED_PRICE_IMPACT), [
+    priceImpactWithoutFee,
+  ])
+
+  const showApproveFlow = useMemo(() => !swapInputError && approval === ApprovalState.NOT_APPROVED, [
+    approval,
+    swapInputError,
+  ])
 
   const initSwapData = useCallback(() => {
     onUserInput(Field.INPUT, '')
     onUserInput(Field.OUTPUT, '')
-    onCurrencySelection(Field.INPUT, '')
-    onCurrencySelection(Field.OUTPUT, '')
-  }, [onCurrencySelection, onUserInput])
+  }, [onUserInput])
 
   const handleConfirmDismiss = useCallback(() => {
     onUserInput(Field.INPUT, '')
-    initSwapData();
+    initSwapData()
   }, [onUserInput, initSwapData])
 
   const handleInputSelect = useCallback(
     (inputCurrency) => {
-      setApprovalSubmitted(false)
       onCurrencySelection(Field.INPUT, inputCurrency)
     },
-    [onCurrencySelection, setApprovalSubmitted]
+    [onCurrencySelection]
   )
 
   const handleMaxInput = useCallback(() => {
@@ -221,69 +225,83 @@ const Swap: React.FC = () => {
   )
 
   const [onPresentConfirmModal] = useModal(
-    <ConfirmSwapModal
-      recipient={recipient}
-      onDismissModal={handleConfirmDismiss}
-    />, false)
+    <ConfirmSwapModal recipient={recipient} onDismissModal={handleConfirmDismiss} />,
+    false
+  )
 
   const onClickSwapButton = useCallback(() => {
-    onPresentConfirmModal();
+    onPresentConfirmModal()
   }, [onPresentConfirmModal])
 
   const renderNoti = useCallback(() => {
     if (priceImpactSeverity > 3) {
-      return <Noti type={NotiType.ALERT} mt="12px">
-        {t('Price Impact Too High')}
-      </Noti>
+      return (
+        <Noti type={NotiType.ALERT} mt="12px">
+          {t('Price Impact Too High')}
+        </Noti>
+      )
     }
     if (priceImpactSeverity > 2) {
-      return <Noti type={NotiType.ALERT} mt="12px">
-        {t('This swap has a price impact of at least 5%')}
-      </Noti>
+      return (
+        <Noti type={NotiType.ALERT} mt="12px">
+          {t('This swap has a price impact of at least 5%')}
+        </Noti>
+      )
     }
-    return null;
-  }, [priceImpactSeverity, t]);
+    return null
+  }, [priceImpactSeverity, t])
 
   const allTokens = useAllTokens()
 
-  useEffect(() => {
-    if(chainId){
-      handleInputSelect(allTokens[allTokenAddresses.SIX[chainId]]);
-    }
-  }, [chainId, outputQs, allTokens, handleInputSelect]);
+  const onClickWrapButton = useCallback(async () => {
+    await onWrap()
+    onUserInput(Field.INPUT, '')
+  }, [onUserInput, onWrap])
 
   useEffect(() => {
-    if(outputQs){
-      handleInputSelect('');
-      handleOutputSelect(allTokens[outputQs]);
+    if (approveErr) {
+      toastError(
+        t('{{Action}} Failed', {
+          Action: t('actionApprove'),
+        })
+      )
+      setApproveErr('')
+    }
+  }, [approveErr, setApproveErr, t, toastError])
+
+  useEffect(() => {
+    if (chainId) {
+      handleInputSelect(allTokens[allTokenAddresses.SIX[chainId]])
+    }
+  }, [chainId, outputQs, allTokens, handleInputSelect])
+
+  useEffect(() => {
+    if (outputQs) {
+      handleInputSelect('')
+      handleOutputSelect(allTokens[outputQs])
     }
   }, [outputQs, allTokens, handleInputSelect, handleOutputSelect])
 
   return (
-    <Flex flexDirection="column" alignItems="center" pb={isMobile ? "40px" : "75px"}>
-      <Box
-        width={isMobile ? '100%' : '629px'}
-      >
+    <Flex flexDirection="column" alignItems="center" pb={isMobile ? '40px' : '75px'}>
+      <Box width={isMobile ? '100%' : '629px'}>
         <TitleSet
-          title={t("Swap")}
+          title={t('Swap')}
           description={t('Swap it for any token')}
           link={gitbookLink}
           linkLabel={t('Learn how to Swap')}
         />
-        <Flex 
+        <Flex
           flexDirection="column"
           width="100%"
-          p={isMobile ? "20px" : "40px"}
+          p={isMobile ? '20px' : '40px'}
           backgroundColor={ColorStyles.WHITE}
-          mt={isMobile ? "28px" : "40px"}
+          mt={isMobile ? '28px' : '40px'}
           borderRadius="16px"
           border="1px solid #ffedcb"
-          style={{boxShadow: '0 12px 12px 0 rgba(254, 169, 72, 0.2)'}}
+          style={{ boxShadow: '0 12px 12px 0 rgba(254, 169, 72, 0.2)' }}
         >
-          <Flex
-            flexDirection="column"
-            mb="20px"
-          >
+          <Flex flexDirection="column" mb="20px">
             <Flex flexDirection="column">
               <CurrencyInputPanel
                 isMobile={isMobile}
@@ -300,12 +318,9 @@ const Swap: React.FC = () => {
                 maxTokenAmount={maxAmountInput?.toExact()}
               />
 
-              <Flex 
-                justifyContent="center"
-              >
+              <Flex justifyContent="center">
                 <IconButton
                   onClick={() => {
-                    setApprovalSubmitted(false)
                     onSwitchTokens()
                   }}
                 >
@@ -326,25 +341,23 @@ const Swap: React.FC = () => {
 
             {!showWrap && (
               <Flex>
-                  <Flex flex="1 1 0" justifyContent="space-between">
-                    <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>
-                      {t('Slippage Tolerance')}
-                    </Text>
-                    <Text textStyle="R_14M" color={ColorStyles.DEEPGREY}>
-                      {(allowedSlippage / 100)}%
-                    </Text>
+                <Flex flex="1 1 0" justifyContent="space-between">
+                  <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>
+                    {t('Slippage Tolerance')}
+                  </Text>
+                  <Text textStyle="R_14M" color={ColorStyles.DEEPGREY}>
+                    {allowedSlippage / 100}%
+                  </Text>
                 </Flex>
               </Flex>
             )}
           </Flex>
 
-          <Divider m={isMobile ? "24px 0px" : "32px 0px"} />
+          <Divider m={isMobile ? '24px 0px' : '32px 0px'} />
 
           <Flex flexDirection="column">
-            <Flex mb="20px">
-              {!account && (
-                <ConnectWalletButton />
-              )}
+            <Flex>
+              {!account && <ConnectWalletButton />}
               {account && (
                 <>
                   {showWrap && (
@@ -352,34 +365,34 @@ const Swap: React.FC = () => {
                       width="100%"
                       scale={ButtonScales.LG}
                       disabled={Boolean(wrapInputError)}
-                      onClick={onWrap}
+                      onClick={onClickWrapButton}
+                      isLoading={wrapLoading}
                     >
-                      {wrapInputError ??
-                        (wrapType === WrapType.WRAP ? 'Wrap' : wrapType === WrapType.UNWRAP ? 'Unwrap' : null)}
+                      {wrapType === WrapType.WRAP ? t('Wrap') : wrapType === WrapType.UNWRAP ? t('Unwrap') : null}
                     </Button>
                   )}
                   {!showWrap && (
                     <>
-                      {noRoute && userHasSpecifiedInputOutput && (
+                      {!route && userHasSpecifiedInputOutput && (
                         <Button
                           width="100%"
                           onClick={onClickSwapButton}
                           id="swap-button"
                           disabled={!isValid || !!swapCallbackError}
                           variant={isValid && priceImpactSeverity > 2 && !swapCallbackError ? 'danger' : 'primary'}
-                          isLoading={Boolean(noRoute && userHasSpecifiedInputOutput)}
+                          isLoading={Boolean(!route && userHasSpecifiedInputOutput)}
                         >
                           {t('Swap')}
                         </Button>
                       )}
-                      {(!noRoute || !userHasSpecifiedInputOutput) && (
+                      {(route || !userHasSpecifiedInputOutput) && (
                         <Flex flexDirection="column" width="100%">
                           {showApproveFlow && (
                             <Flex
                               width="100%"
-                              flexDirection={isMobile ? "column" : "row"}
+                              flexDirection={isMobile ? 'column' : 'row'}
                               justifyContent="space-between"
-                              alignItems={isMobile ? "flex-start" : "center"}
+                              alignItems={isMobile ? 'flex-start' : 'center'}
                               mb="20px"
                             >
                               <Flex alignItems="center">
@@ -388,27 +401,17 @@ const Swap: React.FC = () => {
                                   {`${currencies[Field.INPUT]?.symbol}`}
                                 </Text>
                               </Flex>
-        
+
                               <Button
                                 scale={ButtonScales.MD}
                                 onClick={onClickApproveBtn}
-                                disabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted}
-                                width={isMobile ? "100%" : "186px"}
-                                mt={isMobile ? "8px" : "0px"}
+                                disabled={approval !== ApprovalState.NOT_APPROVED}
+                                width={isMobile ? '100%' : '186px'}
+                                mt={isMobile ? '8px' : '0px'}
                                 isLoading={isApprovePending}
                                 variant={ButtonVariants.BROWN}
                               >
-                                {approval === ApprovalState.PENDING ? (
-                                  <Flex>
-                                    {t('Approve')} <Loader stroke="white" />
-                                  </Flex>
-                                ) : approvalSubmitted && approval === ApprovalState.APPROVED ? (
-                                  <>{t('Approve')}</>
-                                ) : (
-                                  <>
-                                    {t('Approve {{Token}}', { Token: `${currencies[Field.INPUT]?.symbol}`})}
-                                  </>
-                                )}
+                                {t('Approve {{Token}}', { Token: `${currencies[Field.INPUT]?.symbol}` })}
                               </Button>
                             </Flex>
                           )}
@@ -434,31 +437,24 @@ const Swap: React.FC = () => {
 
             {trade && (
               <Flex flexDirection="column" mt="24px">
-                <Text textStyle={isMobile ? "R_14M" : "R_16M"} color={ColorStyles.DEEPGREY} mb="12px">
+                <Text textStyle={isMobile ? 'R_14M' : 'R_16M'} color={ColorStyles.DEEPGREY} mb="12px">
                   {t('Estimated Returns')}
                 </Text>
 
                 {Boolean(trade) && (
                   <Flex
-                    flexDirection={isMobile ? "column" : "row"}
+                    flexDirection={isMobile ? 'column' : 'row'}
                     flex="1 1 0"
                     justifyContent="space-between"
                     mb="12px"
                   >
-                    <Text
-                      mb="4px"
-                      textStyle="R_14R"
-                      color={ColorStyles.MEDIUMGREY}
-                    >
+                    <Text mb="4px" textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>
                       {t('Price Rate')}
                     </Text>
-                    <TradePrice
-                      price={trade?.executionPrice}
-                      isPriceImpactCaution={!isPriceImpactCaution}
-                    />
+                    <TradePrice price={trade?.executionPrice} isPriceImpactCaution={!isPriceImpactCaution} />
                   </Flex>
                 )}
-                <AdvancedSwapDetailsDropdown 
+                <AdvancedSwapDetailsDropdown
                   trade={trade}
                   isMobile={isMobile}
                   isPriceImpactCaution={!isPriceImpactCaution}
@@ -472,4 +468,4 @@ const Swap: React.FC = () => {
   )
 }
 
-export default Swap;
+export default Swap

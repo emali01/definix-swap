@@ -1,7 +1,6 @@
 import { Currency, ETHER, Token } from 'definixswap-sdk'
 import React, { KeyboardEvent, RefObject, useCallback, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { FixedSizeList } from 'react-window'
 import styled from 'styled-components'
 import { Box, Flex, SearchIcon } from '@fingerlabs/definixswap-uikit-v2'
 import { useAllTokens, useToken } from '../../hooks/Tokens'
@@ -27,7 +26,7 @@ const SearchInputWithIcon = styled(Box)`
     position: absolute;
     right: 12px;
     width: 16px;
-    height: 16px;   
+    height: 16px;
   }
   input {
     padding-right: 46px;
@@ -52,12 +51,11 @@ export function CurrencySearch({
 }: CurrencySearchProps) {
   const { t } = useTranslation()
 
-  const fixedList = useRef<FixedSizeList>()
   const [searchQuery, setSearchQuery] = useState<string>('')
   const allTokens = useAllTokens()
 
   // if they input an address, use it
-  const isAddressSearch = isAddress(searchQuery)
+  const isAddressSearch = useMemo(() => isAddress(searchQuery), [searchQuery])
   const searchToken = useToken(searchQuery)
 
   const showETH: boolean = useMemo(() => {
@@ -104,7 +102,6 @@ export function CurrencySearch({
     const input = event.target.value
     const checksummedInput = isAddress(input)
     setSearchQuery(checksummedInput || input)
-    fixedList.current?.scrollTo(0)
   }, [])
 
   const handleEnter = useCallback(
@@ -126,13 +123,13 @@ export function CurrencySearch({
     [filteredSortedTokens, handleCurrencySelect, searchQuery]
   )
 
-  const currencies = useMemo(() => (showETH ? [Currency.ETHER, ...filteredSortedTokens] : [...filteredSortedTokens]), [filteredSortedTokens, showETH])
+  const currencies = useMemo(() => (showETH ? [Currency.ETHER, ...filteredSortedTokens] : [...filteredSortedTokens]), [
+    filteredSortedTokens,
+    showETH,
+  ])
 
   return (
-    <Flex
-      flexDirection="column"
-      height="100%"
-    >
+    <Flex flexDirection="column" height="100%">
       <SearchInputWithIcon>
         <SearchInput
           type="text"
@@ -146,25 +143,17 @@ export function CurrencySearch({
         <SearchIcon />
       </SearchInputWithIcon>
 
-      <WrapCurrencyList 
-        listLength={Object.keys(allTokens).length + 1}
-      >
+      <WrapCurrencyList listLength={Object.keys(allTokens).length + 1}>
         {currencies.length > 0 && (
           <CurrencyList
             currencies={currencies}
             onCurrencySelect={handleCurrencySelect}
             otherCurrency={otherSelectedCurrency}
             selectedCurrency={selectedCurrency}
-            fixedListRef={fixedList}
           />
         )}
         {currencies.length <= 0 && (
-          <Flex
-            mt="-20px"
-            height="100%"
-            alignItems="center"
-            justifyContent="center"
-          >
+          <Flex mt="-20px" height="100%" alignItems="center" justifyContent="center">
             {t('No search results')}
           </Flex>
         )}
