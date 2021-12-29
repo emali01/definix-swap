@@ -395,7 +395,7 @@ const AddLiquidity: React.FC = () => {
                   width="100%"
                   scale={ButtonScales.LG}
                 >
-                  {t('Add Liquidity')}
+                  {noLiquidity ? t('Create Pool & Supply') : t('Add Liquidity')}
                 </Button>
               </Flex>
             )}
