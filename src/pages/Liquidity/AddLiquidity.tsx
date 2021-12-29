@@ -14,7 +14,8 @@ import {
   useModal,
   Divider,
   ButtonVariants,
-  Coin
+  Coin,
+  PlusBIcon
 } from '@fingerlabs/definixswap-uikit-v2';
 import { Currency, currencyEquals, TokenAmount, WETH } from 'definixswap-sdk';
 import { Field } from 'state/mint/actions'
@@ -249,7 +250,7 @@ const AddLiquidity: React.FC = () => {
             
             <Flex width="100%" justifyContent="center">
               <Box p="14px">
-                <PlusIcon />
+                <PlusBIcon />
               </Box>
             </Flex>
 
@@ -309,7 +310,6 @@ const AddLiquidity: React.FC = () => {
                           {approvalA === ApprovalState.APPROVED && (
                             <Button
                               scale={ButtonScales.MD}
-                              xs
                               disabled
                               variant="line"
                               width={isMobile ? "100%" : "186px"}
@@ -357,7 +357,6 @@ const AddLiquidity: React.FC = () => {
                           {approvalB === ApprovalState.APPROVED && (
                             <Button
                               scale={ButtonScales.MD}
-                              xs
                               disabled
                               variant="line"
                               width={isMobile ? "100%" : "186px"}

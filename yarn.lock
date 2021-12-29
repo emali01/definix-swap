@@ -2251,10 +2251,10 @@
     "@ethersproject/properties" "^5.0.7"
     "@ethersproject/strings" "^5.0.8"
 
-"@fingerlabs/definixswap-uikit-v2@^0.16.10":
-  version "0.16.10"
-  resolved "https://registry.yarnpkg.com/@fingerlabs/definixswap-uikit-v2/-/definixswap-uikit-v2-0.16.10.tgz#38370127aa37282343c7881d1644319b2d494271"
-  integrity sha512-8dMCavLJFo1wTgG/tFaBHQewmhlU7MrPrtP+iPc8ZdColDezS1lsTXwF3j6G8EaiOo7lYWwIw8Ac4fGEbnY1Fw==
+"@fingerlabs/definixswap-uikit-v2@^0.16.12":
+  version "0.16.12"
+  resolved "https://registry.yarnpkg.com/@fingerlabs/definixswap-uikit-v2/-/definixswap-uikit-v2-0.16.12.tgz#c5a8e6822f586ac21456cb9dea7c62f7e6215f81"
+  integrity sha512-3++a3BBvARXNiFF9wCHyVgfIp3jLIi7CFV/ovxcKwcSr5voR/tdWIPtPnufEDPV7vR95Y2h40GKKSMAbTKBsjw==
   dependencies:
     "@types/lodash" "^4.14.162"
     "@types/styled-system" "^5.1.10"
@@ -7357,9 +7357,10 @@ copy-descriptor@^0.1.0:
   version "0.1.1"
   resolved "https://registry.npmjs.org/copy-descriptor/-/copy-descriptor-0.1.1.tgz"
 
-copy-to-clipboard@^3.0.8, copy-to-clipboard@^3.2.0, copy-to-clipboard@^3.3.1:
+copy-to-clipboard@*, copy-to-clipboard@^3.0.8, copy-to-clipboard@^3.2.0, copy-to-clipboard@^3.3.1:
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/copy-to-clipboard/-/copy-to-clipboard-3.3.1.tgz#115aa1a9998ffab6196f93076ad6da3b913662ae"
+  integrity sha512-i13qo6kIHTTpCm8/Wup+0b1mVWETvu2kIMzKoK8FpkLkFxlt0znUAHcMzox+T8sPlqtZXq3CulEjQHsYiGFJUw==
   dependencies:
     toggle-selection "^1.0.6"
 
@@ -14605,18 +14606,18 @@ pocket-js-core@0.0.3:
   dependencies:
     axios "^0.18.0"
 
-polished@^3.3.2, polished@^3.4.4:
-  version "3.7.1"
-  resolved "https://registry.npmjs.org/polished/-/polished-3.7.1.tgz"
-  dependencies:
-    "@babel/runtime" "^7.12.5"
-
-polished@^4.1.3:
+polished@*:
   version "4.1.3"
   resolved "https://registry.yarnpkg.com/polished/-/polished-4.1.3.tgz#7a3abf2972364e7d97770b827eec9a9e64002cfc"
   integrity sha512-ocPAcVBUOryJEKe0z2KLd1l9EBa1r5mSwlKpExmrLzsnIzJo4axsoU9O2BjOTkDGDT4mZ0WFE5XKTlR3nLnZOA==
   dependencies:
     "@babel/runtime" "^7.14.0"
+
+polished@^3.3.2, polished@^3.4.4:
+  version "3.7.1"
+  resolved "https://registry.npmjs.org/polished/-/polished-3.7.1.tgz"
+  dependencies:
+    "@babel/runtime" "^7.12.5"
 
 portfinder@^1.0.26:
   version "1.0.28"
@@ -15802,15 +15803,7 @@ react-lifecycles-compat@^3.0.4:
   version "3.0.4"
   resolved "https://registry.npmjs.org/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz"
 
-react-popper-tooltip@^3.1.1:
-  version "3.1.1"
-  resolved "https://registry.npmjs.org/react-popper-tooltip/-/react-popper-tooltip-3.1.1.tgz"
-  dependencies:
-    "@babel/runtime" "^7.12.5"
-    "@popperjs/core" "^2.5.4"
-    react-popper "^2.2.4"
-
-react-popper-tooltip@^4.3.1:
+react-popper-tooltip@*:
   version "4.3.1"
   resolved "https://registry.yarnpkg.com/react-popper-tooltip/-/react-popper-tooltip-4.3.1.tgz#0bfdd40453395865d7a5678a160640243070528e"
   integrity sha512-/Lj1vjAEFEFxKKWnxupeS9pRrXYQlJd++OAAj/Ht3uOSqjWLtYWDXKV99e+YO6b5hV3SgXbtkHFzHH4eqlMWJA==
@@ -15818,6 +15811,14 @@ react-popper-tooltip@^4.3.1:
     "@babel/runtime" "^7.15.4"
     "@popperjs/core" "^2.10.2"
     react-popper "^2.2.5"
+
+react-popper-tooltip@^3.1.1:
+  version "3.1.1"
+  resolved "https://registry.npmjs.org/react-popper-tooltip/-/react-popper-tooltip-3.1.1.tgz"
+  dependencies:
+    "@babel/runtime" "^7.12.5"
+    "@popperjs/core" "^2.5.4"
+    react-popper "^2.2.4"
 
 react-popper@^2.2.4:
   version "2.2.4"
