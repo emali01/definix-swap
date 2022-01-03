@@ -14,6 +14,7 @@ import { RedirectToSwap, RedirectPathToSwapOnly } from './Swap/redirects'
 const Swap = lazy(() => import('./Swap'))
 const Error = lazy(() => import('./Error'))
 const Liquidity = lazy(() => import('./Liquidity'))
+const PoolFinder = lazy(() => import('./PoolFinder'))
 
 export default function App() {
   const { account } = useCaverJsReact()
@@ -57,6 +58,7 @@ export default function App() {
                     path="/liquidity/remove/:tokens"
                     component={RedirectOldRemoveLiquidityPathStructure}
                   />
+                  <Route exact path="/liquidity/poolfinder" component={PoolFinder}/>
                   <Route>
                     <Error />
                   </Route>
