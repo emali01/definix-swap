@@ -4,9 +4,11 @@ import { MaxUint256 } from '@ethersproject/constants'
 import { Trade, TokenAmount, CurrencyAmount, ETHER } from 'definixswap-sdk'
 import { KlipConnector } from "@sixnetwork/klip-connector"
 import { KlipModalContext } from "@sixnetwork/klaytn-use-wallet"
-import { useCallback, useMemo, useContext, useState } from 'react'
+import { useCallback, useMemo, useContext } from 'react'
 import UseDeParam from 'hooks/useDeParam'
 import { useCaverJsReact } from '@sixnetwork/caverjs-react-core'
+import { useTranslation } from 'react-i18next'
+import { useToast } from 'state/toasts/hooks'
 import { ROUTER_ADDRESS } from '../constants'
 import { useTokenAllowance } from '../data/Allowances'
 import { Field } from '../state/swap/actions'
@@ -33,9 +35,12 @@ export enum ApprovalState {
 export function useApproveCallback(
   amountToApprove?: CurrencyAmount,
   spender?: string,
-): [ApprovalState, () => Promise<void>, string, React.Dispatch<React.SetStateAction<string>>] {
+): [ApprovalState, () => Promise<void>] {
   const { account, chainId } = useActiveWeb3React()
   const { setShowModal } = useContext(KlipModalContext())
+  const { toastSuccess, toastError } = useToast()
+  const { t } = useTranslation();
+
   const token = amountToApprove instanceof TokenAmount ? amountToApprove.token : undefined
   const currentAllowance = useTokenAllowance(token, account ?? undefined, spender)
   const pendingApproval = useHasPendingApproval(token?.address, spender)
@@ -58,8 +63,6 @@ export function useApproveCallback(
   }, [amountToApprove, currentAllowance, pendingApproval, spender])
   const tokenContract = useTokenContract(token?.address)
   const addTransaction = useTransactionAdder()
-
-  const [errMsg, setErrMsg] = useState<string>();
 
   const approve = useCallback(async (): Promise<void> => {
     if (approvalState !== ApprovalState.NOT_APPROVED) {
@@ -151,26 +154,24 @@ export function useApproveCallback(
           summary: `Approve ${amountToApprove.currency.symbol}`,
           approval: { tokenAddress: token.address, spender },
         })
+        toastSuccess(
+          t('{{Action}} Complete', {
+            Action: t('actionApprove'),
+          }),
+        )
       })
       .catch((error: Error) => {
-        setErrMsg(error.toString());
+        toastError(
+          t('{{Action}} Failed', {
+            Action: t('actionApprove'),
+          }),
+        )
         console.error('Failed to approve token', error)
       })
     }
-  }, [
-    chainId,
-    approvalState,
-    token,
-    account,
-    tokenContract,
-    amountToApprove,
-    spender,
-    addTransaction,
-    connector,
-    setShowModal
-  ])
+  }, [approvalState, token, tokenContract, amountToApprove, spender, connector, setShowModal, chainId, account, addTransaction, toastSuccess, t, toastError])
 
-  return [approvalState, approve, errMsg, setErrMsg]
+  return [approvalState, approve]
 }
 // wraps useApproveCallback in the context of a swap
 export function useApproveCallbackFromTrade(chainId, trade?: Trade, allowedSlippage = 0) {
