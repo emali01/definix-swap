@@ -87,10 +87,10 @@ export default React.memo(function CurrencyInputPanel({
   const overDp = useMemo(() => new BigNumber(value).decimalPlaces() > decimals, [value, decimals])
 
   const renderNoti = useCallback(() => {
-    if (isMaxKlayNoti) {
+    if (overDp) {
       return (
         <Noti type={NotiType.ALERT} mt="12px">
-          {t('Full payment of KLAY')}
+          {t('The value entered is out of the valid range')}
         </Noti>
       )
     }
@@ -101,11 +101,10 @@ export default React.memo(function CurrencyInputPanel({
         </Noti>
       )
     }
-
-    if (overDp) {
+    if (isMaxKlayNoti) {
       return (
         <Noti type={NotiType.ALERT} mt="12px">
-          {t('The value entered is out of the valid range')}
+          {t('Full payment of KLAY')}
         </Noti>
       )
     }

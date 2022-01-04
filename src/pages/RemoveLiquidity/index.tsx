@@ -27,7 +27,6 @@ import {
 import { Link } from 'react-router-dom'
 import { useTokenBalance } from 'state/wallet/hooks'
 import { useTranslation } from 'react-i18next'
-import { useToast } from 'state/toasts/hooks'
 import Slider from 'components/Slider'
 import styled from 'styled-components'
 import RemoveLpInputPanel from '../../components/CurrencyInputPanel/RemoveLpInputPanel'
@@ -105,7 +104,7 @@ export default function RemoveLiquidity({
   }, [independentField, parsedAmounts, typedValue])
 
   const [signatureData, setSignatureData] = useState<{ v: number; r: string; s: string; deadline: number } | null>(null)
-  const [approval, approveCallback, approveErr, setApproveErr] = useApproveCallback(
+  const [approval, approveCallback] = useApproveCallback(
     parsedAmounts[Field.LIQUIDITY],
     ROUTER_ADDRESS[chainId || parseInt(process.env.REACT_APP_CHAIN_ID || '0')]
   )
@@ -120,7 +119,6 @@ export default function RemoveLiquidity({
     setIsApprovePending(false)
   }, [approveCallback, setIsApprovePending])
 
-  const { toastError } = useToast()
   const onUserInput = useCallback(
     (field: Field, val: string) => {
       setSignatureData(null)
@@ -193,17 +191,6 @@ export default function RemoveLiquidity({
       }}
     />
   )
-
-  useEffect(() => {
-    if (approveErr) {
-      toastError(
-        t('{{Action}} Failed', {
-          Action: t('actionApprove'),
-        })
-      )
-      setApproveErr('')
-    }
-  }, [approveErr, toastError, t, setApproveErr])
 
   return (
     <Flex width="100%" flexDirection="column" alignItems="center">

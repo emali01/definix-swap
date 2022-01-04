@@ -5,7 +5,6 @@ import {
   Flex,
   CardBody,
   Box,
-  PlusIcon,
   Text,
   Button,
   ButtonScales,
@@ -36,7 +35,6 @@ import { useCurrency } from 'hooks/Tokens';
 import ConnectWalletButton from 'components/ConnectWalletButton'
 import CurrencyInputPanel from 'components/CurrencyInputPanel';
 
-import { useToast } from 'state/toasts/hooks';
 import NoLiquidity from './NoLiquidity';
 import { PoolPriceBar } from './PoolPriceBar';
 import ConfirmAddModal from './ConfirmAddModal';
@@ -71,8 +69,8 @@ const AddLiquidity: React.FC = () => {
 
   const { independentField, typedValue, otherTypedValue } = useMintState()
 
-  const [approvalA, approveACallback, approveAErr, setApproveAErr] = useApproveCallback(parsedAmounts[Field.CURRENCY_A], ROUTER_ADDRESS[chainId || parseInt(process.env.REACT_APP_CHAIN_ID || '0')])
-  const [approvalB, approveBCallback, approveBErr, setApproveBErr] = useApproveCallback(parsedAmounts[Field.CURRENCY_B], ROUTER_ADDRESS[chainId || parseInt(process.env.REACT_APP_CHAIN_ID || '0')])
+  const [approvalA, approveACallback] = useApproveCallback(parsedAmounts[Field.CURRENCY_A], ROUTER_ADDRESS[chainId || parseInt(process.env.REACT_APP_CHAIN_ID || '0')])
+  const [approvalB, approveBCallback] = useApproveCallback(parsedAmounts[Field.CURRENCY_B], ROUTER_ADDRESS[chainId || parseInt(process.env.REACT_APP_CHAIN_ID || '0')])
   const onClickApproveAButton = useCallback(async () => {
     try {
       setIsApproveAPending(true);
@@ -93,7 +91,6 @@ const AddLiquidity: React.FC = () => {
     setIsApproveBPending(false);
   }, [approveBCallback, setIsApproveBPending]);
 
-  const { toastError } = useToast();
   const isValid = useMemo(() => !error, [error]);
   const formattedAmounts = useMemo(() => {
     return (
@@ -181,29 +178,6 @@ const AddLiquidity: React.FC = () => {
   useEffect(() => {
     return () => handleDismissConfirmation();
   }, [handleDismissConfirmation]);
-
-  useEffect(() => {
-    if(approveAErr){
-      toastError(t('{{Action}} Failed', {
-        Action: t('actionApprove')
-      }));
-      setApproveAErr('');
-      return;
-    }
-    if(approveBErr){
-      toastError(t('{{Action}} Failed', {
-        Action: t('actionApprove')
-      }));
-      setApproveBErr('');
-    }
-  }, [
-    t,
-    approveAErr,
-    setApproveAErr,
-    approveBErr,
-    setApproveBErr,
-    toastError
-  ])
 
   const userPoolBalance = useTokenBalance(account ?? undefined, pair?.liquidityToken)
 
