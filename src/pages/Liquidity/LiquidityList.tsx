@@ -17,11 +17,13 @@ import {
 } from '@fingerlabs/definixswap-uikit-v2'
 import ConnectWalletButton from 'components/ConnectWalletButton'
 import { useTranslation } from 'react-i18next'
+import { useHistory } from 'react-router-dom'
 
 const LiquidityList: React.FC = () => {
   const { t } = useTranslation()
   const { isXl, isXxl } = useMatchBreakpoints()
   const isMobile = useMemo(() => !isXl && !isXxl, [isXl, isXxl])
+  const history = useHistory()
 
   const { account } = useActiveWeb3React()
   const trackedTokenPairs = useTrackedTokenPairs()
@@ -70,11 +72,11 @@ const LiquidityList: React.FC = () => {
         </Box>
       )}
       {account && allV2PairsWithLiquidity.length <= 0 && (
-        <Flex 
+        <Flex
           flexDirection="column"
           justifyContent="center"
           alignItems="center"
-          p={isMobile ? "50px 0px 28px 0px" : "60px 60px 48px 60px"}
+          p={isMobile ? '50px 0px 28px 0px' : '60px 60px 48px 60px'}
         >
           <Box mb="24px">
             <ImgEmptyStateLiquidity />
@@ -96,23 +98,11 @@ const LiquidityList: React.FC = () => {
         </Flex>
       )}
       {account && (
-        <Flex 
-          justifyContent="center"
-          p={isMobile ? "0px 22px 24px 22px" : "0px 0px 40px 0px"}
-          flexWrap="wrap"
-        >
-          <Text 
-            textStyle="R_12R"
-            color={ColorStyles.MEDIUMGREY}
-          >
+        <Flex justifyContent="center" p={isMobile ? '0px 22px 24px 22px' : '0px 0px 40px 0px'} flexWrap="wrap">
+          <Text textStyle="R_12R" color={ColorStyles.MEDIUMGREY}>
             {t(`Don't see a pool`)}
           </Text>
-          <Link
-            ml="12px"
-            href='/liquidity/poolfinder'
-            textStyle='R_12M'
-            style={{textDecoration: 'underline'}}
-          >
+          <Link ml="12px" href="/liquidity/poolfinder" textStyle="R_12M" style={{ textDecoration: 'underline' }}>
             {t('Find other LP tokens')}
           </Link>
         </Flex>
