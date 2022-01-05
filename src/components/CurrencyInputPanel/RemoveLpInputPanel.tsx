@@ -83,7 +83,7 @@ const RemoveLpInputPanel: React.FC<IProps> = ({
 
   return (
     <Flex flexDirection="column">
-      <Flex alignItems="center" mb={isMobile ? '8px' : '16px'}>
+      <Flex alignItems="center" mb={isMobile ? '8px' : '12px'}>
         {currencyA && currencyB && (
           <>
             <Box mr={isMobile ? '12px' : '10px'}>

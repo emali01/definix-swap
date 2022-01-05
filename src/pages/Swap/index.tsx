@@ -36,7 +36,6 @@ import {
 
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { computeTradePriceBreakdown, warningSeverity } from 'utils/prices'
-import { useToast } from 'state/toasts/hooks'
 import { useAllTokens } from 'hooks/Tokens'
 import { allTokenAddresses, LIMITED_PRICE_IMPACT } from 'constants/index'
 import { useLocation } from 'react-router'
@@ -139,7 +138,7 @@ const Swap: React.FC = () => {
     [currencies, independentField, parsedAmounts]
   )
 
-  const [approval, approveCallback, approveErr, setApproveErr] = useApproveCallbackFromTrade(
+  const [approval, approveCallback] = useApproveCallbackFromTrade(
     chainId,
     trade,
     allowedSlippage
@@ -150,8 +149,6 @@ const Swap: React.FC = () => {
     await approveCallback()
     setIsApprovePending(false)
   }, [approveCallback, setIsApprovePending])
-
-  const { toastError } = useToast()
 
   const maxAmountInput: CurrencyAmount | undefined = useMemo(() => maxAmountSpend(currencyBalances[Field.INPUT]), [
     currencyBalances,
@@ -257,17 +254,6 @@ const Swap: React.FC = () => {
     await onWrap()
     onUserInput(Field.INPUT, '')
   }, [onUserInput, onWrap])
-
-  useEffect(() => {
-    if (approveErr) {
-      toastError(
-        t('{{Action}} Failed', {
-          Action: t('actionApprove'),
-        })
-      )
-      setApproveErr('')
-    }
-  }, [approveErr, setApproveErr, t, toastError])
 
   useEffect(() => {
     if (chainId) {
