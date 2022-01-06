@@ -38,14 +38,14 @@ export function PoolPriceBar({
             color={ColorStyles.DEEPGREY}
             textAlign={isMobile ? "left" : "right"}
           >
-            1 {currencies[Field.CURRENCY_B]?.symbol} = {price?.toSignificant(6) ?? '-'} {currencies[Field.CURRENCY_A]?.symbol}
+            1 {currencies[Field.CURRENCY_A]?.symbol} = {price?.toSignificant(6) ?? '-'} {currencies[Field.CURRENCY_B]?.symbol}
           </Text>
           <Text
             textStyle="R_14M"
             color={ColorStyles.DEEPGREY}
             textAlign={isMobile ? "left" : "right"}
           >
-            1 {currencies[Field.CURRENCY_A]?.symbol} = {price?.invert()?.toSignificant(6) ?? '-'} {currencies[Field.CURRENCY_B]?.symbol}
+            1 {currencies[Field.CURRENCY_B]?.symbol} = {price?.invert()?.toSignificant(6) ?? '-'} {currencies[Field.CURRENCY_A]?.symbol}
           </Text>
         </Flex>
       </Flex>
