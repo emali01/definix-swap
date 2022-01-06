@@ -102,9 +102,13 @@ const LiquidityList: React.FC = () => {
           <Text textStyle="R_12R" color={ColorStyles.MEDIUMGREY}>
             {t(`Don't see a pool`)}
           </Text>
-          <Link ml="12px" href="/liquidity/poolfinder" textStyle="R_12M" style={{ textDecoration: 'underline' }}>
-            {t('Find other LP tokens')}
-          </Link>
+          <Box
+            onClick={() => history.push('/liquidity/poolfinder')}
+          >
+            <Text ml="12px" textStyle="R_12M" style={{ textDecoration: 'underline', cursor:'pointer' }} color={ColorStyles.RED}>
+              {t('Find other LP tokens')}
+            </Text>
+          </Box>
         </Flex>
       )}
     </Box>
