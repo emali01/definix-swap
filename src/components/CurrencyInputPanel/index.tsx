@@ -121,13 +121,14 @@ export default React.memo(function CurrencyInputPanel({
 
   useEffect(() => {
     if (currency?.symbol === 'KLAY') {
-      if (value >= balance) {
+      if (Number(value) >= Number(balance)) {
         setIsMaxKlayNoti(true)
         return
       }
     }
     setIsMaxKlayNoti(false)
   }, [value, balance, maxTokenAmount, currency?.symbol])
+
 
   return (
     <>
