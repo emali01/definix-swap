@@ -23,7 +23,7 @@ function Balance({ balance }: { balance: CurrencyAmount }) {
   )
 }
 
-function CurrencyRow({
+const CurrencyRow = React.memo(({
   currency,
   onSelect,
   isSelected,
@@ -35,7 +35,7 @@ function CurrencyRow({
   isSelected: boolean
   otherSelected: boolean
   style: CSSProperties
-}) {
+}) => {
   const { account } = useActiveWeb3React()
   const balance = useCurrencyBalance(account ?? undefined, currency)
 
@@ -51,10 +51,10 @@ function CurrencyRow({
         <Coin size="32px" symbol={currency?.symbol} />
         <Text ml="12px">{currency.symbol}</Text>
       </Flex>
-      <Flex justifySelf="flex-end">{balance ? <Balance balance={balance} /> : <Loader />}</Flex>
+      <Flex justifySelf="flex-end">{!account ? <></> : balance ? <Balance balance={balance} /> : <Loader />}</Flex>
     </MenuItem>
   )
-}
+});
 
 export default function CurrencyList({
   currencies,
