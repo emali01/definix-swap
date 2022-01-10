@@ -413,7 +413,6 @@ export default function RemoveLiquidity({
                   </Flex>
                   <Text>{formattedAmounts[Field.CURRENCY_B] || '0'}</Text>
                 </Flex>
-
               </Flex>
 
               <Divider mt={isMobile ? '24px' : '20px'} mb={isMobile ? '24px' : '32px'} />
@@ -486,10 +485,7 @@ export default function RemoveLiquidity({
                     <Text mb={isMobile ? '4px' : '0px'} textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>
                       {t('Price Rate')}
                     </Text>
-                    <Flex
-                      flexDirection="column"
-                      alignItems="flex-end"
-                    >
+                    <Flex flexDirection="column" alignItems="flex-end">
                       <Text textStyle="R_14M" color={ColorStyles.DEEPGREY}>
                         1 {currencyA?.symbol} = {tokenA ? pair.priceOf(tokenA).toSignificant(6) : '-'}{' '}
                         {currencyB?.symbol}

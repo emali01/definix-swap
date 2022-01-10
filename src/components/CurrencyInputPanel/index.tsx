@@ -42,6 +42,7 @@ interface CurrencyInputPanelProps {
 
 const CurrencySelect = styled.button<{ selected: boolean }>`
   padding: 0;
+  height: 92px;
   align-items: center;
   background-color: transparent;
   outline: none;

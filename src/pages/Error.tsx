@@ -9,7 +9,7 @@ const Error = () => {
     <>
       <ErrorBlock 
         message={t('Unknown error')} 
-        label={t('Home')} 
+        label={t('Back to Home')} 
         onBack={() => window.location.replace(`${process.env.REACT_APP_FRONTEND_URL}`)} 
       />
     </>
