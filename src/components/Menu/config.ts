@@ -51,6 +51,10 @@ export const links = (t: (key: string) => string, currentLang: string) => {
           label: t('Long-term Stake'),
           href: `${process.env.REACT_APP_FRONTEND_URL}/long-term-stake`,
         },
+        {
+          label: t('Voting'),
+          href: `${process.env.REACT_APP_FRONTEND_URL}/voting`,
+        },
       ],
     },
     {
