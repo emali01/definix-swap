@@ -42,6 +42,7 @@ interface CurrencyInputPanelProps {
 
 const CurrencySelect = styled.button<{ selected: boolean }>`
   padding: 0;
+  height: 92px;
   align-items: center;
   background-color: transparent;
   outline: none;
@@ -121,13 +122,14 @@ export default React.memo(function CurrencyInputPanel({
 
   useEffect(() => {
     if (currency?.symbol === 'KLAY') {
-      if (value >= balance) {
+      if (Number(value) >= Number(balance)) {
         setIsMaxKlayNoti(true)
         return
       }
     }
     setIsMaxKlayNoti(false)
   }, [value, balance, maxTokenAmount, currency?.symbol])
+
 
   return (
     <>
