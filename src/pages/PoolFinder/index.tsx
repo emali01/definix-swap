@@ -206,15 +206,35 @@ export default function PoolFinder() {
             {pairState === PairState.NOT_EXISTS && (
               <>
                 <Flex mt="40px" flexDirection="column">
-                  {pair && <MinimalPositionCard pair={pair} isPadding={false} />}
-                  <Button
-                    mt={pair ? '40px' : '0px'}
-                    width="100%"
-                    scale={ButtonScales.LG}
-                    onClick={onClickCreatePoolButton}
-                  >
-                    {t('Import')}
-                  </Button>
+                  {pair && (
+                    <>
+                      <MinimalPositionCard pair={pair} isPadding={false} />
+                      <Button
+                        mt={pair ? '40px' : '0px'}
+                        width="100%"
+                        scale={ButtonScales.LG}
+                        onClick={onClickCreatePoolButton}
+                      >
+                        {t('Import')}
+                      </Button>
+                    </>
+                  )}
+                  {!pair && (
+                    <Flex justifyContent="space-between" alignItems="center">
+                      <Text textStyle="R_14R" color={ColorStyles.DEEPGREY}>
+                        {t('You don’t have liquidity')}
+                      </Text>
+                      <Button
+                        width="186px"
+                        scale={ButtonScales.MD}
+                        variant={ButtonVariants.BROWN}
+                        onClick={() => onClickAddLiquidityButton(currencyId(currency0), currencyId(currency1))}
+                      >
+                        {t('Add Liquidity')}
+                      </Button>
+                    </Flex>
+                  )}
+                  
                 </Flex>
               </>
             )}
