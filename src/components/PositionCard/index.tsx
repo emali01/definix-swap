@@ -75,7 +75,7 @@ export const MinimalPositionCard = React.memo(
                       onClick={() => setShowMore(!showMore)}
                     >
                       <Flex>
-                        <Text textStyle="R_14R">
+                        <Text textStyle="R_14M">
                           {currency0.symbol}-{currency1.symbol}
                         </Text>
                       </Flex>
@@ -88,11 +88,11 @@ export const MinimalPositionCard = React.memo(
 
                     <Flex flexDirection="column" width="100%">
                       <Flex justifyContent="space-between" mb={isMobile ? '6px' : '8px'}>
-                        <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>
+                        <Text textStyle="R_14M" color={ColorStyles.MEDIUMGREY}>
                           {currency0.symbol}
                         </Text>
                         {token0Deposited ? (
-                          <Text textStyle="R_14M" color={ColorStyles.DEEPGREY}>
+                          <Text textStyle="R_14R" color={ColorStyles.DEEPGREY}>
                             {token0Deposited?.toSignificant(6)}
                           </Text>
                         ) : (
@@ -100,11 +100,11 @@ export const MinimalPositionCard = React.memo(
                         )}
                       </Flex>
                       <Flex justifyContent="space-between">
-                        <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>
+                        <Text textStyle="R_14M" color={ColorStyles.MEDIUMGREY}>
                           {currency1.symbol}
                         </Text>
                         {token1Deposited ? (
-                          <Text textStyle="R_14M" color={ColorStyles.DEEPGREY}>
+                          <Text textStyle="R_14R" color={ColorStyles.DEEPGREY}>
                             {token1Deposited?.toSignificant(6)}
                           </Text>
                         ) : (
