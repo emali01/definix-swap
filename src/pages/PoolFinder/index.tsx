@@ -1,22 +1,17 @@
 import {
-  ArrowBottomGIcon,
   BackIcon,
-  Box,
   Button,
   ButtonScales,
   ButtonVariants,
   ChangePlusIcon,
-  Coin,
   ColorStyles,
   Flex,
   Noti,
   Text,
   TitleSet,
   useMatchBreakpoints,
-  useModal,
 } from '@fingerlabs/definixswap-uikit-v2'
 import { MinimalPositionCard } from 'components/PositionCard'
-import CurrencySearchModal from 'components/SearchModal/CurrencySearchModal'
 import { PairState, usePair } from 'data/Reserves'
 import { Currency, ETHER, JSBI, TokenAmount } from 'definixswap-sdk'
 import { useActiveWeb3React } from 'hooks'
@@ -26,50 +21,8 @@ import { usePairAdder } from 'state/user/hooks'
 import { useTokenBalance } from 'state/wallet/hooks'
 import { currencyId } from 'utils/currencyId'
 import { useTranslation } from 'react-i18next'
-
-const SelectCurrencyPanel = React.memo(({currency, onCurrencySelect, handleSearchDismiss}: any) => {
-  const { t } = useTranslation();
-
-  const [onPresentCurrencySearchModal] = useModal(
-    <CurrencySearchModal
-      onCurrencySelect={onCurrencySelect}
-      onDismiss={handleSearchDismiss}
-      selectedCurrency={currency}
-    />
-  , false)
-
-  return (
-    <Flex
-      position="relative"
-      height="48px"
-      borderRadius="8px"
-      border="1px solid"
-      borderColor={ColorStyles.LIGHTGREY}
-      onClick={onPresentCurrencySearchModal}
-      justifyContent="center"
-      alignItems="center"
-      style={{ cursor: 'pointer' }}
-    >
-      {currency ? (
-        <>
-          <Flex>
-            <Coin symbol={currency.symbol} size="32px" />
-            <Text ml="10px" textStyle="R_16M" color={ColorStyles.BLACK} style={{ alignSelf: 'center' }}>
-              {currency.symbol}
-            </Text>
-          </Flex>
-        </>
-      ) : (
-        <Text textStyle="R_14M" color={ColorStyles.MEDIUMGREY}>
-          {t('Select a token')}
-        </Text>
-      )}
-      <Box position="absolute" right="20px">
-        <ArrowBottomGIcon />
-      </Box>
-    </Flex>
-  )
-});
+import { useToast } from 'state/toasts/hooks'
+import SelectCurrencyPanel from './SelectCurrencyPanel'
 
 export default function PoolFinder() {
   const history = useHistory()
@@ -87,6 +40,7 @@ export default function PoolFinder() {
 
   const position: TokenAmount | undefined = useTokenBalance(account ?? undefined, pair?.liquidityToken)
   const hasPosition = useMemo(() => Boolean(position && JSBI.greaterThan(position.raw, JSBI.BigInt(0))), [position])
+  const { toastSuccess } = useToast()
 
   const handleCurrency0 = useCallback((currency: Currency) => {
     if(currency === currency1){
@@ -109,9 +63,14 @@ export default function PoolFinder() {
   const onClickCreatePoolButton = useCallback(() => {
     if (pair) {
       addPair(pair)
+      toastSuccess(
+        t('{{Action}} Complete', {
+          Action: t('actionImport'),
+        }),
+      )
       history.replace(`/liquidity`)
     }
-  }, [pair, addPair, history])
+  }, [pair, addPair, toastSuccess, t, history])
 
   const onClickAddLiquidityButton = useCallback(
     (currencyId0, currencyId1) => {

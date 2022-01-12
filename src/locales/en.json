@@ -1,5 +1,4 @@
 {
-  "Key": "English",
   "What is FINIX token?": "What is FINIX token?",
   "SIX Bridge": "SIX Bridge",
   "English": "English",
@@ -116,7 +115,6 @@
   "Your transaction will revert if": "Your transaction will revert if it is pending for more than this long.",
   "Minutes": "Minutes",
   "Enter a valid number": "Enter a valid number.",
-  "I'm new to this": "",
   "Learn how to set up": "Learn how to connect wallet",
   "Learn how to Swap": "Learn how to Swap",
   "Swap it for any token": "Swap it for any token you want easily and conveniently.",
@@ -261,7 +259,7 @@
   "Yield": "Yield",
   "Invest": "Invest",
   "Withdraw": "Withdraw",
-  "Unlock Wallet": "Unlock Wallet",
+  "Unlock Wallet": "Connect Wallet",
   "1D": "1D",
   "1W": "1W",
   "1M": "1M",
@@ -525,7 +523,8 @@
   "Confirm Voting": "Confirm Voting",
   "Total Vote": "Total Vote",
   "Your Voting Power (vFINIX)": "Your Voting Power (vFINIX) will be locked until the voting time is ended.",
-  "Release notes title": "",
-  "Release notes date": "",
-  "Still in progress": "Applying G2 is in progress.\r\nIt is available to use on G1. "
+  "Release notes title": "Definix Update",
+  "Release notes date": "17.Jan.2022",
+  "Still in progress": "Applying G2 is in progress.\r\nIt is available to use on G1. ",
+  "actionImport": "Import"
 }
