@@ -75,6 +75,14 @@ export default {
       logoURI: '/images/coins/ada.png',
     },
     {
+      name: 'VELO Token',
+      symbol: 'VELO',
+      address: process.env.REACT_APP_VELO_ADDRESS_TESTNET,
+      chainId: 97,
+      decimals: 18,
+      logoURI: '/images/coins/velo.png',
+    },
+    {
       name: 'FINIX Token',
       symbol: 'FINIX',
       address: process.env.REACT_APP_FINIX_ADDRESS_MAINNET,
@@ -137,6 +145,14 @@ export default {
       chainId: 56,
       decimals: 18,
       logoURI: '/images/coins/ada.png',
+    },
+    {
+      name: 'VELO Token',
+      symbol: 'VELO',
+      address: process.env.REACT_APP_VELO_ADDRESS_MAINNET,
+      chainId: 56,
+      decimals: 18,
+      logoURI: '/images/coins/velo.png',
     },
   ],
 }
