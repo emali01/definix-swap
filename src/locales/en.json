@@ -1,4 +1,5 @@
 {
+  "Key": "English",
   "What is FINIX token?": "What is FINIX token?",
   "SIX Bridge": "SIX Bridge",
   "English": "English",
@@ -115,6 +116,7 @@
   "Your transaction will revert if": "Your transaction will revert if it is pending for more than this long.",
   "Minutes": "Minutes",
   "Enter a valid number": "Enter a valid number.",
+  "I'm new to this": "",
   "Learn how to set up": "Learn how to connect wallet",
   "Learn how to Swap": "Learn how to Swap",
   "Swap it for any token": "Swap it for any token you want easily and conveniently.",
@@ -524,7 +526,10 @@
   "Total Vote": "Total Vote",
   "Your Voting Power (vFINIX)": "Your Voting Power (vFINIX) will be locked until the voting time is ended.",
   "Release notes title": "Definix Update",
-  "Release notes date": "17.Jan.2022",
+  "Release notes date": "18.Jan.2022",
   "Still in progress": "Applying G2 is in progress.\r\nIt is available to use on G1. ",
-  "actionImport": "Import"
+  "actionImport": "Import",
+  "Available": "Available",
+  "The amount of vFINIX you are": "The amount of vFINIX you are about to vote doesn't reach the minimum requirement.",
+  "Claim will be available after": "Claim will be available after the the voting time is ended"
 }
