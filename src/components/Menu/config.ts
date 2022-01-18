@@ -70,6 +70,14 @@ const config: MenuEntry[] = [
       },
     ],
   },
+  {
+    label: 'Rebalancing',
+    icon: mutualBlack,
+    iconActive: mutualWhite,
+    href: `${process.env.REACT_APP_FRONTEND_URL}/rebalancing`,
+    notHighlight: false,
+    newTab: false,
+  },
   // {
   //   label: 'Register',
   //   icon: newIcon,
@@ -89,34 +97,34 @@ const config: MenuEntry[] = [
   //   notHighlight: false,
   //   newTab: false,
   // },
-  {
-    label: 'Mutual Fund',
-    icon: mutualBlack,
-    iconActive: mutualWhite,
-    href: `${process.env.REACT_APP_FRONTEND_URL}/info`,
-    notHighlight: false,
-    newTab: false,
-    items: [
-      {
-        label: 'Investors',
-        href: `${process.env.REACT_APP_FRONTEND_URL}/info`,
-        notHighlight: true,
-        newTab: false,
-      },
-      {
-        label: 'Fund Managers',
-        href: `${process.env.REACT_APP_FRONTEND_URL}/info`,
-        notHighlight: true,
-        newTab: false,
-      },
-      {
-        label: 'Network Monitor',
-        href: `${process.env.REACT_APP_FRONTEND_URL}/info`,
-        notHighlight: true,
-        newTab: false,
-      },
-    ],
-  },
+  // {
+  //   label: 'Mutual Fund',
+  //   icon: mutualBlack,
+  //   iconActive: mutualWhite,
+  //   href: `${process.env.REACT_APP_FRONTEND_URL}/info`,
+  //   notHighlight: false,
+  //   newTab: false,
+  //   items: [
+  //     {
+  //       label: 'Investors',
+  //       href: `${process.env.REACT_APP_FRONTEND_URL}/info`,
+  //       notHighlight: true,
+  //       newTab: false,
+  //     },
+  //     {
+  //       label: 'Fund Managers',
+  //       href: `${process.env.REACT_APP_FRONTEND_URL}/info`,
+  //       notHighlight: true,
+  //       newTab: false,
+  //     },
+  //     {
+  //       label: 'Network Monitor',
+  //       href: `${process.env.REACT_APP_FRONTEND_URL}/info`,
+  //       notHighlight: true,
+  //       newTab: false,
+  //     },
+  //   ],
+  // },
   {
     label: 'Bridge',
     icon: bridgeBlack,
