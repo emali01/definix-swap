@@ -2,7 +2,10 @@ import React, { lazy, Suspense, useEffect } from 'react'
 import { Route, Switch, BrowserRouter } from 'react-router-dom'
 import { useCaverJsReact } from '@sixnetwork/caverjs-react-core'
 import { Flex, GlobalStyle, Loading } from '@fingerlabs/definixswap-uikit-v2'
+import {Helmet} from "react-helmet";
+
 import useCaverJsReactForWallet from 'hooks/useCaverJsReactForWallet'
+import useFinixPrice from 'hooks/useFinixPrice'
 import Menu from '../components/Menu'
 import Web3ReactManager from '../components/Web3ReactManager'
 import ToastListener from '../components/ToastListener'
@@ -35,9 +38,16 @@ export default function App() {
     }
   }, [account, login])
 
+  const { price: finixPrice } = useFinixPrice();
+
   return (
     <Suspense fallback={null}>
       <GlobalStyle />
+      <Helmet>
+        <title>
+          Definix{!finixPrice ? '' : ` - ${finixPrice?.toFixed(4)} FINIX/USD`}
+        </title>
+      </Helmet>
       <BrowserRouter>
         <Flex position="relative" flexDirection="column" alignItems="flex-start" maxWidth="1280px" height="100%">
           <Menu>
