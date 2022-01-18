@@ -25,125 +25,105 @@ interface PositionCardProps {
   // eslint-disable-next-line react/no-unused-prop-types
   showUnwrapped?: boolean
   isLastCard?: boolean
+  isPadding?: boolean
 }
 
-export const MinimalPositionCard = React.memo(({ pair, showUnwrapped = false, isLastCard }: PositionCardProps) => {
-  const { t } = useTranslation()
-  const { account } = useActiveWeb3React()
-  const { isXl, isXxl } = useMatchBreakpoints()
-  const isMobile = useMemo(() => !isXl && !isXxl, [isXl, isXxl])
+export const MinimalPositionCard = React.memo(
+  ({ pair, showUnwrapped = false, isLastCard, isPadding = true }: PositionCardProps) => {
+    const { t } = useTranslation()
+    const { account } = useActiveWeb3React()
+    const { isXl, isXxl } = useMatchBreakpoints()
+    const isMobile = useMemo(() => !isXl && !isXxl, [isXl, isXxl])
 
-  const currency0 = showUnwrapped ? pair.token0 : unwrappedToken(pair.token0)
-  const currency1 = showUnwrapped ? pair.token1 : unwrappedToken(pair.token1)
+    const currency0 = showUnwrapped ? pair.token0 : unwrappedToken(pair.token0)
+    const currency1 = showUnwrapped ? pair.token1 : unwrappedToken(pair.token1)
 
-  const [showMore, setShowMore] = useState(false)
+    const [showMore, setShowMore] = useState(false)
 
-  const userPoolBalance = useTokenBalance(account ?? undefined, pair.liquidityToken)
-  const totalPoolTokens = useTotalSupply(pair.liquidityToken)
+    const userPoolBalance = useTokenBalance(account ?? undefined, pair.liquidityToken)
+    const totalPoolTokens = useTotalSupply(pair.liquidityToken)
 
-  const [token0Deposited, token1Deposited] =
-    !!pair &&
-    !!totalPoolTokens &&
-    !!userPoolBalance &&
-    // this condition is a short-circuit in the case where useTokenBalance updates sooner than useTotalSupply
-    JSBI.greaterThanOrEqual(totalPoolTokens.raw, userPoolBalance.raw)
-      ? [
-          pair.getLiquidityValue(pair.token0, totalPoolTokens, userPoolBalance, false),
-          pair.getLiquidityValue(pair.token1, totalPoolTokens, userPoolBalance, false),
-        ]
-      : [undefined, undefined]
+    const [token0Deposited, token1Deposited] =
+      !!pair &&
+      !!totalPoolTokens &&
+      !!userPoolBalance &&
+      // this condition is a short-circuit in the case where useTokenBalance updates sooner than useTotalSupply
+      JSBI.greaterThanOrEqual(totalPoolTokens.raw, userPoolBalance.raw)
+        ? [
+            pair.getLiquidityValue(pair.token0, totalPoolTokens, userPoolBalance, false),
+            pair.getLiquidityValue(pair.token1, totalPoolTokens, userPoolBalance, false),
+          ]
+        : [undefined, undefined]
 
-  return (
-    <>
-      {userPoolBalance && (
-        <Flex backgroundColor={ColorStyles.WHITE} borderRadius="16px">
-          <CardBody style={{ width: '100%' }} p={isMobile ? '20px' : '40px'}>
-            <Flex flexDirection="column">
-              <Text textStyle="R_16M" color={ColorStyles.DEEPGREY}>
-                {t('Balance LP')}
-              </Text>
-              <Flex mt={isMobile ? '14px' : '12px'}>
-                <Box width={isMobile ? '46px' : '43px'} mr={isMobile ? '12px' : '10px'}>
-                  <Lp size="24px" lpSymbols={[currency0?.symbol, currency1?.symbol]} />
-                </Box>
-                <Flex flexDirection="column" width="100%">
-                  <Flex
-                    justifyContent="space-between"
-                    mb={isMobile ? '14px' : '8px'}
-                    onClick={() => setShowMore(!showMore)}
-                  >
-                    <Flex>
-                      <Text textStyle="R_14R">
-                        {currency0.symbol}-{currency1.symbol}
-                      </Text>
-                    </Flex>
-                    <Flex>
-                      <Text textStyle="R_14M" color={ColorStyles.DEEPGREY}>
-                        {userPoolBalance ? userPoolBalance.toSignificant(4) : '-'}
-                      </Text>
-                    </Flex>
-                  </Flex>
-
+    return (
+      <>
+        {userPoolBalance && (
+          <Flex backgroundColor={ColorStyles.WHITE} borderRadius="16px">
+            <CardBody style={{ width: '100%' }} p={!isPadding ? '0px' : isMobile ? '20px' : '40px'}>
+              <Flex flexDirection="column">
+                <Text textStyle="R_16M" color={ColorStyles.DEEPGREY}>
+                  {t('Balance LP')}
+                </Text>
+                <Flex mt={isMobile ? '14px' : '12px'}>
+                  <Box width={isMobile ? '46px' : '43px'} mr={isMobile ? '12px' : '10px'}>
+                    <Lp size="24px" lpSymbols={[currency0?.symbol, currency1?.symbol]} />
+                  </Box>
                   <Flex flexDirection="column" width="100%">
-                    <Flex justifyContent="space-between" mb={isMobile ? '6px' : '8px'}>
-                      <Flex alignItems="center">
-                        <Box
-                          width="3px"
-                          height="3px"
-                          borderRadius="50%"
-                          backgroundColor={ColorStyles.MEDIUMGREY}
-                          mr="6px"
-                        />
-                        <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>
+                    <Flex
+                      justifyContent="space-between"
+                      mb={isMobile ? '14px' : '8px'}
+                      onClick={() => setShowMore(!showMore)}
+                    >
+                      <Flex>
+                        <Text textStyle="R_14M">
+                          {currency0.symbol}-{currency1.symbol}
+                        </Text>
+                      </Flex>
+                      <Flex>
+                        <Text textStyle="R_14M" color={ColorStyles.DEEPGREY}>
+                          {userPoolBalance ? userPoolBalance.toSignificant(4) : '-'}
+                        </Text>
+                      </Flex>
+                    </Flex>
+
+                    <Flex flexDirection="column" width="100%">
+                      <Flex justifyContent="space-between" mb={isMobile ? '6px' : '8px'}>
+                        <Text textStyle="R_14M" color={ColorStyles.MEDIUMGREY}>
                           {currency0.symbol}
                         </Text>
-                      </Flex>
-                      {token0Deposited ? (
-                        <Flex>
-                          <Text textStyle="R_14M" color={ColorStyles.DEEPGREY}>
+                        {token0Deposited ? (
+                          <Text textStyle="R_14R" color={ColorStyles.DEEPGREY}>
                             {token0Deposited?.toSignificant(6)}
                           </Text>
-                        </Flex>
-                      ) : (
-                        '-'
-                      )}
-                    </Flex>
-                    <Flex justifyContent="space-between">
-                      <Flex alignItems="center">
-                        <Box
-                          width="3px"
-                          height="3px"
-                          borderRadius="50%"
-                          backgroundColor={ColorStyles.MEDIUMGREY}
-                          mr="6px"
-                        />
-                        <Text textStyle="R_14R" color={ColorStyles.MEDIUMGREY}>
+                        ) : (
+                          '-'
+                        )}
+                      </Flex>
+                      <Flex justifyContent="space-between">
+                        <Text textStyle="R_14M" color={ColorStyles.MEDIUMGREY}>
                           {currency1.symbol}
                         </Text>
-                      </Flex>
-
-                      {token1Deposited ? (
-                        <Flex>
-                          <Text textStyle="R_14M" color={ColorStyles.DEEPGREY}>
+                        {token1Deposited ? (
+                          <Text textStyle="R_14R" color={ColorStyles.DEEPGREY}>
                             {token1Deposited?.toSignificant(6)}
                           </Text>
-                        </Flex>
-                      ) : (
-                        '-'
-                      )}
+                        ) : (
+                          '-'
+                        )}
+                      </Flex>
                     </Flex>
                   </Flex>
                 </Flex>
               </Flex>
-            </Flex>
-          </CardBody>
-        </Flex>
-      )}
-    </>
-  )
-})
+            </CardBody>
+          </Flex>
+        )}
+      </>
+    )
+  }
+)
 
-const FullPositionCard = ({ pair, isLastCard = false }: PositionCardProps) => {
+const FullPositionCard = ({ pair, isLastCard = false, isPadding = true }: PositionCardProps) => {
   const { t } = useTranslation()
   const { isXl, isXxl } = useMatchBreakpoints()
   const isMobile = useMemo(() => !isXl && !isXxl, [isXl, isXxl])
