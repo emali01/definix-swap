@@ -81,8 +81,13 @@ const findAndSelectPair = pair => {
   return undefined
 }
 
-export default function useFinixPrice(): number {
+export default function useFinixPrice(): {
+  price: number;
+  loading: boolean;
+  fetchPrice: () => Promise<void>;
+} {
   const [currentPrice, setCurrentPrice] = useState(0)
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const { chainId = parseInt(process.env.REACT_APP_CHAIN_ID || '0') } = useActiveWeb3React()
   const multicallContractAddress = MULTICALL_ADDRESS[chainId || process.env.REACT_APP_CHAIN_ID || '56']
   const getAddress = useCallback(
@@ -96,65 +101,77 @@ export default function useFinixPrice(): number {
     [chainId]
   )
   const fetchCurrentFinixPrice = useCallback(async () => {
-    const allTokenCombinationKeys = pairObjectCombination(allTokenAddresses)
-    const allFinixPair = allTokenCombinationKeys.filter(
-      // @ts-ignore
-      item => item.indexOf('FINIX') >= 0 || item.indexOf('KUSDT') >= 0
-    )
-    const sortedPair = _.compact(allFinixPair.map(pair => findAndSelectPair(pair)))
-    const searchablePair = {}
-    sortedPair.forEach((pair, index) => {
-      if (!searchablePair[pair[0]]) {
-        searchablePair[pair[0]] = {}
-      }
-      searchablePair[pair[0]][pair[1]] = index
-    })
-    const fetchPromise = []
-    sortedPair.forEach(pair => {
-      // @ts-ignore
-      const [firstKey, secondKey] = findAndSelectPair(pair)
-      const firstTokenAddress = allTokenAddresses[firstKey]
-      const secondTokenAddress = allTokenAddresses[secondKey]
-      fetchPromise.push(
+    setIsLoading(true);
+    try {
+      const allTokenCombinationKeys = pairObjectCombination(allTokenAddresses)
+      const allFinixPair = allTokenCombinationKeys.filter(
         // @ts-ignore
-        getTotalBalanceLp({
-          lpAddress: getAddress(getLpNetwork(firstTokenAddress, secondTokenAddress)),
-          pair1: getAddress(firstTokenAddress),
-          pair2: getAddress(secondTokenAddress),
-          multicallAddress: multicallContractAddress
-        })
+        item => item.indexOf('FINIX') >= 0 || item.indexOf('KUSDT') >= 0
       )
-    })
-    const allFetchedData = await Promise.all(fetchPromise)
-    const allRatio = allFetchedData.map(data => {
-      if (data) {
-        const ratio = data[1] / data[0] || 0
-        return ratio
-      }
-      return undefined
-    })
-    const allPrices = allFetchedData.map((data, index) => {
-      const currentPair = sortedPair[index]
-      if (data && currentPair[0] === 'FINIX') {
-        if (currentPair[1] === 'KUSDT') {
-          return [allRatio[index], allFetchedData[index][1]]
+      const sortedPair = _.compact(allFinixPair.map(pair => findAndSelectPair(pair)))
+      const searchablePair = {}
+      sortedPair.forEach((pair, index) => {
+        if (!searchablePair[pair[0]]) {
+          searchablePair[pair[0]] = {}
         }
-        const pairIndex = searchablePair[currentPair[1]].KUSDT
+        searchablePair[pair[0]][pair[1]] = index
+      })
+      const fetchPromise = []
+      sortedPair.forEach(pair => {
         // @ts-ignore
-        return [allRatio[index] * allRatio[pairIndex], allFetchedData[index][1]]
-      }
-      return undefined
-    })
-    const availAllPrices = _.compact(allPrices)
-    // @ts-ignore
-    const calPrice = availAllPrices.reduce((sum, pair) => sum + pair[0] * pair[1], 0)
-    // @ts-ignore
-    const quoteSum = availAllPrices.reduce((sum, pair) => sum + pair[1], 0)
-    const finixPrice = calPrice / quoteSum || 0
-    setCurrentPrice(finixPrice)
-  }, [getAddress, setCurrentPrice, multicallContractAddress])
+        const [firstKey, secondKey] = findAndSelectPair(pair)
+        const firstTokenAddress = allTokenAddresses[firstKey]
+        const secondTokenAddress = allTokenAddresses[secondKey]
+        fetchPromise.push(
+          // @ts-ignore
+          getTotalBalanceLp({
+            lpAddress: getAddress(getLpNetwork(firstTokenAddress, secondTokenAddress)),
+            pair1: getAddress(firstTokenAddress),
+            pair2: getAddress(secondTokenAddress),
+            multicallAddress: multicallContractAddress
+          })
+        )
+      })
+      const allFetchedData = await Promise.all(fetchPromise)
+      const allRatio = allFetchedData.map(data => {
+        if (data) {
+          const ratio = data[1] / data[0] || 0
+          return ratio
+        }
+        return undefined
+      })
+      const allPrices = allFetchedData.map((data, index) => {
+        const currentPair = sortedPair[index]
+        if (data && currentPair[0] === 'FINIX') {
+          if (currentPair[1] === 'KUSDT') {
+            return [allRatio[index], allFetchedData[index][1]]
+          }
+          const pairIndex = searchablePair[currentPair[1]].KUSDT
+          // @ts-ignore
+          return [allRatio[index] * allRatio[pairIndex], allFetchedData[index][1]]
+        }
+        return undefined
+      })
+      const availAllPrices = _.compact(allPrices)
+      // @ts-ignore
+      const calPrice = availAllPrices.reduce((sum, pair) => sum + pair[0] * pair[1], 0)
+      // @ts-ignore
+      const quoteSum = availAllPrices.reduce((sum, pair) => sum + pair[1], 0)
+      const finixPrice = calPrice / quoteSum || 0
+      setCurrentPrice(finixPrice)
+    } catch (error) {
+      setIsLoading(false);
+    }
+    setIsLoading(false);
+  }, [getAddress, setCurrentPrice, multicallContractAddress, setIsLoading])
+
   useEffect(() => {
     fetchCurrentFinixPrice()
   }, [fetchCurrentFinixPrice])
-  return currentPrice || 0
+
+  return {
+    price: currentPrice || undefined,
+    loading: isLoading,
+    fetchPrice: fetchCurrentFinixPrice
+  }
 }
