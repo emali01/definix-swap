@@ -8,15 +8,16 @@ import { useUserSlippageTolerance, useUserDeadline } from 'state/user/hooks'
 import useCaverJsReactForWallet from 'hooks/useCaverJsReactForWallet'
 import { links } from './config'
 
-const Menu: React.FC = (props) => {
+const Menu: React.FC<{ finixPrice: number | string }> = ({ finixPrice, ...props }) => {
   const { account } = useCaverJsReact()
-  const { login, logout } = useCaverJsReactForWallet();
-  const [userSlippageTolerance, setUserslippageTolerance] = useUserSlippageTolerance();
-  const [deadline, setDeadline] = useUserDeadline();
+  const { login, logout } = useCaverJsReactForWallet()
+  const [userSlippageTolerance, setUserslippageTolerance] = useUserSlippageTolerance()
+  const [deadline, setDeadline] = useUserDeadline()
   const { i18n, t } = useTranslation()
 
   return (
     <UikitMenu
+      finixPrice={finixPrice}
       version={process.env.REACT_APP_VERSION || 'v0.0.1'}
       Link={Link}
       // SettingsModal slippage

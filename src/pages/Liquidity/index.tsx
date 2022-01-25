@@ -17,8 +17,14 @@ const Liquidity: React.FC = () => {
     [i18n.language]
   )
 
-  const tabNames = useMemo(() => [t('Add'), t('Remove')], [t])
-  const [curTab, setCurTab] = useState<string>(tabNames[0])
+  const tabNames = useMemo(() => [{
+    id: 'add',
+    name: t('Add')
+  }, {
+    id: 'remove',
+    name: t('Remove')
+  }], [t])
+  const [curTab, setCurTab] = useState<string>(tabNames[0].id)
 
   return (
     <Flex width="100%" justifyContent="center">
@@ -44,8 +50,8 @@ const Liquidity: React.FC = () => {
             <Tabs tabs={tabNames} curTab={curTab} setCurTab={setCurTab} equal={isMobile} />
           </Box>
           <Box pb={isMobile ? '40px' : '80px'}>
-            {curTab === tabNames[0] && <AddLiquidity />}
-            {curTab === tabNames[1] && <LiquidityList />}
+            {curTab === tabNames[0].id && <AddLiquidity />}
+            {curTab === tabNames[1].id && <LiquidityList />}
           </Box>
         </Flex>
       </Flex>
